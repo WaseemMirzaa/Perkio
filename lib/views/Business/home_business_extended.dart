@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:skhickens_app/routes/app_routes.dart';
+import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:skhickens_app/core/utils/constants/app_assets.dart';
+import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/widgets/business_extended_tiles.dart';
+import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/common_space.dart';
+import 'package:skhickens_app/widgets/custom_container.dart';
+import 'package:skhickens_app/widgets/search_field.dart';
+import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+
+class HomeBusinessExtended extends StatefulWidget {
+  const HomeBusinessExtended({super.key});
+
+  @override
+  State<HomeBusinessExtended> createState() => _HomeBusinessExtendedState();
+}
+
+class _HomeBusinessExtendedState extends State<HomeBusinessExtended> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.whiteColor,
+      body: Stack(
+        children: [
+          Stack(
+            children: [
+              CustomShapeContainer(),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    SpacerBoxVertical(height: 30),
+                    Row(
+                      children: [
+                        Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 2, color: AppColors.whiteColor),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Image.asset(AppAssets.profileImg, scale: 3,),
+                          ),
+                          SpacerBoxHorizontal(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                            
+                            Text(TempLanguage.txtBusinessName, style: poppinsRegular(fontSize: 14),),
+                            Text(TempLanguage.txtLocation, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
+                          ],),
+                        ),
+                        GestureDetector(
+                          
+                          child: Image.asset(AppAssets.notificationImg, scale: 3,))
+                      ],
+                    ),
+                    SpacerBoxVertical(height: 20),
+                    SearchField(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          Padding(
+            padding: const EdgeInsets.only(top: 200,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(TempLanguage.lblMyDeals, style: poppinsMedium(fontSize: 18),),
+                ),
+                
+                Expanded(child: ListView(
+                  
+                  children: [
+                    BusinessExtendedTiles(),
+                    BusinessExtendedTiles(),
+                    BusinessExtendedTiles(),
+                  ],
+                )),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: CommonButton(onSwipe: (){
+                    Get.toNamed(AppRoutes.addDeal);
+                  }, text: TempLanguage.btnLblSwipeToAddDeal),
+                ),
+                SpacerBoxVertical(height: 20)
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

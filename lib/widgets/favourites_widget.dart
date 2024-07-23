@@ -3,16 +3,16 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
+import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
-class AvailableListItems extends StatelessWidget {
-  const AvailableListItems({super.key});
+class FavouritesWidget extends StatelessWidget {
+  const FavouritesWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    RxBool tapped = false.obs;
+    RxBool tapped = true.obs;
     return Container(
       height: 130,
       margin: const EdgeInsets.only(bottom: 10,left: 12,right: 12),
@@ -42,7 +42,7 @@ class AvailableListItems extends StatelessWidget {
                                           children: [
                                             SpacerBoxVertical(height: 1.3.h),
                                             Expanded(child: Image.asset(AppAssets.restaurantImg1)),
-                                            Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
+                                            
                                           ],
                                         ),
                                         Positioned(
@@ -107,21 +107,11 @@ class AvailableListItems extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.only(right: 8),
                                       child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           SpacerBoxVertical(height: 10),
-                                          Container(
-                                                  height: 15,
-                                                  width: 40,
-                                                  decoration: const BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      colors: [Colors.red, Colors.orange],
-                                                      begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
-                                                    ),
-                                                  ),
-                                                  child: Center(child: Text(TempLanguage.txtFeatured, style: poppinsRegular(fontSize: 7, color: AppColors.whiteColor),)),
-                                                ),
-                                                SpacerBoxVertical(height: 10),
+                                          Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
+                                                
                                                 Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),)
                                         ],
                                       ),

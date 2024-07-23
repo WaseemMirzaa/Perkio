@@ -8,6 +8,7 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/available_list_items.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
+import 'package:skhickens_app/widgets/favourites_widget.dart';
 import 'package:skhickens_app/widgets/rewards_list_items.dart';
 import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
@@ -143,11 +144,11 @@ class FavouritesScreen extends StatelessWidget {
                         onTap: (){
                           Get.toNamed(AppRoutes.dealDetail);
                         },
-                        child: AvailableListItems()),
-                      AvailableListItems(),
-                      AvailableListItems(),
-                      AvailableListItems(),
-                      AvailableListItems(),
+                        child: FavouritesWidget()),
+                      FavouritesWidget(),
+                      FavouritesWidget(),
+                      FavouritesWidget(),
+                      FavouritesWidget(),
                     ],
                   ) : ListView(
                     children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -28,60 +29,86 @@ class BusinessExtendedTiles extends StatelessWidget {
                                   ),
                                   child: Column(
                                     children: [
-                                      Padding(
-                                            padding: const EdgeInsets.only(top: 8,right: 8),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                Image.asset(AppAssets.editImg, scale: 2.5,),
-                                                SpacerBoxHorizontal(width: 10),
-                                                Image.asset(AppAssets.deleteImg, scale: 2.5,),
-                                              ],
-                                            ),
-                                          ),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                      Expanded(
+                                        child: Row(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                        SpacerBoxHorizontal(width: 10),
+                                        
+                                        Stack(
+                                        alignment: Alignment.topLeft,
+                                        clipBehavior: Clip.none,
                                         children: [
-                                          SpacerBoxHorizontal(width: 10),
-                                          
                                           Column(
                                             children: [
-                                              Image.asset(AppAssets.restaurantImg1, scale: 2.2,),
-                                              Text('\$25', style: poppinsMedium(fontSize: 14),)
+                                              SpacerBoxVertical(height: 1.3.h),
+                                              Expanded(child: Image.asset(AppAssets.restaurantImg1,)),
+                                              Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
                                             ],
-                                          ),
-                                          SpacerBoxHorizontal(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(TempLanguage.txtBuyOneGetOne, style: poppinsMedium(fontSize: 12),),
-                                                SpacerBoxVertical(height: 5),
-                                                Row(
-                                                    
-                                                  children: [
-                                                    Text(TempLanguage.txtBusinessName, style: poppinsRegular(fontSize: 10, color: AppColors.yellowColor),),
-                                                    SpacerBoxHorizontal(width: 20),
-                                                    Row(
-                                                      
-                                                      children: [
-                                                        Icon(Icons.location_on, color: AppColors.yellowColor, size: 10,),
-                                                        Text(TempLanguage.txtMil, style: poppinsRegular(fontSize: 10, color: AppColors.yellowColor),),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                SpacerBoxVertical(height: 5),
-                                                Text('3 USES', style: poppinsRegular(fontSize: 10, color: AppColors.blueColor),),
-                                      
-                                              ],
-                                            ),
                                           ),
                                           
                                         ],
+                                                                            ),
+                                        SpacerBoxHorizontal(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SpacerBoxVertical(height: 10),
+                                            Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 14),),
+                                            SpacerBoxVertical(height: 5),
+                                            Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
+                                            
+                                            SpacerBoxVertical(height: 5),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.location_on, color: AppColors.hintText, size: 12.sp,),
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(child: Text('280 Mil', style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
+                                                      SpacerBoxHorizontal(width: 4),
+                                                      
+                                                  
+                                                    ],
+                                                  ),
+                                                )
+                                        
+                                              ],
+                                            ),
+                                            Expanded(child: SizedBox()),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20),
+                                              child: Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),),
+                                            ),
+                                            SpacerBoxVertical(height: 5),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Image.asset(AppAssets.editImg, scale: 2.5,),
+                                                  SpacerBoxHorizontal(width: 10),
+                                                  Image.asset(AppAssets.deleteImg, scale: 2.5,),
+                                                ],
+                                              ),
+                                              
+                                              
+                                            ],
+                                          ),
+                                        )
+                                                                            ],
+                                                                          ),
                                       ),
-                                      SpacerBoxVertical(height: 5),
+                                      
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 8),
                                         child: Container(
@@ -128,7 +155,8 @@ class BusinessExtendedTiles extends StatelessWidget {
                                           ),
                                           SpacerBoxHorizontal(width: 12),
                                         ],
-                                      )
+                                      ),
+                                      SpacerBoxVertical(height: 5),
                                     ],
                                   ),
                                   

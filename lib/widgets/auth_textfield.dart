@@ -5,7 +5,8 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 class AuthTextfield extends StatelessWidget {
   final String text;
   final String path;
-  const AuthTextfield({required this.text, required this.path});
+  final TextEditingController textController;
+  const AuthTextfield({required this.text, required this.path, required this.textController});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class AuthTextfield extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: TextField(
+                        controller: textController,
                         decoration: InputDecoration(
                           hintText: text,
                           hintStyle: poppinsRegular(fontSize: 13,color: Color(0xFF858585)),

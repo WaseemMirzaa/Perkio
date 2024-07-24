@@ -7,6 +7,7 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_button.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
+import 'package:skhickens_app/widgets/congratulation_dialog.dart';
 import 'package:skhickens_app/widgets/detail_tile.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
@@ -31,9 +32,9 @@ class _DealDetailState extends State<DealDetail> {
             child: Column(
               children: [
                 
-                SpacerBoxVertical(height: 20),
-                DetailTile(),
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 20),
+                const DetailTile(),
+                const SpacerBoxVertical(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
@@ -50,13 +51,15 @@ class _DealDetailState extends State<DealDetail> {
                     ],
                   )
                 ),
-                SpacerBoxVertical(height: 20),
+                const SpacerBoxVertical(height: 20),
                 Image.asset(AppAssets.foodImg, scale: 3,),
-                SpacerBoxVertical(height: 20),
+                const SpacerBoxVertical(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: CommonButton(onSwipe: (){
-                    Get.toNamed(AppRoutes.rewardDetail);
+                    showCongratulationDialog(onDone: (){
+                      Get.toNamed(AppRoutes.bottomBarView);
+                    });
                   }, text: TempLanguage.btnLblSwipeToRedeem),
                 )
                 

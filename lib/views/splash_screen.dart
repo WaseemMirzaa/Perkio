@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
                 SizedBox(height: 30,),
-                LoginButtonWidget(onSwipe: (){
+                ButtonWidget(onSwipe: (){
                   Get.toNamed(AppRoutes.selection);
                 }, text: TempLanguage.btnLblSwipeToStart),
                 ],),

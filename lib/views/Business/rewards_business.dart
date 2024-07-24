@@ -32,7 +32,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    SpacerBoxVertical(height: 30),
+                    const SpacerBoxVertical(height: 30),
                     Row(
                       children: [
                         Container(
@@ -44,7 +44,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
                             ),
                             child: Image.asset(AppAssets.profileImg, scale: 3,),
                           ),
-                          SpacerBoxHorizontal(width: 10),
+                          const SpacerBoxHorizontal(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,12 +55,14 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
                           ],),
                         ),
                         GestureDetector(
-                          
-                          child: Image.asset(AppAssets.notificationImg, scale: 3,))
+                            onTap: (){
+                              Get.toNamed(AppRoutes.notifications);
+                            },
+                            child:Image.asset(AppAssets.notificationImg, scale: 3,))
                       ],
                     ),
-                    SpacerBoxVertical(height: 20),
-                    SearchField(),
+                    const SpacerBoxVertical(height: 20),
+                    const SearchField(),
                   ],
                 ),
               ),
@@ -74,12 +76,12 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 12),
-                  child: Text(TempLanguage.lblMyDeals, style: poppinsMedium(fontSize: 18),),
+                  child: Text(TempLanguage.lblMyRewards, style: poppinsMedium(fontSize: 18),),
                 ),
                 
                 Expanded(child: ListView(
-                  
-                  children: [
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  children: const [
                     BusinessRewardsTiles(),
                     BusinessRewardsTiles(),
                     BusinessRewardsTiles(),
@@ -93,7 +95,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
                     Get.toNamed(AppRoutes.addReward);
                   }, text: TempLanguage.btnLblSwipeToAddRewards),
                 ),
-                SpacerBoxVertical(height: 20),
+                const SpacerBoxVertical(height: 20),
               ],
             ),
           ),

@@ -21,22 +21,19 @@ class CommonTextField extends StatelessWidget {
                   )
                 ]
               ),
-              child: Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Center(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: text,
-                        hintStyle: poppinsRegular(fontSize: 13,color: Color(0xFF858585)),
-                        border: InputBorder.none, 
-                                    enabledBorder: InputBorder.none, 
-                                    focusedBorder: InputBorder.none,
-                      ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Center(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: text,
+                      hintStyle: poppinsRegular(fontSize: 13,color: Color(0xFF858585)),
+                      border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
                     ),
                   ),
                 ),
-                
               ),
             );
   }

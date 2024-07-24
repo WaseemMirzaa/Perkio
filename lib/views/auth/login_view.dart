@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -10,14 +12,14 @@ import 'package:skhickens_app/widgets/common_button.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
-class LoginBusiness extends StatefulWidget {
-  const LoginBusiness({super.key});
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
 
   @override
-  State<LoginBusiness> createState() => _LoginBusinessState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginBusinessState extends State<LoginBusiness> {
+class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,20 +37,20 @@ class _LoginBusinessState extends State<LoginBusiness> {
             children: [Text(TempLanguage.txtLogin, style: poppinsMedium(fontSize: 18, color: AppColors.hintText)),
             GestureDetector(
               onTap: (){
-                Get.toNamed(AppRoutes.signupBusiness);
+                Get.toNamed(AppRoutes.signupUser);
               },
               child: Text(TempLanguage.txtNewUser, style: poppinsRegular(fontSize: 13))),
             ],
           ),
-          SpacerBoxVertical(height: 20),
-          AuthTextfield(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon),
-          SpacerBoxVertical(height: 20),
-                    AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg),
-                    SpacerBoxVertical(height: 20),
+          const SpacerBoxVertical(height: 20),
+          const AuthTextfield(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon),
+          const SpacerBoxVertical(height: 20),
+                    const AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg),
+                    const SpacerBoxVertical(height: 20),
                     CommonButton(onSwipe: (){
-                      Get.to(BottomBarView(isUser: false));
+                      Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
                     }, text: TempLanguage.btnLblSwipeToLogin),
-                    SpacerBoxVertical(height: 20),
+                    const SpacerBoxVertical(height: 20),
                     Text(TempLanguage.txtForgotPassword, style: poppinsRegular(fontSize: 18, color: AppColors.secondaryText),)
 
         ],),

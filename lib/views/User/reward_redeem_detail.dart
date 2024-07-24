@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_button.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
@@ -30,25 +32,25 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
             child: Column(
               children: [
                 
-                SpacerBoxVertical(height: 20),
-                DetailTile(),
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 20),
+                const DetailTile(),
+                const SpacerBoxVertical(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(TempLanguage.txtRewardInfo, style: poppinsMedium(fontSize: 15),),
-                      SpacerBoxVertical(height: 10),
+                      const SpacerBoxVertical(height: 10),
                       Text(TempLanguage.txtLoremIpsumShort, style: poppinsRegular(fontSize: 15, color: AppColors.hintText),),
                     ],
                   )
                 ),
-                SpacerBoxVertical(height: 20),
+                const SpacerBoxVertical(height: 20),
                 Text(TempLanguage.txtPoints, style: poppinsBold(fontSize: 15, color: AppColors.secondaryText),),
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 10),
                 Text('1000/1000', style: poppinsRegular(fontSize: 15, color: AppColors.secondaryText),),
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: SizedBox(
@@ -65,7 +67,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                           BoxShadow(
                             color: Colors.black.withOpacity(0.2),
                             blurRadius: 6,
-                            offset: Offset(0, 3)
+                            offset: const Offset(0, 3)
                           )
                         ]
                           ),
@@ -75,7 +77,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                           
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                             colors: [Colors.red, Colors.orange],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -87,11 +89,13 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                     ),
                   ),
                 ),
-                SpacerBoxVertical(height: 80),
+                const SpacerBoxVertical(height: 80),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: CommonButton(onSwipe: (){
-                    showCongratulationDialog();
+                    showCongratulationDialog(onDone: (){
+                      Get.toNamed(AppRoutes.bottomBarView);
+                    });
                   }, text: TempLanguage.btnLblSwipeToRedeem),
                 )
                 

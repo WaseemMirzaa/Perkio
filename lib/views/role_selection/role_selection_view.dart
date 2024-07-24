@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/widgets/login_button_widget.dart';
 import 'package:skhickens_app/widgets/selection_tile.dart';
 
 class SelectionScreen extends StatefulWidget {
@@ -37,18 +36,20 @@ class _SelectionScreenState extends State<SelectionScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                
                   GestureDetector(
-                    onTap: (){
+                    onTap: ()async{
+                      await setValue(SharedPrefKey.role, SharedPrefKey.user);
+
                       Get.toNamed(AppRoutes.loginUser);
                     },
-                    child: SelectionTile(imgPath: 'assets/images/user_sel.png', text: 'USER')),
-                SizedBox(width: 20,),
+                    child: const SelectionTile(imgPath: 'assets/images/user_sel.png', text: 'USER')),
+                const SizedBox(width: 20,),
                 GestureDetector(
-                  onTap: (){
-                    Get.toNamed(AppRoutes.loginBusiness);
+                  onTap: ()async{
+                    await setValue(SharedPrefKey.role, SharedPrefKey.business);
+                    Get.toNamed(AppRoutes.loginUser);
                   },
-                  child: SelectionTile(imgPath: 'assets/images/business_sel.png', text: 'BUSINESS')),
+                  child: const SelectionTile(imgPath: 'assets/images/business_sel.png', text: 'BUSINESS')),
                 
                 ],),
               )

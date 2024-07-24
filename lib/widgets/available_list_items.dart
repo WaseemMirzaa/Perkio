@@ -8,8 +8,8 @@ import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 class AvailableListItems extends StatelessWidget {
-  const AvailableListItems({super.key});
-
+   AvailableListItems({super.key, this.isFeatured = true});
+  bool isFeatured;
   @override
   Widget build(BuildContext context) {
     RxBool tapped = false.obs;
@@ -27,8 +27,7 @@ class AvailableListItems extends StatelessWidget {
                       blurRadius: 6,
                       offset: const Offset(0, 3)
                     )
-                  ]
-                                ),
+                  ]),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -70,20 +69,20 @@ class AvailableListItems extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          SpacerBoxVertical(height: 10),
+                                          const SpacerBoxVertical(height: 10),
                                           Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 14),),
-                                          SpacerBoxVertical(height: 5),
+                                          const SpacerBoxVertical(height: 5),
                                           Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
-                                          SpacerBoxVertical(height: 5),
+                                          const SpacerBoxVertical(height: 5),
                                           Row(
                                             children: [
-                                              Icon(Icons.star_half, color: AppColors.yellowColor, size: 15,),
+                                              const Icon(Icons.star_half, color: AppColors.yellowColor, size: 15,),
                                               Text('4.4', style: poppinsRegular(fontSize: 12, color: AppColors.yellowColor),),
                                               Text('15K', style: poppinsRegular(fontSize: 12, color: AppColors.yellowColor),)
 
                                             ],
                                           ),
-                                          SpacerBoxVertical(height: 5),
+                                          const SpacerBoxVertical(height: 5),
                                           Row(
                                             children: [
                                               Icon(Icons.location_on, color: AppColors.hintText, size: 15.sp,),
@@ -91,7 +90,7 @@ class AvailableListItems extends StatelessWidget {
                                                 child: Row(
                                                   children: [
                                                     Expanded(child: Text('4773 Waldeck Street, US', style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
-                                                    SpacerBoxHorizontal(width: 4),
+                                                    const SpacerBoxHorizontal(width: 4),
                                                     
                                                 
                                                   ],
@@ -108,10 +107,10 @@ class AvailableListItems extends StatelessWidget {
                                       padding: const EdgeInsets.only(right: 8),
                                       child: Column(
                                         children: [
-                                          SpacerBoxVertical(height: 10),
-                                          Container(
-                                                  height: 15,
-                                                  width: 40,
+                                          const SpacerBoxVertical(height: 10),
+
+                                          isFeatured ? Container(
+                                                  padding: EdgeInsets.symmetric(horizontal: 2.w,vertical: 0.5.h),
                                                   decoration: const BoxDecoration(
                                                     gradient: LinearGradient(
                                                       colors: [Colors.red, Colors.orange],
@@ -119,9 +118,9 @@ class AvailableListItems extends StatelessWidget {
                                                       end: Alignment.bottomRight,
                                                     ),
                                                   ),
-                                                  child: Center(child: Text(TempLanguage.txtFeatured, style: poppinsRegular(fontSize: 7, color: AppColors.whiteColor),)),
-                                                ),
-                                                SpacerBoxVertical(height: 10),
+                                                  child: Center(child: Text(TempLanguage.txtFeatured, style: poppinsBold(fontSize: 7, color: AppColors.whiteColor),)),
+                                                ) : const SizedBox.shrink(),
+                                                const SpacerBoxVertical(height: 10),
                                                 Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),)
                                         ],
                                       ),

@@ -18,26 +18,26 @@ class SearchField extends StatelessWidget {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
                     blurRadius: 6,
-                    offset: Offset(0, 3)
+                    offset: const Offset(0, 3)
                   )
                 ]
               ),
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: SizedBox(
                       height: 40,
-                      width: 40,
-                                  
-                                  child: Image.asset(AppAssets.searchImg, scale: 3,),
+                      width: 40, 
+                      child: Image.asset(AppAssets.searchImg, scale: 3,),
                     ),
                   ),
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: TempLanguage.txtSearch,
-                        hintStyle: poppinsRegular(fontSize: 13,color: Color(0xFF858585)),
+                        contentPadding: const EdgeInsets.only(right: 10),
+                        hintStyle: poppinsRegular(fontSize: 13,color: const Color(0xFF858585)),
                         border: InputBorder.none, 
                                     enabledBorder: InputBorder.none, 
                                     focusedBorder: InputBorder.none,

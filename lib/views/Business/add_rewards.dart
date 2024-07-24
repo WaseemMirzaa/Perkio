@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -24,7 +25,7 @@ class _AddRewardsState extends State<AddRewards> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SpacerBoxVertical(height: 30),
+            const SpacerBoxVertical(height: 30),
             Row(
               children: [
                 Container(
@@ -36,7 +37,7 @@ class _AddRewardsState extends State<AddRewards> {
                   ),
                   child: Image.asset(AppAssets.profileImg, scale: 3,),
                 ),
-                SpacerBoxHorizontal(width: 10),
+                const SpacerBoxHorizontal(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,22 +49,24 @@ class _AddRewardsState extends State<AddRewards> {
                 ),
               ],
             ),
-            SpacerBoxVertical(height: 20),
+            const SpacerBoxVertical(height: 20),
             Center(child: Text(TempLanguage.txtAddDetails, style: poppinsMedium(fontSize: 14),)),
-            SpacerBoxVertical(height: 60),
+            const SpacerBoxVertical(height: 60),
             Text(TempLanguage.txtDeal, style: poppinsRegular(fontSize: 13),),
-            SpacerBoxVertical(height: 10),
-            CommonTextField(text: TempLanguage.txtSuperDuper,),
-            SpacerBoxVertical(height: 20),
+            const SpacerBoxVertical(height: 10),
+            const CommonTextField(text: TempLanguage.txtSuperDuper,),
+            const SpacerBoxVertical(height: 20),
             Text(TempLanguage.txtTotalReceiptPrice, style: poppinsRegular(fontSize: 13),),
-            SpacerBoxVertical(height: 10),
-            CommonTextField(text: '\$100',),
-            SpacerBoxVertical(height: 20),
+            const SpacerBoxVertical(height: 10),
+            const CommonTextField(text: '\$100',),
+            const SpacerBoxVertical(height: 20),
             Text(TempLanguage.txtDetails, style: poppinsRegular(fontSize: 13),),
-            SpacerBoxVertical(height: 10),
-            CommonTextField(text: TempLanguage.txtDetails,),
-            SpacerBoxVertical(height: 50),
-            CommonButton(onSwipe: (){}, text: TempLanguage.btnLblSwipeToAdd)
+            const SpacerBoxVertical(height: 10),
+            const CommonTextField(text: TempLanguage.txtDetails,),
+            const SpacerBoxVertical(height: 50),
+            CommonButton(onSwipe: (){
+              Get.back();
+            }, text: TempLanguage.btnLblSwipeToAdd)
           ],
         ),
       ),

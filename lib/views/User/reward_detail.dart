@@ -30,25 +30,25 @@ class _RewardDetailState extends State<RewardDetail> {
             child: Column(
               children: [
                 
-                SpacerBoxVertical(height: 20),
-                DetailTile(),
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 20),
+                const DetailTile(),
+                const SpacerBoxVertical(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(TempLanguage.txtRewardInfo, style: poppinsMedium(fontSize: 15),),
-                      SpacerBoxVertical(height: 10),
+                      const SpacerBoxVertical(height: 10),
                       Text(TempLanguage.txtLoremIpsumShort, style: poppinsRegular(fontSize: 15, color: AppColors.hintText),),
                     ],
                   )
                 ),
-                SpacerBoxVertical(height: 20),
+                const SpacerBoxVertical(height: 20),
                 Text(TempLanguage.txtPoints, style: poppinsBold(fontSize: 15, color: AppColors.secondaryText),),
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 10),
                 Text('800/1000', style: poppinsRegular(fontSize: 15, color: AppColors.secondaryText),),
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: SizedBox(
@@ -65,7 +65,7 @@ class _RewardDetailState extends State<RewardDetail> {
                           BoxShadow(
                             color: Colors.black.withOpacity(0.2),
                             blurRadius: 6,
-                            offset: Offset(0, 3)
+                            offset: const Offset(0, 3)
                           )
                         ]
                           ),
@@ -75,7 +75,7 @@ class _RewardDetailState extends State<RewardDetail> {
                           width: 220,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                             colors: [Colors.red, Colors.orange],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -90,7 +90,7 @@ class _RewardDetailState extends State<RewardDetail> {
                             child: Row(
                               children: [
                                 Text(TempLanguage.txtSpendMore, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                                SpacerBoxHorizontal(width: 20),
+                                const SpacerBoxHorizontal(width: 20),
                                 Text("\$10", style: poppinsMedium(fontSize: 10),),
                               ],
                             ),
@@ -100,7 +100,7 @@ class _RewardDetailState extends State<RewardDetail> {
                     ),
                   ),
                 ),
-                SpacerBoxVertical(height: 40),
+                const SpacerBoxVertical(height: 40),
                 GestureDetector(
                   onTap: (){
                     Get.toNamed(
@@ -118,7 +118,7 @@ class _RewardDetailState extends State<RewardDetail> {
                               color: Colors.black.withOpacity(0.1),
                               blurRadius: 12,
                               spreadRadius: 6,
-                              offset: Offset(5, 0)
+                              offset: const Offset(5, 0)
                             )
                           ]
                     ),
@@ -128,7 +128,7 @@ class _RewardDetailState extends State<RewardDetail> {
                         width: 80,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
-                                gradient: LinearGradient(
+                                gradient: const LinearGradient(
                                 colors: [Colors.red, Colors.orange],
                                 begin: Alignment.bottomLeft,
                                 end: Alignment.topRight,

@@ -28,7 +28,7 @@ class _HomeUserState extends State<HomeUser> {
           children: [
             Stack(
               children: [
-                const CustomShapeContainer(),
+                CustomShapeContainer(),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
@@ -56,7 +56,9 @@ class _HomeUserState extends State<HomeUser> {
                             ],),
                           ),
                           GestureDetector(
-                            
+                            onTap: (){
+                              Get.toNamed(AppRoutes.notifications);
+                            },
                             child: Image.asset(AppAssets.notificationImg, scale: 3,))
                         ],
                       ),
@@ -98,18 +100,18 @@ class _HomeUserState extends State<HomeUser> {
                     padding: const EdgeInsets.only(left: 12),
                     child: Text('Available Deals', style: poppinsMedium(fontSize: 18),),
                   ),
-                      SpacerBoxVertical(height: 10),
+                      const SpacerBoxVertical(height: 10),
                       ListView.builder(
                         shrinkWrap: true,
                         itemCount: 10,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,
                         itemBuilder: (BuildContext context, int index) {
                           return  GestureDetector(
                               onTap: (){
-                                Get.toNamed(AppRoutes.favouritesScreen);
+                                Get.toNamed(AppRoutes.dealDetail);
                               },
-                              child: const AvailableListItems());
+                              child: AvailableListItems(isFeatured: index % 2 == 0 ? true : false,));
                         },
                       )
                     ],

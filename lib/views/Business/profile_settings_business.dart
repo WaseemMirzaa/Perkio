@@ -19,70 +19,47 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      body: Stack(
+      body: Column(
         children: [
-          Image.asset(AppAssets.imageHeader),
-          BackButtonWidget(),
-          Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    SpacerBoxVertical(height: 40),
-                    Row(
-                      children: [
-                        Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: Offset(0, 3)
-                          )
-                        ],
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Icon(Icons.arrow_back),
-                          ),
-                          
-                        
-                        
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                right: 0,
-                top: 205,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 30),
-                  child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                )),
-          Padding(
-            padding: const EdgeInsets.only(top: 200),
-            child: Column(
-              children: [
-                
-                SpacerBoxVertical(height: 20),
-                Expanded(child: ListView(
-                  children: [
-                    ProfileListItems(path: AppAssets.profile1, text: TempLanguage.txtBusinessName),
-                    ProfileListItems(path: AppAssets.profile2, text: TempLanguage.txtDummyPassword),
-                    ProfileListItems(path: AppAssets.profile3, text: TempLanguage.txtDummyEmail),
-                    ProfileListItems(path: AppAssets.profile4, text: 'United State'),
-                    ProfileListItems(path: AppAssets.profile5, text: TempLanguage.txtWebsite),
-                    ProfileListItems(path: AppAssets.profile6, text: TempLanguage.txtDummyBusinessId),
-                  ],
-                ))
-                
-              ],
-            ),
+          Stack(
+            children: [
+
+              Image.asset(AppAssets.imageHeader),
+              BackButtonWidget(),
+            ],
           ),
-        ],
-      ),
+          // GestureDetector(
+          //     onTap: (){
+          //       Navigator.pop(context);
+          //     },
+          //     child: BackButtonWidget()),
+
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
+                  )),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      children: const [
+                        ProfileListItems(path: AppAssets.profile1, text: TempLanguage.txtBusinessName),
+                        ProfileListItems(path: AppAssets.profile2, text: TempLanguage.txtDummyPassword),
+                        ProfileListItems(path: AppAssets.profile3, text: TempLanguage.txtDummyEmail),
+                        ProfileListItems(path: AppAssets.profile4, text: 'United State'),
+                        ProfileListItems(path: AppAssets.profile5, text: TempLanguage.txtWebsite),
+                        ProfileListItems(path: AppAssets.profile6, text: TempLanguage.txtDummyBusinessId),
+                      ],
+                    
+                    
+                    
+                          ),
+                  ),
+      ]
+    )
+
+
     );
   }
 }

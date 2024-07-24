@@ -6,14 +6,14 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
-void showCongratulationDialog() {
+void showCongratulationDialog({Function? onDone}) {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(35),
         ),
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -23,21 +23,23 @@ void showCongratulationDialog() {
                 scale: 3,
               ),
               
-              SpacerBoxVertical(height: 20),
+              const SpacerBoxVertical(height: 20),
               Text(
                 TempLanguage.txtCongratulations,
                 style: poppinsRegular(fontSize: 15, color: AppColors.secondaryText),
                 textAlign: TextAlign.center,
               ),
-              SpacerBoxVertical(height: 30),
+              const SpacerBoxVertical(height: 30),
               GestureDetector(
-                onTap: () => Get.back(),
+                onTap: onDone != null ? () {
+                  onDone();
+                } : ()=>Get.back(),
                 child: Container(
                   height: 55,
                   width: double.infinity,
                     decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50.0),
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                           colors: [Colors.red, Colors.orange],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -47,7 +49,7 @@ void showCongratulationDialog() {
                     child: Center(child: Text(TempLanguage.btnLblDone, style: poppinsMedium(fontSize: 11, color: AppColors.whiteColor),)),
                 ),
               ),
-              SpacerBoxVertical(height: 10),
+              const SpacerBoxVertical(height: 10),
             ],
           ),
         ),

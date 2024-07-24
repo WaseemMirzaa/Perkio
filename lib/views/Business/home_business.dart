@@ -4,6 +4,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/widgets/business_extended_tiles.dart';
 import 'package:skhickens_app/widgets/business_home_list_items.dart';
 import 'package:skhickens_app/widgets/common_button.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
@@ -32,7 +33,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    SpacerBoxVertical(height: 30),
+                    const SpacerBoxVertical(height: 30),
                     Row(
                       children: [
                         Container(
@@ -44,7 +45,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                             ),
                             child: Image.asset(AppAssets.profileImg, scale: 3,),
                           ),
-                          SpacerBoxHorizontal(width: 10),
+                          const SpacerBoxHorizontal(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,13 +57,13 @@ class _HomeBusinessState extends State<HomeBusiness> {
                         ),
                         GestureDetector(
                           onTap: (){
-                           
+                           Get.toNamed(AppRoutes.notifications);
                           },
                           child: Image.asset(AppAssets.notificationImg, scale: 3,))
                       ],
                     ),
-                    SpacerBoxVertical(height: 20),
-                    SearchField(),
+                    const SpacerBoxVertical(height: 20),
+                    const SearchField(),
                   ],
                 ),
               ),
@@ -79,19 +80,18 @@ class _HomeBusinessState extends State<HomeBusiness> {
                   child: Text(TempLanguage.lblMyDeals, style: poppinsMedium(fontSize: 18),),
                 ),
                 
-                Expanded(child: ListView(
-                  
-                  children: [
-                    GestureDetector(
+                Expanded(child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: 10,
+                  itemBuilder: (context, index)=> index % 2 == 0 ?  GestureDetector(
+                      onTap: (){
+                        Get.toNamed(AppRoutes.homeBusinessExtended);
+                      },child:  const BusinessExtendedTiles()) :  GestureDetector(
                       onTap: (){
                         Get.toNamed(AppRoutes.rewardsBusiness);
-                      },
-                      child: BusinessHomeListItems()),
-                    BusinessHomeListItems(),
-                    BusinessHomeListItems(),
-                    BusinessHomeListItems(),
-                    BusinessHomeListItems(),
-                  ],
+                        },child:  const BusinessHomeListItems() ),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                 )),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -99,7 +99,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                     Get.toNamed(AppRoutes.addDeal);
                   }, text: TempLanguage.btnLblSwipeToAddDeal),
                 ),
-                SpacerBoxVertical(height: 20)
+                const SpacerBoxVertical(height: 20)
               ],
             ),
           ),

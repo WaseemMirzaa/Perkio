@@ -1,50 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:sizer/sizer.dart';
+import 'package:skhickens_app/routes/app_routes.dart';
+import 'package:skhickens_app/controllers/favourites_screen_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
-import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/available_list_items.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
+import 'package:skhickens_app/widgets/favourites_widget.dart';
+import 'package:skhickens_app/widgets/rewards_list_items.dart';
 import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
-class LocationChangeScreen extends StatefulWidget {
-  const LocationChangeScreen({super.key});
 
-  @override
-  State<LocationChangeScreen> createState() => _LocationChangeScreenState();
-}
+class RewardsView extends StatelessWidget {
 
-class _LocationChangeScreenState extends State<LocationChangeScreen> {
+  const RewardsView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: Stack(
         children: [
-          GoogleMap(
-            zoomControlsEnabled: false,
-            initialCameraPosition: CameraPosition(
-              target: LatLng(37.42796133580664, -122.085749655962),
-              zoom: 14.4746,
-            ),
-          ),
           Stack(
             children: [
-              CustomShapeContainer(),
+              CustomShapeContainer(height: 15.h,),
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    SpacerBoxVertical(height: 30),
+                    const SpacerBoxVertical(height: 30),
                     Row(
-                      mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
                       children: [
                         Container(
                           height: 35,
@@ -55,9 +45,8 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                           ),
                           child: Image.asset(AppAssets.profileImg, scale: 3,),
                         ),
-                        SpacerBoxHorizontal(width: 10),
+                        const SpacerBoxHorizontal(width: 10),
                         Expanded(
-                          
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -70,37 +59,43 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                             onTap: (){
                               Get.toNamed(AppRoutes.notifications);
                             },
-                            child: Image.asset(AppAssets.notificationImg, scale: 3,)
-                        )
+                            child: Image.asset(AppAssets.notificationImg, scale: 3,))
                       ],
                     ),
-                    SpacerBoxVertical(height: 20),
-                    SearchField(),
                   ],
                 ),
               ),
             ],
           ),
-          Center(child: Image.asset(AppAssets.locationPin, scale: 3,)),
-          Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 1.0), // Padding to ensure the Row is constrained
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CommonButton(onSwipe: (){
-                      Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
-                    }, text: TempLanguage.btnLblSwipeToSelect),
+
+          Padding(
+            padding: EdgeInsets.only(top: 15.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(TempLanguage.txtRewards, style: poppinsMedium(fontSize: 18),),
+                ),
+                Expanded(child:GestureDetector(
+                  onTap: (){
+                    Get.toNamed(AppRoutes.rewardDetail);
+                  },
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    children: const [
+                      RewardsListItems(),
+                      RewardsListItems(),
+                      RewardsListItems(),
+                      RewardsListItems(),
+                      RewardsListItems(),
+                    ],
                   ),
-                  SizedBox(width: 10),
-                  Image.asset(AppAssets.currentLocationPin, scale: 3,)
-                ],
-              ),
+                ), )
+
+              ],
             ),
-          )
+          ),
         ],
       ),
     );

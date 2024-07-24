@@ -1,54 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/widgets/customize_slide_btn_comp.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
-class LoginButtonWidget extends StatelessWidget {
+class ButtonWidget extends StatelessWidget {
 
   final VoidCallback onSwipe;
   final String text;
-  const LoginButtonWidget({required this.onSwipe, required this.text});
-
+   ButtonWidget({super.key, required this.onSwipe, required this.text});
+  final GlobalKey<SlideActionState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    return Container(
-                  height: 55,
-                  decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50.0),
-                          color: Colors.grey[200],
-                  ),
-                  child: GestureDetector(
-                          onHorizontalDragEnd: (details) {
-                            onSwipe();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                            child: Row(
-                children: [
-                  Container(
-                    height: 35,
-                    width: 35,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [Colors.red, Colors.orange],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    child: Image.asset(AppAssets.swipeImg,scale: 3,)
-                  ),
-                  Expanded(
-                    child: Text(
-                      text,
-                      style: poppinsMedium(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container( width: 35,)
-                ],
-                            ),
-                          ),
-                  ),
-                );
+    return CustomSlideActionButton(
+      key: _key,
+      height: 7.h,
+      onSubmit: () {
+        Future.delayed(
+          const Duration(seconds: 1),
+              () => _key.currentState?.reset(),
+        );
+        onSwipe();
+      },
+      text: text,
+      sliderButtonIcon: Container(
+          height: 35,
+          width: 35,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [Colors.red, Colors.orange],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Image.asset(AppAssets.swipeImg,scale: 3,)
+      ),
+      sliderButtonIconPadding: 0,
+      textStyle: poppinsBold(fontSize: 14),
+      outerColor:  Colors.grey[200],
+      innerColor: Colors.black,
+    );
   }
 }

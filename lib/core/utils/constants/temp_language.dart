@@ -11,8 +11,10 @@ class TempLanguage{
   static const String lblSwipe = 'Swipe';
   static const String lblUser = "I'M A USER";
   static const String lblBusiness = "I'M A BUSINESS";
-  static const String lblMyDeals = 'My Deals';
+  static const String lblMyDeals = 'MY DEALS';
   static const String lblAllDeals = 'ALL DEALS';
+  static const String lblPromotedDeal = 'PROMOTED DEAL';
+
   static const String lblMyRewards = 'MY REWARDS';
   static const String lblOffers = 'OFFERS';
   static const String lblEmailId = 'Email ID';
@@ -20,9 +22,11 @@ class TempLanguage{
   static const String txtPointsToRedeemPoints = 'Collect points to\nredeem special rewards';
   static const String txtHowToUse = 'HOW TO USE?';
   static const String txtBusinessName = 'Business Name';
+  static const String txtUserName = 'User Name';
   static const String txtLocation = 'Location';
   static const String txtAddDetails = 'Add Details';
   static const String txtDeal = 'Deal';
+  static const String txtRewardName = 'Reward Name';
   static const String txtSuperDuper = 'Super Duper';
   static const String txtDealPrice = 'Deal Price';
   static const String txtUses = 'Uses';
@@ -43,6 +47,7 @@ class TempLanguage{
   static const String txtSubscriptionPlan = 'Subscription Plans';
   static const String txtChooseAPlan = 'Choose a Plan';
   static const String txtMonthly = 'Monthly';
+  static const String txtRewards = 'Rewards';
   static const String txtPerfectForStarters = 'Perfect For Starters';
   static const String txtYearly = 'Yearly';
   static const String txtSave24 = 'Save 24%';
@@ -75,9 +80,11 @@ class TempLanguage{
   static const String txtBuyOneGetOne = 'Buy 1 Yogurt, Get 1 Free!';
   static const String txtMil = '280 Mil';
   static const String txtFeatured = 'Featured';
+  static const String txtNotifications = 'Notifications';
   static const String txtRestaurantName = 'Restaurant Name';
   static const String txtUses3 = "Uses 3";
   static const String txtViewRating = 'VIEW Rating';
+  static const String txtViewDeals = 'VIEW DEALS';
   static const String txtRating = '4.4 (8.1k)';
   static const String txtDummyPhone = '1234 567 890';
   static const String txtDummyWebsite = 'www.abc123.com';

@@ -21,17 +21,34 @@ class CategoryListItems extends StatelessWidget {
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              height: 90,
-                              child: Image.asset(path ,scale: 3,)),
-                              Text(text, style: poppinsRegular(fontSize: 13),),
-                            Obx((){
-                              return RoundCheckBox(
-                              isChecked: tapped.value,
-                              size: 22,
-                              checkedWidget: Icon(Icons.check_rounded,size: 18,color: AppColors.whiteColor,),
-                              onTap: (tapped){});
+          children: [
+            SizedBox(
+                height: 90,
+                child: Image.asset(path ,scale: 3,)),
+            Text(text, style: poppinsRegular(fontSize: 13),),
+            Obx((){
+              return Container(
+                margin: const EdgeInsets.all(3),
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: tapped.value ?  Colors.green :  AppColors.whiteColor,
+                  border: Border.all(color: tapped.value ?  Colors.green : AppColors.hintText.withOpacity(0.2)),
+                  boxShadow: [
+                    BoxShadow(color: AppColors.blackColor.withOpacity(0.1),offset: const Offset(0,3),blurRadius: 3),
+                  ]
+                ),
+                child: RoundCheckBox(
+                    isChecked: tapped.value,
+                    size: 22,
+                    disabledColor: AppColors.whiteColor,
+                    uncheckedColor: AppColors.whiteColor,
+                    borderColor: tapped.value ? Colors.green : AppColors.whiteColor,
+                    checkedWidget: const Icon(Icons.check_rounded,size: 20,color: AppColors.whiteColor,),
+                    onTap: (isCheck){
+                      tapped.value = isCheck!;
+                    }),
+              );
                             })
                           ],
                         ),

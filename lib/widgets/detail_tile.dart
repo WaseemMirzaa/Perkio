@@ -34,7 +34,7 @@ class DetailTile extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -43,43 +43,43 @@ class DetailTile extends StatelessWidget {
                       onTap: (){
                         Get.toNamed(AppRoutes.businessDetail);
                       },
-                      child: Text(TempLanguage.txtViewRating, style: poppinsMedium(fontSize: 7.sp, color: AppColors.yellowColor),)),
+                      child: Text(TempLanguage.txtViewDeals, style: poppinsMedium(fontSize: 7.sp, color: AppColors.yellowColor),)),
                 ],
               ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               Row(
 
                 children: [
-                  Icon(Icons.star_half, color: AppColors.yellowColor, size: 10,),
-                  SpacerBoxHorizontal(width: 4),
+                  const Icon(Icons.star_half, color: AppColors.yellowColor, size: 10,),
+                  const SpacerBoxHorizontal(width: 4),
                   Text(TempLanguage.txtRating, style: poppinsRegular(fontSize: 10, color: AppColors.yellowColor),),
                 ],
               ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               Row(
                 children: [
-                  Icon(Icons.phone, color: AppColors.hintText, size: 10,),
-                  SpacerBoxHorizontal(width: 4),
+                  const Icon(Icons.phone, color: AppColors.hintText, size: 10,),
+                  const SpacerBoxHorizontal(width: 4),
                   Text(TempLanguage.txtDummyPhone, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
                 ],
               ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               Row(
                 children: [
                   Image.asset(AppAssets.globeImg, scale: 3,),
-                  SpacerBoxHorizontal(width: 4),
+                  const SpacerBoxHorizontal(width: 4),
                   Text(TempLanguage.txtDummyWebsite, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
                 ],
               ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               Row(
                 children: [
-                  Icon(Icons.location_on, color: AppColors.hintText, size: 10,),
-                  SpacerBoxHorizontal(width: 4),
+                  const Icon(Icons.location_on, color: AppColors.hintText, size: 10,),
+                  const SpacerBoxHorizontal(width: 4),
                   Text(TempLanguage.txtDummyAddress, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
                 ],
               ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -13,7 +14,7 @@ class BusinessRewardsTiles extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10,left: 12,right: 12),
       child: Container(
-                          height: 70,
+                          height: 125,
                                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(width: 1, color: AppColors.borderColor),
@@ -30,31 +31,40 @@ class BusinessRewardsTiles extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       SpacerBoxHorizontal(width: 10),
+                                     
                                       
-                                      Image.asset(AppAssets.restaurantImg1),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Image.asset(AppAssets.restaurantImg1, scale: 2,),
+                                      ),
                                       SpacerBoxHorizontal(width: 10),
                                       Expanded(
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(TempLanguage.txtBuyOneGetOne, style: poppinsMedium(fontSize: 12),),
+                                            SpacerBoxVertical(height: 10),
+                                            Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 14),),
+                                            SpacerBoxVertical(height: 5),
+                                            Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
                                             SpacerBoxVertical(height: 5),
                                             Row(
-              
-                                              children: [
-                                                Text(TempLanguage.txtBusinessName, style: poppinsRegular(fontSize: 10, color: AppColors.yellowColor),),
-                                                SpacerBoxHorizontal(width: 20),
-                                                Row(
-                                                  
+                                            children: [
+                                              Icon(Icons.location_on, color: AppColors.hintText, size: 12.sp,),
+                                              Expanded(
+                                                child: Row(
                                                   children: [
-                                                    Icon(Icons.location_on, color: AppColors.yellowColor, size: 10,),
-                                                    Text(TempLanguage.txtMil, style: poppinsRegular(fontSize: 10, color: AppColors.yellowColor),),
+                                                    Expanded(child: Text('280 Mil', style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
+                                                    SpacerBoxHorizontal(width: 4),
+                                                    
+                                                
                                                   ],
-                                                )
-                                              ],
-                                            ),
-                                            SpacerBoxVertical(height: 5),
+                                                ),
+                                              )
+
+                                            ],
+                                          ),
+                                            SpacerBoxVertical(height: 10),
                                             Stack(
                                               alignment: Alignment.bottomLeft,
                                               children: [
@@ -75,7 +85,7 @@ class BusinessRewardsTiles extends StatelessWidget {
                                                 ),
                                                 Container(
                                                   height: 6,
-                                                  width: 102,
+                                                  width: 50,
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(100),
                                                     gradient: LinearGradient(
@@ -85,7 +95,6 @@ class BusinessRewardsTiles extends StatelessWidget {
                                                   ),
                                                   ),
                                                 ),
-                                                
                                               ],
                                             ),
                                           ],
@@ -94,19 +103,22 @@ class BusinessRewardsTiles extends StatelessWidget {
                                       Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.end,
                                               children: [
-                                                Image.asset(AppAssets.editImg, scale: 3,),
+                                                Image.asset(AppAssets.editImg, scale: 2.5,),
                                                 SpacerBoxHorizontal(width: 10),
-                                                Image.asset(AppAssets.deleteImg, scale: 3,),
+                                                Image.asset(AppAssets.deleteImg, scale: 2.5,),
                                               ],
                                             ),
+                                            
                                             
                                           ],
                                         ),
                                       )
+                                      
                                     ],
                                   ),
                                   

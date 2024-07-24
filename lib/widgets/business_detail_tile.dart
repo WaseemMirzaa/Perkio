@@ -14,9 +14,9 @@ class BusinessDetailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10,left: 12,right: 12),
+      padding: const EdgeInsets.only(bottom: 10,left: 20,right: 20),
       child: Container(
-                          height: 120,
+                          height: 125,
                                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     // border: Border.all(width: 1, color: AppColors.borderColor),
@@ -82,6 +82,14 @@ class BusinessDetailTile extends StatelessWidget {
                                           
                                           
                                           SpacerBoxVertical(height: 5),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 1,
+                  color: AppColors.blackColor,
+                ),
+              )
                                       ],
                                     ),
                                   ),

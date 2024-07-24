@@ -45,20 +45,23 @@ class _SplashScreenState extends State<SplashScreen> {
                     
                 Text(TempLanguage.txtHowToUse, style: GoogleFonts.poppins(color: AppColors.whiteColor, fontSize: 18,),),
                 SizedBox(height: 10,),
-                Container(
-                  height: 35.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                     borderRadius: BorderRadius.all(Radius.circular(35)),
-                     boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                    blurRadius: 6,
-                    offset: Offset(0, 3)// changes position of shadow
-                ),
-              ],),
-                     child: Image.asset(AppAssets.pauseImg, scale: 3,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Container(
+                    height: 35.h,
+                    
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                       borderRadius: BorderRadius.all(Radius.circular(14)),
+                       boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: Offset(0, 3)// changes position of shadow
+                  ),
+                                ],),
+                       child: Image.asset(AppAssets.pauseImg, scale: 3,),
+                  ),
                 ),
                 SizedBox(height: 30,),
                 LoginButtonWidget(onSwipe: (){

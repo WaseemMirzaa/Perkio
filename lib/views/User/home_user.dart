@@ -51,7 +51,7 @@ class _HomeUserState extends State<HomeUser> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                               
-                              Text('Skhicken', style: poppinsRegular(fontSize: 14),),
+                              Text(TempLanguage.txtSkhickens, style: poppinsRegular(fontSize: 14),),
                               Text(TempLanguage.txtLocation, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
                             ],),
                           ),

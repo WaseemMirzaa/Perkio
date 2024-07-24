@@ -42,13 +42,13 @@ class _SelectionScreenState extends State<SelectionScreen> {
                     onTap: (){
                       Get.toNamed(AppRoutes.loginUser);
                     },
-                    child: SelectionTile(imgPath: 'assets/images/user_sel.png', text: 'USER')),
+                    child: SelectionTile(imgPath: AppAssets.userSel, text: TempLanguage.lblUser)),
                 SizedBox(width: 20,),
                 GestureDetector(
                   onTap: (){
                     Get.toNamed(AppRoutes.loginBusiness);
                   },
-                  child: SelectionTile(imgPath: 'assets/images/business_sel.png', text: 'BUSINESS')),
+                  child: SelectionTile(imgPath: AppAssets.businessSel, text: TempLanguage.lblBusiness)),
                 
                 ],),
               )

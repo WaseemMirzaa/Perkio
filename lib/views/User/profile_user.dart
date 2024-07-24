@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -16,6 +17,7 @@ class ProfileUser extends StatefulWidget {
 }
 
 class _ProfileUserState extends State<ProfileUser> {
+  var controller = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +54,7 @@ class _ProfileUserState extends State<ProfileUser> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                             
-                            Text('Skhicken', style: poppinsRegular(fontSize: 14),),
+                            Text(TempLanguage.txtSkhickens, style: poppinsRegular(fontSize: 14),),
                             Text(TempLanguage.txtViewProfile, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
                           ],),
                         ),
@@ -80,6 +82,11 @@ class _ProfileUserState extends State<ProfileUser> {
                     ProfileListItems(path: AppAssets.privacyImg, text: TempLanguage.txtTermsConditions),
                     ProfileListItems(path: AppAssets.insuranceImg, text: TempLanguage.txtPrivacy),
                     ProfileListItems(path: AppAssets.helpImg, text: TempLanguage.txtHelp),
+                    GestureDetector(
+                      onTap: (){
+                        controller.logout();
+                      },
+                      child: ProfileListItems(path: AppAssets.helpImg, text: 'Logout')),
                   ],
                 ))
                 

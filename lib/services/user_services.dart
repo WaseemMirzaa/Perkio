@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/auth_services.dart';
 
@@ -52,5 +53,17 @@ class UserServices {
     } else {
       return null; // User not found
     }
+  }
+
+  //............ Get ID from Pref
+  Future<String?> getCurrentUserIdFromPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userId');
+  }
+
+  //............ Get Role from Pref
+  Future<bool?> getIsUserFromPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isUser');
   }
 }

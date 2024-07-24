@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/auth_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
+import 'package:skhickens_app/views/auth/splash_screen.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/activation_dialog.dart';
 
@@ -63,40 +64,32 @@ class UserController extends GetxController {
     loading.value = true;
     String? result = await authServices.signIn(email, password);
     if (result == null) {
-      // Sign-in successful, navigate to the next screen
-      // You can add your navigation logic here
-      loading.value = false;
-      clearTextFields();
-      Get.to(() => BottomBarView(isUser: true));
+      bool? isUser = await userServices.getIsUserFromPreferences();
+      if (isUser != null) {
+        loading.value = false;
+        clearTextFields();
+        Get.off(() => BottomBarView(isUser: isUser));
+      } else {
+        loading.value = false;
+        Get.snackbar('Error', 'Failed to fetch user data.', snackPosition: SnackPosition.TOP);
+      }
     } else {
       loading.value = false;
-      // Sign-in failed, show error message to the user
       Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
     }
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP USER
-  Future<void> signUpUser(
-    String email,
-    String password,
-    username,
-    phone,
-  ) async {
+  Future<void> signUpUser(String email, String password, String username, String phone) async {
     loading.value = true;
-    String? result =
-        await authServices.signUp(email, password, username, phone);
+    String? result = await authServices.signUp(email, password, username, phone);
     if (result == null) {
-      // Sign-in successful, navigate to the next screen
-      // You can add your navigation logic here
       await addUserData(username, email, phone, true);
       loading.value = false;
       clearTextFields();
-      Get.to(() {
-        BottomBarView(isUser: true);
-      });
+      Get.off(() => BottomBarView(isUser: true));
     } else {
       loading.value = false;
-      // Sign-in failed, show error message to the user
       Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
     }
   }
@@ -106,21 +99,14 @@ class UserController extends GetxController {
     loading.value = true;
     String? result = await authServices.signIn(email, password);
     if (result == null) {
-      
-      // Sign-in successful, navigate to the next screen
-      // You can add your navigation logic here
       UserModel userModel = await getUser();
       if (userModel.userId != '') {
-        
         bool isUser = userModel.isUser ?? false;
-        
         if (!isUser) {
-          // isUser is false, proceed to the next screen
           loading.value = false;
           clearTextFields();
-          Get.to(() => BottomBarView(isUser: false));
+          Get.off(() => BottomBarView(isUser: false));
         } else {
-          // User document is not a business
           loading.value = false;
           Get.snackbar('Error', 'You are not authorized as a business.', snackPosition: SnackPosition.TOP);
         }
@@ -130,40 +116,35 @@ class UserController extends GetxController {
       }
     } else {
       loading.value = false;
-      // Sign-in failed, show error message to the user
       Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
     }
   }
 
+
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP BUSINESS
-  Future<void> signUpBusiness(
-    String email,
-    String password,
-    username,
-    phone,
-  ) async {
+  Future<void> signUpBusiness(String email, String password, String username, String phone) async {
     loading.value = true;
-    String? result =
-        await authServices.signUp(email, password, username, phone);
+    String? result = await authServices.signUp(email, password, username, phone);
     if (result == null) {
-      // Sign-in successful, navigate to the next screen
-      // You can add your navigation logic here
       await addUserData(username, email, phone, false);
       loading.value = false;
-
       clearTextFields();
       showActivationDialog();
     } else {
       loading.value = false;
-      // Sign-in failed, show error message to the user
       Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
     }
   }
 
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ LOGOUT
+  Future<void> logout() async {
+    authServices.logOut();
+    Get.off(SplashScreen());
+  }
+
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD TO FIREBASE
-  Future<void> addUserData(String name, email, phone, bool isUser) async {
-    userServices.addUserData(
-        fullName: name, email: email, phone: phone, isUser: isUser);
+  Future<void> addUserData(String name, String email, String phone, bool isUser) async {
+    userServices.addUserData(fullName: name, email: email, phone: phone, isUser: isUser);
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET USER

@@ -5,4 +5,6 @@ class UserKey {
   static const String PASSWORD = "password";
   static const String PHONENO = "phoneNo";
   static const String IMAGE = "Image";
+  static const String ISUSER = "isUser";
+  static const String ADDRESS = "address";
 }

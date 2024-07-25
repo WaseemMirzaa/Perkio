@@ -1,82 +1,257 @@
-library flutterslidetoact;
+import 'package:flutter/material.dart';
+import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:skhickens_app/widgets/login_button_widget.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [AppColors.gradientStartColor,AppColors.gradientEndColor],begin: Alignment.topCenter, end: Alignment.bottomCenter)
+          ),
 
-/// Slider call to action component
-class CustomSlideActionButton extends StatefulWidget {
-  /// The size of the sliding icon
+        child: Center(
+          child: ListView(
+            children: <Widget>[
+              Builder(
+                builder: (context) {
+                  return Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: ButtonWidget(onSwipe: () {  },text: 'TEST',),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ButtonWidget(onSwipe: () {  },text: 'TEST',check: false,),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      innerColor: Colors.black,
+                      outerColor: Colors.white,
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      alignment: Alignment.centerRight,
+                      child: const Text(
+                        'Unlock',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      sliderButtonIcon: const Icon(Icons.lock),
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      height: 100,
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomSlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      sliderButtonIconSize: 48,
+                      sliderButtonYOffset: -20,
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomSlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      elevation: 24,
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomSlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      borderRadius: 16,
+                      animationDuration: const Duration(seconds: 1),
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomSlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      reversed: true,
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomSlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                      submittedIcon: const Icon(
+                        Icons.done_all,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final GlobalKey<CustomSlideActionState> _key = GlobalKey();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomSlideAction(
+                      key: _key,
+                      onSubmit: () {
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                              () => _key.currentState!.reset(),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CustomSlideAction(
+                      sliderRotate: false,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class CustomSlideAction extends StatefulWidget {
   final double sliderButtonIconSize;
-
-  /// Tha padding of the sliding icon
   final double sliderButtonIconPadding;
-
-  /// The offset on the y axis of the slider icon
   final double sliderButtonYOffset;
-
-  /// If the slider icon rotates
   final bool sliderRotate;
-
-  // Wether the user can interact with the slider
   final bool enabled;
-
-  /// The child that is rendered instead of the default Text widget
   final Widget? child;
-
-  /// The height of the component
   final double height;
-
-  /// The color of the text.
-  /// If not set, this attribute defaults to primaryIconTheme.
   final Color? textColor;
-
-  /// The color of the inner circular button and the tick icon.
-  /// If not set, this attribute defaults to primaryIconTheme.
   final Color? innerColor;
-
-  /// The color of the external area and of the arrow icon.
-  /// If not set, this attribute defaults to the secondary color of your theme's colorScheme.
   final Color? outerColor;
-
-  /// The text showed in the default Text widget
   final String? text;
-
-  /// Text style which is applied on the Text widget.
-  ///
-  /// By default, the text is colored using [textColor].
   final TextStyle? textStyle;
-
-  /// The borderRadius of the sliding icon and of the background
   final double borderRadius;
-
-  /// Callback called on submit
-  /// If this is null the component will not animate to complete
   final Future? Function()? onSubmit;
-
-  /// Elevation of the component
   final double elevation;
-
-  /// The widget to render instead of the default icon
   final Widget? sliderButtonIcon;
-
-  /// The widget to render instead of the default submitted icon
   final Widget? submittedIcon;
-
-  /// The duration of the animations
   final Duration animationDuration;
-
-  /// If true the widget will be reversed
   final bool reversed;
-
-  /// the alignment of the widget once it's submitted
   final Alignment alignment;
 
-  /// Gradient
-  final Gradient? gradient;
-
-  /// Create a new instance of the widget
-  const CustomSlideActionButton({
+  const CustomSlideAction({
     Key? key,
     this.sliderButtonIconSize = 24,
     this.sliderButtonIconPadding = 16,
@@ -98,15 +273,13 @@ class CustomSlideActionButton extends StatefulWidget {
     this.text,
     this.textStyle,
     this.sliderButtonIcon,
-    this.gradient,
   }) : super(key: key);
+
   @override
-  CustomSlideActionButtonState createState() => CustomSlideActionButtonState();
+  CustomSlideActionState createState() => CustomSlideActionState();
 }
 
-/// Use a GlobalKey to access the state. This is the only way to call [CustomSlideActionButtonState.reset]
-class CustomSlideActionButtonState extends State<CustomSlideActionButton>
-    with TickerProviderStateMixin {
+class CustomSlideActionState extends State<CustomSlideAction> with TickerProviderStateMixin {
   final GlobalKey _containerKey = GlobalKey();
   final GlobalKey _sliderKey = GlobalKey();
   double _dx = 0;
@@ -136,16 +309,10 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
           constraints: _containerWidth != null
               ? null
               : BoxConstraints.expand(height: widget.height),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                  widget.borderRadius),
-              color: widget.gradient == null ? widget.outerColor??
-                  Theme.of(context)
-                      .primaryIconTheme
-                      .color : null,
-              gradient: widget.gradient
-            ),
+          child: Material(
+            elevation: widget.elevation,
+            color: widget.outerColor ?? Theme.of(context).colorScheme.secondary,
+            borderRadius: BorderRadius.circular(widget.borderRadius),
             child: submitted
                 ? Transform(
               alignment: Alignment.center,
@@ -167,8 +334,8 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
                             _checkAnimationDx * (pi / 2)),
                         alignment: Alignment.centerRight,
                         child: Container(
-                          color: widget.gradient == null ? widget.outerColor ??
-                              Theme.of(context).colorScheme.secondary : null,
+                          color: widget.outerColor ??
+                              Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                     ),
@@ -221,37 +388,27 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
                               _cancelAnimation();
                             } else {
                               await _resizeAnimation();
-
                               await _shrinkAnimation();
-
                               await _checkAnimation();
-
                               await widget.onSubmit?.call();
-
                               await reset();
                             }
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    widget.borderRadius),
-                                color: widget.gradient == null ? widget.innerColor ??
-                                    Theme.of(context)
-                                        .primaryIconTheme
-                                        .color : null,
-                                gradient: widget.gradient
-                              ),
-
+                            child: Material(
+                              borderRadius: BorderRadius.circular(
+                                  widget.borderRadius),
+                              color: widget.innerColor ??
+                                  Theme.of(context)
+                                      .primaryIconTheme
+                                      .color,
                               child: Container(
                                 padding: EdgeInsets.all(
                                     widget.sliderButtonIconPadding),
                                 child: Transform.rotate(
-                                  angle: widget.sliderRotate
-                                      ? -pi * _progress
-                                      : 0,
+                                  angle: -2 * pi * _progress, // Full circular rotation
                                   child: Center(
                                     child: widget.sliderButtonIcon ??
                                         Icon(
@@ -286,16 +443,11 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
     });
   }
 
-  /// Call this method to revert the animations
   Future reset() async {
     await _checkAnimationController.reverse();
-
     submitted = false;
-
     await _shrinkAnimationController.reverse();
-
     await _resizeAnimationController.reverse();
-
     await _cancelAnimation();
   }
 
@@ -409,14 +561,14 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
       duration: widget.animationDuration,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       final RenderBox containerBox =
-      _containerKey.currentContext?.findRenderObject() as RenderBox;
+      _containerKey.currentContext!.findRenderObject() as RenderBox;
       _containerWidth = containerBox.size.width;
       _initialContainerWidth = _containerWidth;
 
       final RenderBox sliderBox =
-      _sliderKey.currentContext?.findRenderObject() as RenderBox;
+      _sliderKey.currentContext!.findRenderObject() as RenderBox;
       final sliderWidth = sliderBox.size.width;
 
       _maxDx = _containerWidth! -

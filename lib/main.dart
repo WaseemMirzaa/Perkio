@@ -31,10 +31,9 @@ class MyApp extends StatelessWidget {
             }
           },
           child: GetMaterialApp(
-            showSemanticsDebugger: false,
+            debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: ThemeData(
-
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),

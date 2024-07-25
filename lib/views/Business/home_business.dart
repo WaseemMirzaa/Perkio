@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -11,6 +12,8 @@ import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+
+import '../../widgets/custom_appBar/custom_appBar.dart';
 
 class HomeBusiness extends StatefulWidget {
   const HomeBusiness({super.key});
@@ -24,54 +27,12 @@ class _HomeBusinessState extends State<HomeBusiness> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      body: Stack(
-        children: [
-          Stack(
-            children: [
-              CustomShapeContainer(),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    const SpacerBoxVertical(height: 30),
-                    Row(
-                      children: [
-                        Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: AppColors.whiteColor),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Image.asset(AppAssets.profileImg, scale: 3,),
-                          ),
-                          const SpacerBoxHorizontal(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                            
-                            Text(TempLanguage.txtBusinessName, style: poppinsRegular(fontSize: 14),),
-                            Text(TempLanguage.txtLocation, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                          ],),
-                        ),
-                        GestureDetector(
-                          onTap: (){
-                           Get.toNamed(AppRoutes.notifications);
-                          },
-                          child: Image.asset(AppAssets.notificationImg, scale: 3,))
-                      ],
-                    ),
-                    const SpacerBoxVertical(height: 20),
-                    const SearchField(),
-                  ],
-                ),
-              ),
-            ],
-          ),
+      appBar: PreferredSize(preferredSize: Size.fromHeight(22.h),child: customAppBar(isSearchField: true),),
 
-          Padding(
-            padding: const EdgeInsets.only(top: 200,),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -79,10 +40,11 @@ class _HomeBusinessState extends State<HomeBusiness> {
                   padding: const EdgeInsets.only(left: 12),
                   child: Text(TempLanguage.lblMyDeals, style: poppinsMedium(fontSize: 18),),
                 ),
-                
-                Expanded(child: ListView.builder(
+            
+                ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
+                  physics: NeverScrollableScrollPhysics(),
                   itemCount: 10,
                   itemBuilder: (context, index)=> index % 2 == 0 ?  GestureDetector(
                       onTap: (){
@@ -92,14 +54,19 @@ class _HomeBusinessState extends State<HomeBusiness> {
                         Get.toNamed(AppRoutes.rewardsBusiness);
                         },child:  const BusinessHomeListItems() ),
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                )),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: CommonButton(onSwipe: (){
-                    Get.toNamed(AppRoutes.addDeal);
-                  }, text: TempLanguage.btnLblSwipeToAddDeal),
                 ),
-                const SpacerBoxVertical(height: 20)
+                SpacerBoxVertical(height: 7.h),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CommonButton(onSwipe: (){
+                  Get.toNamed(AppRoutes.addDeal);
+                }, text: TempLanguage.btnLblSwipeToAddDeal),
               ],
             ),
           ),

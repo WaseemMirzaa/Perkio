@@ -15,7 +15,8 @@ import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 class LocationChangeScreen extends StatefulWidget {
-  const LocationChangeScreen({super.key});
+  LocationChangeScreen({super.key, this.isChangeLocation = false});
+  bool isChangeLocation;
 
   @override
   State<LocationChangeScreen> createState() => _LocationChangeScreenState();
@@ -28,7 +29,7 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
       backgroundColor: AppColors.whiteColor,
       body: Stack(
         children: [
-          GoogleMap(
+          const GoogleMap(
             zoomControlsEnabled: false,
             initialCameraPosition: CameraPosition(
               target: LatLng(37.42796133580664, -122.085749655962),
@@ -42,7 +43,7 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    SpacerBoxVertical(height: 30),
+                    const SpacerBoxVertical(height: 30),
                     Row(
                       mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
                       children: [
@@ -55,7 +56,7 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                           ),
                           child: Image.asset(AppAssets.profileImg, scale: 3,),
                         ),
-                        SpacerBoxHorizontal(width: 10),
+                        const SpacerBoxHorizontal(width: 10),
                         Expanded(
                           
                           child: Column(
@@ -74,8 +75,8 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                         )
                       ],
                     ),
-                    SpacerBoxVertical(height: 20),
-                    SearchField(),
+                    const SpacerBoxVertical(height: 20),
+                    const SearchField(),
                   ],
                 ),
               ),
@@ -87,15 +88,16 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
             left: 20,
             right: 20,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 1.0), // Padding to ensure the Row is constrained
+              padding: const EdgeInsets.symmetric(horizontal: 1.0), // Padding to ensure the Row is constrained
               child: Row(
                 children: [
                   Expanded(
                     child: CommonButton(onSwipe: (){
-                      Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
+                      widget.isChangeLocation ? Get.back() :
+                       Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
                     }, text: TempLanguage.btnLblSwipeToSelect),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Image.asset(AppAssets.currentLocationPin, scale: 3,)
                 ],
               ),

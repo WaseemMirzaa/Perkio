@@ -28,47 +28,43 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                flex: 2,
-                child: Center(child: Column( mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(TempLanguage.lblSwipe, style: altoysFont(fontSize: 45, color: AppColors.whiteColor), textAlign: TextAlign.center,),
-                    Text(TempLanguage.txtPointsToRedeemPoints, style: poppinsRegular(color: AppColors.whiteColor, fontSize: 16,), textAlign: TextAlign.center,),
-                  ],
-                )),),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    
-                Text(TempLanguage.txtHowToUse, style: GoogleFonts.poppins(color: AppColors.whiteColor, fontSize: 18,),),
-                SizedBox(height: 10,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: Container(
-                    height: 35.h,
-                    
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                       borderRadius: BorderRadius.all(Radius.circular(14)),
-                       boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: Offset(0, 3)// changes position of shadow
-                  ),
-                                ],),
-                       child: Image.asset(AppAssets.pauseImg, scale: 3,),
-                  ),
+              const SizedBox.shrink(),
+              Center(child: Column( mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(TempLanguage.lblSwipe, style: altoysFont(fontSize: 45, color: AppColors.whiteColor), textAlign: TextAlign.center,),
+                  Text(TempLanguage.txtPointsToRedeemPoints, style: poppinsRegular(color: AppColors.whiteColor, fontSize: 16,), textAlign: TextAlign.center,),
+                ],
+              )),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+              Text(TempLanguage.txtHowToUse, style: GoogleFonts.poppins(color: AppColors.whiteColor, fontSize: 18,),),
+              const SizedBox(height: 10,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
+                child: Container(
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                     borderRadius: const BorderRadius.all(Radius.circular(14)),
+                     boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3)// changes position of shadow
                 ),
-                SizedBox(height: 30,),
-                ButtonWidget(onSwipe: (){
-                  Get.toNamed(AppRoutes.selection);
-                }, text: TempLanguage.btnLblSwipeToStart),
-                ],),
-              )
+                              ],),
+                     child: Image.asset(AppAssets.pauseImg, scale: 3,),
+                ),
+              ),
+              const SizedBox(height: 30,),
+              ButtonWidget(onSwipe: (){
+                Get.toNamed(AppRoutes.selection);
+              }, text: TempLanguage.btnLblSwipeToStart),
+              ],)
             ],
           ),
         ),

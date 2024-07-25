@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -7,9 +8,9 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/business_rewards_tiles.dart';
 import 'package:skhickens_app/widgets/common_button.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/widgets/custom_container.dart';
-import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+
+import '../../widgets/custom_appBar/custom_appBar.dart';
 
 class RewardsBusiness extends StatefulWidget {
   const RewardsBusiness({super.key});
@@ -23,84 +24,48 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
+      appBar: PreferredSize(preferredSize: Size.fromHeight(22.h),child: customAppBar(isSearchField: true),),
       body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          Stack(
-            children: [
-              CustomShapeContainer(),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    const SpacerBoxVertical(height: 30),
-                    Row(
-                      children: [
-                        Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: AppColors.whiteColor),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Image.asset(AppAssets.profileImg, scale: 3,),
-                          ),
-                          const SpacerBoxHorizontal(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                            
-                            Text(TempLanguage.txtBusinessName, style: poppinsRegular(fontSize: 14),),
-                            Text(TempLanguage.txtLocation, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                          ],),
-                        ),
-                        GestureDetector(
-                            onTap: (){
-                              Get.toNamed(AppRoutes.notifications);
-                            },
-                            child:Image.asset(AppAssets.notificationImg, scale: 3,))
-                      ],
-                    ),
-                    const SpacerBoxVertical(height: 20),
-                    const SearchField(),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(top: 200,),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          SingleChildScrollView(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 12),
                   child: Text(TempLanguage.lblMyRewards, style: poppinsMedium(fontSize: 18),),
                 ),
-                
-                Expanded(child: ListView(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  children: const [
-                    BusinessRewardsTiles(),
-                    BusinessRewardsTiles(),
-                    BusinessRewardsTiles(),
-                    BusinessRewardsTiles(),
-                    BusinessRewardsTiles(),
-                  ],
-                )),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: CommonButton(onSwipe: (){
+                SpacerBoxVertical(height: 1.h),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: 5,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) => const BusinessRewardsTiles(),
+
+                ),
+                SpacerBoxVertical(height: 8.h),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CommonButton(onSwipe: (){
                     Get.toNamed(AppRoutes.addReward);
                   }, text: TempLanguage.btnLblSwipeToAddRewards),
-                ),
-                const SpacerBoxVertical(height: 20),
-              ],
+                ],
+              ),
             ),
           ),
         ],
       ),
+
     );
   }
 }

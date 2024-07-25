@@ -9,6 +9,7 @@ import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/available_list_items.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
+import 'package:skhickens_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/favourites_widget.dart';
 import 'package:skhickens_app/widgets/rewards_list_items.dart';
@@ -24,79 +25,31 @@ class RewardsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      body: Stack(
-        children: [
-          Stack(
-            children: [
-              CustomShapeContainer(height: 15.h,),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    const SpacerBoxVertical(height: 30),
-                    Row(
-                      children: [
-                        Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2, color: AppColors.whiteColor),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Image.asset(AppAssets.profileImg, scale: 3,),
-                        ),
-                        const SpacerBoxHorizontal(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Skhicken', style: poppinsRegular(fontSize: 14),),
-                              Text(TempLanguage.txtLocation, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                            onTap: (){
-                              Get.toNamed(AppRoutes.notifications);
-                            },
-                            child: Image.asset(AppAssets.notificationImg, scale: 3,))
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          Padding(
-            padding: EdgeInsets.only(top: 15.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12),
-                  child: Text(TempLanguage.txtRewards, style: poppinsMedium(fontSize: 18),),
-                ),
-                Expanded(child:GestureDetector(
-                  onTap: (){
-                    Get.toNamed(AppRoutes.rewardDetail);
-                  },
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    children: const [
-                      RewardsListItems(),
-                      RewardsListItems(),
-                      RewardsListItems(),
-                      RewardsListItems(),
-                      RewardsListItems(),
-                    ],
-                  ),
-                ), )
-
-              ],
+      appBar: PreferredSize(preferredSize: Size.fromHeight(12.h),child: customAppBar(),),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(TempLanguage.txtRewards, style: poppinsMedium(fontSize: 18),),
             ),
-          ),
-        ],
+            GestureDetector(
+              onTap: (){
+                Get.toNamed(AppRoutes.rewardDetail);
+              },
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 6,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                itemBuilder: (context, index)=> RewardsListItems(),
+
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

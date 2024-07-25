@@ -41,7 +41,7 @@ class AvailableListItems extends StatelessWidget {
                                           children: [
                                             SpacerBoxVertical(height: 1.3.h),
                                             Expanded(child: Image.asset(AppAssets.restaurantImg1)),
-                                            Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
+                                            // Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
                                           ],
                                         ),
                                         Positioned(

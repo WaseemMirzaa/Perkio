@@ -9,6 +9,7 @@ class AppColors{
   static const Color yellowColor = Color(0xFFFFA200);
   static const Color blueColor = Color(0xFF58A0D6);
   static const Color redColor = Colors.red;
+  static const Color appBarBackColor = Color(0xFFF8FAFC);
   static const Color gradientStartColor = Color(0xFFFF197C);
   static const Color gradientEndColor = Color(0xFFFFAA00);
 }

@@ -94,7 +94,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: CommonButton(onSwipe: (){
                     showCongratulationDialog(onDone: (){
-                      Get.toNamed(AppRoutes.bottomBarView);
+                      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.bottomBarView,(route)=>false);
                     });
                   }, text: TempLanguage.btnLblSwipeToRedeem),
                 )

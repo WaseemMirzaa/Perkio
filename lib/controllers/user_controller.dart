@@ -147,6 +147,13 @@ class UserController extends GetxController {
     userServices.addUserData(fullName: name, email: email, phone: phone, isUser: isUser);
   }
 
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ UPDATE USER
+  Future<bool> updateUser(Map<String, dynamic> updatedData) async {
+    // Reference to the user document
+    var uid = FirebaseAuth.instance.currentUser!.uid;
+    return await userServices.updateUser(uid, updatedData);
+  }
+
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET USER
   Future<UserModel> getUser() async {
     var uid = FirebaseAuth.instance.currentUser!.uid;

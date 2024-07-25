@@ -72,7 +72,7 @@ class _SignupUserState extends State<SignupUser> with ValidationMixin {
               SpacerBoxVertical(height: 20),
               AuthTextfield(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon, textController: controller.emailController,),
               SpacerBoxVertical(height: 20),
-                        AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,),
+                        AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController, isPassword: true,),
           
                 SpacerBoxVertical(height: 20),
                 AuthTextfield(text: TempLanguage.txtDummyPhoneNo, path: 'assets/images/Pwd  Input.png', textController: controller.phoneController,),

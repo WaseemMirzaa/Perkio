@@ -10,6 +10,7 @@ import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:skhickens_app/widgets/snackbar_widget.dart';
 
 class ProfileSettingsUser extends StatefulWidget {
   const ProfileSettingsUser({super.key});
@@ -26,6 +27,7 @@ class _ProfileSettingsUserState extends State<ProfileSettingsUser> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  RxBool enabled = false.obs;
 
   @override
   void initState() {
@@ -102,27 +104,61 @@ class _ProfileSettingsUserState extends State<ProfileSettingsUser> {
                       ],
                     ),
                   ),
-                  Positioned(
+                  Obx((){
+                    return Positioned(
                     right: 0,
                     top: 205,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 30),
-                      child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                    )),
+                      child: GestureDetector(
+                        onTap: () async {
+                          if(enabled.value){
+                            
+                          bool success = await controller.updateUser({
+                            'userName': userNameController.text,
+                            'email': emailController.text,
+                            'phoneNo': phoneNoController.text,
+                            'address': addressController.text,
+                          });
+                          if (success) {
+                            // Update successful
+                            snackBar(
+                                'Success', 'User data updated successfully!',);
+                            // Get.snackbar(
+                            //     'Success', 'User data updated successfully!',
+                            //     snackPosition: SnackPosition.TOP);
+                                enabled.value = false;
+                          } else {
+                            // Update failed
+                            snackBar('Error', 'Failed to update user data.',);
+                            // Get.snackbar('Error', 'Failed to update user data.',
+                            //     snackPosition: SnackPosition.TOP);
+                          
+                        }
+                          } else enabled.value = true;
+                          
+                          
+                        },
+                        child: Text(!enabled.value ? TempLanguage.txtEdit : 'Save', style: poppinsRegular(fontSize: 10, color: AppColors.hintText),)),
+                    ));
+                  }
+                  ),
               Padding(
                 padding: const EdgeInsets.only(top: 200),
                 child: Column(
                   children: [
                     
                     SpacerBoxVertical(height: 20),
-                    Expanded(child: ListView(
+                    Expanded(child: Obx((){
+                      return ListView(
                       children: [
-                        ProfileListItems(path: AppAssets.profile1, text: userProfile.userName ?? ''),
-                        ProfileListItems(path: AppAssets.profile2, text: userProfile.phoneNo ?? ''),
-                        ProfileListItems(path: AppAssets.profile3, text: userProfile.email ?? ''),
-                        ProfileListItems(path: AppAssets.profile4, text: userProfile.address ?? 'Not Set'),
+                        ProfileListItems(path: AppAssets.profile1, textController: userNameController, enabled: enabled.value,),
+                        ProfileListItems(path: AppAssets.profile2, textController: phoneNoController, enabled: enabled.value,),
+                        ProfileListItems(path: AppAssets.profile3, textController: emailController,),
+                        ProfileListItems(path: AppAssets.profile4, textController: addressController, enabled: enabled.value,),
                       ],
-                    ))
+                    );
+                    })),
                     
                   ],
                 ),

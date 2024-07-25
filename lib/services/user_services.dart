@@ -12,7 +12,7 @@ class UserServices {
   final CollectionReference _userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  //............ add user
+  //............ Add user
   Future addUserData({
     required String fullName,
     required String email,
@@ -39,6 +39,20 @@ class UserServices {
       Get.snackbar('Firebase Error', e.toString());
 
       if (e.message != null) print(e.message!);
+    }
+  }
+
+  //............ Update user
+  Future<bool> updateUser(
+      String userId, Map<String, dynamic> updatedData) async {
+    try {
+      DocumentReference userRef = _userCollection.doc(userId);
+
+      await userRef.update(updatedData);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 

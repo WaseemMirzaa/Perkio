@@ -8,6 +8,7 @@ import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
+import 'package:skhickens_app/widgets/settings_list_items.dart';
 
 class ProfileUser extends StatefulWidget {
   const ProfileUser({super.key});
@@ -76,17 +77,17 @@ class _ProfileUserState extends State<ProfileUser> {
                       onTap: (){
                         Get.toNamed(AppRoutes.profileSettingUser);
                       },
-                      child: ProfileListItems(path: AppAssets.evaluationImg, text: TempLanguage.txtManageAccount)),
-                    ProfileListItems(path: AppAssets.managementImg, text: TempLanguage.txtSubscription),
-                    ProfileListItems(path: AppAssets.networkImg, text: TempLanguage.txtShare),
-                    ProfileListItems(path: AppAssets.privacyImg, text: TempLanguage.txtTermsConditions),
-                    ProfileListItems(path: AppAssets.insuranceImg, text: TempLanguage.txtPrivacy),
-                    ProfileListItems(path: AppAssets.helpImg, text: TempLanguage.txtHelp),
+                      child: SettingsListItems(path: AppAssets.evaluationImg, text: TempLanguage.txtManageAccount)),
+                    SettingsListItems(path: AppAssets.managementImg, text: TempLanguage.txtSubscription),
+                    SettingsListItems(path: AppAssets.networkImg, text: TempLanguage.txtShare),
+                    SettingsListItems(path: AppAssets.privacyImg, text: TempLanguage.txtTermsConditions),
+                    SettingsListItems(path: AppAssets.insuranceImg, text: TempLanguage.txtPrivacy),
+                    SettingsListItems(path: AppAssets.helpImg, text: TempLanguage.txtHelp),
                     GestureDetector(
                       onTap: (){
                         controller.logout();
                       },
-                      child: ProfileListItems(path: AppAssets.helpImg, text: 'Logout')),
+                      child: SettingsListItems(path: AppAssets.helpImg, text: 'Logout')),
                   ],
                 ))
                 

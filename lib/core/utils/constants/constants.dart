@@ -7,4 +7,15 @@ class UserKey {
   static const String IMAGE = "Image";
   static const String ISUSER = "isUser";
   static const String ADDRESS = "address";
+  static const String WEBSITE = "website";
+}
+
+class DealKey {
+  static const String BUSINESSID = "businessId";
+  static const String DEALID = "dealId";
+  static const String DEALNAME = "dealName";
+  static const String RESTAURANTNAME = "restaurantName";
+  static const String DEALPRICE = "dealPrice";
+  static const String USES = "uses";
+  static const String LOCATION = "location";
 }

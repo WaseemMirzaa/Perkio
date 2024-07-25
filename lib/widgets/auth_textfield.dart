@@ -6,7 +6,8 @@ class AuthTextfield extends StatelessWidget {
   final String text;
   final String path;
   final TextEditingController textController;
-  const AuthTextfield({required this.text, required this.path, required this.textController});
+  final bool isPassword;
+  const AuthTextfield({required this.text, required this.path, required this.textController, this.isPassword = false});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class AuthTextfield extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: TextField(
+                        obscureText: isPassword,
                         controller: textController,
                         decoration: InputDecoration(
                           hintText: text,

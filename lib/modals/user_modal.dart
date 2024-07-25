@@ -8,6 +8,7 @@ class UserModel {
   String? phoneNo;
   String? image;
   String? address;
+  String? website;
   bool? isUser;
 
   UserModel({
@@ -17,6 +18,7 @@ class UserModel {
     this.phoneNo,
     this.image,
     this.address,
+    this.website,
     this.isUser,
   });
 
@@ -30,7 +32,8 @@ class UserModel {
       phoneNo: data[UserKey.PHONENO] ?? '',
       image: data[UserKey.IMAGE] ?? '',
       address: data[UserKey.ADDRESS],
-      isUser: data['isUser'],
+      website: data[UserKey.WEBSITE],
+      isUser: data[UserKey.ISUSER],
     );
   }
 
@@ -42,7 +45,8 @@ class UserModel {
       phoneNo: map[UserKey.PHONENO],
       image: map[UserKey.IMAGE],
       address: map[UserKey.ADDRESS],
-      isUser: map['isUser']
+      website: map[UserKey.WEBSITE],
+      isUser: map[UserKey.ISUSER]
     );
   }
 
@@ -54,7 +58,8 @@ class UserModel {
       UserKey.PHONENO: phoneNo,
       UserKey.IMAGE: image,
       UserKey.ADDRESS: address,
-      'isUser': isUser,
+      UserKey.WEBSITE: website,
+      UserKey.ISUSER: isUser,
     };
   }
 }

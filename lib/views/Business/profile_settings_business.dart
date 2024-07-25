@@ -11,6 +11,8 @@ import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:skhickens_app/widgets/settings_list_items.dart';
+import 'package:skhickens_app/widgets/snackbar_widget.dart';
 
 class ProfileSettingsBusiness extends StatefulWidget {
   const ProfileSettingsBusiness({super.key});
@@ -28,6 +30,9 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController websiteController = TextEditingController();
+  TextEditingController businessIdController = TextEditingController(text: 'Not Set');
+  RxBool enabled = false.obs;
 
   @override
   void initState() {
@@ -47,10 +52,11 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
     businessProfile = await controller.getUser();
     _userProfileStreamController.add(businessProfile);
 
-    userNameController.text = businessProfile.userName ?? '';
-    emailController.text = businessProfile.email ?? '';
-    phoneNoController.text = businessProfile.phoneNo ?? '';
-    addressController.text = businessProfile.address ?? '';
+    userNameController.text = businessProfile.userName ?? 'Not Set';
+    emailController.text = businessProfile.email ?? 'Not Set';
+    phoneNoController.text = businessProfile.phoneNo ?? 'Not Set';
+    addressController.text = businessProfile.address ?? 'Not Set';
+    websiteController.text = businessProfile.website ?? 'Not Set';
   }
 
   @override
@@ -102,34 +108,66 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                       ],
                     ),
                   ),
-                  Positioned(
+                  Obx((){
+                    return Positioned(
                     right: 0,
                     top: 205,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 30),
-                      child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                    )),
+                      child: GestureDetector(
+                        onTap: () async {
+                          if(enabled.value){
+                            
+                          bool success = await controller.updateUser({
+                            'userName': userNameController.text,
+                            'email': emailController.text,
+                            'phoneNo': phoneNoController.text,
+                            'address': addressController.text,
+                          });
+                          if (success) {
+                            // Update successful
+                            snackBar('Success', 'User data updated successfully!');
+                            // Get.snackbar(
+                            //     'Success', 'User data updated successfully!',
+                            //     snackPosition: SnackPosition.TOP);
+                                enabled.value = false;
+                          } else {
+                            // Update failed
+                            snackBar('Error', 'Failed to update user data.',);
+                            // Get.snackbar('Error', 'Failed to update user data.',
+                            //     snackPosition: SnackPosition.TOP);
+                          
+                        }
+                          } else enabled.value = true;
+                          
+                          
+                        },
+                        child: Text(!enabled.value ? TempLanguage.txtEdit : 'Save', style: poppinsRegular(fontSize: 10, color: AppColors.hintText),)),
+                    ));
+                  }),
               Padding(
                 padding: const EdgeInsets.only(top: 200),
                 child: Column(
                   children: [
                     
                     SpacerBoxVertical(height: 20),
-                    Expanded(child: ListView(
+                    Expanded(child: Obx((){
+                      return ListView(
                       children: [
-                        ProfileListItems(path: AppAssets.profile1, text: businessProfile.userName ?? ''),
-                        ProfileListItems(path: AppAssets.profile2, text: businessProfile.phoneNo ?? ''),
-                        ProfileListItems(path: AppAssets.profile3, text: businessProfile.email ?? ''),
-                        ProfileListItems(path: AppAssets.profile4, text: businessProfile.address ?? 'Not Set'),
-                        ProfileListItems(path: AppAssets.profile5, text: TempLanguage.txtWebsite),
-                        ProfileListItems(path: AppAssets.profile6, text: TempLanguage.txtDummyBusinessId),
+                        ProfileListItems(path: AppAssets.profile1, textController: userNameController, enabled: enabled.value,),
+                        ProfileListItems(path: AppAssets.profile2, textController: phoneNoController, enabled: enabled.value,),
+                        ProfileListItems(path: AppAssets.profile3, textController: emailController,),
+                        ProfileListItems(path: AppAssets.profile4, textController: addressController, enabled: enabled.value,),
+                        ProfileListItems(path: AppAssets.profile5, textController: websiteController, enabled: enabled.value,),
+                        ProfileListItems(path: AppAssets.profile6, textController: businessIdController, enabled: enabled.value,),
                         GestureDetector(
                           onTap: (){
                             controller.logout();
                           },
-                          child: ProfileListItems(path: AppAssets.profile6, text: 'Logout')),
+                          child: SettingsListItems(path: AppAssets.profile6, text: 'Logout')),
                       ],
-                    )),
+                    );
+                    })),
                   ],
                 ),
               ),

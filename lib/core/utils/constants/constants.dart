@@ -19,3 +19,11 @@ class DealKey {
   static const String USES = "uses";
   static const String LOCATION = "location";
 }
+
+class RewardKey {
+  static const String BUSINESSID = "businessId";
+  static const String REWARDID = "rewardId";
+  static const String DEALNAME = "dealName";
+  static const String RECEIPTPRICE = "receiptPrice";
+  static const String REWARDDETAILS = "rewardDetails";
+}

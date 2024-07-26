@@ -9,7 +9,7 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
@@ -69,7 +69,7 @@ class _SignupViewState extends State<SignupView> {
             const SpacerBoxVertical(height: 20),
             const AuthTextfield(text: TempLanguage.txtDummyPhoneNo, path: 'assets/images/Pwd  Input.png'),
                     const SpacerBoxVertical(height: 20),
-                    CommonButton(onSwipe: (){
+                    ButtonWidget(onSwipe: (){
                      Get.toNamed(AppRoutes.locationChangeScreen);
                     }, text: TempLanguage.btnLblSwipeToSignup),
                     const SpacerBoxVertical(height: 20),

@@ -6,7 +6,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/widgets/login_button_widget.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(height: 30,),
               ButtonWidget(onSwipe: (){
                 Get.toNamed(AppRoutes.selection);
-              }, text: TempLanguage.btnLblSwipeToStart),
+              }, text: TempLanguage.btnLblSwipeToStart,isGradient: false,),
               ],)
             ],
           ),

@@ -7,7 +7,7 @@ import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/business_extended_tiles.dart';
 import 'package:skhickens_app/widgets/business_home_list_items.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/search_field.dart';
@@ -64,7 +64,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CommonButton(onSwipe: (){
+                ButtonWidget(onSwipe: (){
                   Get.toNamed(AppRoutes.addDeal);
                 }, text: TempLanguage.btnLblSwipeToAddDeal),
               ],

@@ -5,7 +5,7 @@ import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/congratulation_dialog.dart';
 import 'package:skhickens_app/widgets/detail_tile.dart';
@@ -92,7 +92,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                 const SpacerBoxVertical(height: 80),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: CommonButton(onSwipe: (){
+                  child: ButtonWidget(onSwipe: (){
                     showCongratulationDialog(onDone: (){
                       Navigator.pushNamedAndRemoveUntil(context, AppRoutes.bottomBarView,(route)=>false);
                     });

@@ -6,7 +6,7 @@ import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/common_text_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
@@ -145,7 +145,7 @@ class _AddDealsState extends State<AddDeals> {
                         ),
                       ),
                       const SpacerBoxVertical(height: 10),
-                      CommonButton(onSwipe: (){
+                      ButtonWidget(onSwipe: (){
                         Navigator.pushNamedAndRemoveUntil(context,AppRoutes.bottomBarView,(route)=>false);
                       }, text: TempLanguage.btnLblSwipeToAdd)
             ],

@@ -26,7 +26,6 @@ import 'package:skhickens_app/views/role_selection/role_selection_view.dart';
 import 'package:skhickens_app/views/splash_screen.dart';
 import 'package:skhickens_app/views/privacy_policy.dart';
 import 'package:skhickens_app/views/terms_conditions.dart';
-import 'package:skhickens_app/views/test.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -57,7 +56,7 @@ class AppRoutes {
 
 
   static List<GetPage> routes = [
-    GetPage(name: splash, page: () =>  const SplashScreen()),
+    GetPage(name: splash, page: () =>  SplashScreen()),
     GetPage(name: selection, page: () => const SelectionScreen()),
     GetPage(name: addDeal, page: () => const AddDeals()),
     GetPage(name: addReward, page: () => const AddRewards()),

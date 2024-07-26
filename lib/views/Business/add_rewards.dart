@@ -4,7 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/common_text_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
@@ -43,7 +43,7 @@ class _AddRewardsState extends State<AddRewards> {
             const SpacerBoxVertical(height: 10),
             const CommonTextField(text: TempLanguage.txtDetails,),
             const SpacerBoxVertical(height: 50),
-            CommonButton(onSwipe: (){
+            ButtonWidget(onSwipe: (){
               Get.back();
             }, text: TempLanguage.btnLblSwipeToAdd)
           ],

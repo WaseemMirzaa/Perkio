@@ -8,7 +8,7 @@ import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
@@ -47,7 +47,7 @@ class _LoginViewState extends State<LoginView> {
           const SpacerBoxVertical(height: 20),
                     const AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg),
                     const SpacerBoxVertical(height: 20),
-                    CommonButton(onSwipe: (){
+                    ButtonWidget(onSwipe: (){
                       Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
                     }, text: TempLanguage.btnLblSwipeToLogin),
                     const SpacerBoxVertical(height: 20),

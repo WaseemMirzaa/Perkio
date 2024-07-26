@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
-import 'package:skhickens_app/widgets/common_button.dart';
+import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/search_field.dart';
@@ -44,36 +45,29 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                 child: Column(
                   children: [
                     const SpacerBoxVertical(height: 30),
-                    Row(
-                      mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
-                      children: [
-                        Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2, color: AppColors.whiteColor),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Image.asset(AppAssets.profileImg, scale: 3,),
+                    Row(children: [
+                      CircleAvatar(radius: 20.sp,
+                        backgroundImage: const AssetImage(AppAssets.profileImg),
+                      ),
+                      const SizedBox(width: 10,),
+                      Expanded(child:  Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children: [
+                        Text( 'Skhicken', style: poppinsRegular(fontSize: 13.sp),),
+                        Row(
+                          children: [
+                            Text('Islamabad', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                            const SizedBox(width: 10,),
+                            // GestureDetector(onTap: (){
+                            //   Get.to(()=>LocationChangeScreen(isChangeLocation: true,));
+                            // }, child: Text('Change Location',style: poppinsRegular(fontSize: 8,color: AppColors.blueColor),),)
+                          ],
                         ),
-                        const SpacerBoxHorizontal(width: 10),
-                        Expanded(
-                          
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Skhicken', style: poppinsRegular(fontSize: 14),),
-                              Text(TempLanguage.txtLocation, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                            onTap: (){
-                              Get.toNamed(AppRoutes.notifications);
-                            },
-                            child: Image.asset(AppAssets.notificationImg, scale: 3,)
-                        )
-                      ],
+                      ],),),
+                      GestureDetector(
+                          onTap: (){
+                            Get.toNamed(AppRoutes.notifications);
+                          },
+                          child: Image.asset(AppAssets.notificationImg, scale: 3,)),
+                    ],
                     ),
                     const SpacerBoxVertical(height: 20),
                     const SearchField(),
@@ -92,7 +86,7 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: CommonButton(onSwipe: (){
+                    child: ButtonWidget(onSwipe: (){
                       widget.isChangeLocation ? Get.back() :
                        Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
                     }, text: TempLanguage.btnLblSwipeToSelect),

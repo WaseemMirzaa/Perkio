@@ -3,81 +3,32 @@ library flutterslidetoact;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
-/// Slider call to action component
 class CustomSlideActionButton extends StatefulWidget {
-  /// The size of the sliding icon
   final double sliderButtonIconSize;
-
-  /// Tha padding of the sliding icon
   final double sliderButtonIconPadding;
-
-  /// The offset on the y axis of the slider icon
   final double sliderButtonYOffset;
-
-  /// If the slider icon rotates
   final bool sliderRotate;
-
-  // Wether the user can interact with the slider
   final bool enabled;
-
-  /// The child that is rendered instead of the default Text widget
   final Widget? child;
-
-  /// The height of the component
   final double height;
-
-  /// The color of the text.
-  /// If not set, this attribute defaults to primaryIconTheme.
   final Color? textColor;
-
-  /// The color of the inner circular button and the tick icon.
-  /// If not set, this attribute defaults to primaryIconTheme.
   final Color? innerColor;
-
-  /// The color of the external area and of the arrow icon.
-  /// If not set, this attribute defaults to the secondary color of your theme's colorScheme.
   final Color? outerColor;
-
-  /// The text showed in the default Text widget
   final String? text;
-
-  /// Text style which is applied on the Text widget.
-  ///
-  /// By default, the text is colored using [textColor].
   final TextStyle? textStyle;
-
-  /// The borderRadius of the sliding icon and of the background
   final double borderRadius;
-
-  /// Callback called on submit
-  /// If this is null the component will not animate to complete
   final Future? Function()? onSubmit;
-
-  /// Elevation of the component
   final double elevation;
-
-  /// The widget to render instead of the default icon
   final Widget? sliderButtonIcon;
-
-  /// The widget to render instead of the default submitted icon
   final Widget? submittedIcon;
-
-  /// The duration of the animations
   final Duration animationDuration;
-
-  /// If true the widget will be reversed
   final bool reversed;
-
-  /// the alignment of the widget once it's submitted
   final Alignment alignment;
-
-  /// Gradient
   final Gradient? gradient;
 
-  /// Create a new instance of the widget
+
   const CustomSlideActionButton({
-    Key? key,
+    super.key,
     this.sliderButtonIconSize = 24,
     this.sliderButtonIconPadding = 16,
     this.sliderButtonYOffset = 0,
@@ -99,14 +50,13 @@ class CustomSlideActionButton extends StatefulWidget {
     this.textStyle,
     this.sliderButtonIcon,
     this.gradient,
-  }) : super(key: key);
+  });
+
   @override
   CustomSlideActionButtonState createState() => CustomSlideActionButtonState();
 }
 
-/// Use a GlobalKey to access the state. This is the only way to call [CustomSlideActionButtonState.reset]
-class CustomSlideActionButtonState extends State<CustomSlideActionButton>
-    with TickerProviderStateMixin {
+class CustomSlideActionButtonState extends State<CustomSlideActionButton> with TickerProviderStateMixin {
   final GlobalKey _containerKey = GlobalKey();
   final GlobalKey _sliderKey = GlobalKey();
   double _dx = 0;
@@ -144,7 +94,7 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
                   Theme.of(context)
                       .primaryIconTheme
                       .color : null,
-              gradient: widget.gradient
+              gradient: widget.gradient,
             ),
             child: submitted
                 ? Transform(
@@ -221,13 +171,9 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
                               _cancelAnimation();
                             } else {
                               await _resizeAnimation();
-
                               await _shrinkAnimation();
-
                               await _checkAnimation();
-
                               await widget.onSubmit?.call();
-
                               await reset();
                             }
                           },
@@ -236,22 +182,19 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
                                 horizontal: 8.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    widget.borderRadius),
-                                color: widget.gradient == null ? widget.innerColor ??
-                                    Theme.of(context)
-                                        .primaryIconTheme
-                                        .color : null,
-                                gradient: widget.gradient
+                                  borderRadius: BorderRadius.circular(
+                                      widget.borderRadius),
+                                  color: widget.gradient == null ? widget.innerColor ??
+                                      Theme.of(context)
+                                          .primaryIconTheme
+                                          .color : null,
+                                  gradient: widget.gradient
                               ),
-
                               child: Container(
                                 padding: EdgeInsets.all(
                                     widget.sliderButtonIconPadding),
                                 child: Transform.rotate(
-                                  angle: widget.sliderRotate
-                                      ? -pi * _progress
-                                      : 0,
+                                  angle: -2 * pi * _progress, // Full circular rotation
                                   child: Center(
                                     child: widget.sliderButtonIcon ??
                                         Icon(
@@ -286,16 +229,11 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
     });
   }
 
-  /// Call this method to revert the animations
   Future reset() async {
     await _checkAnimationController.reverse();
-
     submitted = false;
-
     await _shrinkAnimationController.reverse();
-
     await _resizeAnimationController.reverse();
-
     await _cancelAnimation();
   }
 
@@ -409,14 +347,14 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
       duration: widget.animationDuration,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       final RenderBox containerBox =
-      _containerKey.currentContext?.findRenderObject() as RenderBox;
+      _containerKey.currentContext!.findRenderObject() as RenderBox;
       _containerWidth = containerBox.size.width;
       _initialContainerWidth = _containerWidth;
 
       final RenderBox sliderBox =
-      _sliderKey.currentContext?.findRenderObject() as RenderBox;
+      _sliderKey.currentContext!.findRenderObject() as RenderBox;
       final sliderWidth = sliderBox.size.width;
 
       _maxDx = _containerWidth! -

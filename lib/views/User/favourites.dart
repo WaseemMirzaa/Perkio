@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skhickens_app/controllers/user_controller.dart';
+import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/controllers/favourites_screen_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
@@ -14,8 +18,38 @@ import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 
-class FavouritesScreen extends StatelessWidget {
-  final FavouritesScreenController controller = Get.find<FavouritesScreenController>();
+class FavouritesScreen extends StatefulWidget {
+  @override
+  State<FavouritesScreen> createState() => _FavouritesScreenState();
+}
+
+class _FavouritesScreenState extends State<FavouritesScreen> {
+  final FavouritesScreenController myController = Get.find<FavouritesScreenController>();
+
+    var controller = Get.find<UserController>();
+
+  late StreamController<List<DealModel>> _favouritesStreamController;
+
+  late List<DealModel> favourites;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _favouritesStreamController = StreamController<List<DealModel>>.broadcast();
+    getFavourites();
+  }
+
+  @override
+  void dispose() {
+    _favouritesStreamController.close();
+    super.dispose();
+  }
+
+  Future<void> getFavourites() async {
+    favourites = await controller.getFavouriteDeals();
+    _favouritesStreamController.add(favourites);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,25 +112,25 @@ class FavouritesScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       Obx(() => GestureDetector(
-                          onTap: () => controller.selectIndex(0),
+                          onTap: () => myController.selectIndex(0),
                           child: Container(
                             height: 30,
                             width: 90,
                             decoration: BoxDecoration(
-                              gradient: controller.selectedIndex.value == 0
+                              gradient: myController.selectedIndex.value == 0
                                   ? LinearGradient(
                                       colors: [Colors.red, Colors.orange],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     )
                                   : null,
-                              color: controller.selectedIndex.value == 0 ? null : Colors.grey[200],
+                              color: myController.selectedIndex.value == 0 ? null : Colors.grey[200],
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Center(
                               child: Text(
                                 TempLanguage.lblMyDeals,
-                                style: poppinsRegular(fontSize: 9, color: controller.selectedIndex.value == 0
+                                style: poppinsRegular(fontSize: 9, color: myController.selectedIndex.value == 0
                                       ? AppColors.whiteColor
                                       : Colors.black,),
                               ),
@@ -106,25 +140,25 @@ class FavouritesScreen extends StatelessWidget {
                       ),
                       SpacerBoxHorizontal(width: 10),
                       Obx(() => GestureDetector(
-                          onTap: () => controller.selectIndex(1),
+                          onTap: () => myController.selectIndex(1),
                           child: Container(
                             height: 30,
                             width: 90,
                             decoration: BoxDecoration(
-                              gradient: controller.selectedIndex.value == 1
+                              gradient: myController.selectedIndex.value == 1
                                   ? LinearGradient(
                                       colors: [Colors.red, Colors.orange],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     )
                                   : null,
-                              color: controller.selectedIndex.value == 1 ? null : Colors.grey[200],
+                              color: myController.selectedIndex.value == 1 ? null : Colors.grey[200],
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Center(
                               child: Text(
                                 TempLanguage.lblMyRewards,
-                                style: poppinsRegular(fontSize: 9, color: controller.selectedIndex.value == 1
+                                style: poppinsRegular(fontSize: 9, color: myController.selectedIndex.value == 1
                                       ? AppColors.whiteColor
                                       : Colors.black,),
                               ),
@@ -138,18 +172,35 @@ class FavouritesScreen extends StatelessWidget {
 
                 Obx((){
                   return Expanded(
-                  child: controller.selectedIndex.value == 0 ?ListView(
-                    children: [
-                      GestureDetector(
-                        onTap: (){
-                          Get.toNamed(AppRoutes.dealDetail);
+                  child: myController.selectedIndex.value == 0 ? StreamBuilder<List<DealModel>>(
+                    stream: _favouritesStreamController.stream,
+                    builder: (context, snapshot) {
+                       if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        }
+                        if (!snapshot.hasData) {
+                          return Center(child: Text('No data available'));
+                        }
+                        final List<DealModel> favourites = snapshot.data!;
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: favourites.length,
+                        itemBuilder: (BuildContext context, int index){
+                          final DealModel favourite = favourites[index];
+                          return GestureDetector(
+                            onTap: (){
+                              Get.toNamed(AppRoutes.dealDetail);
+                            },
+                            child: FavouritesWidget(dealName: favourite.dealName ?? '',));
                         },
-                        child: FavouritesWidget()),
-                      FavouritesWidget(),
-                      FavouritesWidget(),
-                      FavouritesWidget(),
-                      FavouritesWidget(),
-                    ],
+                        
+                      );
+                    }
                   ) : ListView(
                     children: [
                       RewardsListItems(),

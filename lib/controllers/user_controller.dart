@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skhickens_app/modals/deal_modal.dart';
+import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/auth_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
@@ -158,5 +160,33 @@ class UserController extends GetxController {
   Future<UserModel> getUser() async {
     var uid = FirebaseAuth.instance.currentUser!.uid;
     return (await userServices.getUserById(uid))!;
+  }
+
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All DEALS
+  Future<List<DealModel>> getDeals() async {
+    var res = await userServices.getDeals();
+    return res;
+  }
+
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All REWARDS
+  Future<List<RewardModel>> getRewards() async {
+    var res = await userServices.getRewards();
+    return res;
+  }
+
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET FAVOURITE DEALS
+  Future<List<DealModel>> getFavouriteDeals() async {
+    var res = await userServices.getFavouriteDeals(authServices.auth.currentUser!.uid);
+    return res;
+  }
+
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ LIKE DEAL
+  Future<void> likeDeal(String dealId) async {
+    userServices.likeDeal(dealId);
+  }
+
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ UNLIKE DEAL
+  Future<void> unLikeDeal(String dealId) async {
+    userServices.unLikeDeal(dealId);
   }
 }

@@ -18,6 +18,7 @@ class DealKey {
   static const String DEALPRICE = "dealPrice";
   static const String USES = "uses";
   static const String LOCATION = "location";
+  static const String FAVOURITES = 'favourites';
 }
 
 class RewardKey {

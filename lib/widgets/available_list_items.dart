@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skhickens_app/controllers/business_controller.dart';
+import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -8,10 +10,17 @@ import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 class AvailableListItems extends StatelessWidget {
-  const AvailableListItems({super.key});
+  final String dealId;
+  final String dealName;
+  final String restaurantName;
+  final String dealPrice;
+  final String uses;
+  final String location;
+  const AvailableListItems({this.dealId = '', this.dealName = 'Deal Name', this.restaurantName = 'Restaurant Name', this.dealPrice = '\$25', this.uses = 'Uses 3', this.location = '4773 Waldeck Street, US'});
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.find<UserController>();
     RxBool tapped = false.obs;
     return Container(
       height: 130,
@@ -42,7 +51,7 @@ class AvailableListItems extends StatelessWidget {
                                           children: [
                                             SpacerBoxVertical(height: 1.3.h),
                                             Expanded(child: Image.asset(AppAssets.restaurantImg1)),
-                                            Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
+                                            Text(dealPrice,style: poppinsMedium(fontSize: 15.sp),),
                                           ],
                                         ),
                                         Positioned(
@@ -52,6 +61,9 @@ class AvailableListItems extends StatelessWidget {
                                                 (){
                                               return  IconButton(
                                                   onPressed: () {
+                                                    tapped.value ?
+                                                     controller.unLikeDeal(dealId) : 
+                                                    controller.likeDeal(dealId);
                                                     tapped.value = !tapped.value;
                                                   },
                                                   padding: EdgeInsets.zero,
@@ -71,9 +83,9 @@ class AvailableListItems extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           SpacerBoxVertical(height: 10),
-                                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 14),),
+                                          Text(dealName, style: poppinsMedium(fontSize: 14),),
                                           SpacerBoxVertical(height: 5),
-                                          Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
+                                          Text(restaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
                                           SpacerBoxVertical(height: 5),
                                           Row(
                                             children: [
@@ -90,7 +102,7 @@ class AvailableListItems extends StatelessWidget {
                                               Expanded(
                                                 child: Row(
                                                   children: [
-                                                    Expanded(child: Text('4773 Waldeck Street, US', style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
+                                                    Expanded(child: Text(location, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
                                                     SpacerBoxHorizontal(width: 4),
                                                     
                                                 
@@ -122,7 +134,7 @@ class AvailableListItems extends StatelessWidget {
                                                   child: Center(child: Text(TempLanguage.txtFeatured, style: poppinsRegular(fontSize: 7, color: AppColors.whiteColor),)),
                                                 ),
                                                 SpacerBoxVertical(height: 10),
-                                                Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),)
+                                                Text(uses,style: poppinsMedium(fontSize: 13.sp),)
                                         ],
                                       ),
                                     )

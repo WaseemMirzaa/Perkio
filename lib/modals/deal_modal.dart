@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:skhickens_app/core/utils/constants/constants.dart';
 
-class DealModel{
+class DealModel {
   String? businessId;
   String? dealId;
   String? dealName;
@@ -9,6 +9,7 @@ class DealModel{
   String? dealPrice;
   String? uses;
   String? location;
+  List<String>? favourites;
 
   DealModel({
     this.businessId,
@@ -18,6 +19,7 @@ class DealModel{
     this.dealPrice,
     this.uses,
     this.location,
+    this.favourites,
   });
 
   factory DealModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -31,6 +33,9 @@ class DealModel{
       dealPrice: data[DealKey.DEALPRICE] ?? '',
       uses: data[DealKey.USES] ?? '',
       location: data[DealKey.LOCATION] ?? '',
+      favourites: data[DealKey.FAVOURITES] != null 
+          ? List<String>.from(data[DealKey.FAVOURITES])
+          : [],
     );
   }
 
@@ -43,6 +48,9 @@ class DealModel{
       dealPrice: map[DealKey.DEALPRICE],
       uses: map[DealKey.USES],
       location: map[DealKey.LOCATION],
+      favourites: map[DealKey.FAVOURITES] != null 
+          ? List<String>.from(map[DealKey.FAVOURITES])
+          : [],
     );
   }
 
@@ -55,6 +63,7 @@ class DealModel{
       DealKey.DEALPRICE: dealPrice,
       DealKey.USES: uses,
       DealKey.LOCATION: location,
+      DealKey.FAVOURITES: favourites,
     };
   }
 }

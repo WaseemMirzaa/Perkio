@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
+import 'package:skhickens_app/modals/deal_modal.dart';
+import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/auth_services.dart';
 
@@ -11,8 +14,12 @@ class UserServices {
   final db = FirebaseFirestore.instance;
   final CollectionReference _userCollection =
       FirebaseFirestore.instance.collection('users');
+  final CollectionReference _dealCollection =
+      FirebaseFirestore.instance.collection('deals');    
+  final CollectionReference _rewardCollection =
+      FirebaseFirestore.instance.collection('reward');      
 
-  //............ Add user
+  //............ Add User
   Future addUserData({
     required String fullName,
     required String email,
@@ -42,7 +49,7 @@ class UserServices {
     }
   }
 
-  //............ Update user
+  //............ Update User
   Future<bool> updateUser(
       String userId, Map<String, dynamic> updatedData) async {
     try {
@@ -56,7 +63,7 @@ class UserServices {
     }
   }
 
-  //............ Get user
+  //............ Get User
   Future<UserModel?> getUserById(String userId) async {
     final querySnapshot =
         await _userCollection.where('userId', isEqualTo: userId).get();
@@ -79,5 +86,49 @@ class UserServices {
   Future<bool?> getIsUserFromPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('isUser');
+  }
+
+  
+  //............ Get Deals
+  Future<List<DealModel>> getDeals() async {
+    final querySnapshot = await _dealCollection.get();
+    return querySnapshot.docs.map<DealModel>((doc) {
+      return DealModel.fromDocumentSnapshot(
+          doc as DocumentSnapshot<Map<String, dynamic>>);
+    }).toList();
+  }
+
+  //............ Get Rewards
+  Future<List<RewardModel>> getRewards() async {
+    final querySnapshot = await _rewardCollection.get();
+    return querySnapshot.docs.map<RewardModel>((doc) {
+      return RewardModel.fromDocumentSnapshot(
+          doc as DocumentSnapshot<Map<String, dynamic>>);
+    }).toList();
+  }
+
+  //............ Like Deal
+  Future<void> likeDeal(String dealId) async {
+    await _dealCollection.doc(dealId).update({
+    DealKey.FAVOURITES: FieldValue.arrayUnion([authServices.auth.currentUser!.uid])
+    });
+  }
+
+  //............ Unlike Deal
+  Future<void> unLikeDeal(String dealId) async {
+    await _dealCollection.doc(dealId).update({
+    DealKey.FAVOURITES: FieldValue.arrayRemove([authServices.auth.currentUser!.uid])
+    });
+  }
+
+  //............ Get Favourite Deals
+  Future<List<DealModel>> getFavouriteDeals(String userId) async {
+  final querySnapshot = await _dealCollection
+      .where(DealKey.FAVOURITES, arrayContains: userId)
+      .get();
+    return querySnapshot.docs.map<DealModel>((doc) {
+      return DealModel.fromDocumentSnapshot(
+        doc as DocumentSnapshot<Map<String, dynamic>>);
+    }).toList();
   }
 }

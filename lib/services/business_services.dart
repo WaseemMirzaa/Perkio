@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/modals/reward_modal.dart';
 
@@ -12,7 +13,7 @@ class BusinessServices{
   final CollectionReference _rewardCollection =
       FirebaseFirestore.instance.collection('reward');  
 
-  //............ Add deal
+  //............ Add Deal
   Future<bool> addDeal({
     required String dealName,
     required String dealPrice,
@@ -42,7 +43,7 @@ class BusinessServices{
     }
   }
 
-  //............ Add reward
+  //............ Add Reward
   Future<bool> addReward({
     required String dealName,
     required String receiptPrice,
@@ -51,7 +52,7 @@ class BusinessServices{
   }) async {
     try {
       
-    final docRef = _dealCollection.doc();
+    final docRef = _rewardCollection.doc();
     final rewardId = docRef.id;
 
     RewardModel userModel = RewardModel(

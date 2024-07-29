@@ -27,12 +27,12 @@ class _HomeBusinessExtendedState extends State<HomeBusinessExtended> {
         children: [
           Stack(
             children: [
-              CustomShapeContainer(),
+              const CustomShapeContainer(),
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    SpacerBoxVertical(height: 30),
+                    const SpacerBoxVertical(height: 30),
                     Row(
                       children: [
                         Container(
@@ -44,7 +44,7 @@ class _HomeBusinessExtendedState extends State<HomeBusinessExtended> {
                             ),
                             child: Image.asset(AppAssets.profileImg, scale: 3,),
                           ),
-                          SpacerBoxHorizontal(width: 10),
+                          const SpacerBoxHorizontal(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,8 +59,8 @@ class _HomeBusinessExtendedState extends State<HomeBusinessExtended> {
                           child: Image.asset(AppAssets.notificationImg, scale: 3,))
                       ],
                     ),
-                    SpacerBoxVertical(height: 20),
-                    SearchField(),
+                    const SpacerBoxVertical(height: 20),
+                    const SearchField(),
                   ],
                 ),
               ),
@@ -80,9 +80,9 @@ class _HomeBusinessExtendedState extends State<HomeBusinessExtended> {
                 Expanded(child: ListView(
                   
                   children: [
-                    BusinessExtendedTiles(),
-                    BusinessExtendedTiles(),
-                    BusinessExtendedTiles(),
+                    const BusinessExtendedTiles(),
+                    const BusinessExtendedTiles(),
+                    const BusinessExtendedTiles(),
                   ],
                 )),
                 Padding(
@@ -91,7 +91,7 @@ class _HomeBusinessExtendedState extends State<HomeBusinessExtended> {
                     Get.toNamed(AppRoutes.addDeal);
                   }, text: TempLanguage.btnLblSwipeToAddDeal),
                 ),
-                SpacerBoxVertical(height: 20)
+                const SpacerBoxVertical(height: 20)
               ],
             ),
           ),

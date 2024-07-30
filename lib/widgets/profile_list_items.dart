@@ -4,12 +4,14 @@ import 'package:skhickens_app/widgets/common_space.dart';
 
 class ProfileListItems extends StatelessWidget {
   final String path;
-  final String text;
-  const ProfileListItems({required this.path, required this.text});
+  final TextEditingController textController;
+  final bool enabled;
+  const ProfileListItems({required this.path, required this.textController, this.enabled = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 75,
                       decoration: BoxDecoration(
                         border: Border(bottom: BorderSide( width: 1, color: Color(0xFFE9E9E9)))
                       ),
@@ -20,7 +22,24 @@ class ProfileListItems extends StatelessWidget {
                             SpacerBoxHorizontal(width: 20),
                             Image.asset(path, scale: 3,),
                             SpacerBoxHorizontal(width: 20),
-                            Text(text, style: poppinsRegular(fontSize: 20),)
+                            Expanded(child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: IntrinsicWidth(
+                                child: TextField(
+                                  controller: textController,
+                                  maxLines: 1,
+                                  enabled: enabled,
+                                  style: poppinsRegular(fontSize: 20),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.only(bottom: 15),
+                                    border: InputBorder.none, 
+                                          enabledBorder: InputBorder.none, 
+                                          focusedBorder: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            )),
+                            // Text(text, style: poppinsRegular(fontSize: 20),)
                           ],
                         ),
                       ),

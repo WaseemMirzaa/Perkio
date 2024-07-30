@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skhickens_app/controllers/business_controller.dart';
+import 'package:skhickens_app/controllers/user_controller.dart';
+import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -22,6 +27,28 @@ class HomeUser extends StatefulWidget {
 }
 
 class _HomeUserState extends State<HomeUser> {
+  var controller = Get.find<UserController>();
+  late StreamController<List<DealModel>> _dealStreamController;
+  late List<DealModel> deals;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _dealStreamController = StreamController<List<DealModel>>();
+    getDeals();
+  }
+
+  @override
+  void dispose() {
+    _dealStreamController.close();
+    super.dispose();
+  }
+
+  Future<void> getDeals() async {
+    deals = await controller.getDeals();
+    _dealStreamController.add(deals);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,19 +86,37 @@ class _HomeUserState extends State<HomeUser> {
                   child: Text('Available Deals', style: poppinsMedium(fontSize: 18),),
                 ),
                     const SpacerBoxVertical(height: 10),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: 10,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (BuildContext context, int index) {
-                        return  GestureDetector(
-                            onTap: (){
-                              Get.toNamed(AppRoutes.dealDetail);
-                            },
-                            child: AvailableListItems(isFeatured: index % 2 == 0 ? true : false,));
-                      },
-                    )
+                StreamBuilder<List<DealModel>>(
+                    stream: _dealStreamController.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Center(
+                            child: Text('Error: ${snapshot.error}'));
+                      }
+                      if (!snapshot.hasData) {
+                        return Center(child: Text('No data available'));
+                      }
+                      final List<DealModel> deals = snapshot.data!;
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: deals.length,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (BuildContext context, int index) {
+                          final DealModel deal = deals[index];
+                          return  GestureDetector(
+                              onTap: (){
+                                Get.toNamed(AppRoutes.favouritesScreen);
+                              },
+                              child: AvailableListItems(dealId: deal.dealId ?? '', dealName: deal.dealName ?? '', restaurantName: deal.restaurantName ?? '', dealPrice: deal.dealPrice ?? '',));
+                        },
+                      );
+                    }
+                )
                   ],
 
             ),

@@ -34,7 +34,7 @@ void showActivationDialog() {
               GestureDetector(
                 onTap: () {
                   Get.back();
-                  Get.to(BottomBarView(isUser: false));
+                  Get.off(BottomBarView(isUser: false));
                   
                 },
                 child: Container(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skhickens_app/controllers/add_rewards_controller.dart';
+import 'package:skhickens_app/controllers/business_controller.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -18,6 +21,8 @@ class AddRewards extends StatefulWidget {
 }
 
 class _AddRewardsState extends State<AddRewards> {
+  final AddRewardsController myController = Get.find<AddRewardsController>();
+  final BusinessController controller = Get.find<BusinessController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,24 +33,26 @@ class _AddRewardsState extends State<AddRewards> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SpacerBoxVertical(height: 20),
+            SpacerBoxVertical(height: 20),
             Center(child: Text(TempLanguage.txtAddDetails, style: poppinsMedium(fontSize: 14),)),
-            const SpacerBoxVertical(height: 60),
-            Text(TempLanguage.txtDeal, style: poppinsRegular(fontSize: 13),),
-            const SpacerBoxVertical(height: 10),
-            const CommonTextField(text: TempLanguage.txtSuperDuper,),
-            const SpacerBoxVertical(height: 20),
+            SpacerBoxVertical(height: 60),
+            Text(TempLanguage.txtDeal, style: poppinsRegular(fontSize: 13)),
+            SpacerBoxVertical(height: 10),
+            CommonTextField(text: TempLanguage.txtSuperDuper, textController: myController.dealNameController,),
+            SpacerBoxVertical(height: 20),
             Text(TempLanguage.txtRequiredPointsToRedeem, style: poppinsRegular(fontSize: 13),),
             const SpacerBoxVertical(height: 10),
-            const CommonTextField(text: 'Points',),
+            const CommonTextField(text: 'Points',textController: myController.receiptPriceController,),
             const SpacerBoxVertical(height: 20),
             Text(TempLanguage.txtDetails, style: poppinsRegular(fontSize: 13),),
-            const SpacerBoxVertical(height: 10),
-            const CommonTextField(text: TempLanguage.txtDetails,),
-            const SpacerBoxVertical(height: 50),
-            ButtonWidget(onSwipe: (){
-              Get.back();
-            }, text: TempLanguage.btnLblSwipeToAdd)
+            SpacerBoxVertical(height: 10),
+            CommonTextField(text: TempLanguage.txtDetails, textController: myController.detailsController,),
+            SpacerBoxVertical(height: 50),
+            Obx(()=> controller.loading.value
+                ? Center(child: const CircularProgressIndicator())
+                : ButtonWidget(onSwipe: (){
+              controller.addDeal(myController.dealNameController.text, myController.receiptPriceController.text, myController.detailsController.text);
+            }, text: TempLanguage.btnLblSwipeToAdd))
           ],
         ),
       ),

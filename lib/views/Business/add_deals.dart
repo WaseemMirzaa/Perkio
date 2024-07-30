@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/controllers/add_deals_controller.dart';
+import 'package:skhickens_app/controllers/business_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -22,6 +23,7 @@ class AddDeals extends StatefulWidget {
 
 class _AddDealsState extends State<AddDeals> {
   final AddDealsController myController = Get.find<AddDealsController>();
+  final BusinessController controller = Get.find<BusinessController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +41,7 @@ class _AddDealsState extends State<AddDeals> {
               const SpacerBoxVertical(height: 60),
               Text(TempLanguage.txtDeal, style: poppinsRegular(fontSize: 13),),
               const SpacerBoxVertical(height: 10),
-              const CommonTextField(text: TempLanguage.txtSuperDuper,),
+              const CommonTextField(text: TempLanguage.txtSuperDuper,textController: myController.dealNameController,),
               const SpacerBoxVertical(height: 20),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,14 +78,14 @@ class _AddDealsState extends State<AddDeals> {
                                                     ),
                                       ),
                                     ),
-        
+
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Obx((){
                                         return Text( "${myController.counter.value}", style: poppinsRegular(fontSize: 17),);
                                       }),
                                     ),
-        
+
                                     GestureDetector(
                                       onTap: (){
                                         myController.increaseCounter();
@@ -133,9 +135,11 @@ class _AddDealsState extends State<AddDeals> {
                         ),
                       ),
                       const SpacerBoxVertical(height: 10),
-                      ButtonWidget(onSwipe: (){
-                        Navigator.pushNamedAndRemoveUntil(context,AppRoutes.bottomBarView,(route)=>false);
-                      }, text: TempLanguage.btnLblSwipeToAdd)
+              Obx(()=> controller.loading.value
+                  ? Center(child: const CircularProgressIndicator())
+                  : ButtonWidget(onSwipe: (){
+                controller.addDeal(myController.dealNameController.text, myController.dealPriceController.text, myController.counter.value.toString());
+              }, text: TempLanguage.btnLblSwipeToAdd),),
             ],
           ),
         ),

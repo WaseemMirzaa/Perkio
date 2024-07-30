@@ -8,7 +8,13 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 
 class FavouritesWidget extends StatelessWidget {
-  const FavouritesWidget({super.key});
+  final String dealId;
+  final String dealName;
+  final String restaurantName;
+  final String dealPrice;
+  final String uses;
+  final String location;
+  const FavouritesWidget({this.dealId = '', this.dealName = 'Deal Name', this.restaurantName = 'Restaurant Name', this.dealPrice = '\$25', this.uses = 'Uses 3', this.location = '4773 Waldeck Street, US'});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +77,7 @@ class FavouritesWidget extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const SpacerBoxVertical(height: 10),
-                                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 13.sp),),
+                                          Text(dealName, style: poppinsMedium(fontSize: 13.sp),),
                                           const SpacerBoxVertical(height: 5),
                                           Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                                           const SpacerBoxVertical(height: 5),

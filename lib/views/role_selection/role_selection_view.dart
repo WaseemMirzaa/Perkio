@@ -42,14 +42,14 @@ class _SelectionScreenState extends State<SelectionScreen> {
 
                       Get.toNamed(AppRoutes.loginUser);
                     },
-                    child: const SelectionTile(imgPath: 'assets/images/user_sel.png', text: 'USER')),
+                    child: const SelectionTile(imgPath: AppAssets.userSel, text: 'USER')),
                 const SizedBox(width: 20,),
                 GestureDetector(
                   onTap: ()async{
                     await setValue(SharedPrefKey.role, SharedPrefKey.business);
                     Get.toNamed(AppRoutes.loginUser);
                   },
-                  child: const SelectionTile(imgPath: 'assets/images/business_sel.png', text: 'BUSINESS')),
+                  child: const SelectionTile(imgPath: AppAssets.businessSel, text: 'BUSINESS')),
                 
                 ],),
               )

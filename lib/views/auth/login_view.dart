@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/controllers/user_controller.dart';
+import 'package:skhickens_app/core/utils/mixins/validate_textfield.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -19,10 +21,18 @@ class LoginView extends StatefulWidget {
   State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginUserState extends State<LoginUser> with ValidationMixin {
+
+  var controller = Get.find<UserController>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+      controller.clearTextFields();
+      return true;
+    },
+    child: Scaffold(
       backgroundColor: AppColors.whiteColor,
       body:
       Padding(
@@ -37,7 +47,9 @@ class _LoginViewState extends State<LoginView> {
             children: [Text(TempLanguage.txtLogin, style: poppinsMedium(fontSize: 18, color: AppColors.hintText)),
             GestureDetector(
               onTap: (){
-                Get.toNamed(AppRoutes.signupUser);
+    controller.clearTextFields();
+
+    Get.toNamed(AppRoutes.signupUser);
               },
               child: Text(getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? TempLanguage.txtNewUser : TempLanguage.txtNewBusiness, style: poppinsRegular(fontSize: 13))),
             ],
@@ -47,9 +59,20 @@ class _LoginViewState extends State<LoginView> {
           const SpacerBoxVertical(height: 20),
                     const AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg),
                     const SpacerBoxVertical(height: 20),
-                    ButtonWidget(onSwipe: (){
-                      Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
-                    }, text: TempLanguage.btnLblSwipeToLogin),
+      Obx(() => controller.loading.value
+          ? const CircularProgressIndicator()
+          : ButtonWidget(onSwipe: (){
+        controller.emailErrorText.value =
+            simpleValidation(controller.emailController.text);
+        controller.passErrorText.value =
+            simpleValidation(controller.passwordController.text);
+        if (controller.emailErrorText.value == "" &&
+            controller.passErrorText.value == "") {
+          controller.signInUser(controller.emailController.text,
+              controller.passwordController.text);
+        } else {
+          Get.snackbar('Error', 'Field required');
+        }}, text: TempLanguage.btnLblSwipeToLogin),
                     const SpacerBoxVertical(height: 20),
                     Text(TempLanguage.txtForgotPassword, style: poppinsRegular(fontSize: 18, color: AppColors.secondaryText),)
 

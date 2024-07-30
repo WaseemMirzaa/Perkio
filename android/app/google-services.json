@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "215078240772",
+    "project_id": "skhickens-app",
+    "storage_bucket": "skhickens-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215078240772:android:48b49b7d2562600244ab51",
+        "android_client_info": {
+          "package_name": "com.example.skhickens_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1lBEHrta7ZResdRk9qY2QppZKTUp9TQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

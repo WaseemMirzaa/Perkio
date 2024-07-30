@@ -52,4 +52,6 @@ class AppAssets{
   static const viewImg = 'assets/images/view.png';
   static const appleIcon = 'assets/images/apple_icon.png';
   static const profileHeader = 'assets/images/Union 1.png';
+  static const userSel = 'assets/images/user_sel.png';
+  static const businessSel = 'assets/images/business_sel.png';
 }

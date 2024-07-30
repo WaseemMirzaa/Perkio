@@ -7,14 +7,13 @@ import 'package:skhickens_app/firebase_options.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/bindings/bindings.dart';
 import 'package:skhickens_app/services/user_services.dart';
-import 'package:skhickens_app/views/auth/splash_screen.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:skhickens_app/views/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initialize();
-  runApp(const MyApp());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
@@ -23,7 +22,7 @@ void main() async {
   String? userId = await userServices.getCurrentUserIdFromPreferences();
   bool? isUser = await userServices.getIsUserFromPreferences();
   Widget home = userId != null
-    ? (isUser == true ? BottomBarView(isUser: true) : BottomBarView(isUser: false))
+    ? (isUser == true ? const BottomBarView(isUser: true) : const BottomBarView(isUser: false))
     : SplashScreen();
 
   runApp(MyApp(home));

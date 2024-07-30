@@ -7,8 +7,8 @@ import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/auth_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
-import 'package:skhickens_app/views/auth/splash_screen.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:skhickens_app/views/splash_screen.dart';
 import 'package:skhickens_app/widgets/activation_dialog.dart';
 
 class UserController extends GetxController {
@@ -61,8 +61,8 @@ class UserController extends GetxController {
   late TextEditingController phoneController;
   late TextEditingController userNameController;
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN IN USER
-  Future<void> signInUser(String email, String password) async {
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN IN
+  Future<void> signIn(String email, String password) async {
     loading.value = true;
     String? result = await authServices.signIn(email, password);
     if (result == null) {
@@ -70,7 +70,7 @@ class UserController extends GetxController {
       if (isUser != null) {
         loading.value = false;
         clearTextFields();
-        Get.off(() => BottomBarView(isUser: isUser));
+        isUser ? Get.off(() => const BottomBarView(isUser: true)) : Get.off(() => const BottomBarView(isUser: false));
       } else {
         loading.value = false;
         Get.snackbar('Error', 'Failed to fetch user data.', snackPosition: SnackPosition.TOP);
@@ -81,67 +81,68 @@ class UserController extends GetxController {
     }
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP USER
-  Future<void> signUpUser(String email, String password, String username, String phone) async {
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP
+  Future<void> signUp(String email, String password, String username, String phone, bool isRole) async {
     loading.value = true;
     String? result = await authServices.signUp(email, password, username, phone);
     if (result == null) {
       await addUserData(username, email, phone, true);
       loading.value = false;
       clearTextFields();
-      Get.off(() => BottomBarView(isUser: true));
+      isRole ? Get.off(() => BottomBarView(isUser: isRole)) : showActivationDialog();
+
     } else {
       loading.value = false;
       Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
     }
   }
+  //
+  // //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN IN BUSINESS
+  // Future<void> signInBusiness(String email, String password) async {
+  //   loading.value = true;
+  //   String? result = await authServices.signIn(email, password);
+  //   if (result == null) {
+  //     UserModel userModel = await getUser();
+  //     if (userModel.userId != '') {
+  //       bool isUser = userModel.isUser ?? false;
+  //       if (!isUser) {
+  //         loading.value = false;
+  //         clearTextFields();
+  //         Get.off(() => const BottomBarView(isUser: false));
+  //       } else {
+  //         loading.value = false;
+  //         Get.snackbar('Error', 'You are not authorized as a business.', snackPosition: SnackPosition.TOP);
+  //       }
+  //     } else {
+  //       loading.value = false;
+  //       Get.snackbar('Error', 'User document not found.', snackPosition: SnackPosition.TOP);
+  //     }
+  //   } else {
+  //     loading.value = false;
+  //     Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
+  //   }
+  // }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN IN BUSINESS
-  Future<void> signInBusiness(String email, String password) async {
-    loading.value = true;
-    String? result = await authServices.signIn(email, password);
-    if (result == null) {
-      UserModel userModel = await getUser();
-      if (userModel.userId != '') {
-        bool isUser = userModel.isUser ?? false;
-        if (!isUser) {
-          loading.value = false;
-          clearTextFields();
-          Get.off(() => BottomBarView(isUser: false));
-        } else {
-          loading.value = false;
-          Get.snackbar('Error', 'You are not authorized as a business.', snackPosition: SnackPosition.TOP);
-        }
-      } else {
-        loading.value = false;
-        Get.snackbar('Error', 'User document not found.', snackPosition: SnackPosition.TOP);
-      }
-    } else {
-      loading.value = false;
-      Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
-    }
-  }
 
-
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP BUSINESS
-  Future<void> signUpBusiness(String email, String password, String username, String phone) async {
-    loading.value = true;
-    String? result = await authServices.signUp(email, password, username, phone);
-    if (result == null) {
-      await addUserData(username, email, phone, false);
-      loading.value = false;
-      clearTextFields();
-      showActivationDialog();
-    } else {
-      loading.value = false;
-      Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
-    }
-  }
+  // //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP BUSINESS
+  // Future<void> signUpBusiness(String email, String password, String username, String phone) async {
+  //   loading.value = true;
+  //   String? result = await authServices.signUp(email, password, username, phone);
+  //   if (result == null) {
+  //     await addUserData(username, email, phone, false);
+  //     loading.value = false;
+  //     clearTextFields();
+  //     showActivationDialog();
+  //   } else {
+  //     loading.value = false;
+  //     Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
+  //   }
+  // }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ LOGOUT
   Future<void> logout() async {
     authServices.logOut();
-    Get.off(SplashScreen());
+    Get.off(const SplashScreen());
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD TO FIREBASE

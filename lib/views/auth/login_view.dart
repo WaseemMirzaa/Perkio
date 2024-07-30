@@ -21,9 +21,10 @@ class LoginView extends StatefulWidget {
   State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginUserState extends State<LoginUser> with ValidationMixin {
+class _LoginViewState extends State<LoginView> with ValidationMixin {
 
   var controller = Get.find<UserController>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +56,9 @@ class _LoginUserState extends State<LoginUser> with ValidationMixin {
             ],
           ),
           const SpacerBoxVertical(height: 20),
-          const AuthTextfield(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon),
+          AuthTextfield(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon, textController: controller.emailController,),
           const SpacerBoxVertical(height: 20),
-                    const AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg),
+            AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,),
                     const SpacerBoxVertical(height: 20),
       Obx(() => controller.loading.value
           ? const CircularProgressIndicator()
@@ -68,16 +69,17 @@ class _LoginUserState extends State<LoginUser> with ValidationMixin {
             simpleValidation(controller.passwordController.text);
         if (controller.emailErrorText.value == "" &&
             controller.passErrorText.value == "") {
-          controller.signInUser(controller.emailController.text,
+          controller.signIn(controller.emailController.text,
               controller.passwordController.text);
         } else {
           Get.snackbar('Error', 'Field required');
-        }}, text: TempLanguage.btnLblSwipeToLogin),
-                    const SpacerBoxVertical(height: 20),
+        }}, text: TempLanguage.btnLblSwipeToLogin)),
+                     const SpacerBoxVertical(height: 20),
                     Text(TempLanguage.txtForgotPassword, style: poppinsRegular(fontSize: 18, color: AppColors.secondaryText),)
 
         ],),
       )
+    )
     );
   }
 }

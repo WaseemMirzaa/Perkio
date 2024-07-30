@@ -70,13 +70,13 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
         stream: _userProfileStreamController.stream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (!snapshot.hasData) {
-            return Center(child: Text('No data available'));
+            return const Center(child: Text('No data available'));
           }
           final businessProfile = snapshot.data!;
           return Column(
@@ -153,7 +153,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    children: const [
+                    children: [
                       ProfileListItems(path: AppAssets.profile1,
                         textController: userNameController,
                         enabled: enabled.value,),
@@ -170,18 +170,19 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         enabled: enabled.value,),
                       ProfileListItems(path: AppAssets.profile6,
                         textController: businessIdController,
-                        enabled: enabled.value,), GestureDetector(
+                        enabled: enabled.value,),
+                      GestureDetector(
                           onTap: () {
                             controller.logout();
                           },
-                          child: SettingsListItems(
+                          child: const SettingsListItems(
                               path: AppAssets.profile6, text: 'Logout')),
                     ],
 
                   ),
                 ),
-              ]
-          )
+          ]
+          );
         }
     )
     );

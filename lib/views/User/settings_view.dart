@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:sizer/sizer.dart';
+import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/views/User/user_profile_view.dart';
-import 'package:skhickens_app/widgets/back_button_widget.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/widgets/profile_list_items.dart';
+import 'package:skhickens_app/widgets/settings_list_items.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -48,6 +45,8 @@ class _SettingsViewState extends State<SettingsView> {
       'title': TempLanguage.txtHelp,
     },
   ];
+
+  var controller = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +87,14 @@ class _SettingsViewState extends State<SettingsView> {
                       }
                     }
                   },
-                  child: ProfileListItems(path: settingsItems[index]['icon'], text: settingsItems[index]['title'])),
+                  child: SettingsListItems(path: settingsItems[index]['icon'], text: settingsItems[index]['title'],)),
         
             ),
+            GestureDetector(
+                onTap: (){
+                  controller.logout();
+                },
+                child: const SettingsListItems(path: AppAssets.helpImg, text: 'Logout')),
           ],
         ),
       ),

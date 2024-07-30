@@ -9,15 +9,11 @@ import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/controllers/favourites_screen_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/widgets/available_list_items.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_appBar/custom_appBar.dart';
-import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/favourites_widget.dart';
 import 'package:skhickens_app/widgets/rewards_list_items.dart';
-import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 
@@ -47,9 +43,9 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     getFavourites();
     Future.microtask((){
       if(widget.isReward){
-        controller.selectedIndex(1);
+        myController.selectedIndex(1);
       }else{
-        controller.selectedIndex(0);
+        myController.selectedIndex(0);
       }}
     );
   }
@@ -150,14 +146,14 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                     if (snapshot.hasError) {
                       return Center(
                           child: Text('Error: ${snapshot.error}'));
                     }
                     if (!snapshot.hasData) {
-                      return Center(child: Text('No data available'));
+                      return const Center(child: Text('No data available'));
                     }
                     final List<DealModel> favourites = snapshot.data!;
                     return ListView.builder(

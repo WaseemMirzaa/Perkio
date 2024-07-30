@@ -41,7 +41,7 @@ class _AddDealsState extends State<AddDeals> {
               const SpacerBoxVertical(height: 60),
               Text(TempLanguage.txtDeal, style: poppinsRegular(fontSize: 13),),
               const SpacerBoxVertical(height: 10),
-              const CommonTextField(text: TempLanguage.txtSuperDuper,textController: myController.dealNameController,),
+              CommonTextField(text: TempLanguage.txtSuperDuper,textController: myController.dealNameController,),
               const SpacerBoxVertical(height: 20),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/views/Business/home_business.dart';
 import 'package:skhickens_app/views/Business/home_business_extended.dart';
-import 'package:skhickens_app/views/Business/profile_settings_business.dart';
 import 'package:skhickens_app/views/Business/rewards_business.dart';
-import 'package:skhickens_app/views/Business/subscription_plan.dart';
 import 'package:skhickens_app/views/User/favourites.dart';
 import 'package:skhickens_app/views/User/home_user.dart';
 import 'package:skhickens_app/views/User/my_deals.dart';
-import 'package:skhickens_app/views/User/user_profile_view.dart';
 import 'package:skhickens_app/views/User/settings_view.dart';
 import 'package:skhickens_app/views/User/rewards_view.dart';
 import 'package:skhickens_app/widgets/custom_bottom_bar/custom_bottom_bar_items.dart';

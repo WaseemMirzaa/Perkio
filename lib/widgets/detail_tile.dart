@@ -15,83 +15,67 @@ class DetailTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10,left: 20,right: 20),
-      child: Container(
-        height: 125,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          // border: Border.all(width: 1, color: AppColors.borderColor),
-          color: AppColors.whiteColor,
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black.withOpacity(0.2),
-          //     blurRadius: 6,
-          //     offset: Offset(0, 3)
-          //   )
-          // ]
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SpacerBoxVertical(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(TempLanguage.txtBusinessName, style: poppinsMedium(fontSize: 14),),
-                  GestureDetector(
-                      onTap: (){
-                        Get.toNamed(AppRoutes.businessDetail);
-                      },
-                      child: Text(TempLanguage.txtViewDeals, style: poppinsMedium(fontSize: 7.sp, color: AppColors.yellowColor),)),
-                ],
-              ),
-              const SpacerBoxVertical(height: 5),
-              Row(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SpacerBoxVertical(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(TempLanguage.txtBusinessName, style: poppinsMedium(fontSize: 13.sp),),
+                GestureDetector(
+                    onTap: (){
+                      Get.toNamed(AppRoutes.businessDetail);
+                    },
+                    child: Text(TempLanguage.txtViewDeals, style: poppinsMedium(fontSize: 8.sp, color: AppColors.yellowColor),)),
+              ],
+            ),
+            const SpacerBoxVertical(height: 5),
+            Row(
 
-                children: [
-                  const Icon(Icons.star_half, color: AppColors.yellowColor, size: 10,),
-                  const SpacerBoxHorizontal(width: 4),
-                  Text(TempLanguage.txtRating, style: poppinsRegular(fontSize: 10, color: AppColors.yellowColor),),
-                ],
+              children: [
+                Icon(Icons.star_half, color: AppColors.yellowColor, size: 11.sp,),
+                const SpacerBoxHorizontal(width: 4),
+                Text(TempLanguage.txtRating, style: poppinsRegular(fontSize: 10.sp, color: AppColors.yellowColor),),
+              ],
+            ),
+            const SpacerBoxVertical(height: 5),
+            Row(
+              children: [
+                Icon(Icons.phone, color: AppColors.hintText, size: 11.sp,),
+                const SpacerBoxHorizontal(width: 4),
+                Text(TempLanguage.txtDummyPhone, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+              ],
+            ),
+            const SpacerBoxVertical(height: 5),
+            Row(
+              children: [
+                Image.asset(AppAssets.globeImg, scale: 2.5.sp,),
+                const SpacerBoxHorizontal(width: 4),
+                Text(TempLanguage.txtDummyWebsite, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+              ],
+            ),
+            const SpacerBoxVertical(height: 5),
+            Row(
+              children: [
+                Icon(Icons.location_on, color: AppColors.hintText, size: 11.sp,),
+                const SpacerBoxHorizontal(width: 4),
+                Text(TempLanguage.txtDummyAddress, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+              ],
+            ),
+            const SpacerBoxVertical(height: 5),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: double.infinity,
+                height: 1,
+                color: AppColors.blackColor,
               ),
-              const SpacerBoxVertical(height: 5),
-              Row(
-                children: [
-                  const Icon(Icons.phone, color: AppColors.hintText, size: 10,),
-                  const SpacerBoxHorizontal(width: 4),
-                  Text(TempLanguage.txtDummyPhone, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                ],
-              ),
-              const SpacerBoxVertical(height: 5),
-              Row(
-                children: [
-                  Image.asset(AppAssets.globeImg, scale: 3,),
-                  const SpacerBoxHorizontal(width: 4),
-                  Text(TempLanguage.txtDummyWebsite, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                ],
-              ),
-              const SpacerBoxVertical(height: 5),
-              Row(
-                children: [
-                  const Icon(Icons.location_on, color: AppColors.hintText, size: 10,),
-                  const SpacerBoxHorizontal(width: 4),
-                  Text(TempLanguage.txtDummyAddress, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
-                ],
-              ),
-              const SpacerBoxVertical(height: 5),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 1,
-                  color: AppColors.blackColor,
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
-
       ),
     );
   }

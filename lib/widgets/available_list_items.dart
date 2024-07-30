@@ -17,9 +17,10 @@ class AvailableListItems extends StatelessWidget {
       height: 130,
       margin: const EdgeInsets.only(bottom: 10,left: 12,right: 12),
       padding: const EdgeInsets.all(2),
+
       decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(width: 1, color: AppColors.borderColor),
+                  border: Border.all(width: 1, color: isFeatured ? AppColors.redColor : AppColors.borderColor),
                   color: AppColors.whiteColor,
                   boxShadow: [
                     BoxShadow(
@@ -70,15 +71,15 @@ class AvailableListItems extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const SpacerBoxVertical(height: 10),
-                                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 14),),
+                                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 13.sp),),
                                           const SpacerBoxVertical(height: 5),
-                                          Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
+                                          Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                                           const SpacerBoxVertical(height: 5),
                                           Row(
                                             children: [
                                               const Icon(Icons.star_half, color: AppColors.yellowColor, size: 15,),
-                                              Text('4.4', style: poppinsRegular(fontSize: 12, color: AppColors.yellowColor),),
-                                              Text('15K', style: poppinsRegular(fontSize: 12, color: AppColors.yellowColor),)
+                                              Text('4.4', style: poppinsRegular(fontSize: 10.sp, color: AppColors.yellowColor),),
+                                              Text('15K', style: poppinsRegular(fontSize: 10.sp, color: AppColors.yellowColor),)
 
                                             ],
                                           ),
@@ -89,7 +90,7 @@ class AvailableListItems extends StatelessWidget {
                                               Expanded(
                                                 child: Row(
                                                   children: [
-                                                    Expanded(child: Text('4773 Waldeck Street, US', style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
+                                                    Expanded(child: Text('4773 Waldeck Street, US', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),maxLines: 2,)),
                                                     const SpacerBoxHorizontal(width: 4),
                                                     
                                                 

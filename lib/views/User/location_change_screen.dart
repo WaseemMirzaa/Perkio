@@ -8,6 +8,7 @@ import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
+import 'package:skhickens_app/views/Business/subscription_plan.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
@@ -88,6 +89,7 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                   Expanded(
                     child: ButtonWidget(onSwipe: (){
                       widget.isChangeLocation ? Get.back() :
+                      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.to(()=>SubscriptionPlan(fromSignUp: true,)) :
                        Get.to(BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false,));
                     }, text: TempLanguage.btnLblSwipeToSelect),
                   ),

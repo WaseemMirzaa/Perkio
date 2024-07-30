@@ -33,10 +33,10 @@ class _HomeUserState extends State<HomeUser> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12),
-                  child: Text(TempLanguage.txtCategory, style: poppinsMedium(fontSize: 18),),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 12),
+                //   child: Text(TempLanguage.txtCategory, style: poppinsMedium(fontSize: 18),),
+                // ),
                 const SpacerBoxVertical(height: 20),
                 SizedBox(
                   height: 140,

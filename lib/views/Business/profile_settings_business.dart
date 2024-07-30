@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
@@ -23,22 +26,35 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
         children: [
           Stack(
             children: [
-
               Image.asset(AppAssets.imageHeader),
               BackButtonWidget(),
+              Positioned(
+                right: 3.w,
+                top: 6.h,
+                child: GestureDetector(
+                  onTap: (){
+                    // Get.toNamed(AppRoutes.addBusinessInfo);
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: const BoxDecoration(
+                          color: AppColors.whiteColor,
+                          shape: BoxShape.circle
+                      ),child: Icon(Icons.edit,size: 20.sp,)),
+                ),
+              ),
             ],
           ),
-          // GestureDetector(
-          //     onTap: (){
-          //       Navigator.pop(context);
-          //     },
-          //     child: BackButtonWidget()),
-
               Align(
                   alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
+                  child: GestureDetector(
+                    onTap: (){
+                      Get.toNamed(AppRoutes.addBusinessInfo);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
+                    ),
                   )),
                   Expanded(
                     child: ListView(
@@ -51,8 +67,6 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         ProfileListItems(path: AppAssets.profile5, text: TempLanguage.txtWebsite),
                         ProfileListItems(path: AppAssets.profile6, text: TempLanguage.txtDummyBusinessId),
                       ],
-                    
-                    
                     
                           ),
                   ),

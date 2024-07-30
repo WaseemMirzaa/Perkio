@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -43,8 +44,8 @@ class _DealDetailState extends State<DealDetail> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 15),),
-                          Text(TempLanguage.txtMilesAway, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
+                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 13.sp),),
+                          Text(TempLanguage.txtMilesAway, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                         ],
                       ),
                       Text(TempLanguage.txt3Uses, style: poppinsMedium(fontSize: 14),textAlign: TextAlign.center,),

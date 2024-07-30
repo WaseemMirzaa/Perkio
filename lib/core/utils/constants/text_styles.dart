@@ -46,7 +46,7 @@ TextStyle altoysFont({Color color = Colors.black, required double fontSize}) {
   return TextStyle(
     color: color,
     fontSize: fontSize,
-    fontFamily: 'Altoys Font',
+    fontFamily: 'Roboto BoldItalic',
   );
 }
 
@@ -59,21 +59,23 @@ TextStyle metropolisLight({Color color = Colors.black, required double fontSize}
   );
 }
 
-TextStyle metropolisRegular({Color color = Colors.black, required double fontSize}) {
+TextStyle metropolisRegular({Color color = Colors.black, required double fontSize, double? height}) {
   return TextStyle(
     color: color,
     fontSize: fontSize,
     fontFamily: 'Metropolis',
-    fontWeight: FontWeight.w400
+    fontWeight: FontWeight.w400,
+    height: height
   );
 }
 
-TextStyle metropolisMedium({Color color = Colors.black, required double fontSize}) {
+TextStyle metropolisMedium({Color color = Colors.black, required double fontSize, double? height}) {
   return TextStyle(
     color: color,
     fontSize: fontSize,
     fontFamily: 'Metropolis',
-    fontWeight: FontWeight.w500
+    fontWeight: FontWeight.w500,
+    height: height
   );
 }
 

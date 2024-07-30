@@ -39,7 +39,7 @@ class _LoginViewState extends State<LoginView> {
               onTap: (){
                 Get.toNamed(AppRoutes.signupUser);
               },
-              child: Text(TempLanguage.txtNewUser, style: poppinsRegular(fontSize: 13))),
+              child: Text(getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? TempLanguage.txtNewUser : TempLanguage.txtNewBusiness, style: poppinsRegular(fontSize: 13))),
             ],
           ),
           const SpacerBoxVertical(height: 20),

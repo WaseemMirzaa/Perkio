@@ -71,29 +71,27 @@ class FavouritesWidget extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const SpacerBoxVertical(height: 10),
-                                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 14),),
+                                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 13.sp),),
                                           const SpacerBoxVertical(height: 5),
-                                          Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
+                                          Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                                           const SpacerBoxVertical(height: 5),
                                           Row(
                                             children: [
                                               const Icon(Icons.star_half, color: AppColors.yellowColor, size: 15,),
-                                              Text('4.4', style: poppinsRegular(fontSize: 12, color: AppColors.yellowColor),),
-                                              Text('15K', style: poppinsRegular(fontSize: 12, color: AppColors.yellowColor),)
+                                              Text('4.4', style: poppinsRegular(fontSize: 10.sp, color: AppColors.yellowColor),),
+                                              Text('15K', style: poppinsRegular(fontSize: 10.sp, color: AppColors.yellowColor),)
 
                                             ],
                                           ),
                                           const SpacerBoxVertical(height: 5),
                                           Row(
                                             children: [
-                                              Icon(Icons.location_on, color: AppColors.hintText, size: 15.sp,),
+                                              Icon(Icons.location_on, color: AppColors.hintText, size: 11.sp,),
                                               Expanded(
                                                 child: Row(
                                                   children: [
-                                                    Expanded(child: Text('4773 Waldeck Street, US', style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
+                                                    Expanded(child: Text('4773 Waldeck Street, US', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),maxLines: 2,)),
                                                     const SpacerBoxHorizontal(width: 4),
-                                                    
-                                                
                                                   ],
                                                 ),
                                               )
@@ -109,9 +107,8 @@ class FavouritesWidget extends StatelessWidget {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
+                                          SizedBox(height: 1.5.h,),
                                           const SpacerBoxVertical(height: 10),
-                                          Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
-                                                
                                                 Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),)
                                         ],
                                       ),

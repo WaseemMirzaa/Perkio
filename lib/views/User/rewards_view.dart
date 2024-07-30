@@ -41,10 +41,10 @@ class RewardsView extends StatelessWidget {
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: 6,
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                itemBuilder: (context, index)=> RewardsListItems(),
+                itemBuilder: (context, index)=> const RewardsListItems(),
 
               ),
             ),

@@ -30,11 +30,12 @@ class TempLanguage{
   static const String txtSuperDuper = 'Super Duper';
   static const String txtDealPrice = 'Deal Price';
   static const String txtUses = 'Uses';
-  static const String txtTotalReceiptPrice = 'Total Receipt Price';
+  static const String txtRequiredPointsToRedeem = 'Required Points to Redeem';
   static const String txtDetails = 'Details';
   static const String txtLogin = 'LOGIN';
   static const String txtSignup = 'SIGNUP';
   static const String txtNewUser = 'NEW USER? SIGN UP NOW';
+  static const String txtNewBusiness = 'NEW BUSINESS? SIGN UP NOW';
   static const String txtForgotPassword = 'Forgot Password?';
   static const String txtEdit = 'Edit';
   static const String txtDummyPassword = '**** *** ***';

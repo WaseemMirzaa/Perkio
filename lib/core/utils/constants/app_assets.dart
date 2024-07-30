@@ -50,5 +50,6 @@ class AppAssets{
   static const thumbsImg = 'assets/images/thumbs.png';
   static const userImg = 'assets/images/User.png';
   static const viewImg = 'assets/images/view.png';
+  static const appleIcon = 'assets/images/apple_icon.png';
   static const profileHeader = 'assets/images/Union 1.png';
 }

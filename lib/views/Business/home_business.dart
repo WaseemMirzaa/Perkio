@@ -44,7 +44,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                 ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: 10,
                   itemBuilder: (context, index)=> index % 2 == 0 ?  GestureDetector(
                       onTap: (){

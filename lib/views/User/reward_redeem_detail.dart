@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -23,84 +24,84 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      body: Stack(
+      body: Column(
         children: [
-          Image.asset(AppAssets.imageHeader),
-          BackButtonWidget(),
-          Padding(
-            padding: const EdgeInsets.only(top: 200),
-            child: Column(
-              children: [
-                
-                const SpacerBoxVertical(height: 20),
-                const DetailTile(),
-                const SpacerBoxVertical(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          Stack(
+            children: [
+              Image.asset(AppAssets.imageHeader),
+              BackButtonWidget(),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SpacerBoxVertical(height: 20),
+              const DetailTile(),
+              const SpacerBoxVertical(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(TempLanguage.txtRewardInfo, style: poppinsMedium(fontSize: 13.sp),),
+                    const SpacerBoxVertical(height: 10),
+                    Text(TempLanguage.txtLoremIpsumShort, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                  ],
+                )
+              ),
+              const SpacerBoxVertical(height: 20),
+              Center(child: Text(TempLanguage.txtPoints, style: poppinsBold(fontSize: 13.sp, color: AppColors.secondaryText),)),
+              const SpacerBoxVertical(height: 10),
+              Center(child: Text('1000/1000', style: poppinsRegular(fontSize: 13.sp, color: AppColors.secondaryText),)),
+              const SpacerBoxVertical(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: SizedBox(
+                  height: 45,
+                  child: Stack(
+                    alignment: Alignment.bottomLeft,
                     children: [
-                      Text(TempLanguage.txtRewardInfo, style: poppinsMedium(fontSize: 15),),
-                      const SpacerBoxVertical(height: 10),
-                      Text(TempLanguage.txtLoremIpsumShort, style: poppinsRegular(fontSize: 15, color: AppColors.hintText),),
+                      Container(
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.grey[200],
+                          boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3)
+                        )
+                      ]
+                        ),
+                      ),
+                      Container(
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          gradient: const LinearGradient(
+                          colors: [Colors.red, Colors.orange],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        ),
+                      ),
+
                     ],
-                  )
-                ),
-                const SpacerBoxVertical(height: 20),
-                Text(TempLanguage.txtPoints, style: poppinsBold(fontSize: 15, color: AppColors.secondaryText),),
-                const SpacerBoxVertical(height: 10),
-                Text('1000/1000', style: poppinsRegular(fontSize: 15, color: AppColors.secondaryText),),
-                const SpacerBoxVertical(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: SizedBox(
-                    height: 45,
-                    child: Stack(
-                      alignment: Alignment.bottomLeft,
-                      children: [
-                        Container(
-                          height: 20,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.grey[200],
-                            boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3)
-                          )
-                        ]
-                          ),
-                        ),
-                        Container(
-                          height: 20,
-                          
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            gradient: const LinearGradient(
-                            colors: [Colors.red, Colors.orange],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          ),
-                        ),
-                        
-                      ],
-                    ),
                   ),
                 ),
-                const SpacerBoxVertical(height: 80),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: ButtonWidget(onSwipe: (){
-                    showCongratulationDialog(onDone: (){
-                      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.bottomBarView,(route)=>false);
-                    });
-                  }, text: TempLanguage.btnLblSwipeToRedeem),
-                )
-                
-              ],
-            ),
+              ),
+              const SpacerBoxVertical(height: 80),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: ButtonWidget(onSwipe: (){
+                  showCongratulationDialog(onDone: (){
+                    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.bottomBarView,(route)=>false);
+                  });
+                }, text: TempLanguage.btnLblSwipeToRedeem),
+              )
+
+            ],
           ),
         ],
       ),

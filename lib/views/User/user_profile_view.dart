@@ -20,31 +20,50 @@ class _UserProfileViewState extends State<UserProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      body: Stack(
+      body: Column(
         children: [
-          Image.asset(AppAssets.profileHeader),
-              BackButtonWidget(),
-              Positioned(
+          Stack(children: [
+            Image.asset(AppAssets.profileHeader),
+            BackButtonWidget(),
+            Positioned(
+              right: 3.w,
+              top: 6.h,
+              child: GestureDetector(
+                onTap: (){
+
+                },
+                child: Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: const BoxDecoration(
+                        color: AppColors.whiteColor,
+                        shape: BoxShape.circle
+                    ),child: Icon(Icons.edit,size: 20.sp,)),
+              ),
+            ),
+            Positioned(
                 right: 0,
                 top: 205,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 30),
                   child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
                 )),
-          Column(
-            children: [
-              SpacerBoxVertical(height: 22.h),
-              Expanded(child: ListView(
-                children: const [
-                  ProfileListItems(path: AppAssets.profile1, text: 'Skhicken'),
-                  ProfileListItems(path: AppAssets.profile2, text: TempLanguage.txtDummyPassword),
-                  ProfileListItems(path: AppAssets.profile3, text: TempLanguage.txtDummyEmail),
-                  ProfileListItems(path: AppAssets.profile4, text: 'United State'),
-                ],
-              ))
+          ],),
+          Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(TempLanguage.txtEdit, style: poppinsRegular(fontSize: 10, color: AppColors.hintText),),
+              )),
+          Expanded(child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 8),
 
+            children: const [
+              ProfileListItems(path: AppAssets.profile1, text: 'Skhicken'),
+              ProfileListItems(path: AppAssets.profile2, text: TempLanguage.txtDummyPassword),
+              ProfileListItems(path: AppAssets.profile3, text: TempLanguage.txtDummyEmail),
+              ProfileListItems(path: AppAssets.profile4, text: 'United State'),
             ],
-          ),
+          )),
         ],
       ),
     );

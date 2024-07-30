@@ -14,8 +14,8 @@ class BusinessHomeListItems extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10,left: 12,right: 12),
       child: Container(
-                          height: 130,
-                                  decoration: BoxDecoration(
+        height: 18.h,
+        decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(width: 1, color: AppColors.borderColor),
                     color: AppColors.whiteColor,
@@ -23,65 +23,74 @@ class BusinessHomeListItems extends StatelessWidget {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         blurRadius: 6,
-                        offset: Offset(0, 3)
+                        offset: const Offset(0, 3)
                       )
                     ]
                                   ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  child: Stack(
+                                    alignment: Alignment.topRight,
                                     children: [
-                                      SpacerBoxHorizontal(width: 10),
-                                      
-                                      Stack(
-                                      alignment: Alignment.topLeft,
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            SpacerBoxVertical(height: 1.3.h),
-                                            Expanded(child: Image.asset(AppAssets.restaurantImg1)),
-                                            Text("\$25",style: poppinsMedium(fontSize: 15.sp),),
-                                          ],
-                                        ),
-                                        
-                                      ],
-                                    ),
-                                      SpacerBoxHorizontal(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            SpacerBoxVertical(height: 10),
-                                          Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 14),),
-                                          SpacerBoxVertical(height: 5),
-                                          Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
-                                          
-                                          SpacerBoxVertical(height: 5),
-                                          Row(
-                                            children: [
-                                              Icon(Icons.location_on, color: AppColors.hintText, size: 12.sp,),
-                                              Expanded(
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(child: Text('280 Mil', style: poppinsRegular(fontSize: 12, color: AppColors.hintText),maxLines: 2,)),
-                                                    SpacerBoxHorizontal(width: 4),
-                                                    
-                                                
-                                                  ],
-                                                ),
-                                              )
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const SpacerBoxHorizontal(width: 10),
 
-                                            ],
-                                          ),
-                                          Expanded(child: SizedBox()),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 20),
-                                            child: Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),),
-                                          ),
-                                          SpacerBoxVertical(height: 5),
+                                          Stack(
+                                          alignment: Alignment.topLeft,
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                SpacerBoxVertical(height: 1.3.h),
+                                                Expanded(child: Image.asset(AppAssets.restaurantImg1)),
+                                              ],
+                                            ),
+
                                           ],
                                         ),
+                                          const SpacerBoxHorizontal(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const SpacerBoxVertical(height: 10),
+                                              Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 13.sp),),
+                                              const SpacerBoxVertical(height: 5),
+                                              Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+
+                                              const SpacerBoxVertical(height: 5),
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.location_on, color: AppColors.hintText, size: 12.sp,),
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(child: Text('280 Mil', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),maxLines: 2,)),
+                                                        const SpacerBoxHorizontal(width: 4),
+
+
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
+                                                const SpacerBoxVertical(height: 5),
+
+                                                Text('3 People used by now', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText,),maxLines: 1,),
+
+                                                const Expanded(child: SizedBox()),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 20),
+                                                child: Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),),
+                                              ),
+                                              const SpacerBoxVertical(height: 5),
+                                              ],
+                                            ),
+                                          ),
+
+                                        ],
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(12.0),
@@ -93,21 +102,21 @@ class BusinessHomeListItems extends StatelessWidget {
                                               mainAxisAlignment: MainAxisAlignment.end,
                                               children: [
                                                 Image.asset(AppAssets.editImg, scale: 2.5,),
-                                                SpacerBoxHorizontal(width: 10),
+                                                const SpacerBoxHorizontal(width: 10),
                                                 Image.asset(AppAssets.deleteImg, scale: 2.5,),
                                               ],
                                             ),
-                                            
+
                                             Container(
                                               height: 20,
                                               width: 55,
                                               decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                                colors: [Colors.red, Colors.orange],
-                                                                begin: Alignment.topLeft,
-                                                                end: Alignment.bottomRight,
-                                                              ),
-                                                              borderRadius: BorderRadius.circular(100),
+                                                gradient: const LinearGradient(
+                                                  colors: [Colors.red, Colors.orange],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                ),
+                                                borderRadius: BorderRadius.circular(100),
                                               ),
                                               child: Center(child: Text(TempLanguage.txtPromote, style: poppinsRegular(fontSize: 9, color: AppColors.whiteColor),)),
                                             )

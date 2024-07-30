@@ -45,25 +45,13 @@ class _AddDealsState extends State<AddDeals> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(TempLanguage.txtDealPrice, style: poppinsRegular(fontSize: 13),),
-                                const SpacerBoxVertical(height: 10),
-                                const CommonTextField(text: "\$100",),
-                      ],
-                    ),
-                  ),
-                  const SpacerBoxHorizontal(width: 20),
-                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(TempLanguage.txtUses, style: poppinsRegular(fontSize: 13),),
                                 const SpacerBoxVertical(height: 15),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     GestureDetector(
                                       onTap: (){

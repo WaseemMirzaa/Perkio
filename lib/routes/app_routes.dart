@@ -13,6 +13,7 @@ import 'package:skhickens_app/views/User/deal_detail.dart';
 import 'package:skhickens_app/views/User/favourites.dart';
 import 'package:skhickens_app/views/User/home_user.dart';
 import 'package:skhickens_app/views/User/location_change_screen.dart';
+import 'package:skhickens_app/views/auth/add_bussiness_details_view.dart';
 import 'package:skhickens_app/views/auth/login_view.dart';
 import 'package:skhickens_app/views/User/user_profile_view.dart';
 import 'package:skhickens_app/views/User/settings_view.dart';
@@ -53,10 +54,11 @@ class AppRoutes {
   static const String privacyPolicy = '/privacyPolicy';
   static const String termsAndConditions = '/termsAndConditions';
   static const String bottomBarView = '/bottomBarView';
+  static const String addBusinessInfo = '/addBusinessInfo';
 
 
   static List<GetPage> routes = [
-    GetPage(name: splash, page: () =>  SplashScreen()),
+    GetPage(name: splash, page: () =>  const SplashScreen()),
     GetPage(name: selection, page: () => const SelectionScreen()),
     GetPage(name: addDeal, page: () => const AddDeals()),
     GetPage(name: addReward, page: () => const AddRewards()),
@@ -64,7 +66,7 @@ class AppRoutes {
     GetPage(name: homeBusiness, page: () => const HomeBusiness()),
     GetPage(name: profileSettingsBusiness, page: () => const ProfileSettingsBusiness()),
     GetPage(name: rewardsBusiness, page: () => const RewardsBusiness()),
-    GetPage(name: subscriptionPlan, page: () => const SubscriptionPlan()),
+    GetPage(name: subscriptionPlan, page: () => SubscriptionPlan()),
     GetPage(name: businessDetail, page: () => const BusinessDetail()),
     GetPage(name: dealDetail, page: () => const DealDetail()),
     GetPage(name: favouritesScreen, page: () => FavouritesScreen()),
@@ -81,5 +83,6 @@ class AppRoutes {
     GetPage(name: signupUser, page: () => const SignupView()),
     GetPage(name: privacyPolicy, page: () => const PrivacyPolicy()),
     GetPage(name: termsAndConditions, page: () => const TermsAndConditions()),
+    GetPage(name: addBusinessInfo, page: () => const AddBusinessDetailsView())
   ];
 }

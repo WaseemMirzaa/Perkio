@@ -91,6 +91,9 @@ flutter:
     - family: Altoys Font
       fonts:
         - asset: assets/fonts/Altoysitalic personal only.ttf
+    - family: Roboto BoldItalic
+      fonts:
+        - asset: assets/fonts/Roboto-BoldItalic.ttf
     - family: Metropolis
       fonts:
         - asset: assets/fonts/Metropolis-Light.otf

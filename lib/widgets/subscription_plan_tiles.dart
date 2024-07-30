@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
@@ -7,49 +8,47 @@ import 'package:skhickens_app/widgets/common_space.dart';
 
 class gradientTile extends StatelessWidget {
   const gradientTile({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Container(
-                  height: 125,
+                  height: 16.5.h,
                   decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(30),
-                                                      gradient: LinearGradient(
-                                                      colors: [Colors.red, Colors.orange],
-                                                      begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
-                                                    ),
-                                                    boxShadow: [
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: const LinearGradient(
+                        colors: [ Color(0xFFFF197C),Color(0xffFFA405)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         blurRadius: 6,
-                        offset: Offset(0, 3)
+                        offset: const Offset(0, 3)
                       )
                     ]
-                                                    ),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
+                  ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Row(
+              children: [
+                Image.asset(AppAssets.checkMark, scale: 3,),
+                const SpacerBoxHorizontal(width: 10),
+                Text(TempLanguage.txtRedeemDeals, style: metropolisExtraBold(fontSize: 15.sp, color: AppColors.whiteColor),)
+              ],
+            ),
+          ),
+          const SpacerBoxVertical(height: 10),
                                                         Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 40),
                                                           child: Row(
-                                                            
                                                             children: [
                                                               Image.asset(AppAssets.checkMark, scale: 3,),
-                                                              SpacerBoxHorizontal(width: 10),
-                                                              Text(TempLanguage.txtRedeemDeals, style: metropolisBold(fontSize: 16, color: AppColors.whiteColor),)
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SpacerBoxVertical(height: 10),
-                                                        Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 50),
-                                                          child: Row(
-                                                            
-                                                            children: [
-                                                              Image.asset(AppAssets.checkMark, scale: 3,),
-                                                              SpacerBoxHorizontal(width: 10),
-                                                              Text(TempLanguage.txtGetRewards, style: metropolisBold(fontSize: 16, color: AppColors.whiteColor),)
+                                                              const SpacerBoxHorizontal(width: 10),
+                                                              Text(TempLanguage.txtGetRewards, style: metropolisExtraBold(fontSize: 15.sp, color: AppColors.whiteColor),)
                                                             ],
                                                           ),
                                                         )
@@ -63,38 +62,42 @@ class PlanTiles extends StatelessWidget {
   final String heading;
   final String price;
   final String desc;
-  const PlanTiles({required this.heading, required this.price, required this.desc});
+  final Function()? onTap;
+  const PlanTiles({super.key, required this.heading, required this.price, required this.desc, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-                  height: 125,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(width: 1, color: AppColors.borderColor),
-                    color: AppColors.whiteColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 6,
-                        offset: Offset(0, 3)
-                      )
-                    ]
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(heading, style: metropolisMedium(fontSize: 26),),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                        Text('\$', style: metropolisRegular(fontSize: 16),),
-                                        Text(price, style: metropolisExtraBold(fontSize: 40),),
-                                      ],),
-                                      Text(desc, style: metropolisMedium(fontSize: 18),),
-                                    ],
-                                  ),
-                );
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+                    height: 16.5.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(width: 1, color: AppColors.borderColor),
+                      color: const Color(0xFFF2F2F2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3)
+                        )
+                      ]
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(heading, style: metropolisMedium(fontSize: 22.sp,height: 0.6),),
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                          Text('\$', style: metropolisRegular(fontSize: 14.sp,),),
+                                          Text(price, style: metropolisMedium(fontSize: 36.sp),),
+                                        ],),
+                                        Text(desc, style: metropolisMedium(fontSize: 15.sp,height: 0.2),),
+                                      ],
+                                    ),
+                  ),
+    );
   }
 }

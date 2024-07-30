@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -43,11 +44,11 @@ class RewardsListItems extends StatelessWidget {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             const SpacerBoxVertical(height: 10),
-                                            Text(TempLanguage.txtRewardName, style: poppinsMedium(fontSize: 14),),
+                                            Text(TempLanguage.txtRewardName, style: poppinsMedium(fontSize: 13.sp),),
                                             const SpacerBoxVertical(height: 5),
-                                            Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
+                                            Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                                             const SpacerBoxVertical(height: 5),
-                                            Text(TempLanguage.txtPointsAway, style: poppinsRegular(fontSize: 12, color: AppColors.hintText),),
+                                            Text(TempLanguage.txtPointsAway, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                                             const SpacerBoxVertical(height: 10),
                                             Stack(
                                               alignment: Alignment.bottomLeft,

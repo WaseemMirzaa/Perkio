@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
@@ -18,19 +19,18 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform
   );
 
-  UserServices userServices = UserServices();
-  String? userId = await userServices.getCurrentUserIdFromPreferences();
-  bool? isUser = await userServices.getIsUserFromPreferences();
-  Widget home = userId != null
-    ? (isUser == true ? const BottomBarView(isUser: true) : const BottomBarView(isUser: false))
-    : SplashScreen();
+  // UserServices userServices = UserServices();
+  // String? userId = await userServices.getCurrentUserIdFromPreferences();
+  // bool? isUser = await userServices.getIsUserFromPreferences();
+  // Widget home = userId != null
+  //   ? (isUser == true ? const BottomBarView(isUser: true) : const BottomBarView(isUser: false))
+  //   : const SplashScreen();
 
-  runApp(MyApp(home));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final Widget home;
-  MyApp(this.home);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +41,10 @@ class MyApp extends StatelessWidget {
             try {
               FocusManager.instance.primaryFocus?.unfocus();
             } catch (e, stacktrace) {
-              print('Error in onTap: $e');
-              print('Stacktrace: $stacktrace');
+              if (kDebugMode) {
+                print('Error in onTap: $e');
+                print('Stacktrace: $stacktrace');
+              }
               // FirebaseCrashlytics.instance.recordError(e, stacktrace);
             }
           },
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: home,
+            home: const SplashScreen(),
             // initialRoute: AppRoutes.splash,
             initialBinding: MyBinding(),
             getPages: AppRoutes.routes,

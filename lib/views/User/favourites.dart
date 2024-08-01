@@ -90,7 +90,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                         decoration: BoxDecoration(
                           gradient: myController.selectedIndex.value == 0
                               ? const LinearGradient(
-                                  colors: [Colors.red, Colors.orange],
+                                  colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 )
@@ -118,7 +118,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                         decoration: BoxDecoration(
                           gradient: myController.selectedIndex.value == 1
                               ? const LinearGradient(
-                                  colors: [Colors.red, Colors.orange],
+                                  colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 )

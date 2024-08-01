@@ -40,7 +40,7 @@ void showCongratulationDialog({Function? onDone}) {
                     decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50.0),
                             gradient: const LinearGradient(
-                          colors: [Colors.red, Colors.orange],
+                          colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),

@@ -32,7 +32,7 @@ class ButtonWidget extends StatelessWidget {
             shape: BoxShape.circle,
             color: isGradient ? AppColors.whiteColor : null,
             gradient: isGradient ? null : const LinearGradient(
-              colors: [Colors.red, Colors.orange],
+              colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -44,7 +44,7 @@ class ButtonWidget extends StatelessWidget {
       outerColor:  Colors.grey[200],
       innerColor: Colors.black,
       gradient: isGradient ? const LinearGradient(
-        colors: [Colors.red, Colors.orange],
+        colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ) : null,

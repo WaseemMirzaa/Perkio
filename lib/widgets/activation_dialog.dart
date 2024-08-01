@@ -14,7 +14,7 @@ void showActivationDialog() {
           borderRadius: BorderRadius.circular(35),
         ),
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -24,17 +24,17 @@ void showActivationDialog() {
                 scale: 3,
               ),
               
-              SpacerBoxVertical(height: 20),
+              const SpacerBoxVertical(height: 20),
               Text(
                 TempLanguage.txtProfileActivation,
                 style: poppinsRegular(fontSize: 15, color: AppColors.secondaryText),
                 textAlign: TextAlign.center,
               ),
-              SpacerBoxVertical(height: 30),
+              const SpacerBoxVertical(height: 30),
               GestureDetector(
                 onTap: () {
                   Get.back();
-                  Get.off(BottomBarView(isUser: false));
+                  Get.off(const BottomBarView(isUser: false));
                   
                 },
                 child: Container(
@@ -42,8 +42,8 @@ void showActivationDialog() {
                   width: double.infinity,
                     decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50.0),
-                            gradient: LinearGradient(
-                          colors: [Colors.red, Colors.orange],
+                            gradient: const LinearGradient(
+                          colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -52,7 +52,7 @@ void showActivationDialog() {
                     child: Center(child: Text(TempLanguage.btnLblDone, style: poppinsMedium(fontSize: 11, color: AppColors.whiteColor),)),
                 ),
               ),
-              SpacerBoxVertical(height: 10),
+              const SpacerBoxVertical(height: 10),
             ],
           ),
         ),

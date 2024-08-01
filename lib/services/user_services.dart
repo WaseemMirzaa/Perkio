@@ -66,12 +66,12 @@ class UserServices {
   //............ Get User
   Future<UserModel?> getUserById(String userId) async {
     final querySnapshot =
-        await _userCollection.where('userId', isEqualTo: userId).get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      final userData = querySnapshot.docs.first;
+        await _userCollection.doc(userId).get();
+    if (querySnapshot.exists) {
+      final userData = querySnapshot;
       return UserModel.fromDocumentSnapshot(userData);
     } else {
+      print("User Not Found");
       return null; // User not found
     }
   }

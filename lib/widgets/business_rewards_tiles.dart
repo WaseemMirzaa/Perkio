@@ -91,7 +91,7 @@ class BusinessRewardsTiles extends StatelessWidget {
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(100),
                                                     gradient: const LinearGradient(
-                                                    colors: [Colors.red, Colors.orange],
+                                                    colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                                                     begin: Alignment.topLeft,
                                                     end: Alignment.bottomRight,
                                                   ),

@@ -127,7 +127,7 @@ class AvailableListItems extends StatelessWidget {
                                                   padding: EdgeInsets.symmetric(horizontal: 2.w,vertical: 0.5.h),
                                                   decoration: const BoxDecoration(
                                                     gradient: LinearGradient(
-                                                      colors: [Colors.red, Colors.orange],
+                                                      colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                                                       begin: Alignment.topLeft,
                                                       end: Alignment.bottomRight,
                                                     ),

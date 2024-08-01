@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
@@ -24,18 +25,24 @@ class UserController extends GetxController {
     passwordController = TextEditingController();
     userNameController = TextEditingController();
     phoneController = TextEditingController();
+    nameFocusNode = FocusNode();
+    emailFocusNode = FocusNode();
+    passwordFocusNode = FocusNode();
+    phoneFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    print('------------? print dispose');
-
     // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     phoneController.dispose();
     passwordController.dispose();
     userNameController.dispose();
+    nameFocusNode.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    phoneFocusNode.dispose();
   }
 
   void clearTextFields() {
@@ -46,7 +53,7 @@ class UserController extends GetxController {
   }
 
   AuthServices authServices = AuthServices();
-  UserModel userProfile = UserModel();
+  Rx<UserModel> userModel = UserModel().obs;
   RxString userId = ''.obs;
   RxString emailErrorText = "".obs;
   RxString passErrorText = "".obs;
@@ -60,17 +67,22 @@ class UserController extends GetxController {
   late TextEditingController passwordController;
   late TextEditingController phoneController;
   late TextEditingController userNameController;
+  late FocusNode nameFocusNode;
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
+  late FocusNode phoneFocusNode;
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN IN
+  ///💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN IN
+
   Future<void> signIn(String email, String password) async {
     loading.value = true;
     String? result = await authServices.signIn(email, password);
     if (result == null) {
-      bool? isUser = await userServices.getIsUserFromPreferences();
-      if (isUser != null) {
+      UserModel? userModel = await userServices.getUserById(FirebaseAuth.instance.currentUser!.uid);
+      if (userModel != null) {
         loading.value = false;
         clearTextFields();
-        isUser ? Get.off(() => const BottomBarView(isUser: true)) : Get.off(() => const BottomBarView(isUser: false));
+        Get.off(() => BottomBarView(isUser: userModel.isUser!));
       } else {
         loading.value = false;
         Get.snackbar('Error', 'Failed to fetch user data.', snackPosition: SnackPosition.TOP);
@@ -90,104 +102,79 @@ class UserController extends GetxController {
       loading.value = false;
       clearTextFields();
       isRole ? Get.off(() => BottomBarView(isUser: isRole)) : showActivationDialog();
-
     } else {
       loading.value = false;
       Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
     }
   }
-  //
-  // //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN IN BUSINESS
-  // Future<void> signInBusiness(String email, String password) async {
-  //   loading.value = true;
-  //   String? result = await authServices.signIn(email, password);
-  //   if (result == null) {
-  //     UserModel userModel = await getUser();
-  //     if (userModel.userId != '') {
-  //       bool isUser = userModel.isUser ?? false;
-  //       if (!isUser) {
-  //         loading.value = false;
-  //         clearTextFields();
-  //         Get.off(() => const BottomBarView(isUser: false));
-  //       } else {
-  //         loading.value = false;
-  //         Get.snackbar('Error', 'You are not authorized as a business.', snackPosition: SnackPosition.TOP);
-  //       }
-  //     } else {
-  //       loading.value = false;
-  //       Get.snackbar('Error', 'User document not found.', snackPosition: SnackPosition.TOP);
-  //     }
-  //   } else {
-  //     loading.value = false;
-  //     Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
-  //   }
-  // }
 
 
-  // //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP BUSINESS
-  // Future<void> signUpBusiness(String email, String password, String username, String phone) async {
-  //   loading.value = true;
-  //   String? result = await authServices.signUp(email, password, username, phone);
-  //   if (result == null) {
-  //     await addUserData(username, email, phone, false);
-  //     loading.value = false;
-  //     clearTextFields();
-  //     showActivationDialog();
-  //   } else {
-  //     loading.value = false;
-  //     Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
-  //   }
-  // }
+  ///♦Heart
+  /// 💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ LOGOUT
   Future<void> logout() async {
-    authServices.logOut();
-    Get.off(const SplashScreen());
+    authServices.logOut().then((value) => Get.off(const SplashScreen()));
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD TO FIREBASE
+  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 ADD TO FIREBASE
+
   Future<void> addUserData(String name, String email, String phone, bool isUser) async {
     userServices.addUserData(fullName: name, email: email, phone: phone, isUser: isUser);
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ UPDATE USER
+  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛️ UPDATE USER
+
   Future<bool> updateUser(Map<String, dynamic> updatedData) async {
-    // Reference to the user document
     var uid = FirebaseAuth.instance.currentUser!.uid;
     return await userServices.updateUser(uid, updatedData);
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET USER
-  Future<UserModel> getUser() async {
-    var uid = FirebaseAuth.instance.currentUser!.uid;
-    return (await userServices.getUserById(uid))!;
+  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 GET USER
+
+  Future<UserModel?> getUser(String uid) async {
+    final userModel = await userServices.getUserById(uid);
+    await setUserInfo(userModel!);
+    return userModel;
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All DEALS
+
   Future<List<DealModel>> getDeals() async {
     var res = await userServices.getDeals();
     return res;
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All REWARDS
+
   Future<List<RewardModel>> getRewards() async {
     var res = await userServices.getRewards();
     return res;
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET FAVOURITE DEALS
+
   Future<List<DealModel>> getFavouriteDeals() async {
     var res = await userServices.getFavouriteDeals(authServices.auth.currentUser!.uid);
     return res;
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ LIKE DEAL
+
   Future<void> likeDeal(String dealId) async {
     userServices.likeDeal(dealId);
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ UNLIKE DEAL
+
   Future<void> unLikeDeal(String dealId) async {
     userServices.unLikeDeal(dealId);
+  }
+
+  Future<void> setUserInfo(UserModel userModel)async{
+    await setValue(SharedPrefKey.uid, userModel.userId);
+    await setValue(SharedPrefKey.isUser, userModel.isUser);
+    await setValue(SharedPrefKey.userName, userModel.userName);
+    await setValue(SharedPrefKey.email, userModel.email);
+    await setValue(SharedPrefKey.photo, userModel.image);
   }
 }

@@ -4,10 +4,11 @@ class UserKey {
   static const String EMAIL = "email";
   static const String PASSWORD = "password";
   static const String PHONENO = "phoneNo";
-  static const String IMAGE = "Image";
+  static const String IMAGE = "image";
   static const String ISUSER = "isUser";
   static const String ADDRESS = "address";
   static const String WEBSITE = "website";
+  static const String GOOGLEID = "googleId";
 }
 
 class DealKey {

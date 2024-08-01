@@ -4,8 +4,10 @@ import 'package:skhickens_app/controllers/add_rewards_controller.dart';
 import 'package:skhickens_app/controllers/business_controller.dart';
 import 'package:skhickens_app/controllers/business_detail_controller.dart';
 import 'package:skhickens_app/controllers/favourites_screen_controller.dart';
+import 'package:skhickens_app/controllers/home_controller.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/services/business_services.dart';
+import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
 
 class MyBinding implements Bindings {
@@ -17,5 +19,6 @@ class MyBinding implements Bindings {
     Get.lazyPut(() => FavouritesScreenController(), fenix: true);
     Get.lazyPut(() => UserController(UserServices()), fenix: true);
     Get.lazyPut(() => BusinessController(BusinessServices()), fenix: true);
+    Get.lazyPut(() => HomeController(HomeServices()), fenix: true);
   }
 }

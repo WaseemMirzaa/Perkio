@@ -49,7 +49,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                               decoration: BoxDecoration(
                                 gradient: controller.selectedIndex.value == 0
                                     ? const LinearGradient(
-                                        colors: [Colors.red, Colors.orange],
+                                        colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                       )
@@ -78,7 +78,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                               decoration: BoxDecoration(
                                 gradient: controller.selectedIndex.value == 1
                                     ? const LinearGradient(
-                                        colors: [Colors.red, Colors.orange],
+                                        colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                       )

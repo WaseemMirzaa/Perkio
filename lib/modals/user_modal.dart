@@ -10,6 +10,7 @@ class UserModel {
   String? address;
   String? website;
   bool? isUser;
+  String? googleId;
 
   UserModel({
     this.userId,
@@ -20,10 +21,10 @@ class UserModel {
     this.address,
     this.website,
     this.isUser,
+    this.googleId,
   });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
-    // Use this factory method to convert Firebase DocumentSnapshot to UserProfile object
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return UserModel(
       userId: snapshot.id,
@@ -34,6 +35,7 @@ class UserModel {
       address: data[UserKey.ADDRESS],
       website: data[UserKey.WEBSITE],
       isUser: data[UserKey.ISUSER],
+      googleId: data[UserKey.GOOGLEID],
     );
   }
 
@@ -46,7 +48,8 @@ class UserModel {
       image: map[UserKey.IMAGE],
       address: map[UserKey.ADDRESS],
       website: map[UserKey.WEBSITE],
-      isUser: map[UserKey.ISUSER]
+      isUser: map[UserKey.ISUSER],
+      googleId: map[UserKey.GOOGLEID],
     );
   }
 
@@ -60,6 +63,7 @@ class UserModel {
       UserKey.ADDRESS: address,
       UserKey.WEBSITE: website,
       UserKey.ISUSER: isUser,
+      UserKey.GOOGLEID: googleId
     };
   }
 }

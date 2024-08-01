@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 
-class AuthTextfield extends StatelessWidget {
+class TextFieldWidget extends StatelessWidget {
   final String text;
   final String path;
   final TextEditingController textController;
   final bool isPassword;
-  const AuthTextfield({required this.text, required this.path, required this.textController, this.isPassword = false});
+  final Function()? onEditComplete;
+  final FocusNode? focusNode;
+  final TextInputType? keyboardType;
+  const TextFieldWidget({super.key,
+    required this.text, required this.path, required this.textController,
+    this.isPassword = false,this.onEditComplete, this.focusNode, this.keyboardType
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-              height: 55,
+              height: 7.h,
+              width: 100.w,
+              padding: EdgeInsets.only(left: 2.w,right: 1.w,),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: AppColors.whiteColor,
@@ -20,50 +29,44 @@ class AuthTextfield extends StatelessWidget {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
                     blurRadius: 6,
-                    offset: Offset(0, 3)
+                    offset: const Offset(0, 3)
                   )
                 ]
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextField(
-                        obscureText: isPassword,
-                        controller: textController,
-                        decoration: InputDecoration(
-                          hintText: text,
-                          hintStyle: poppinsRegular(fontSize: 13,color: Color(0xFF858585)),
-                          border: InputBorder.none, 
-                                      enabledBorder: InputBorder.none, 
-                                      focusedBorder: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: TextFormField(
+                obscureText: isPassword,
+                controller: textController,
+                onEditingComplete: onEditComplete,
+                focusNode: focusNode,
+                keyboardType: keyboardType,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(2.h),
+                  hintText: text,
+                  hintStyle: poppinsRegular(fontSize: 13,color: const Color(0xFF858585)),
+                  border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.all(2),
                     child: Container(
-                      height: 40,
-                      width: 40,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    color: AppColors.whiteColor,
-                                    boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: Offset(0, 3)
-                    )
-                                    ]
-                                  ),
-                                  child: Image.asset(path, scale: 3,),
+                      height: 38.sp,
+                      width: 38.sp,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: AppColors.whiteColor,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3)
+                            )
+                          ]
+                      ),
+                      child: Image.asset(path, scale: 3,),
                     ),
                   )
+                ),
 
-                ],
               ),
             );
   }

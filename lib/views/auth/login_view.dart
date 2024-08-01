@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/mixins/validate_textfield.dart';
@@ -8,7 +9,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
@@ -56,26 +57,37 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
             ],
           ),
           const SpacerBoxVertical(height: 20),
-          AuthTextfield(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon, textController: controller.emailController,),
+          TextFieldWidget(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon, textController: controller.emailController,
+            keyboardType: TextInputType.emailAddress, focusNode: controller.emailFocusNode,
+            onEditComplete: ()=>focusChange(context, controller.emailFocusNode, controller.passwordFocusNode),),
+
           const SpacerBoxVertical(height: 20),
-            AuthTextfield(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,),
-                    const SpacerBoxVertical(height: 20),
-      Obx(() => controller.loading.value
-          ? const CircularProgressIndicator()
-          : ButtonWidget(onSwipe: (){
-        controller.emailErrorText.value =
-            simpleValidation(controller.emailController.text);
-        controller.passErrorText.value =
-            simpleValidation(controller.passwordController.text);
-        if (controller.emailErrorText.value == "" &&
-            controller.passErrorText.value == "") {
-          controller.signIn(controller.emailController.text,
-              controller.passwordController.text);
-        } else {
-          Get.snackbar('Error', 'Field required');
-        }}, text: TempLanguage.btnLblSwipeToLogin)),
+
+            TextFieldWidget(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,
+              keyboardType: TextInputType.visiblePassword, focusNode: controller.passwordFocusNode,
+              onEditComplete: ()=>unFocusChange(context),),
+
+            const SpacerBoxVertical(height: 20),
+
+            Obx(() => controller.loading.value
+                ? const CircularProgressIndicator()
+                : ButtonWidget(onSwipe: (){
+                  controller.emailErrorText.value = validateEmail(controller.emailController.text);
+                  controller.passErrorText.value = validatePassword(controller.passwordController.text);
+                  if (controller.emailErrorText.value == "" && controller.passErrorText.value == "") {
+                    controller.signIn(controller.emailController.text, controller.passwordController.text);
+                  } else {
+                    if(controller.emailErrorText.isNotEmpty){
+                      Get.snackbar('Error', controller.emailErrorText.value);
+                    }else if(controller.passErrorText.isNotEmpty){
+                      Get.snackbar('Error', controller.passErrorText.value);
+                    }else{
+                      Get.snackbar('Error', 'Field required');
+                    }
+                  }
+                  }, text: TempLanguage.btnLblSwipeToLogin)),
                      const SpacerBoxVertical(height: 20),
-                    Text(TempLanguage.txtForgotPassword, style: poppinsRegular(fontSize: 18, color: AppColors.secondaryText),)
+                    Text(TempLanguage.txtForgotPassword, style: poppinsMedium(fontSize: 15.sp, color: AppColors.secondaryText),)
 
         ],),
       )

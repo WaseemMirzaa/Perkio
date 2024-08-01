@@ -112,7 +112,7 @@ class BusinessHomeListItems extends StatelessWidget {
                                               width: 55,
                                               decoration: BoxDecoration(
                                                 gradient: const LinearGradient(
-                                                  colors: [Colors.red, Colors.orange],
+                                                  colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                                                   begin: Alignment.topLeft,
                                                   end: Alignment.bottomRight,
                                                 ),

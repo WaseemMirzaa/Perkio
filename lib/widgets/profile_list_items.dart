@@ -1,48 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
+import 'package:sizer/sizer.dart'; // Assuming you're using the sizer package for responsive sizing
+import 'package:skhickens_app/core/utils/app_colors/app_colors.dart'; // Import your AppColors
+import 'package:skhickens_app/core/utils/constants/text_styles.dart'; // Import your custom text styles
 
 class ProfileListItems extends StatelessWidget {
   final String path;
   final TextEditingController textController;
   final bool enabled;
-  const ProfileListItems({required this.path, required this.textController, this.enabled = false});
+
+  const ProfileListItems({
+    super.key,
+    required this.path,
+    required this.textController,
+    this.enabled = false
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 75,
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide( width: 1, color: Color(0xFFE9E9E9)))
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30,bottom: 12),
-                        child: Row(
-                          children: [
-                            SpacerBoxHorizontal(width: 20),
-                            Image.asset(path, scale: 3,),
-                            SpacerBoxHorizontal(width: 20),
-                            Expanded(child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: IntrinsicWidth(
-                                child: TextField(
-                                  controller: textController,
-                                  maxLines: 1,
-                                  enabled: enabled,
-                                  style: poppinsRegular(fontSize: 20),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.only(bottom: 15),
-                                    border: InputBorder.none, 
-                                          enabledBorder: InputBorder.none, 
-                                          focusedBorder: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            )),
-                            // Text(text, style: poppinsRegular(fontSize: 20),)
-                          ],
-                        ),
-                      ),
-                    );
+    return TextField(
+      controller: textController,
+      maxLines: 1,
+      enabled: enabled,
+      style: poppinsRegular(fontSize: 14.sp),
+      decoration: InputDecoration(
+        prefixIcon: Image.asset(
+          path,
+          scale: 3,
+        ),
+        border: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.hintText.withOpacity(0.5),
+            width: 1.0,
+          ),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.hintText.withOpacity(0.5),
+            width: 1.0,
+          ),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.gradientStartColor,
+            width: 1.0,
+          ),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 10.sp, horizontal: 12.sp),
+      ),
+    );
   }
 }

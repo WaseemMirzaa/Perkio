@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nb_utils/nb_utils.dart' as NBUtils;
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:get/get.dart';
 import 'package:skhickens_app/controllers/home_controller.dart';
-import 'package:skhickens_app/controllers/image_picker_controller.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
@@ -19,7 +17,7 @@ import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
-import 'package:skhickens_app/widgets/snackbar_widget.dart';
+import 'package:skhickens_app/widgets/snackbar_widget.dart' as X;
 
 class ProfileSettingsBusiness extends StatefulWidget {
   const ProfileSettingsBusiness({super.key});
@@ -38,10 +36,9 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController websiteController = TextEditingController();
-  TextEditingController googleIdController = TextEditingController(text: 'Not Set');
+  TextEditingController businessIdController = TextEditingController();
   RxBool enabled = false.obs;
 
-  final ImagePickerController _imagePickerController = Get.put(ImagePickerController());
   final HomeController homeController = Get.put(HomeController(HomeServices()));
 
   @override
@@ -59,13 +56,14 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
   }
 
   Future<void> getUser() async {
-    businessProfile = await controller.getUser(NBUtils.getStringAsync(SharedPrefKey.uid));
+    businessProfile = await controller.getUser(getStringAsync(SharedPrefKey.uid));
     _userProfileStreamController.add(businessProfile!);
     userNameController.text = businessProfile?.userName ?? 'Not Set';
     emailController.text = businessProfile?.email ?? 'Not Set';
     phoneNoController.text = businessProfile?.phoneNo ?? 'Not Set';
     addressController.text = businessProfile?.address ?? 'Not Set';
     websiteController.text = businessProfile?.website ?? 'Not Set';
+    businessIdController.text = businessProfile?.businessId ?? 'Not Set';
   }
 
   @override
@@ -90,9 +88,9 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                 Stack(
                   children: [
                     Obx(() {
-                      return _imagePickerController.pickedImage != null
-                          ? Image.file(_imagePickerController.pickedImage!,height: 30.h,width: 100.w,fit: BoxFit.fill,)
-                          :  Image.asset(AppAssets.imageHeader,fit: BoxFit.fill,height: 30.h,width: 100.w,);
+                      return (homeController.pickedImage != null)
+                          ? Image.file(homeController.pickedImage!,height: 30.h,width: 100.w,fit: BoxFit.fill,)
+                          : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull ? Image.network(getStringAsync(SharedPrefKey.photo),height: 30.h,width: 100.w,fit: BoxFit.fill,) :  Image.asset(AppAssets.imageHeader,fit: BoxFit.fill,height: 30.h,width: 100.w,);
                     }),
                     BackButtonWidget(),
                     Positioned(
@@ -106,10 +104,10 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                             actions: [
                               IconButton(onPressed: ()async{
                                 Get.back();
-                                await _imagePickerController.pickImageFromGallery().then((value)async{
-                                  String? path = await homeController.uploadImageToFirebase(_imagePickerController.pickedImage?.path ?? '', NBUtils.getStringAsync(SharedPrefKey.uid));
+                                await homeController.pickImageFromGallery().then((value)async{
+                                  String? path = await homeController.uploadImageToFirebaseOnID(homeController.pickedImage?.path ?? '', getStringAsync(SharedPrefKey.uid));
                                   if(!path.isEmptyOrNull){
-                                    homeController.updateCollection(NBUtils.getStringAsync(SharedPrefKey.uid), 'users',
+                                    homeController.updateCollection(getStringAsync(SharedPrefKey.uid), 'users',
                                         {
                                           UserKey.IMAGE: path
                                         });
@@ -118,12 +116,12 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                               }, icon: const Icon(Icons.drive_file_move_outline)),
                               IconButton(onPressed: ()async{
                                 Get.back();
-                                await _imagePickerController.pickImageFromCamera().then((value)async{
-                                 String? path = await homeController.uploadImageToFirebase(_imagePickerController.pickedImage?.path ?? '', NBUtils.getStringAsync(SharedPrefKey.uid));
+                                await homeController.pickImageFromCamera().then((value)async{
+                                 String? path = await homeController.uploadImageToFirebaseOnID(homeController.pickedImage?.path ?? '', getStringAsync(SharedPrefKey.uid));
                                  print("The path is: === $path");
                                  if(!path.isEmptyOrNull){
                                    print("DB called");
-                                   homeController.updateCollection(NBUtils.getStringAsync(SharedPrefKey.uid), 'users',
+                                   homeController.updateCollection(getStringAsync(SharedPrefKey.uid), 'users',
                                        {
                                          UserKey.IMAGE: path
                                        });
@@ -152,20 +150,20 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                       child: GestureDetector(
                           onTap: () async {
                             if (enabled.value) {
-                              bool success = await controller.updateUser({
+                              bool success = await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
                                 UserKey.USERNAME: userNameController.text,
                                 UserKey.EMAIL: emailController.text,
                                 UserKey.PHONENO: phoneNoController.text,
                                 UserKey.ADDRESS: addressController.text,
                                 UserKey.WEBSITE: websiteController.text,
-                                UserKey.GOOGLEID: googleIdController.text
+                                UserKey.BUSINESSID: businessIdController.text
                               });
                               if (success) {
-                                snackBar(
+                                X.showSnackBar(
                                     'Success', 'User data updated successfully!');
                                 enabled.value = false;
                               } else {
-                                snackBar('Error', 'Failed to update user data.',);
+                                X.showSnackBar('Error', 'Failed to update user data.',);
                               }
                             } else {
                               enabled.value = true;
@@ -203,7 +201,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           enabled: enabled.value,),
                         const SizedBox(height: 10,),
                         ProfileListItems(path: AppAssets.profile6,
-                          textController: googleIdController,
+                          textController: businessIdController,
                           enabled: enabled.value,),
                         const SizedBox(height: 20,),
                         ButtonWidget(onSwipe: (){

@@ -5,10 +5,17 @@ class UserKey {
   static const String PASSWORD = "password";
   static const String PHONENO = "phoneNo";
   static const String IMAGE = "image";
-  static const String ISUSER = "isUser";
+  static const String ROLE = "role";
   static const String ADDRESS = "address";
   static const String WEBSITE = "website";
-  static const String GOOGLEID = "googleId";
+  static const String BUSINESSID = "businessId";
+  static const String LOGO = "logo";
+}
+
+class CollectionsKey{
+  static const String USERS = 'users';
+  static const String DEALS = 'deals';
+  static const String REWARDS = 'reward';
 }
 
 class DealKey {
@@ -16,7 +23,7 @@ class DealKey {
   static const String DEALID = "dealId";
   static const String DEALNAME = "dealName";
   static const String RESTAURANTNAME = "restaurantName";
-  static const String DEALPRICE = "dealPrice";
+  static const String IMAGE = "image";
   static const String USES = "uses";
   static const String LOCATION = "location";
   static const String FAVOURITES = 'favourites';

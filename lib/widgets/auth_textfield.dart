@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String text;
-  final String path;
+  final String? path;
   final TextEditingController textController;
   final bool isPassword;
   final Function()? onEditComplete;
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
   const TextFieldWidget({super.key,
-    required this.text, required this.path, required this.textController,
+    required this.text,this.path, required this.textController,
     this.isPassword = false,this.onEditComplete, this.focusNode, this.keyboardType
   });
 
@@ -46,7 +47,8 @@ class TextFieldWidget extends StatelessWidget {
                   border: InputBorder.none,
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                  suffixIcon: Padding(
+
+                  suffixIcon: path.isEmptyOrNull ? null : Padding(
                     padding: const EdgeInsets.all(2),
                     child: Container(
                       height: 38.sp,
@@ -62,7 +64,7 @@ class TextFieldWidget extends StatelessWidget {
                             )
                           ]
                       ),
-                      child: Image.asset(path, scale: 3,),
+                      child: Image.asset(path!, scale: 3,),
                     ),
                   )
                 ),

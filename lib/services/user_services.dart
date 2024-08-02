@@ -20,48 +20,24 @@ class UserServices {
       FirebaseFirestore.instance.collection('reward');      
 
   //............ Add User
-  Future addUserData({
-    required String fullName,
-    required String email,
-    required String phone,
-    required bool isUser,
-    BuildContext? context,
-  }) async {
+  Future<bool> addUserData(UserModel userModel) async {
     try {
       if (authServices.auth.currentUser != null) {
-        UserModel userModel = UserModel(
-          email: email,
-          userId: authServices.auth.currentUser!.uid,
-          userName: fullName,
-          phoneNo: phone,
-          isUser: isUser,
-        );
         _userCollection
             .doc(authServices.auth.currentUser!.uid)
             .set(userModel.toMap());
       } else {
         Get.snackbar('Firebase Error', 'User not found');
       }
+      return true;
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Firebase Error', e.toString());
 
       if (e.message != null) print(e.message!);
-    }
-  }
-
-  //............ Update User
-  Future<bool> updateUser(
-      String userId, Map<String, dynamic> updatedData) async {
-    try {
-      DocumentReference userRef = _userCollection.doc(userId);
-
-      await userRef.update(updatedData);
-      return true;
-    } catch (e) {
-      print(e);
       return false;
     }
   }
+
 
   //............ Get User
   Future<UserModel?> getUserById(String userId) async {
@@ -76,19 +52,6 @@ class UserServices {
     }
   }
 
-  //............ Get ID from Pref
-  Future<String?> getCurrentUserIdFromPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userId');
-  }
-
-  //............ Get Role from Pref
-  Future<bool?> getIsUserFromPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isUser');
-  }
-
-  
   //............ Get Deals
   Future<List<DealModel>> getDeals() async {
     final querySnapshot = await _dealCollection.get();

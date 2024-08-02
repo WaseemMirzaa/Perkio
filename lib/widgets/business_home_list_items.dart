@@ -1,14 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skhickens_app/controllers/business_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/modals/deal_modal.dart';
+import 'package:skhickens_app/services/business_services.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 class BusinessHomeListItems extends StatelessWidget {
-  const BusinessHomeListItems({super.key});
-
+  BusinessHomeListItems({super.key, required this.dealModel});
+  DealModel dealModel;
+  final businessController = Get.put(BusinessController(BusinessServices()));
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -42,10 +48,9 @@ class BusinessHomeListItems extends StatelessWidget {
                                             Column(
                                               children: [
                                                 SpacerBoxVertical(height: 1.3.h),
-                                                Expanded(child: Image.asset(AppAssets.restaurantImg1)),
+                                                Image.network(dealModel.image!,fit: BoxFit.cover,height: 15.h,width: 22.w,),
                                               ],
                                             ),
-
                                           ],
                                         ),
                                           const SpacerBoxHorizontal(width: 10),
@@ -55,10 +60,9 @@ class BusinessHomeListItems extends StatelessWidget {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 const SpacerBoxVertical(height: 10),
-                                              Text(TempLanguage.txtDealName, style: poppinsMedium(fontSize: 13.sp),),
+                                              Text(dealModel.dealName ?? '', style: poppinsMedium(fontSize: 13.sp),),
                                               const SpacerBoxVertical(height: 5),
-                                              Text(TempLanguage.txtRestaurantName, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
-
+                                              Text(dealModel.restaurantName ?? '', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                                               const SpacerBoxVertical(height: 5),
                                               Row(
                                                 children: [
@@ -66,9 +70,8 @@ class BusinessHomeListItems extends StatelessWidget {
                                                   Expanded(
                                                     child: Row(
                                                       children: [
-                                                        Expanded(child: Text('280 Mil', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),maxLines: 2,)),
+                                                        Expanded(child: Text(dealModel.location ?? "", style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),maxLines: 2,)),
                                                         const SpacerBoxHorizontal(width: 4),
-
 
                                                       ],
                                                     ),
@@ -78,12 +81,12 @@ class BusinessHomeListItems extends StatelessWidget {
                                               ),
                                                 const SpacerBoxVertical(height: 5),
 
-                                                Text('3 People used by now', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText,),maxLines: 1,),
+                                                Text('${dealModel.uses} People used by now', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText,),maxLines: 1,),
 
                                                 const Expanded(child: SizedBox()),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 20),
-                                                child: Text(TempLanguage.txtUses3,style: poppinsMedium(fontSize: 13.sp),),
+                                                child: Text("Uses ${dealModel.uses}",style: poppinsMedium(fontSize: 13.sp),),
                                               ),
                                               const SpacerBoxVertical(height: 5),
                                               ],
@@ -92,36 +95,40 @@ class BusinessHomeListItems extends StatelessWidget {
 
                                         ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                Image.asset(AppAssets.editImg, scale: 2.5,),
-                                                const SpacerBoxHorizontal(width: 10),
-                                                Image.asset(AppAssets.deleteImg, scale: 2.5,),
-                                              ],
-                                            ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              IconButton(onPressed: (){}, icon: ImageIcon(const AssetImage(AppAssets.editImg),size: 15.sp,color: AppColors.blackColor)),
+                                              IconButton(onPressed: (){
+                                                showAdaptiveDialog(context: context, builder: (context)=> AlertDialog(title: Text('Deal Deletion',style: poppinsMedium(fontSize: 14.sp),),content: const Text('Are you sure you want to delete this deal?'),actions: [
+                                                  TextButton(onPressed: (){}, child: const Text('Cancel')),
+                                                  TextButton(onPressed: ()async{
+                                                   await businessController.deleteDeal(dealModel.dealId!, dealModel.image!).then((value)=>Get.back());
+                                                  }, child: const Text('Delete')),
+                                                ],));
+                                              }, icon: ImageIcon(const AssetImage(AppAssets.deleteImg),size: 15.sp,color: AppColors.redColor)),
+                                            ],
+                                          ),
 
-                                            Container(
-                                              height: 20,
-                                              width: 55,
-                                              decoration: BoxDecoration(
-                                                gradient: const LinearGradient(
-                                                  colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                ),
-                                                borderRadius: BorderRadius.circular(100),
+                                          Container(
+                                            height: 20,
+                                            width: 55,
+                                            margin: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
                                               ),
-                                              child: Center(child: Text(TempLanguage.txtPromote, style: poppinsRegular(fontSize: 9, color: AppColors.whiteColor),)),
-                                            )
-                                          ],
-                                        ),
+                                              borderRadius: BorderRadius.circular(100),
+                                            ),
+                                            child: Center(child: Text(TempLanguage.txtPromote, style: poppinsRegular(fontSize: 9, color: AppColors.whiteColor),)),
+                                          )
+                                        ],
                                       )
                                     ],
                                   ),

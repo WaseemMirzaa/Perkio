@@ -7,7 +7,7 @@ import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
-import 'package:skhickens_app/controllers/favourites_screen_controller.dart';
+import 'package:skhickens_app/controllers/ui_controllers/favourites_screen_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/common_space.dart';

@@ -7,10 +7,12 @@ class UserModel {
   String? email;
   String? phoneNo;
   String? image;
+  String? logo;
   String? address;
   String? website;
-  bool? isUser;
-  String? googleId;
+  String? role;
+  String? businessId;
+  String? password;
 
   UserModel({
     this.userId,
@@ -20,8 +22,10 @@ class UserModel {
     this.image,
     this.address,
     this.website,
-    this.isUser,
-    this.googleId,
+    this.logo,
+    this.role,
+    this.businessId,
+    this.password,
   });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -32,10 +36,11 @@ class UserModel {
       email: data[UserKey.EMAIL] ?? '',
       phoneNo: data[UserKey.PHONENO] ?? '',
       image: data[UserKey.IMAGE] ?? '',
+      logo: data[UserKey.LOGO] ?? '',
       address: data[UserKey.ADDRESS],
       website: data[UserKey.WEBSITE],
-      isUser: data[UserKey.ISUSER],
-      googleId: data[UserKey.GOOGLEID],
+      role: data[UserKey.ROLE],
+      businessId: data[UserKey.BUSINESSID],
     );
   }
 
@@ -46,10 +51,11 @@ class UserModel {
       email: map[UserKey.EMAIL],
       phoneNo: map[UserKey.PHONENO],
       image: map[UserKey.IMAGE],
+      logo: map[UserKey.LOGO],
       address: map[UserKey.ADDRESS],
       website: map[UserKey.WEBSITE],
-      isUser: map[UserKey.ISUSER],
-      googleId: map[UserKey.GOOGLEID],
+      role: map[UserKey.ROLE],
+      businessId: map[UserKey.BUSINESSID],
     );
   }
 
@@ -60,10 +66,11 @@ class UserModel {
       UserKey.EMAIL: email,
       UserKey.PHONENO: phoneNo,
       UserKey.IMAGE: image,
+      UserKey.LOGO: logo,
       UserKey.ADDRESS: address,
       UserKey.WEBSITE: website,
-      UserKey.ISUSER: isUser,
-      UserKey.GOOGLEID: googleId
+      UserKey.ROLE: role,
+      UserKey.BUSINESSID: businessId
     };
   }
 }

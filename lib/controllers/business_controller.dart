@@ -11,17 +11,25 @@ class BusinessController extends GetxController{
   RxBool loading = false.obs;
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD DEAL
-  Future<void> addDeal(String dealName, String dealPrice, String uses) async {
+  Future<bool> addDeal(DealModel dealModel) async {
     loading.value = true;
-    final response = await businessServices.addDeal(dealName: dealName, dealPrice: dealPrice, uses: uses);
+    final response = await businessServices.addDeal(dealModel:  dealModel);
     if(response){
-      snackBar('Success', 'Deal Added Successfully');
+      showSnackBar('Success', 'Deal Added Successfully');
       loading.value = false;
-      Get.back();
     } else {
-      snackBar('Error', 'Could Not Add Deal');
+      showSnackBar('Error', 'Could Not Add Deal');
       loading.value = true;
     }
+    return response;
+  }
+
+  Stream<List<DealModel>> getMyDeals(String businessId){
+    return businessServices.getMyDeals(businessId);
+  }
+
+  Future<bool> deleteDeal(String id, String imagePath) async {
+    return await businessServices.deleteDeal(id, imagePath);
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD REWARD
@@ -30,10 +38,10 @@ class BusinessController extends GetxController{
     final response = await businessServices.addReward(dealName: dealName, receiptPrice: receiptPrice, details: details);
     if(response){
       loading.value = false;
-      snackBar('Success', 'Reward Added Successfully');
+      showSnackBar('Success', 'Reward Added Successfully');
       // Get.back();
     } else {
-      snackBar('Error', 'Could Not Add Deal');
+      showSnackBar('Error', 'Could Not Add Deal');
       loading.value = true;
     }
   }

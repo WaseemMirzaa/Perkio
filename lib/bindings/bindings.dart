@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:skhickens_app/controllers/add_deals_controller.dart';
-import 'package:skhickens_app/controllers/add_rewards_controller.dart';
+import 'package:skhickens_app/controllers/ui_controllers/add_deals_controller.dart';
+import 'package:skhickens_app/controllers/ui_controllers/add_rewards_controller.dart';
 import 'package:skhickens_app/controllers/business_controller.dart';
-import 'package:skhickens_app/controllers/business_detail_controller.dart';
-import 'package:skhickens_app/controllers/favourites_screen_controller.dart';
+import 'package:skhickens_app/controllers/ui_controllers/business_detail_controller.dart';
+import 'package:skhickens_app/controllers/ui_controllers/favourites_screen_controller.dart';
 import 'package:skhickens_app/controllers/home_controller.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/services/business_services.dart';

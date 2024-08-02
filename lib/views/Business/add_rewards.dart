@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skhickens_app/controllers/add_rewards_controller.dart';
+import 'package:skhickens_app/controllers/ui_controllers/add_rewards_controller.dart';
 import 'package:skhickens_app/controllers/business_controller.dart';
-import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
@@ -23,6 +21,8 @@ class AddRewards extends StatefulWidget {
 class _AddRewardsState extends State<AddRewards> {
   final AddRewardsController myController = Get.find<AddRewardsController>();
   final BusinessController controller = Get.find<BusinessController>();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +51,7 @@ class _AddRewardsState extends State<AddRewards> {
             Obx(()=> controller.loading.value
                 ? const Center(child: CircularProgressIndicator())
                 : ButtonWidget(onSwipe: (){
-              controller.addDeal(myController.dealNameController.text, myController.receiptPriceController.text, myController.detailsController.text);
+              // controller.addDeal(myController.dealNameController.text, myController.receiptPriceController.text, myController.detailsController.text);
             }, text: TempLanguage.btnLblSwipeToAdd))
           ],
         ),

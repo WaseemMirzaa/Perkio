@@ -26,6 +26,9 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
 
   var controller = Get.find<UserController>();
 
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +61,13 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
           ),
           const SpacerBoxVertical(height: 20),
           TextFieldWidget(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon, textController: controller.emailController,
-            keyboardType: TextInputType.emailAddress, focusNode: controller.emailFocusNode,
-            onEditComplete: ()=>focusChange(context, controller.emailFocusNode, controller.passwordFocusNode),),
+            keyboardType: TextInputType.emailAddress, focusNode: emailFocusNode,
+            onEditComplete: ()=>focusChange(context, emailFocusNode, passwordFocusNode),),
 
           const SpacerBoxVertical(height: 20),
 
             TextFieldWidget(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,
-              keyboardType: TextInputType.visiblePassword, focusNode: controller.passwordFocusNode,
+              keyboardType: TextInputType.visiblePassword, focusNode: passwordFocusNode,
               onEditComplete: ()=>unFocusChange(context),),
 
             const SpacerBoxVertical(height: 20),

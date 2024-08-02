@@ -8,7 +8,8 @@ class AddDealsController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     dealNameController = TextEditingController();
-    dealPriceController = TextEditingController();
+    companyNameController = TextEditingController();
+    addressController = TextEditingController();
     usesController = TextEditingController();
   }
 
@@ -19,19 +20,22 @@ class AddDealsController extends GetxController {
     // TODO: implement dispose
     super.dispose();
     dealNameController.dispose();
-    dealPriceController.dispose();
+    companyNameController.dispose();
+    addressController.dispose();
     usesController.dispose();
   }
 
   void clearTextFields() {
     dealNameController.clear();
-    dealPriceController.clear();
+    companyNameController.clear();
+    addressController.clear();
     usesController.clear();
   }
 
   RxInt counter = 0.obs;
   late TextEditingController dealNameController;
-  late TextEditingController dealPriceController;
+  late TextEditingController companyNameController;
+  late TextEditingController addressController;
   late TextEditingController usesController;
 
   void increaseCounter() {

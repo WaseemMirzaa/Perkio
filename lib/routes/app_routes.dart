@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/views/Business/add_deals.dart';
 import 'package:skhickens_app/views/Business/add_rewards.dart';
 import 'package:skhickens_app/views/Business/home_business.dart';
@@ -60,10 +61,10 @@ class AppRoutes {
   static List<GetPage> routes = [
     GetPage(name: splash, page: () =>  const SplashScreen()),
     GetPage(name: selection, page: () => const SelectionScreen()),
-    GetPage(name: addDeal, page: () => const AddDeals()),
+    GetPage(name: addDeal, page: () => AddDeals()),
     GetPage(name: addReward, page: () => const AddRewards()),
     GetPage(name: homeBusinessExtended, page: () => const HomeBusinessExtended()),
-    GetPage(name: homeBusiness, page: () => const HomeBusiness()),
+    GetPage(name: homeBusiness, page: () => HomeBusiness()),
     GetPage(name: profileSettingsBusiness, page: () => const ProfileSettingsBusiness()),
     GetPage(name: rewardsBusiness, page: () => const RewardsBusiness()),
     GetPage(name: subscriptionPlan, page: () => SubscriptionPlan()),
@@ -83,6 +84,6 @@ class AppRoutes {
     GetPage(name: signupUser, page: () => const SignupView()),
     GetPage(name: privacyPolicy, page: () => const PrivacyPolicy()),
     GetPage(name: termsAndConditions, page: () => const TermsAndConditions()),
-    GetPage(name: addBusinessInfo, page: () => const AddBusinessDetailsView())
+    GetPage(name: addBusinessInfo, page: () => AddBusinessDetailsView(userModel: UserModel(),))
   ];
 }

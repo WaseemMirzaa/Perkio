@@ -6,7 +6,7 @@ class DealModel {
   String? dealId;
   String? dealName;
   String? restaurantName;
-  String? dealPrice;
+  String? image;
   String? uses;
   String? location;
   List<String>? favourites;
@@ -16,7 +16,7 @@ class DealModel {
     this.dealId,
     this.dealName,
     this.restaurantName,
-    this.dealPrice,
+    this.image,
     this.uses,
     this.location,
     this.favourites,
@@ -30,7 +30,7 @@ class DealModel {
       businessId: data[DealKey.BUSINESSID] ?? '',
       dealName: data[DealKey.DEALNAME] ?? '',
       restaurantName: data[DealKey.RESTAURANTNAME] ?? '',
-      dealPrice: data[DealKey.DEALPRICE] ?? '',
+      image: data[DealKey.IMAGE] ?? '',
       uses: data[DealKey.USES] ?? '',
       location: data[DealKey.LOCATION] ?? '',
       favourites: data[DealKey.FAVOURITES] != null 
@@ -45,7 +45,7 @@ class DealModel {
       businessId: map[DealKey.BUSINESSID],
       dealName: map[DealKey.DEALNAME],
       restaurantName: map[DealKey.RESTAURANTNAME],
-      dealPrice: map[DealKey.DEALPRICE],
+      image: map[DealKey.IMAGE],
       uses: map[DealKey.USES],
       location: map[DealKey.LOCATION],
       favourites: map[DealKey.FAVOURITES] != null 
@@ -60,7 +60,7 @@ class DealModel {
       DealKey.BUSINESSID: businessId,
       DealKey.DEALNAME: dealName,
       DealKey.RESTAURANTNAME: restaurantName,
-      DealKey.DEALPRICE: dealPrice,
+      DealKey.IMAGE: image,
       DealKey.USES: uses,
       DealKey.LOCATION: location,
       DealKey.FAVOURITES: favourites,

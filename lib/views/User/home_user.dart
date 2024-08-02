@@ -112,7 +112,7 @@ class _HomeUserState extends State<HomeUser> {
                               onTap: (){
                                 Get.toNamed(AppRoutes.favouritesScreen);
                               },
-                              child: AvailableListItems(dealId: deal.dealId ?? '', dealName: deal.dealName ?? '', restaurantName: deal.restaurantName ?? '', dealPrice: deal.dealPrice ?? '',));
+                              child: AvailableListItems(dealId: deal.dealId ?? '', dealName: deal.dealName ?? '', restaurantName: deal.restaurantName ?? '', dealPrice: deal.image ?? '',));
                         },
                       );
                     }

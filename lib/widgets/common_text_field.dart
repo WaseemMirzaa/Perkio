@@ -20,7 +20,7 @@ class CommonTextField extends StatelessWidget {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
                     blurRadius: 6,
-                    offset: Offset(0, 3)
+                    offset: const Offset(0, 3)
                   )
                 ]
               ),
@@ -31,7 +31,7 @@ class CommonTextField extends StatelessWidget {
                     controller: textController,
                     decoration: InputDecoration(
                       hintText: text,
-                      hintStyle: poppinsRegular(fontSize: 13,color: Color(0xFF858585)),
+                      hintStyle: poppinsRegular(fontSize: 13,color: const Color(0xFF858585)),
                       border: InputBorder.none,
                                   enabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none,

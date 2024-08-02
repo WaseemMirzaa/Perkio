@@ -9,6 +9,8 @@ import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/core/utils/mixins/validate_textfield.dart';
+import 'package:skhickens_app/modals/user_modal.dart';
+import 'package:skhickens_app/views/auth/add_bussiness_details_view.dart';
 import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
@@ -25,6 +27,10 @@ class SignupView extends StatefulWidget {
 class _SignupViewState extends State<SignupView> with ValidationMixin {
   var controller = Get.find<UserController>();
   final RxBool confirm = false.obs;
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  FocusNode phoneFocusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -67,32 +73,32 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                 getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ?
                 TextFieldWidget(text: TempLanguage.txtUserName, path: AppAssets.userImg,
                   textController: controller.userNameController,keyboardType: TextInputType.name,
-                  focusNode: controller.nameFocusNode,
-                  onEditComplete: ()=> focusChange(context, controller.nameFocusNode, controller.emailFocusNode),)
+                  focusNode: nameFocusNode,
+                  onEditComplete: ()=> focusChange(context, nameFocusNode, emailFocusNode),)
                     :
                 TextFieldWidget(text: TempLanguage.txtBusinessName, path: AppAssets.userImg,
                     textController: controller.userNameController,keyboardType: TextInputType.name,
-                    focusNode: controller.nameFocusNode,
-                    onEditComplete: ()=> focusChange(context, controller.nameFocusNode, controller.emailFocusNode)),
+                    focusNode: nameFocusNode,
+                    onEditComplete: ()=> focusChange(context, nameFocusNode, emailFocusNode)),
 
                 const SpacerBoxVertical(height: 20),
 
                 TextFieldWidget(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon,
                   textController: controller.emailController,keyboardType: TextInputType.emailAddress,
-                  focusNode: controller.emailFocusNode,
-                  onEditComplete: ()=> focusChange(context, controller.emailFocusNode, controller.passwordFocusNode),),
+                  focusNode: emailFocusNode,
+                  onEditComplete: ()=> focusChange(context, emailFocusNode, passwordFocusNode),),
 
                 const SpacerBoxVertical(height: 20),
 
                 TextFieldWidget(text: TempLanguage.lblPassword, path: AppAssets.unlockImg,
                   textController: controller.passwordController, isPassword: true,
-                  keyboardType: TextInputType.visiblePassword,focusNode: controller.passwordFocusNode,
-                  onEditComplete: ()=> focusChange(context, controller.passwordFocusNode, controller.phoneFocusNode),),
+                  keyboardType: TextInputType.visiblePassword,focusNode: passwordFocusNode,
+                  onEditComplete: ()=> focusChange(context, passwordFocusNode, phoneFocusNode),),
 
                 const SpacerBoxVertical(height: 20),
 
                 TextFieldWidget(text: TempLanguage.txtDummyPhoneNo, path: 'assets/images/Pwd  Input.png',
-                  textController: controller.phoneController,focusNode: controller.phoneFocusNode,keyboardType: TextInputType.phone,onEditComplete: ()=> unFocusChange(context),),
+                  textController: controller.phoneController,focusNode: phoneFocusNode,keyboardType: TextInputType.phone,onEditComplete: ()=> unFocusChange(context),),
 
                 const SpacerBoxVertical(height: 20),
 
@@ -105,9 +111,9 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                           controller.phoneErrorText.value = simpleValidation(controller.phoneController.text);
                           if (controller.emailErrorText.value == "" && controller.passErrorText.value == "" && controller.userNameErrorText.value == "" && controller.phoneErrorText.value == "") {
                             if (confirm.value) {
-                              controller.signUp(controller.emailController.text, controller.passwordController.text, controller.userNameController.text, controller.phoneController.text,
-                                  getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false
-                              );
+                              UserModel userModel = UserModel(email: controller.emailController.text, userName: controller.userNameController.text, phoneNo: controller.phoneController.text, role: getStringAsync(SharedPrefKey.role),password: controller.passwordController.text);
+                              getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? controller.signUp(userModel
+                              ) : Get.to(()=> AddBusinessDetailsView(userModel: userModel,));
                             } else {
                               Get.snackbar('Error', 'Please Accept Terms & Conditions To Continue');
                             }

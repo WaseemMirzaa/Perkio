@@ -1,13 +1,12 @@
-import 'package:get/get.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:get/get.dart' as X;
 
-snackBar(String title, String body){
+showSnackBar(String title, String body){
   print('Snack bar called');
-                              Get.snackbar(
-                                title, body,
-                                snackPosition: SnackPosition.TOP,
-                                // backgroundColor: AppColors.whiteColor,
-                                // borderColor: AppColors.gradientEndColor,
-                                // borderWidth: 5,
-                                );
+  X.Get.snackbar(
+    title, body,
+    snackPosition: X.SnackPosition.TOP,
+    // backgroundColor: AppColors.whiteColor,
+    // borderColor: AppColors.gradientEndColor,
+    // borderWidth: 5,
+  );
 }

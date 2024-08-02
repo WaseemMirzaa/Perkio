@@ -2,11 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:skhickens_app/controllers/home_controller.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/auth_services.dart';
+import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/views/splash_screen.dart';
@@ -14,8 +16,9 @@ import 'package:skhickens_app/widgets/activation_dialog.dart';
 
 class UserController extends GetxController {
   UserServices userServices;
-  // final RxString userId = GlobalVariable.userid.obs;
   UserController(this.userServices);
+
+  HomeController homeController = Get.put(HomeController(HomeServices()));
 
   @override
   void onInit() {
@@ -25,10 +28,7 @@ class UserController extends GetxController {
     passwordController = TextEditingController();
     userNameController = TextEditingController();
     phoneController = TextEditingController();
-    nameFocusNode = FocusNode();
-    emailFocusNode = FocusNode();
-    passwordFocusNode = FocusNode();
-    phoneFocusNode = FocusNode();
+
   }
 
   @override
@@ -39,10 +39,7 @@ class UserController extends GetxController {
     phoneController.dispose();
     passwordController.dispose();
     userNameController.dispose();
-    nameFocusNode.dispose();
-    emailFocusNode.dispose();
-    passwordFocusNode.dispose();
-    phoneFocusNode.dispose();
+
   }
 
   void clearTextFields() {
@@ -67,10 +64,7 @@ class UserController extends GetxController {
   late TextEditingController passwordController;
   late TextEditingController phoneController;
   late TextEditingController userNameController;
-  late FocusNode nameFocusNode;
-  late FocusNode emailFocusNode;
-  late FocusNode passwordFocusNode;
-  late FocusNode phoneFocusNode;
+
 
   ///💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN IN
 
@@ -80,9 +74,10 @@ class UserController extends GetxController {
     if (result == null) {
       UserModel? userModel = await userServices.getUserById(FirebaseAuth.instance.currentUser!.uid);
       if (userModel != null) {
+        setUserInfo(userModel);
         loading.value = false;
         clearTextFields();
-        Get.off(() => BottomBarView(isUser: userModel.isUser!));
+        Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false ));
       } else {
         loading.value = false;
         Get.snackbar('Error', 'Failed to fetch user data.', snackPosition: SnackPosition.TOP);
@@ -93,24 +88,34 @@ class UserController extends GetxController {
     }
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ SIGN UP
-  Future<void> signUp(String email, String password, String username, String phone, bool isRole) async {
+  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
+  Future<void> signUp(UserModel userModel) async {
     loading.value = true;
-    String? result = await authServices.signUp(email, password, username, phone);
-    if (result == null) {
-      await addUserData(username, email, phone, true);
+    String? result = await authServices.signUp(userModel);
+    if (result != null) {
+      userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      if(getStringAsync(SharedPrefKey.role) == SharedPrefKey.business){
+        final logoLink = await homeController.uploadImageToFirebaseWithCustomPath(userModel.logo!, 'business_logo/$result');
+        final image = await homeController.uploadImageToFirebaseOnID(userModel.image!, result);
+        if(logoLink != null && image != null){
+          userModel.logo = logoLink;
+          userModel.image = image;
+          await setValue(SharedPrefKey.photo, image);
+        }
+      }
+      await addUserData(userModel);
       loading.value = false;
       clearTextFields();
-      isRole ? Get.off(() => BottomBarView(isUser: isRole)) : showActivationDialog();
+      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)) : showActivationDialog();
     } else {
       loading.value = false;
-      Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
+      Get.snackbar('Error', 'Account not created', snackPosition: SnackPosition.TOP);
     }
   }
 
 
   ///♦Heart
-  /// 💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛
+  /// ♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️
 
   Future<void> logout() async {
     authServices.logOut().then((value) => Get.off(const SplashScreen()));
@@ -118,15 +123,8 @@ class UserController extends GetxController {
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 ADD TO FIREBASE
 
-  Future<void> addUserData(String name, String email, String phone, bool isUser) async {
-    userServices.addUserData(fullName: name, email: email, phone: phone, isUser: isUser);
-  }
-
-  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛️ UPDATE USER
-
-  Future<bool> updateUser(Map<String, dynamic> updatedData) async {
-    var uid = FirebaseAuth.instance.currentUser!.uid;
-    return await userServices.updateUser(uid, updatedData);
+  Future<bool> addUserData(UserModel userModel) async {
+    return await userServices.addUserData(userModel);
   }
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 GET USER
@@ -164,7 +162,9 @@ class UserController extends GetxController {
     userServices.likeDeal(dealId);
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ UNLIKE DEAL
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️Heart
+  //
+  // 💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚 UNLIKE DEAL
 
   Future<void> unLikeDeal(String dealId) async {
     userServices.unLikeDeal(dealId);
@@ -172,7 +172,7 @@ class UserController extends GetxController {
 
   Future<void> setUserInfo(UserModel userModel)async{
     await setValue(SharedPrefKey.uid, userModel.userId);
-    await setValue(SharedPrefKey.isUser, userModel.isUser);
+    await setValue(SharedPrefKey.role, userModel.role);
     await setValue(SharedPrefKey.userName, userModel.userName);
     await setValue(SharedPrefKey.email, userModel.email);
     await setValue(SharedPrefKey.photo, userModel.image);

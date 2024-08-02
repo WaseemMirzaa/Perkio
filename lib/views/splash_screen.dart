@@ -30,18 +30,17 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.microtask(() async {
       final currentUser = FirebaseAuth.instance.currentUser;
-
       if (currentUser != null) {
         final user = await userController.getUser(currentUser.uid);
 
         if (user != null) {
           userController.userModel.value = user;
-          Get.off(() => BottomBarView(isUser: getBoolAsync(SharedPrefKey.isUser)));
+          Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false));
         } else {
           Get.offNamed(AppRoutes.loginUser);
         }
       } else {
-        Get.offNamed(AppRoutes.loginUser);
+
       }
     });
   }

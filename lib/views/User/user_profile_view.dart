@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart' as NBUtils;
 import 'package:sizer/sizer.dart';
+import 'package:skhickens_app/controllers/home_controller.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
+import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
@@ -31,6 +34,8 @@ class _UserProfileViewState extends State<UserProfileView> {
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   RxBool enabled = false.obs;
+
+  final homeController = Get.put(HomeController(HomeServices()));
 
   @override
   void initState() {
@@ -104,15 +109,15 @@ class _UserProfileViewState extends State<UserProfileView> {
                               onTap: () async {
                                 if(enabled.value){
 
-                                  bool success = await controller.updateUser({
-                                    'userName': userNameController.text,
-                                    'email': emailController.text,
-                                    'phoneNo': phoneNoController.text,
-                                    'address': addressController.text,
+                                  bool success = await homeController.updateCollection(NBUtils.getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
+                                    UserKey.USERNAME: userNameController.text,
+                                    UserKey.EMAIL: emailController.text,
+                                    UserKey.PHONENO: phoneNoController.text,
+                                    UserKey.ADDRESS: addressController.text,
                                   });
                                   if (success) {
                                     // Update successful
-                                    snackBar(
+                                    showSnackBar(
                                       'Success', 'User data updated successfully!',);
                                     // Get.snackbar(
                                     //     'Success', 'User data updated successfully!',
@@ -120,7 +125,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                                     enabled.value = false;
                                   } else {
                                     // Update failed
-                                    snackBar('Error', 'Failed to update user data.',);
+                                    showSnackBar('Error', 'Failed to update user data.',);
                                     // Get.snackbar('Error', 'Failed to update user data.',
                                     //     snackPosition: SnackPosition.TOP);
 

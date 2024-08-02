@@ -18,14 +18,26 @@ class HomeServices{
     }
   }
 
-  Future<String?> uploadImageToFirebase(String image, String userId) async {
+  Future<String?> uploadImageToFirebaseOnID(String image, String userId) async {
     try {
-      final storageReference = _storage.ref().child('images/$userId.jpg');
+      final storageReference = _storage.ref().child('profile/$userId');
       await storageReference.putFile(File(image));
       final downloadUrl = await storageReference.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      log("Error is: "+e.toString());
+      log("Error is: $e");
+      return null;
+    }
+  }
+
+  Future<String?>  uploadImageToFirebaseWithCustomPath(String image, String path) async {
+    try {
+      final storageReference = _storage.ref().child(path);
+      await storageReference.putFile(File(image));
+      final downloadUrl = await storageReference.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      log("Error is: $e");
       return null;
     }
   }

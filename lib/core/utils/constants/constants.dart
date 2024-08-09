@@ -22,17 +22,31 @@ class DealKey {
   static const String BUSINESSID = "businessId";
   static const String DEALID = "dealId";
   static const String DEALNAME = "dealName";
-  static const String RESTAURANTNAME = "restaurantName";
+  static const String COMPANYNAME = "companyName";
   static const String IMAGE = "image";
   static const String USES = "uses";
+  static const String ISPROMOTIONSTART = "isPromotionStart";
   static const String LOCATION = "location";
   static const String FAVOURITES = 'favourites';
+  static const String CREATEDAT = 'createdAt';
+  static const String DEALPARAMS = 'dealParams';
+  static const String LIKES = 'likes';
+  static const String VIEWS = 'views';
+  static const String NOOFUSEDTELLNOW ='noOfUsedTellNow';
+
 }
 
 class RewardKey {
   static const String BUSINESSID = "businessId";
   static const String REWARDID = "rewardId";
-  static const String DEALNAME = "dealName";
-  static const String RECEIPTPRICE = "receiptPrice";
-  static const String REWARDDETAILS = "rewardDetails";
+  static const String NOOFUSED = "noOfUsed";
+  static const String REWARDNAME = "rewardName";
+  static const String COMPANYNAME = "companyName";
+  static const String REWARDADDRESS = "rewardAddress";
+  static const String POINTSTOREDEEM = "pointsToRedeem";
+  static const String REWARDLOGO = "rewardLogo";
+  static const String CREATEDAT = 'createdAt';
+  static const String USES = 'uses';
+  static const String REWARDPARAM = 'rewardParam';
+
 }

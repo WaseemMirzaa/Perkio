@@ -40,59 +40,61 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
     child: Scaffold(
       backgroundColor: AppColors.whiteColor,
       body:
-      Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 60),
-            child: Text(TempLanguage.lblSwipe, style: altoysFont(fontSize: 45),textAlign: TextAlign.center,),
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text(TempLanguage.txtLogin, style: poppinsMedium(fontSize: 18, color: AppColors.hintText)),
-            GestureDetector(
-              onTap: (){
-    controller.clearTextFields();
+      SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 60),
+              child: Text(TempLanguage.lblSwipe, style: altoysFont(fontSize: 45),textAlign: TextAlign.center,),
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [Text(TempLanguage.txtLogin, style: poppinsMedium(fontSize: 18, color: AppColors.hintText)),
+              GestureDetector(
+                onTap: (){
+            controller.clearTextFields();
 
-    Get.toNamed(AppRoutes.signupUser);
-              },
-              child: Text(getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? TempLanguage.txtNewUser : TempLanguage.txtNewBusiness, style: poppinsRegular(fontSize: 13))),
-            ],
-          ),
-          const SpacerBoxVertical(height: 20),
-          TextFieldWidget(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon, textController: controller.emailController,
-            keyboardType: TextInputType.emailAddress, focusNode: emailFocusNode,
-            onEditComplete: ()=>focusChange(context, emailFocusNode, passwordFocusNode),),
-
-          const SpacerBoxVertical(height: 20),
-
-            TextFieldWidget(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,
-              keyboardType: TextInputType.visiblePassword, focusNode: passwordFocusNode,
-              onEditComplete: ()=>unFocusChange(context),),
+            Get.toNamed(AppRoutes.signupUser);
+                },
+                child: Text(getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? TempLanguage.txtNewUser : TempLanguage.txtNewBusiness, style: poppinsRegular(fontSize: 13))),
+              ],
+            ),
+            const SpacerBoxVertical(height: 20),
+            TextFieldWidget(text: TempLanguage.lblEmailId, path: AppAssets.emailIcon, textController: controller.emailController,
+              keyboardType: TextInputType.emailAddress, focusNode: emailFocusNode,
+              onEditComplete: ()=>focusChange(context, emailFocusNode, passwordFocusNode),),
 
             const SpacerBoxVertical(height: 20),
 
-            Obx(() => controller.loading.value
-                ? const CircularProgressIndicator()
-                : ButtonWidget(onSwipe: (){
-                  controller.emailErrorText.value = validateEmail(controller.emailController.text);
-                  controller.passErrorText.value = validatePassword(controller.passwordController.text);
-                  if (controller.emailErrorText.value == "" && controller.passErrorText.value == "") {
-                    controller.signIn(controller.emailController.text, controller.passwordController.text);
-                  } else {
-                    if(controller.emailErrorText.isNotEmpty){
-                      Get.snackbar('Error', controller.emailErrorText.value);
-                    }else if(controller.passErrorText.isNotEmpty){
-                      Get.snackbar('Error', controller.passErrorText.value);
-                    }else{
-                      Get.snackbar('Error', 'Field required');
-                    }
-                  }
-                  }, text: TempLanguage.btnLblSwipeToLogin)),
-                     const SpacerBoxVertical(height: 20),
-                    Text(TempLanguage.txtForgotPassword, style: poppinsMedium(fontSize: 15.sp, color: AppColors.secondaryText),)
+              TextFieldWidget(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,
+                keyboardType: TextInputType.visiblePassword, focusNode: passwordFocusNode,
+                onEditComplete: ()=>unFocusChange(context),),
 
-        ],),
+              const SpacerBoxVertical(height: 20),
+
+              Obx(() => controller.loading.value
+                  ? const CircularProgressIndicator()
+                  : ButtonWidget(onSwipe: (){
+                    controller.emailErrorText.value = validateEmail(controller.emailController.text);
+                    controller.passErrorText.value = validatePassword(controller.passwordController.text);
+                    if (controller.emailErrorText.value == "" && controller.passErrorText.value == "") {
+                      controller.signIn(controller.emailController.text, controller.passwordController.text);
+                    } else {
+                      if(controller.emailErrorText.isNotEmpty){
+                        Get.snackbar('Error', controller.emailErrorText.value);
+                      }else if(controller.passErrorText.isNotEmpty){
+                        Get.snackbar('Error', controller.passErrorText.value);
+                      }else{
+                        Get.snackbar('Error', 'Field required');
+                      }
+                    }
+                    }, text: TempLanguage.btnLblSwipeToLogin)),
+                       const SpacerBoxVertical(height: 20),
+                      Text(TempLanguage.txtForgotPassword, style: poppinsMedium(fontSize: 15.sp, color: AppColors.secondaryText),)
+
+          ],),
+        ),
       )
     )
     );

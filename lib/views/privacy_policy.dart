@@ -37,7 +37,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
           ),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),

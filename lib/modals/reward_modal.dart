@@ -4,47 +4,73 @@ import 'package:skhickens_app/core/utils/constants/constants.dart';
 class RewardModel{
   String? businessId;
   String? rewardId;
-  String? dealName;
-  String? receiptPrice;
-  String? rewardDetails;
+  String? rewardName;
+  int? noOfUsed;
+  int? uses;
+  String? companyName;
+  String? rewardAddress;
+  int? pointsToRedeem;
+  String? rewardLogo;
+  Timestamp? createdAt;
 
   RewardModel({
     this.businessId,
     this.rewardId,
-    this.dealName,
-    this.receiptPrice,
-    this.rewardDetails,
+    this.noOfUsed,
+    this.uses,
+    this.rewardName,
+    this.companyName,
+    this.rewardAddress,
+    this.pointsToRedeem,
+    this.rewardLogo,
+    this.createdAt,
   });
 
   factory RewardModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
-    // Use this factory method to convert Firebase DocumentSnapshot to Deal object
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return RewardModel(
-      rewardId: snapshot.id,
+      rewardId: snapshot.id ?? '',
       businessId: data[RewardKey.BUSINESSID] ?? '',
-      dealName: data[RewardKey.DEALNAME],
-      receiptPrice: data[RewardKey.RECEIPTPRICE] ?? '',
-      rewardDetails: data[RewardKey.REWARDDETAILS] ?? '',
+      rewardName: data[RewardKey.REWARDNAME] ?? '',
+      noOfUsed: data[RewardKey.NOOFUSED] ?? 0,
+      companyName: data[RewardKey.COMPANYNAME] ?? '',
+      pointsToRedeem: data[RewardKey.POINTSTOREDEEM] ?? 0,
+      rewardLogo: data[RewardKey.REWARDLOGO] ?? '',
+      rewardAddress: data[RewardKey.REWARDADDRESS] ?? '',
+      uses: data[RewardKey.USES] ?? 0,
+      createdAt: data[RewardKey.CREATEDAT] ?? Timestamp.now(),
     );
   }
 
   factory RewardModel.fromMap(Map<String, dynamic> map) {
     return RewardModel(
-      rewardId: map[RewardKey.REWARDID],
-      businessId: map[RewardKey.BUSINESSID],
-      dealName: map[RewardKey.DEALNAME],
-      receiptPrice: map[RewardKey.RECEIPTPRICE],
-      rewardDetails: map[RewardKey.REWARDDETAILS],
+      rewardId: map[RewardKey.REWARDID] ?? '',
+      businessId: map[RewardKey.BUSINESSID] ?? '',
+      noOfUsed: map[RewardKey.NOOFUSED] ?? 0,
+      rewardName: map[RewardKey.REWARDNAME] ?? '',
+      rewardAddress: map[RewardKey.REWARDADDRESS] ?? '',
+      companyName: map[RewardKey.COMPANYNAME] ?? '',
+      uses: map[RewardKey.USES] ?? 0,
+      pointsToRedeem: map[RewardKey.POINTSTOREDEEM] ?? 0,
+      rewardLogo: map[RewardKey.REWARDLOGO] ?? '',
+      createdAt: map[RewardKey.CREATEDAT] ?? Timestamp.now(),
+
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      RewardKey.REWARDID: rewardId,
-      RewardKey.BUSINESSID: businessId,
-      RewardKey.DEALNAME: dealName,
-      RewardKey.RECEIPTPRICE: receiptPrice,
-      RewardKey.REWARDDETAILS: rewardDetails,
+      RewardKey.REWARDID: rewardId ?? '',
+      RewardKey.BUSINESSID: businessId ?? '',
+      RewardKey.NOOFUSED: noOfUsed ?? 0,
+      RewardKey.USES: uses ?? 0,
+      RewardKey.REWARDNAME: rewardName ?? '',
+      RewardKey.REWARDADDRESS: rewardAddress ?? '',
+      RewardKey.COMPANYNAME: companyName ?? '',
+      RewardKey.POINTSTOREDEEM: pointsToRedeem ?? 0,
+      RewardKey.REWARDLOGO: rewardLogo ?? '',
+      RewardKey.CREATEDAT: createdAt ?? Timestamp.now(),
+
     };
   }
 }

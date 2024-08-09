@@ -23,9 +23,12 @@ class ProfileListItems extends StatelessWidget {
       enabled: enabled,
       style: poppinsRegular(fontSize: 14.sp),
       decoration: InputDecoration(
-        prefixIcon: Image.asset(
-          path,
-          scale: 3,
+        prefixIcon: Padding(
+          padding: EdgeInsets.all(10.sp),
+          child: ImageIcon(
+            AssetImage(
+            path,),size: 20.sp,
+          ),
         ),
         border: UnderlineInputBorder(
           borderSide: BorderSide(

@@ -204,9 +204,27 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           textController: businessIdController,
                           enabled: enabled.value,),
                         const SizedBox(height: 20,),
-                        ButtonWidget(onSwipe: (){
-                          controller.logout();
-                        }, text: 'Log Out'),
+                        ButtonWidget(onSwipe: ()async{
+                          if (enabled.value) {
+                            bool success = await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
+                              UserKey.USERNAME: userNameController.text,
+                              UserKey.EMAIL: emailController.text,
+                              UserKey.PHONENO: phoneNoController.text,
+                              UserKey.ADDRESS: addressController.text,
+                              UserKey.WEBSITE: websiteController.text,
+                              UserKey.BUSINESSID: businessIdController.text
+                            });
+                            if (success) {
+                              X.showSnackBar(
+                                  'Success', 'User data updated successfully!');
+                              enabled.value = false;
+                            } else {
+                              X.showSnackBar('Error', 'Failed to update user data.',);
+                            }
+                          } else {
+                            enabled.value = true;
+                          }
+                        }, text: !enabled.value ? TempLanguage.txtEdit : 'Save',),
                       ],
 
                     ),

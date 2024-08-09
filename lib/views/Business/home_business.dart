@@ -16,21 +16,36 @@ import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
 import '../../widgets/custom_appBar/custom_appBar.dart';
 
-class HomeBusiness extends StatelessWidget {
+class HomeBusiness extends StatefulWidget {
   HomeBusiness({super.key});
+
+  @override
+  State<HomeBusiness> createState() => _HomeBusinessState();
+}
+
+class _HomeBusinessState extends State<HomeBusiness> {
   final businessController = Get.put(BusinessController(BusinessServices()));
+
+  String searchQuery = '';
+  final searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: PreferredSize(preferredSize: Size.fromHeight(22.h),child: customAppBar(isSearchField: true),),
+      appBar: PreferredSize(preferredSize: Size.fromHeight(22.h),child: customAppBarWithTextField(searchController: searchController, onChanged: (value){
+        setState(() {
+          searchQuery = value;
+        });
+
+      }),),
 
       body: Stack(
-        alignment: Alignment.bottomCenter,
         children: [
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 12),
@@ -38,7 +53,7 @@ class HomeBusiness extends StatelessWidget {
                 ),
 
                 StreamBuilder<List<DealModel>>(
-                  stream: businessController.getMyDeals(getStringAsync(SharedPrefKey.uid)),
+                  stream: businessController.getMyDeals(getStringAsync(SharedPrefKey.uid),searchQuery: searchQuery),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -65,20 +80,6 @@ class HomeBusiness extends StatelessWidget {
                     );
                   },
                 ),
-                // ListView.builder(
-                //   shrinkWrap: true,
-                //   scrollDirection: Axis.vertical,
-                //   physics: const NeverScrollableScrollPhysics(),
-                //   itemCount: 10,
-                //   itemBuilder: (context, index)=> index % 2 == 0 ?  GestureDetector(
-                //       onTap: (){
-                //         Get.toNamed(AppRoutes.homeBusinessExtended);
-                //       },child:  const BusinessExtendedTiles()) :  GestureDetector(
-                //       onTap: (){
-                //         Get.toNamed(AppRoutes.rewardsBusiness);
-                //         },child:  const BusinessHomeListItems() ),
-                //   padding: const EdgeInsets.symmetric(vertical: 10),
-                // ),
                 SpacerBoxVertical(height: 10.h),
               ],
             ),

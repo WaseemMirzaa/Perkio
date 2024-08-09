@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,12 +11,12 @@ import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/services/home_services.dart';
+import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/widgets/common_text_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/widgets/snackbar_widget.dart';
 
@@ -52,16 +53,6 @@ class AddDeals extends StatelessWidget {
               TextFieldWidget(text: 'Deal Name',textController: myController.dealNameController,focusNode: nameNode,onEditComplete: ()=>focusChange(context, nameNode, companyNode),),
               const SpacerBoxVertical(height: 20),
 
-              Text('Company Name', style: poppinsRegular(fontSize: 13),),
-              const SpacerBoxVertical(height: 10),
-              TextFieldWidget(text: 'Company Name',textController: myController.companyNameController,focusNode: companyNode,onEditComplete: ()=>focusChange(context, companyNode, addressNode),),
-              const SpacerBoxVertical(height: 20),
-
-
-              Text("Address", style: poppinsRegular(fontSize: 13),),
-              const SpacerBoxVertical(height: 10),
-              TextFieldWidget(text: 'Address',textController: myController.addressController,focusNode: addressNode,onEditComplete: ()=>unFocusChange(context),),
-              const SpacerBoxVertical(height: 20),
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,6 +100,8 @@ class AddDeals extends StatelessWidget {
                                     GestureDetector(
                                       onTap: (){
                                         myController.increaseCounter();
+                                        print(myController.counter.value.toString());
+
                                       },
                                       child: Container(
                                         height: 25,
@@ -168,24 +161,38 @@ class AddDeals extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SpacerBoxVertical(height: 10),
+              SpacerBoxVertical(height: 10.h),
               Obx(()=> controller.loading.value
                   ? const Center(child: CircularProgressIndicator())
                   : ButtonWidget(onSwipe: ()async{
                     if(myController.dealNameController.text.isEmptyOrNull){
                       showSnackBar('Empty Fields','Name field is required');
-                    }else if(myController.companyNameController.text.isEmptyOrNull){
-                      showSnackBar('Empty Fields','Company name field is required');
-                    }else if(myController.addressController.text.isEmptyOrNull){
-                      showSnackBar('Empty Fields','Address is required');
-                    }else if(homeController.pickedImage!.path.isEmptyOrNull){
+                    }else if(homeController.pickedImage == null){
                       showSnackBar('Empty Fields','Deal logo field is required');
+                    }else {
+                      final imageLink = await homeController.uploadImageToFirebaseWithCustomPath(
+                          homeController.pickedImage!.path, 'Deals/${DateTime.now()
+                          .toIso8601String()}');
+                      print("Link Is: $imageLink");
+                      DealModel dealModel = DealModel(dealName: myController.dealNameController
+                          .text,
+                          companyName: getStringAsync(SharedPrefKey.userName),
+                          location: getStringAsync(SharedPrefKey.address),
+                          uses: myController.counter.value,
+                          businessId: getStringAsync(SharedPrefKey.uid),
+                          image: imageLink,
+                          createdAt: Timestamp.now(),
+                          isPromotionStar: false);
+                      print(dealModel.uses.toString());
+                      final isDealDone = await controller.addDeal(dealModel).then((value) {
+                        myController.clearTextFields();
+                        homeController.setImageNull();
+                        Get.offAll(() => BottomBarView(
+                            isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                                ? true
+                                : false));
+                      });
                     }
-                    final imageLink = await homeController.uploadImageToFirebaseWithCustomPath(homeController.pickedImage!.path, 'Deals/${DateTime.now().toIso8601String()}');
-                    print("Link Is: $imageLink");
-                    DealModel dealModel = DealModel(dealName: myController.dealNameController.text, restaurantName: myController.companyNameController.text,location: myController.addressController.text ,uses: myController.counter.value.toString(),businessId: getStringAsync(SharedPrefKey.uid) ,image: imageLink);
-                    final isDealDone = await controller.addDeal(dealModel);
-                    isDealDone ? Get.back() : null;
               }, text: TempLanguage.btnLblSwipeToAdd),),
             ],
           ),

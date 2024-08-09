@@ -11,10 +11,15 @@ class TextFieldWidget extends StatelessWidget {
   final bool isPassword;
   final Function()? onEditComplete;
   final FocusNode? focusNode;
+  final Function(String)? onSubmit;
+  final Function(String)? onChanged;
+  final Widget? prefixIcon;
   final TextInputType? keyboardType;
-  const TextFieldWidget({super.key,
+   const TextFieldWidget({super.key,
     required this.text,this.path, required this.textController,
-    this.isPassword = false,this.onEditComplete, this.focusNode, this.keyboardType
+    this.onSubmit,this.onChanged,
+    this.isPassword = false,this.onEditComplete, this.focusNode, this.keyboardType,
+    this.prefixIcon,
   });
 
   @override
@@ -40,8 +45,11 @@ class TextFieldWidget extends StatelessWidget {
                 onEditingComplete: onEditComplete,
                 focusNode: focusNode,
                 keyboardType: keyboardType,
+                onFieldSubmitted: onSubmit,
+                onChanged: onChanged,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(2.h),
+                  prefixIcon: prefixIcon,
                   hintText: text,
                   hintStyle: poppinsRegular(fontSize: 13,color: const Color(0xFF858585)),
                   border: InputBorder.none,

@@ -40,7 +40,6 @@ class _SelectionScreenState extends State<SelectionScreen> {
                   GestureDetector(
                     onTap: ()async{
                       await setValue(SharedPrefKey.role, SharedPrefKey.user);
-
                       Get.toNamed(AppRoutes.loginUser);
                     },
                     child: const SelectionTile(imgPath: AppAssets.userSel, text: 'USER')),

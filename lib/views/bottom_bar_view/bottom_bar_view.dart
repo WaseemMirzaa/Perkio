@@ -34,7 +34,7 @@ class _BottomBarViewState extends State<BottomBarView> {
   final businessList = [
     HomeBusiness(),
     const RewardsBusiness(),
-    const HomeBusinessExtended(),
+    PromotedDealView(),
     const SettingsView(),
 
   ];

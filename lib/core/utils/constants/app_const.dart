@@ -6,5 +6,6 @@ class SharedPrefKey{
   static const String userName = 'userName';
   static const String email = 'email';
   static const String photo = 'photo';
+  static const String address = 'address';
 
 }

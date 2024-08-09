@@ -5,12 +5,8 @@ import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/firebase_options.dart';
-import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/bindings/bindings.dart';
-import 'package:skhickens_app/services/user_services.dart';
-import 'package:skhickens_app/views/auth/add_bussiness_details_view.dart';
-import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/views/splash_screen.dart';
 
 void main() async {
@@ -47,7 +43,6 @@ class MyApp extends StatelessWidget {
                 print('Error in onTap: $e');
                 print('Stacktrace: $stacktrace');
               }
-              // FirebaseCrashlytics.instance.recordError(e, stacktrace);
             }
           },
           child: GetMaterialApp(
@@ -58,7 +53,6 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
             ),
             home: const SplashScreen(),
-            // initialRoute: AppRoutes.splash,
             initialBinding: MyBinding(),
             getPages: AppRoutes.routes,
           ),

@@ -22,7 +22,7 @@ class SettingsListItems extends StatelessWidget {
                         child: Row(
                           children: [
                             const SpacerBoxHorizontal(width: 20),
-                            Image.asset(path, scale: 3,),
+                            ImageIcon(AssetImage(path),size: 20.sp,),
                             const SpacerBoxHorizontal(width: 20),
                             
                             Text(text, style: poppinsRegular(fontSize: 14.sp),)

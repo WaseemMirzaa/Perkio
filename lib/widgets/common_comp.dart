@@ -43,3 +43,21 @@ Widget uploadImageComp(File? link, Function() onTap)=>GestureDetector(
     child: link == null ? const Icon(Icons.camera_alt,size: 50,) : const SizedBox(),
   ),
 );
+
+
+Widget networkImageComp(String? link, Function() onTap)=>GestureDetector(
+  onTap: onTap,
+  child: Container(
+    height: 12.h,
+    width: 12.h,
+    decoration: BoxDecoration(color: AppColors.whiteColor,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(color: AppColors.blackColor.withOpacity(0.16),offset: const Offset(5,10),blurRadius: 6.5),
+        BoxShadow(color: AppColors.blackColor.withOpacity(0.16),offset: const Offset(0,3),blurRadius: 6.5),
+      ],
+      image: link == null ? null : DecorationImage(image: NetworkImage(link),fit: BoxFit.cover),
+    ),
+    child: link == null ? const Icon(Icons.camera_alt,size: 50,) : const SizedBox(),
+  ),
+);

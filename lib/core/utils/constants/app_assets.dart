@@ -33,7 +33,7 @@ class AppAssets{
   static const navBarIcon3 = 'assets/images/navbar (3).png';
   static const navBarIcon4 = 'assets/images/navbar (4).png';
   static const navBarIcon5 = 'assets/images/navbar (5).png';
-  static const notificationImg = 'assets/images/Notificaiton.png';
+  static const notificationImg = 'assets/images/notificationIcon.png';
   static const editImg = 'assets/images/outline-border_color-24px.png';
   static const pizzaImg = 'assets/images/pizza.png';
   static const mealImg = 'assets/images/pngegg (2).png';

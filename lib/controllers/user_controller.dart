@@ -176,5 +176,6 @@ class UserController extends GetxController {
     await setValue(SharedPrefKey.userName, userModel.userName);
     await setValue(SharedPrefKey.email, userModel.email);
     await setValue(SharedPrefKey.photo, userModel.image);
+    await setValue(SharedPrefKey.address, userModel.address);
   }
 }

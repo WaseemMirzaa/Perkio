@@ -5,8 +5,8 @@ import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 
 class SearchField extends StatelessWidget {
-  const SearchField({super.key});
-
+  SearchField({super.key, this.searchController});
+  TextEditingController? searchController;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,6 +34,7 @@ class SearchField extends StatelessWidget {
                   ),
                   Expanded(
                     child: TextField(
+
                       decoration: InputDecoration(
                         hintText: TempLanguage.txtSearch,
                         contentPadding: const EdgeInsets.only(right: 10),

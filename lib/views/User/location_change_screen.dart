@@ -71,7 +71,7 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
                     ],
                     ),
                     const SpacerBoxVertical(height: 20),
-                    const SearchField(),
+                     SearchField(),
                   ],
                 ),
               ),

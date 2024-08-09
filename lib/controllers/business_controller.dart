@@ -13,7 +13,7 @@ class BusinessController extends GetxController{
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD DEAL
   Future<bool> addDeal(DealModel dealModel) async {
     loading.value = true;
-    final response = await businessServices.addDeal(dealModel:  dealModel);
+    final response = await businessServices.addDeal(dealModel);
     if(response){
       showSnackBar('Success', 'Deal Added Successfully');
       loading.value = false;
@@ -24,18 +24,49 @@ class BusinessController extends GetxController{
     return response;
   }
 
-  Stream<List<DealModel>> getMyDeals(String businessId){
-    return businessServices.getMyDeals(businessId);
+  /// Update my deals
+  Future<bool> editMyDeal(DealModel dealModel)async{
+    dealModel.dealParams = businessServices.setSearchParam(dealModel.dealName!);
+    print("Uses are: ${dealModel.uses}");
+    print("Params are: ${dealModel.dealParams}");
+    return await businessServices.editMyDeal(dealModel);
+  }
+
+  /// edit rewards
+  Future<bool> editMyRewards(RewardModel rewardModel)async{
+    return await businessServices.editMyRewards(rewardModel);
+  }
+
+  /// Get My Deals
+  Stream<List<DealModel>> getMyDeals(String uid, {String? searchQuery}) {
+    return businessServices.getMyDeals(uid, searchQuery: searchQuery);
+  }
+
+  /// Get my promoted deals
+  Stream<List<DealModel>> getMyPromotedDeal(String uid, {String? searchQuery}){
+    return businessServices.getMyPromotedDeal(uid, searchQuery: searchQuery);
+  }
+
+    /// get my rewards deals
+  Stream<List<RewardModel>> getMyRewardsDeal(String businessId) {
+    return businessServices.getMyRewardsDeal(businessId);
   }
 
   Future<bool> deleteDeal(String id, String imagePath) async {
     return await businessServices.deleteDeal(id, imagePath);
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD REWARD
-  Future<void> addReward(String dealName, String receiptPrice, String details) async {
+  /// Reward delete
+  Future<bool> deleteReward(String id, String imageUrl) async {
+    print("Controller caaleed");
+    return await businessServices.deleteReward(id, imageUrl);
+
+  }
+
+    //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD REWARD
+  Future<void> addReward(RewardModel rewardModel) async {
     loading.value = true;
-    final response = await businessServices.addReward(dealName: dealName, receiptPrice: receiptPrice, details: details);
+    final response = await businessServices.addReward(rewardModel);
     if(response){
       loading.value = false;
       showSnackBar('Success', 'Reward Added Successfully');

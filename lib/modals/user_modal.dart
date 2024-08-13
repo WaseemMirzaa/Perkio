@@ -12,6 +12,7 @@ class UserModel {
   String? website;
   String? role;
   String? businessId;
+  String? stripeCustomerId;
   String? password;
   int? balance;
   bool? isPromotionStart;
@@ -32,6 +33,7 @@ class UserModel {
     this.balance,
     this.isPromotionStart,
     this.isVerified,
+    this.stripeCustomerId
   });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -50,6 +52,7 @@ class UserModel {
       balance: data[UserKey.BALANCE] ?? 0,
       isPromotionStart: data[UserKey.ISPROMOTIONSTART] ?? false,
       isVerified: data[UserKey.ISVERIFIED] ?? StatusKey.pending,
+      stripeCustomerId: data[UserKey.STRIPECUSTOMERID] ?? '',
     );
   }
 
@@ -68,6 +71,7 @@ class UserModel {
       balance: map[UserKey.BALANCE] ?? 0,
       isPromotionStart: map[UserKey.ISPROMOTIONSTART] ?? false,
       isVerified: map[UserKey.ISVERIFIED] ?? StatusKey.pending,
+      stripeCustomerId: map[UserKey.STRIPECUSTOMERID] ?? '',
 
 
 
@@ -89,6 +93,7 @@ class UserModel {
       UserKey.BALANCE: balance ?? 0,
       UserKey.ISPROMOTIONSTART: isPromotionStart ?? false,
       UserKey.ISVERIFIED: isVerified ?? StatusKey.pending,
+      UserKey.STRIPECUSTOMERID: stripeCustomerId ?? '',
     };
   }
 }

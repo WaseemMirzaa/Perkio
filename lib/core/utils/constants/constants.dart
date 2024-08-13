@@ -13,6 +13,7 @@ class UserKey {
   static const String BALANCE = "balance";
   static const String ISPROMOTIONSTART = 'isPromotionStart';
   static const String ISVERIFIED = 'isVerified';
+  static const String STRIPECUSTOMERID = 'stripeCustomerId';
 }
 
 class CollectionsKey{

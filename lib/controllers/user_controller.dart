@@ -8,6 +8,7 @@ import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
+import 'package:skhickens_app/networking/stripe.dart';
 import 'package:skhickens_app/services/auth_services.dart';
 import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
@@ -94,6 +95,10 @@ class UserController extends GetxController {
     String? result = await authServices.signUp(userModel);
     if (result != null) {
       userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      final stripeCustomerId = await StripePayment.createStripeCustomer(email: userModel.email!);
+      if(!stripeCustomerId.isEmptyOrNull){
+        userModel.stripeCustomerId = stripeCustomerId;
+      }
       if(getStringAsync(SharedPrefKey.role) == SharedPrefKey.business){
         final logoLink = await homeController.uploadImageToFirebaseWithCustomPath(userModel.logo!, 'business_logo/$result');
         final image = await homeController.uploadImageToFirebaseOnID(userModel.image!, result);
@@ -181,5 +186,6 @@ class UserController extends GetxController {
     await setValue(UserKey.BALANCE, userModel.balance);
     await setValue(UserKey.ISPROMOTIONSTART, userModel.isPromotionStart);
     await setValue(UserKey.ISVERIFIED, userModel.isVerified);
+    await setValue(UserKey.STRIPECUSTOMERID, userModel.stripeCustomerId);
   }
 }

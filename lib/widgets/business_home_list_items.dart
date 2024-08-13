@@ -18,6 +18,7 @@ import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
+import '../networking/stripe.dart';
 import 'snackbar_widget.dart';
 
 class BusinessHomeListItems extends StatefulWidget {
@@ -318,7 +319,19 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                                             }).then((value)=>Get.back());
                                                       }, child: const Text('Yes')),
 
-                                                    ],));
+                                                    ],
+                                                    )
+                                                    );
+
+                                                    //final id = await StripePayment.createStripeCustomer(email: user.email ?? '');
+                                                    //print('iii ${id}');
+                                                    //stripeId = cus_Qednk9oJzmhpIy;
+
+                                                    // int amount = 20 * 100; ///$20 = 20 * 100
+                                                    // if (amount.isEven) {
+                                                    //   await StripePayment.initPaymentSheet(amount: amount, customerId: 'cus_Qednk9oJzmhpIy');
+                                                    // }
+
                                                   },
                                                   child: Container(
                                                     height: 2.5.h,

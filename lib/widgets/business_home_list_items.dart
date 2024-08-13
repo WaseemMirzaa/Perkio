@@ -160,7 +160,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                                         Padding(
                                                           padding: const EdgeInsets.only(
                                                               left: 20, top: 10),
-                                                          child: Text('Deal Promotion',
+                                                          child: Text('Promotional Balance',
                                                             style: poppinsBold(fontSize: 15.sp),),
                                                         ),
                                                         Align(
@@ -232,22 +232,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                                         } else {
                                                           toast('Please enter a valid budget and ensure cost per click is greater than zero.');
                                                         }
-
-                                                        // else if((promotionAmountController.text.toInt() % apc == 0)){
-                                                        //   await homeController.updateCollection(widget.dealModel.dealId!, CollectionsKey.DEALS,
-                                                        //       {
-                                                        //         DealKey.ISPROMOTIONSTART: true
-                                                        //       }).then((value) {
-                                                        //         Get.back();
-                                                        //         toast('You have on promotion on the deal');
-                                                        //
-                                                        //   });
-                                                        // }else{
-                                                        //   showSnackBar('Budget Figure Issue','Budget is not multiple to the Number of clicks');
-                                                        //
-                                                        // }
-
-                                                      }, text: 'PROMOTE')
+                                                      }, text: 'ADD BALANCE')
 
 
                                                     ],

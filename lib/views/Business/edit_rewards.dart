@@ -225,11 +225,13 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                   }else if (points % controller.pps.value! != 0) {
                     showSnackBar('Invalid Input', 'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
                   }else{
+                    int userInput = int.parse(myController.pointsToRedeemController.text);
                   context.loaderOverlay.show();
                   final imageLink = homeController.pickedImage == null ? null : await homeController.uploadImageToFirebaseWithCustomPath(homeController.pickedImage!.path, 'Deals/${DateTime.now().toIso8601String()}');
                   print("Link Is: $imageLink");
                   widget.rewardModel.rewardName = myController.rewardNameController.text;
                   widget.rewardModel.uses = myController.counter.value;
+                  widget.rewardModel.pointsToRedeem = userInput;
                   widget.rewardModel.rewardLogo = imageLink.isEmptyOrNull ? widget.rewardModel.rewardLogo : imageLink;
 
                   final isDealDone = await controller.editMyRewards(widget.rewardModel).then((value) {

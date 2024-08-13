@@ -7,6 +7,7 @@ import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/core/utils/mixins/validate_textfield.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
@@ -112,7 +113,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                           controller.phoneErrorText.value = simpleValidation(controller.phoneController.text);
                           if (controller.emailErrorText.value == "" && controller.passErrorText.value == "" && controller.userNameErrorText.value == "") {
                             if (confirm.value) {
-                              UserModel userModel = UserModel(email: controller.emailController.text, userName: controller.userNameController.text, phoneNo: controller.phoneController.text, role: getStringAsync(SharedPrefKey.role),password: controller.passwordController.text);
+                              UserModel userModel = UserModel(email: controller.emailController.text, userName: controller.userNameController.text, phoneNo: controller.phoneController.text, role: getStringAsync(SharedPrefKey.role),password: controller.passwordController.text, isVerified: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? StatusKey.verified : StatusKey.pending);
                               getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? controller.signUp(userModel
                               ) : Get.to(()=> AddBusinessDetailsView(userModel: userModel,));
                             } else {

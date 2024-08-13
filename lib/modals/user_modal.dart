@@ -13,6 +13,9 @@ class UserModel {
   String? role;
   String? businessId;
   String? password;
+  int? balance;
+  bool? isPromotionStart;
+  String? isVerified;
 
   UserModel({
     this.userId,
@@ -26,6 +29,9 @@ class UserModel {
     this.role,
     this.businessId,
     this.password,
+    this.balance,
+    this.isPromotionStart,
+    this.isVerified,
   });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -41,6 +47,9 @@ class UserModel {
       website: data[UserKey.WEBSITE],
       role: data[UserKey.ROLE],
       businessId: data[UserKey.BUSINESSID],
+      balance: data[UserKey.BALANCE] ?? 0,
+      isPromotionStart: data[UserKey.ISPROMOTIONSTART] ?? false,
+      isVerified: data[UserKey.ISVERIFIED] ?? StatusKey.pending,
     );
   }
 
@@ -56,6 +65,12 @@ class UserModel {
       website: map[UserKey.WEBSITE],
       role: map[UserKey.ROLE],
       businessId: map[UserKey.BUSINESSID],
+      balance: map[UserKey.BALANCE] ?? 0,
+      isPromotionStart: map[UserKey.ISPROMOTIONSTART] ?? false,
+      isVerified: map[UserKey.ISVERIFIED] ?? StatusKey.pending,
+
+
+
     );
   }
 
@@ -64,13 +79,16 @@ class UserModel {
       UserKey.USERID: userId,
       UserKey.USERNAME: userName,
       UserKey.EMAIL: email,
-      UserKey.PHONENO: phoneNo,
+      UserKey.PHONENO: phoneNo ?? '',
       UserKey.IMAGE: image,
       UserKey.LOGO: logo,
       UserKey.ADDRESS: address,
       UserKey.WEBSITE: website,
       UserKey.ROLE: role,
-      UserKey.BUSINESSID: businessId
+      UserKey.BUSINESSID: businessId,
+      UserKey.BALANCE: balance ?? 0,
+      UserKey.ISPROMOTIONSTART: isPromotionStart ?? false,
+      UserKey.ISVERIFIED: isVerified ?? StatusKey.pending,
     };
   }
 }

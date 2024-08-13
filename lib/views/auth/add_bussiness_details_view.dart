@@ -13,6 +13,7 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
+import 'package:skhickens_app/views/Business/verification_pending_view.dart';
 import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
@@ -172,6 +173,7 @@ class AddBusinessDetailsView extends StatelessWidget {
                       userModel.logo = homeController.pickedImage2?.path;
                     }
                     await userController.signUp(userModel).then((value){
+                      Get.to(()=> VerificationPendingView());
                       homeController.setImageNull();
                       homeController.clearLogo();
                       context.loaderOverlay.hide();

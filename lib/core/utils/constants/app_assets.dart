@@ -54,4 +54,5 @@ class AppAssets{
   static const profileHeader = 'assets/images/Union 1.png';
   static const userSel = 'assets/images/user_sel.png';
   static const businessSel = 'assets/images/business_sel.png';
+  static const moneyIcon = 'assets/images/money.png';
 }

@@ -9,9 +9,11 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
+import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
@@ -74,12 +76,12 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
               const SpacerBoxVertical(height: 20),
 
               Obx(() => controller.loading.value
-                  ? const CircularProgressIndicator()
-                  : ButtonWidget(onSwipe: (){
+                  ? circularProgressBar()
+                  : ButtonWidget(onSwipe: ()async{
                     controller.emailErrorText.value = validateEmail(controller.emailController.text);
                     controller.passErrorText.value = validatePassword(controller.passwordController.text);
                     if (controller.emailErrorText.value == "" && controller.passErrorText.value == "") {
-                      controller.signIn(controller.emailController.text, controller.passwordController.text);
+                      await controller.signIn(controller.emailController.text, controller.passwordController.text).then((value)=>Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false )));
                     } else {
                       if(controller.emailErrorText.isNotEmpty){
                         Get.snackbar('Error', controller.emailErrorText.value);

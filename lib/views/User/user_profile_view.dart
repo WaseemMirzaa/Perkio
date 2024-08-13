@@ -14,6 +14,7 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
+import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/widgets/snackbar_widget.dart';
@@ -69,7 +70,7 @@ class _UserProfileViewState extends State<UserProfileView> {
           stream: _userProfileStreamController.stream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: circularProgressBar());
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -6,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/controllers/ui_controllers/add_deals_controller.dart';
 import 'package:skhickens_app/controllers/business_controller.dart';
 import 'package:skhickens_app/controllers/home_controller.dart';
+import 'package:skhickens_app/controllers/ui_controllers/add_rewards_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -31,25 +33,21 @@ class EditMyRewards extends StatefulWidget {
 }
 
 class _EditMyRewardsState extends State<EditMyRewards> {
-  final AddDealsController myController = Get.find<AddDealsController>();
+  final AddRewardsController myController = Get.find<AddRewardsController>();
 
   final BusinessController controller = Get.find<BusinessController>();
 
   final homeController = Get.put(HomeController(HomeServices()));
 
-  FocusNode nameNode = FocusNode();
-
-  FocusNode companyNode = FocusNode();
-
-  FocusNode addressNode = FocusNode();
+  FocusNode rewardNameNode = FocusNode();
+  FocusNode pointsToRedeemNode = FocusNode();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    myController.dealNameController.text = widget.rewardModel.rewardName!;
-    myController.companyNameController.text = widget.rewardModel.companyName!;
-    myController.addressController.text = widget.rewardModel.rewardAddress!;
+    myController.rewardNameController.text = widget.rewardModel.rewardName!;
+    myController.pointsToRedeemController.text = widget.rewardModel.pointsToRedeem.toString();
     myController.counter.value = widget.rewardModel.uses ?? 0;
   }
 
@@ -71,7 +69,33 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                 const SpacerBoxVertical(height: 20),
                 Text('Reward Name', style: poppinsRegular(fontSize: 13),),
                 const SpacerBoxVertical(height: 10),
-                TextFieldWidget(text: 'Reward Name',textController: myController.dealNameController,focusNode: nameNode,onEditComplete: ()=>focusChange(context, nameNode, companyNode),),
+                TextFieldWidget(text: 'Reward Name',textController: myController.rewardNameController,focusNode: rewardNameNode,onEditComplete: ()=>focusChange(context, rewardNameNode, pointsToRedeemNode),),
+                const SpacerBoxVertical(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Points to Redeem', style: poppinsRegular(fontSize: 13),),
+                    Align(alignment: Alignment.centerRight, child: Text('PPS (Points Per Scan): ${controller.pps}'))
+                  ],
+                ),
+                const SpacerBoxVertical(height: 10),
+                TextFieldWidget(
+                  text: 'Points', textController: myController.pointsToRedeemController,keyboardType: TextInputType.number,focusNode: pointsToRedeemNode, onEditComplete: ()=>unFocusChange(context),inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                  onSubmit: (value){
+                    int userInput = int.parse(value);
+                    if (userInput % controller.pps.value! == 0) {
+
+                    } else {
+                      showSnackBar('Invalid Input', 'Please enter a number that is a multiple of ${controller.pps.value}.');
+                    }
+                  },
+                ),
+                const SpacerBoxVertical(height: 5),
+
+                const Align(alignment: Alignment.centerRight,child: Text('Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
                 const SpacerBoxVertical(height: 20),
 
                 Row(
@@ -187,17 +211,24 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                   ),
                   ),
                 ),
-                const SpacerBoxVertical(height: 30),
+                SpacerBoxVertical(height: 10.h),
                 Obx(()=> controller.loading.value
-                    ? const Center(child: CircularProgressIndicator())
+                    ? Center(child: circularProgressBar())
                     : ButtonWidget(onSwipe: ()async{
-                  if(myController.dealNameController.text.isEmptyOrNull){
-                    showSnackBar('Empty Fields','Name field is required');
+                  int points = int.parse(myController.pointsToRedeemController.text);
+                  if(myController.rewardNameController.text.isEmptyOrNull){
+                    showSnackBar('Empty Fields', 'Please enter the reward name');
+                  }else if(myController.pointsToRedeemController.text.isEmptyOrNull){
+                    showSnackBar('Empty Fields', 'Please enter the points to redeem (PTR)');
+                  }else if(homeController.pickedImage == null && widget.rewardModel.rewardLogo.isEmptyOrNull){
+                    showSnackBar('Empty Fields', 'Please upload the reward logo');
+                  }else if (points % controller.pps.value! != 0) {
+                    showSnackBar('Invalid Input', 'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
                   }else{
                   context.loaderOverlay.show();
                   final imageLink = homeController.pickedImage == null ? null : await homeController.uploadImageToFirebaseWithCustomPath(homeController.pickedImage!.path, 'Deals/${DateTime.now().toIso8601String()}');
                   print("Link Is: $imageLink");
-                  widget.rewardModel.rewardName = myController.dealNameController.text;
+                  widget.rewardModel.rewardName = myController.rewardNameController.text;
                   widget.rewardModel.uses = myController.counter.value;
                   widget.rewardModel.rewardLogo = imageLink.isEmptyOrNull ? widget.rewardModel.rewardLogo : imageLink;
 
@@ -206,7 +237,6 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                     myController.clearTextFields();
                     homeController.setImageNull();
                     Get.back();
-                    // Get.offAll(()=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false));
                     context.loaderOverlay.hide();
                   });
                 }}, text: 'SWIPE TO EDIT DEAL'),),

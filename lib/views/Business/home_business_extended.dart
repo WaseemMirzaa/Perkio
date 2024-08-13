@@ -12,8 +12,10 @@ import 'package:skhickens_app/services/business_services.dart';
 import 'package:skhickens_app/widgets/business_extended_tiles.dart';
 import 'package:skhickens_app/widgets/business_home_list_items.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
+import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:skhickens_app/widgets/primary_layout_widget/primary_layout.dart';
 
 import '../../widgets/custom_appBar/custom_appBar.dart';
 
@@ -31,68 +33,63 @@ class _PromotedDealViewState extends State<PromotedDealView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      appBar:  PreferredSize(preferredSize: Size.fromHeight(22.h),child: customAppBarWithTextField(searchController: searchController, onChanged: (value){
-        setState(() {
-          searchQuery = value;
-        });
-
-      }),),
-      body: Stack(
-        alignment: Alignment.topCenter,
+    return PrimaryLayoutWidget(
+        header: SizedBox(height: 25.h,
+        child: customAppBarWithTextField(searchController: searchController, onChanged: (value){
+      setState(() {
+        searchQuery = value;
+      });
+    }),
+    ),
+    body: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12),
-                  child: Text(TempLanguage.lblPromotedDeal, style: poppinsMedium(fontSize: 18),),
-                ),
-                SizedBox(height: 1.h,),
-                StreamBuilder<List<DealModel>>(
-                  stream: businessController.getMyPromotedDeal(getStringAsync(SharedPrefKey.uid),searchQuery: searchQuery),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
-
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No deals available'));
-                    }
-
-                    final deals = snapshot.data!;
-                    return ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: deals.length,
-                    itemBuilder: (context, index) {
-                      final promotedDeals = deals[index];
-                      return BusinessHomeListItems(dealModel: promotedDeals);
-                    });
-                  }
-                ),
-                SpacerBoxVertical(height: 8.h),
-              ],
-            ),
+          SizedBox(height: 25.h,),
+          Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Text(TempLanguage.lblPromotedDeal, style: poppinsMedium(fontSize: 18),),
           ),
-          Column(mainAxisAlignment: MainAxisAlignment.end,children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: ButtonWidget(onSwipe: (){
-                Get.toNamed(AppRoutes.addDeal);
-              }, text: TempLanguage.btnLblSwipeToAddDeal),
-            ),
-          ],)
-        ],
-      ),
-    );
+         SizedBox(height: 1.h,),
+         StreamBuilder<List<DealModel>>(
+            stream: businessController.getMyPromotedDeal(getStringAsync(SharedPrefKey.uid),searchQuery: searchQuery),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: circularProgressBar());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No promoted deals available'));
+              }
+
+              final deals = snapshot.data!;
+              return ListView.builder(
+                padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: deals.length,
+                  itemBuilder: (context, index) {
+                    final promotedDeals = deals[index];
+                    return BusinessHomeListItems(dealModel: promotedDeals);
+                  });
+            }
+        ),
+        SpacerBoxVertical(height: 10.h),
+      ],
+    ),
+    ),
+    footer: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: ButtonWidget(onSwipe: (){
+        Get.toNamed(AppRoutes.addDeal);
+        }, text: TempLanguage.btnLblSwipeToAddDeal),
+    ));
+
   }
 }

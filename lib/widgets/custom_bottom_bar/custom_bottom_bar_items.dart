@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 
 class CustomBottomBarItem extends StatelessWidget {
@@ -16,9 +17,11 @@ class CustomBottomBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap(),
-      child: Column(
+    return IconButton(
+      onPressed: () => onTap(),
+      padding: EdgeInsets.symmetric(horizontal: 8.w,vertical: 0),
+      // highlightColor: AppColors.whiteColor.withOpacity(0.5),
+      icon: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(path, scale: 3,),

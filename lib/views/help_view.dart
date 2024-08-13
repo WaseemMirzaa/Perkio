@@ -8,14 +8,14 @@ import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/primary_layout_widget/secondary_layout.dart';
 
-class TermsAndConditions extends StatefulWidget {
-  const TermsAndConditions({super.key});
+class HelpView extends StatefulWidget {
+  const HelpView({super.key});
 
   @override
-  State<TermsAndConditions> createState() => _TermsAndConditionsState();
+  State<HelpView> createState() => _HelpViewState();
 }
 
-class _TermsAndConditionsState extends State<TermsAndConditions> {
+class _HelpViewState extends State<HelpView> {
   @override
   Widget build(BuildContext context) {
     return SecondaryLayoutWidget(
@@ -29,7 +29,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 children: [
                   const SpacerBoxVertical(height: 40),
                   BackButtonWidget(padding: EdgeInsets.zero,),
-                  Center(child: Text(TempLanguage.txtTermsConditions, style: poppinsMedium(fontSize: 25),))
+                  Center(child: Text('Help', style: poppinsMedium(fontSize: 25),))
                 ],
               ),
             ),

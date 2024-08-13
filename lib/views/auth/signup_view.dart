@@ -14,6 +14,7 @@ import 'package:skhickens_app/views/auth/add_bussiness_details_view.dart';
 import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
+import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
@@ -103,13 +104,13 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                 const SpacerBoxVertical(height: 20),
 
                 Obx(() => controller.loading.value
-                    ? const CircularProgressIndicator() :
+                    ? circularProgressBar() :
                         ButtonWidget(onSwipe: (){
                           controller.emailErrorText.value = validateEmail(controller.emailController.text);
                           controller.passErrorText.value = validatePassword(controller.passwordController.text);
                           controller.userNameErrorText.value = simpleValidation(controller.userNameController.text);
                           controller.phoneErrorText.value = simpleValidation(controller.phoneController.text);
-                          if (controller.emailErrorText.value == "" && controller.passErrorText.value == "" && controller.userNameErrorText.value == "" && controller.phoneErrorText.value == "") {
+                          if (controller.emailErrorText.value == "" && controller.passErrorText.value == "" && controller.userNameErrorText.value == "") {
                             if (confirm.value) {
                               UserModel userModel = UserModel(email: controller.emailController.text, userName: controller.userNameController.text, phoneNo: controller.phoneController.text, role: getStringAsync(SharedPrefKey.role),password: controller.passwordController.text);
                               getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? controller.signUp(userModel
@@ -119,15 +120,13 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                             }
                           } else {
                             if(controller.userNameErrorText.value.isNotEmpty){
-                              Get.snackbar('Error', controller.userNameErrorText.value);
+                              getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.snackbar('Error', controller.userNameErrorText.value) : Get.snackbar('Error', 'Please enter the business name');
                             } else if(controller.emailErrorText.value.isNotEmpty){
                               Get.snackbar('Error', controller.emailErrorText.value);
                             } else if(controller.passErrorText.value.isNotEmpty){
                               Get.snackbar('Error', controller.passErrorText.value);
-                            }else if(controller.phoneErrorText.value.isNotEmpty){
-                              Get.snackbar('Error', controller.phoneErrorText.value);
-                            }else{
-                              Get.snackbar('Error', 'Please fill all fields');
+                            }else if (!confirm.value){
+                              Get.snackbar('Error', 'Please Accept Terms & Conditions To Continue');
                             }
                           }
                           }, text: TempLanguage.btnLblSwipeToSignup)),

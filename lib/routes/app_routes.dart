@@ -66,7 +66,7 @@ class AppRoutes {
     GetPage(name: homeBusinessExtended, page: () => PromotedDealView()),
     GetPage(name: homeBusiness, page: () => HomeBusiness()),
     GetPage(name: profileSettingsBusiness, page: () => const ProfileSettingsBusiness()),
-    GetPage(name: rewardsBusiness, page: () => const RewardsBusiness()),
+    GetPage(name: rewardsBusiness, page: () => RewardsBusiness()),
     GetPage(name: subscriptionPlan, page: () => SubscriptionPlan()),
     GetPage(name: businessDetail, page: () => const BusinessDetail()),
     GetPage(name: dealDetail, page: () => const DealDetail()),

@@ -12,6 +12,7 @@ import 'package:skhickens_app/views/Business/subscription_plan.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
+import 'package:skhickens_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/search_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
@@ -38,45 +39,51 @@ class _LocationChangeScreenState extends State<LocationChangeScreen> {
               zoom: 14.4746,
             ),
           ),
-          Stack(
-            children: [
-              CustomShapeContainer(),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    const SpacerBoxVertical(height: 30),
-                    Row(children: [
-                      CircleAvatar(radius: 20.sp,
-                        backgroundImage: const AssetImage(AppAssets.profileImg),
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(child:  Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children: [
-                        Text( 'Skhicken', style: poppinsRegular(fontSize: 13.sp),),
-                        Row(
-                          children: [
-                            Text('Islamabad', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
-                            const SizedBox(width: 10,),
-                            // GestureDetector(onTap: (){
-                            //   Get.to(()=>LocationChangeScreen(isChangeLocation: true,));
-                            // }, child: Text('Change Location',style: poppinsRegular(fontSize: 8,color: AppColors.blueColor),),)
-                          ],
-                        ),
-                      ],),),
-                      GestureDetector(
-                          onTap: (){
-                            Get.toNamed(AppRoutes.notifications);
-                          },
-                          child: Image.asset(AppAssets.notificationImg, scale: 3,)),
-                    ],
-                    ),
-                    const SpacerBoxVertical(height: 20),
-                     SearchField(),
-                  ],
-                ),
-              ),
-            ],
+          // Stack(
+          //   children: [
+          //     CustomShapeContainer(),
+          //     Padding(
+          //       padding: const EdgeInsets.all(12.0),
+          //       child: Column(
+          //         children: [
+          //           const SpacerBoxVertical(height: 30),
+          //           Row(children: [
+          //             CircleAvatar(radius: 20.sp,
+          //               backgroundImage: const AssetImage(AppAssets.profileImg),
+          //             ),
+          //             const SizedBox(width: 10,),
+          //             Expanded(child:  Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children: [
+          //               Text( 'Skhicken', style: poppinsRegular(fontSize: 13.sp),),
+          //               Row(
+          //                 children: [
+          //                   Text('Islamabad', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+          //                   const SizedBox(width: 10,),
+          //                   // GestureDetector(onTap: (){
+          //                   //   Get.to(()=>LocationChangeScreen(isChangeLocation: true,));
+          //                   // }, child: Text('Change Location',style: poppinsRegular(fontSize: 8,color: AppColors.blueColor),),)
+          //                 ],
+          //               ),
+          //             ],),),
+          //             GestureDetector(
+          //                 onTap: (){
+          //                   Get.toNamed(AppRoutes.notifications);
+          //                 },
+          //                 child: Image.asset(AppAssets.notificationImg, scale: 3,)),
+          //           ],
+          //           ),
+          //           const SpacerBoxVertical(height: 20),
+          //            SearchField(),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          SizedBox(height: 25.h,
+            child: customAppBarWithTextField(searchController: TextEditingController(), onChanged: (value){
+
+            }),
           ),
+
           Center(child: Image.asset(AppAssets.locationPin, scale: 3,)),
           Positioned(
             bottom: 20,

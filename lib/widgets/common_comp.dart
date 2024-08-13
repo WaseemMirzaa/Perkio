@@ -3,7 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/widgets/back_button_widget.dart';
+import 'package:skhickens_app/widgets/common_space.dart';
+import 'package:skhickens_app/widgets/custom_container.dart';
 
 AlertDialog imageDialog({required Function() galleryTap, required Function() cameraTap})=>AlertDialog(
   title: Text('Pick Image',style: poppinsBold(fontSize: 15),),
@@ -60,4 +64,23 @@ Widget networkImageComp(String? link, Function() onTap)=>GestureDetector(
     ),
     child: link == null ? const Icon(Icons.camera_alt,size: 50,) : const SizedBox(),
   ),
+);
+
+Widget circularProgressBar()=>const CircularProgressIndicator(color: AppColors.gradientStartColor,);
+
+Widget titleBarComp(String title)=>Stack(
+  children: [
+    CustomShapeContainer(height: 22.h,),
+    Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SpacerBoxVertical(height: 40),
+          BackButtonWidget(padding: EdgeInsets.zero,),
+          Center(child: Text(title, style: poppinsMedium(fontSize: 25),))
+        ],
+      ),
+    ),
+  ],
 );

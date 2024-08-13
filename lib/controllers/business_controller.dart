@@ -10,6 +10,12 @@ class BusinessController extends GetxController{
 
   RxBool loading = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    getPPS();
+  }
+
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD DEAL
   Future<bool> addDeal(DealModel dealModel) async {
     loading.value = true;
@@ -75,5 +81,17 @@ class BusinessController extends GetxController{
       showSnackBar('Error', 'Could Not Add Deal');
       loading.value = true;
     }
+  }
+
+  var pps = Rx<int?>(null);
+  /// Get PPS
+  Stream<int?> getPPS(){
+    businessServices.getPPS().listen((ppsValue) {
+      pps.value = ppsValue;  // Update the reactive variable
+    }, onError: (error) {
+      print('Error fetching PPS: $error');
+      pps.value = 0;  // Optionally handle error case
+    });
+    return businessServices.getPPS();
   }
 }

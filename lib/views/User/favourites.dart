@@ -10,6 +10,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/controllers/ui_controllers/favourites_screen_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:skhickens_app/widgets/favourites_widget.dart';
@@ -146,7 +147,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: circularProgressBar());
                     }
                     if (snapshot.hasError) {
                       return Center(

@@ -15,6 +15,7 @@ import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
+import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/profile_list_items.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/widgets/snackbar_widget.dart' as X;
@@ -74,7 +75,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
         stream: _userProfileStreamController.stream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: circularProgressBar());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -136,14 +137,14 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                             decoration: const BoxDecoration(
                                 color: AppColors.whiteColor,
                                 shape: BoxShape.circle
-                            ), child: Icon(Icons.edit, size: 20.sp,)),
+                            ), child: Icon(Icons.camera_enhance_rounded, size: 20.sp,)),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 2.h,),
                 Obx(() {
-                  return Align(
+                  return !enabled.value ?  Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 30),
@@ -169,12 +170,22 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                               enabled.value = true;
                             }
                           },
-                          child: Text(
-                            !enabled.value ? TempLanguage.txtEdit : 'Save',
-                            style: poppinsRegular(fontSize: 10, color: AppColors
-                                .hintText),)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(Icons.edit,size: 16.sp,color: AppColors.hintText,),
+                              SizedBox(width: 1.w,),
+                              Text(
+                                TempLanguage.txtEdit ,
+                                style: poppinsRegular(fontSize: 12.sp, color: AppColors
+                                    .hintText),),
+
+
+                            ],
+                          )),
                     ),
-                  );
+                  ): SizedBox(height: 2.h,);
                 }),
                 Expanded(
                   child: Obx(()=> ListView(
@@ -204,7 +215,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           textController: businessIdController,
                           enabled: enabled.value,),
                         const SizedBox(height: 20,),
-                        ButtonWidget(onSwipe: ()async{
+                        !enabled.value ? SizedBox() : ButtonWidget(onSwipe: ()async{
                           if (enabled.value) {
                             bool success = await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
                               UserKey.USERNAME: userNameController.text,

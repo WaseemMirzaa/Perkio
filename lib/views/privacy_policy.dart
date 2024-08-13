@@ -6,6 +6,7 @@ import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
+import 'package:skhickens_app/widgets/primary_layout_widget/secondary_layout.dart';
 
 class PrivacyPolicy extends StatefulWidget {
   const PrivacyPolicy({super.key});
@@ -17,37 +18,32 @@ class PrivacyPolicy extends StatefulWidget {
 class _PrivacyPolicyState extends State<PrivacyPolicy> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              CustomShapeContainer(),
-              Column(
+    return SecondaryLayoutWidget(
+        header: Stack(
+          children: [
+            CustomShapeContainer(height: 22.h,),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                 BackButtonWidget(),
-                  SpacerBoxVertical(height: 1.h),
+                  const SpacerBoxVertical(height: 40),
+                  BackButtonWidget(padding: EdgeInsets.zero,),
                   Center(child: Text(TempLanguage.txtPrivacyPolicy, style: poppinsMedium(fontSize: 25),))
                 ],
               ),
-            ],
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(TempLanguage.txtLoremIpsum, style: poppinsRegular(fontSize: 15),),
-                ),
-              ],
             ),
-          )
-        ],
-      ),
-    );
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          children: [
+            SizedBox(height: 22.h,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(TempLanguage.txtLoremIpsum, style: poppinsRegular(fontSize: 15),),
+            ),
+          ],
+        ));
   }
 }

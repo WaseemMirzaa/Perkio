@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
@@ -38,7 +39,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10,left: 12,right: 12),
       child: Container(
-        height:  widget.dealModel.isPromotionStar! ? 25.h : 18.h,
+        height:  widget.dealModel.isPromotionStar! ? 23.h : 18.h,
         decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(width: 1, color: AppColors.borderColor),
@@ -145,9 +146,12 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                             onTap: (){
                                               showAdaptiveDialog(context: context, builder: (context)=> StatefulBuilder(
                                                 builder: (context, function) {
-                                                  final int budget = int.tryParse(promotionAmountController.text) ?? 0;
-                                                  final int totalClicks = budget ~/ apc;
-                                                  final int remainder = budget % apc;
+                                                  // final int budget = int.tryParse(promotionAmountController.text) ?? 0;
+                                                  // final int remainder = budget % apc;
+                                                  final String input = promotionAmountController.text;
+                                                  final double? budget = isValidDecimal(input) ? double.tryParse(input) : null;
+                                                  final int totalClicks = budget == null ? 0 : budget ~/ apc;
+
                                                   return SimpleDialog(
                                                     title: Row(
                                                       mainAxisAlignment: MainAxisAlignment
@@ -186,18 +190,20 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                                       TextFieldWidget(
                                                         text: 'Enter your budget for promotion',
                                                         textController: promotionAmountController,
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter.digitsOnly,
+                                                        ],
                                                         onEditComplete: (){
                                                           FocusScope.of(context).unfocus();
-                                                          setState(() {
-
-                                                          });
+                                                          // setState(() {
+                                                          //
+                                                          // });
                                                         },
                                                         keyboardType: TextInputType.number,),
                                                       SizedBox(height: 2.h,),
 
                                                       Align(alignment: Alignment.topRight,
-                                                        child: (promotionAmountController.text
-                                                            .toInt() % apc == 0)
+                                                        child: (promotionAmountController.text.toDouble() % apc == 0)
                                                             ? Text('You will get $totalClicks clicks')
                                                             : Text(
                                                             'Budget is not multiple to the Number of clicks',style: poppinsRegular(fontSize: 10.sp,color: AppColors.gradientStartColor),),),
@@ -207,20 +213,39 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
 
                                                         if(promotionAmountController.text.isEmptyOrNull){
                                                           showSnackBar('Field is required','Promotion budget field is required');
-                                                        }
-                                                        else if((promotionAmountController.text.toInt() % apc == 0)){
-                                                          await homeController.updateCollection(widget.dealModel.dealId!, CollectionsKey.DEALS,
-                                                              {
-                                                                DealKey.ISPROMOTIONSTART: true
-                                                              }).then((value) {
-                                                                Get.back();
-                                                                toast('You have on promotion on the deal');
+                                                        } else if (budget != null && apc > 0 && budget >= 0) {
+                                                          // Convert budget to integer by truncating the decimal part
+                                                          final double budgetInt = budget.toDouble();
 
-                                                          });
-                                                        }else{
-                                                          showSnackBar('Budget Figure Issue','Budget is not multiple to the Number of clicks');
-
+                                                          // Check if the integer value of budget is a multiple of apc
+                                                          if (budgetInt % apc == 0) {
+                                                            await homeController.updateCollection(widget.dealModel.dealId!, CollectionsKey.DEALS, {
+                                                              DealKey.ISPROMOTIONSTART: true,
+                                                            }).then((value) {
+                                                              Get.back();
+                                                              toast('You have started a promotion on the deal');
+                                                            });
+                                                          } else {
+                                                            // Handle the case where the integer value of the budget is not a multiple of apc.
+                                                            toast('Budget must be a multiple of the cost per click.');
+                                                          }
+                                                        } else {
+                                                          toast('Please enter a valid budget and ensure cost per click is greater than zero.');
                                                         }
+
+                                                        // else if((promotionAmountController.text.toInt() % apc == 0)){
+                                                        //   await homeController.updateCollection(widget.dealModel.dealId!, CollectionsKey.DEALS,
+                                                        //       {
+                                                        //         DealKey.ISPROMOTIONSTART: true
+                                                        //       }).then((value) {
+                                                        //         Get.back();
+                                                        //         toast('You have on promotion on the deal');
+                                                        //
+                                                        //   });
+                                                        // }else{
+                                                        //   showSnackBar('Budget Figure Issue','Budget is not multiple to the Number of clicks');
+                                                        //
+                                                        // }
 
                                                       }, text: 'PROMOTE')
 
@@ -323,5 +348,9 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
 
                         ),
     );
+  }
+  bool isValidDecimal(String value) {
+    final regex = RegExp(r'^\d+(\.\d+)?$');
+    return regex.hasMatch(value);
   }
 }

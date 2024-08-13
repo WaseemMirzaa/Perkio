@@ -74,10 +74,9 @@ class UserController extends GetxController {
     if (result == null) {
       UserModel? userModel = await userServices.getUserById(FirebaseAuth.instance.currentUser!.uid);
       if (userModel != null) {
-        setUserInfo(userModel);
+        await setUserInfo(userModel);
         loading.value = false;
         clearTextFields();
-        Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false ));
       } else {
         loading.value = false;
         Get.snackbar('Error', 'Failed to fetch user data.', snackPosition: SnackPosition.TOP);
@@ -103,8 +102,9 @@ class UserController extends GetxController {
           await setValue(SharedPrefKey.photo, image);
         }
       }
-      await addUserData(userModel);
+      await addUserData(userModel).then((value) async => await setUserInfo(userModel));
       loading.value = false;
+      
       clearTextFields();
       getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)) : showActivationDialog();
     } else {

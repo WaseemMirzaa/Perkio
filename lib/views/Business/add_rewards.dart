@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -12,11 +13,11 @@ import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/services/home_services.dart';
-import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
+import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/widgets/common_text_field.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:skhickens_app/widgets/snackbar_widget.dart';
@@ -32,7 +33,8 @@ class _AddRewardsState extends State<AddRewards> {
   final AddRewardsController myController = Get.find<AddRewardsController>();
   final BusinessController controller = Get.find<BusinessController>();
   final homeController = Get.put(HomeController(HomeServices()));
-
+  final rewardNameNode = FocusNode();
+  final pointsToRedeemNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +54,37 @@ class _AddRewardsState extends State<AddRewards> {
 
                 Text('Rewards Name', style: poppinsRegular(fontSize: 13)),
                 const SpacerBoxVertical(height: 10),
-                CommonTextField(text: TempLanguage.txtSuperDuper,
-                  textController: myController.dealNameController,),
+                TextFieldWidget(text: TempLanguage.txtSuperDuper,
+                  textController: myController.rewardNameController,focusNode: rewardNameNode, onEditComplete: ()=>focusChange(context, rewardNameNode, pointsToRedeemNode),),
                 const SpacerBoxVertical(height: 20),
 
-                Text(TempLanguage.txtRequiredPointsToRedeem, style: poppinsRegular(fontSize: 13),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Points to Redeem', style: poppinsRegular(fontSize: 13),),
+                    Align(alignment: Alignment.centerRight, child: Text('PPS (Points Per Scan): ${controller.pps}'))
+                  ],
+                ),
                 const SpacerBoxVertical(height: 10),
-                CommonTextField(
-                  text: 'Points', textController: myController.pointsToRedeemController,),
-                const SpacerBoxVertical(height: 20),
+                TextFieldWidget(
+                  text: 'Points', textController: myController.pointsToRedeemController,keyboardType: TextInputType.number,focusNode: pointsToRedeemNode, onEditComplete: ()=>unFocusChange(context),inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                onSubmit: (value){
+                  int userInput = int.parse(value);
+                  if (userInput % controller.pps.value! == 0) {
 
+                  } else {
+                    showSnackBar('Invalid Input', 'Please enter a number that is a multiple of ${controller.pps.value}.');
+                  }
+                },
+                ),
+                const SpacerBoxVertical(height: 5),
+
+                const Align(alignment: Alignment.centerRight,child: Text('Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
+
+                const SpacerBoxVertical(height: 20),
+                
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -138,7 +161,7 @@ class _AddRewardsState extends State<AddRewards> {
                 ),
                 const SizedBox(height: 15,),
 
-                Text('Deal Logo', style: poppinsRegular(fontSize: 13),),
+                Text('Reward  Logo', style: poppinsRegular(fontSize: 13),),
                 const SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.only(left: 40),
@@ -174,12 +197,15 @@ class _AddRewardsState extends State<AddRewards> {
 
                 const SpacerBoxVertical(height: 50),
                 ButtonWidget(onSwipe: () async {
-                  if (myController.dealNameController.text.isEmptyOrNull) {
-                    showSnackBar('Empty Fields', 'Name field is required');
+                  int points = int.parse(myController.pointsToRedeemController.text);
+                  if (myController.rewardNameController.text.isEmptyOrNull) {
+                    showSnackBar('Empty Fields', 'Please enter the reward name');
                   } else if((myController.pointsToRedeemController.text.isEmptyOrNull)){
-                    showSnackBar('Empty Fields', 'Points to redeem field is ');
+                    showSnackBar('Empty Fields', 'Please enter the points to redeem (PTR)');
                   } else if (homeController.pickedImage == null) {
-                    showSnackBar('Empty Fields', 'Deal logo field is required');
+                    showSnackBar('Empty Fields', 'Please upload the reward logo');
+                  } else if (points % controller.pps.value! != 0) {
+                    showSnackBar('Invalid Input', 'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
                   }else {
                     context.loaderOverlay.show();
                     final imageLink = await homeController.uploadImageToFirebaseWithCustomPath(
@@ -187,7 +213,7 @@ class _AddRewardsState extends State<AddRewards> {
                         'Rewards/${DateTime.now().toIso8601String()}');
                     print("Link Is: $imageLink");
                     RewardModel rewardModel = RewardModel(
-                        rewardName: myController.dealNameController.text,
+                        rewardName: myController.rewardNameController.text,
                         companyName: getStringAsync(SharedPrefKey.userName),
                         rewardAddress: getStringAsync(SharedPrefKey.address),
                         businessId: getStringAsync(SharedPrefKey.uid),
@@ -199,11 +225,7 @@ class _AddRewardsState extends State<AddRewards> {
                       myController.clearTextFields();
                       homeController.setImageNull();
                       context.loaderOverlay.hide();
-                      Get.offAll(() =>
-                          BottomBarView(
-                              isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                                  ? true
-                                  : false));
+                      Navigator.pop(context);
                     });
                     context.loaderOverlay.hide();
                   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
@@ -8,6 +9,7 @@ import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/views/User/user_profile_view.dart';
+import 'package:skhickens_app/views/help_view.dart';
 import 'package:skhickens_app/widgets/settings_list_items.dart';
 
 class SettingsView extends StatefulWidget {
@@ -69,9 +71,9 @@ class _SettingsViewState extends State<SettingsView> {
                         {
                           getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.to(()=> const UserProfileView()) : Get.toNamed(AppRoutes.profileSettingsBusiness);
                           break;
-
                         }
                       case 1:{
+                        shareDummyLink();
                         break;
                       }
                       case 2:{
@@ -83,6 +85,7 @@ class _SettingsViewState extends State<SettingsView> {
                         break;
                       }
                       case 4:{
+                        Get.to(()=>HelpView());
                         break;
                       }
                     }
@@ -99,5 +102,9 @@ class _SettingsViewState extends State<SettingsView> {
         ),
       ),
     );
+  }
+  void shareDummyLink() {
+    const String shareLink = 'https://swipe.com/swip-settings';
+    Share.share('Check out this link: $shareLink');
   }
 }

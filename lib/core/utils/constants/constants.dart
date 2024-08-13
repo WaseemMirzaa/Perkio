@@ -16,6 +16,7 @@ class CollectionsKey{
   static const String USERS = 'users';
   static const String DEALS = 'deals';
   static const String REWARDS = 'reward';
+  static const String SETTINGS = 'settings';
 }
 
 class DealKey {

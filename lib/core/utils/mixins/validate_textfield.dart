@@ -31,7 +31,15 @@ mixin ValidationMixin {
 
   String simpleValidation(String value) {
     if (value.isEmpty) {
-      return 'Please enter a value.';
+      return 'Please enter user name.';
+    } else {
+      return "";
+    }
+  }
+
+  String phoneValidation(String value) {
+    if (value.isEmpty) {
+      return 'Please enter phone number.';
     } else {
       return "";
     }

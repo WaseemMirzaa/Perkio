@@ -186,9 +186,9 @@ class _EditMyDealsState extends State<EditMyDeals> {
                   ),
                   ),
                 ),
-                const SpacerBoxVertical(height: 10),
+                SpacerBoxVertical(height: 10.h),
                 Obx(()=> controller.loading.value
-                    ? const Center(child: CircularProgressIndicator())
+                    ? Center(child: circularProgressBar())
                     : ButtonWidget(onSwipe: ()async{
                   if(myController.dealNameController.text.isEmptyOrNull){
                     showSnackBar('Empty Fields','Name field is required');
@@ -208,8 +208,8 @@ class _EditMyDealsState extends State<EditMyDeals> {
                     myController.clearTextFields();
                     homeController.setImageNull();
                     Get.back();
-                    context.loaderOverlay.hide();
                   });
+                  context.loaderOverlay.hide();
                 }}, text: 'SWIPE TO EDIT DEAL'),),
               ],
             ),

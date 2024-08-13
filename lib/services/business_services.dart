@@ -15,6 +15,8 @@ class BusinessServices{
   final CollectionReference _rewardCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.REWARDS);
 
+  final db = FirebaseFirestore.instance;
+
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   //............ Add Deal
@@ -239,6 +241,23 @@ class BusinessServices{
       log('Error extracting path from URL: $e');
       return '';
     }
+  }
+  ///
+  Stream<int?> getPPS(){
+    try{
+      final documentRef = db.collection(CollectionsKey.SETTINGS).doc('pps');
+      return documentRef.snapshots().map((snapshot){
+        if(snapshot.exists){
+          var ppsValue = snapshot.data()?['pps'];
+          return ppsValue as int?;
+        }else{
+          return null;
+        }
+      });
+    }catch (e){
+      return Stream.value(null);
+    }
+
   }
 
 

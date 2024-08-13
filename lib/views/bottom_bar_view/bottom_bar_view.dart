@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/views/Business/home_business.dart';
@@ -33,7 +34,7 @@ class _BottomBarViewState extends State<BottomBarView> {
 
   final businessList = [
     HomeBusiness(),
-    const RewardsBusiness(),
+    RewardsBusiness(),
     PromotedDealView(),
     const SettingsView(),
 
@@ -50,7 +51,7 @@ class _BottomBarViewState extends State<BottomBarView> {
     return Scaffold(
       body: widget.isUser ? userList.elementAt(_selectedIndex) : businessList.elementAt(_selectedIndex),
       bottomNavigationBar: widget.isUser ? Container(
-        height: 50,
+        height: 7.h,
         decoration: const BoxDecoration(
             color: AppColors.whiteColor,
             boxShadow: [
@@ -102,7 +103,7 @@ class _BottomBarViewState extends State<BottomBarView> {
           ),
 
       ) : Container(
-        height: 50,
+        height: 7.h,
         decoration: const BoxDecoration(
           color: AppColors.whiteColor,
           boxShadow: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
@@ -14,12 +15,14 @@ class TextFieldWidget extends StatelessWidget {
   final Function(String)? onSubmit;
   final Function(String)? onChanged;
   final Widget? prefixIcon;
+  List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
-   const TextFieldWidget({super.key,
+  TextFieldWidget({super.key,
     required this.text,this.path, required this.textController,
     this.onSubmit,this.onChanged,
     this.isPassword = false,this.onEditComplete, this.focusNode, this.keyboardType,
     this.prefixIcon,
+     this.inputFormatters,
   });
 
   @override
@@ -47,6 +50,7 @@ class TextFieldWidget extends StatelessWidget {
                 keyboardType: keyboardType,
                 onFieldSubmitted: onSubmit,
                 onChanged: onChanged,
+                inputFormatters: inputFormatters,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(2.h),
                   prefixIcon: prefixIcon,

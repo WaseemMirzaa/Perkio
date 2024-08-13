@@ -7,7 +7,7 @@ class AddRewardsController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    dealNameController = TextEditingController();
+    rewardNameController = TextEditingController();
     pointsToRedeemController = TextEditingController();
     detailsController = TextEditingController();
   }
@@ -18,18 +18,18 @@ class AddRewardsController extends GetxController {
 
     // TODO: implement dispose
     super.dispose();
-    dealNameController.dispose();
+    rewardNameController.dispose();
     pointsToRedeemController.dispose();
     detailsController.dispose();
   }
 
   void clearTextFields() {
-    dealNameController.clear();
+    rewardNameController.clear();
     pointsToRedeemController.clear();
     detailsController.clear();
   }
 
-  late TextEditingController dealNameController;
+  late TextEditingController rewardNameController;
   late TextEditingController pointsToRedeemController;
   late TextEditingController detailsController;
   RxInt counter = 0.obs;

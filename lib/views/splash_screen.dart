@@ -6,11 +6,13 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/services/user_services.dart';
+import 'package:skhickens_app/views/Business/verification_pending_view.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
@@ -35,7 +37,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
         if (user != null) {
           userController.userModel.value = user;
-          Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false));
+          if(userController.userModel.value.isVerified == StatusKey.verified) {
+            Get.off(() =>
+                BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                    ? true
+                    : false));
+          }else{
+            Get.off(()=> const VerificationPendingView());
+          }
         } else {
           Get.offNamed(AppRoutes.loginUser);
         }

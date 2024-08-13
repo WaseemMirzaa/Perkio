@@ -13,12 +13,10 @@ import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/services/business_services.dart';
 import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/views/Business/edit_my_deal.dart';
-import 'package:skhickens_app/widgets/auth_textfield.dart';
-import 'package:skhickens_app/widgets/button_widget.dart';
+import 'package:skhickens_app/widgets/common/common_widgets.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
-import 'snackbar_widget.dart';
 
 class BusinessHomeListItems extends StatefulWidget {
   BusinessHomeListItems({super.key, required this.dealModel});
@@ -140,106 +138,27 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                               }, icon: ImageIcon(const AssetImage(AppAssets.deleteImg),size: 15.sp,color: AppColors.redColor)),
                                             ],
                                           ),
-                                          SizedBox(),
-                                          SizedBox(),
+                                          const SizedBox(),
+                                          const SizedBox(),
                                           widget.dealModel.isPromotionStar! ? const SizedBox() : GestureDetector(
                                             onTap: (){
-                                              showAdaptiveDialog(context: context, builder: (context)=> StatefulBuilder(
-                                                builder: (context, function) {
-                                                  // final int budget = int.tryParse(promotionAmountController.text) ?? 0;
-                                                  // final int remainder = budget % apc;
-                                                  final String input = promotionAmountController.text;
-                                                  final double? budget = isValidDecimal(input) ? double.tryParse(input) : null;
-                                                  final int totalClicks = budget == null ? 0 : budget ~/ apc;
+                                              if(getIntAsync(UserKey.BALANCE) > 0){
+                                                showAdaptiveDialog(context: context, builder: (context)=> AlertDialog(title: Text('Deal Promotion',style: poppinsBold(fontSize: 15.sp)),content: const Text('Do you really want to Promote the deal?'),actions: [
+                                                  TextButton(onPressed: ()async{
+                                                    Get.back();
+                                                  }, child: const Text('No')),
+                                                  TextButton(onPressed: ()async{
+                                                    await homeController.updateCollection(widget.dealModel.dealId!, CollectionsKey.DEALS,
+                                                        {
+                                                          DealKey.ISPROMOTIONSTART: true
+                                                        }).then((value)=> Get.back());
+                                                  }, child: const Text('Yes')),
 
-                                                  return SimpleDialog(
-                                                    title: Row(
-                                                      mainAxisAlignment: MainAxisAlignment
-                                                          .spaceBetween,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(
-                                                              left: 20, top: 10),
-                                                          child: Text('Promotional Balance',
-                                                            style: poppinsBold(fontSize: 15.sp),),
-                                                        ),
-                                                        Align(
-                                                          alignment: Alignment.topRight,
-                                                          child: IconButton(onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                              icon: const Icon(Icons.cancel,
-                                                                color: AppColors.blackColor,
-                                                                size: 40,)),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    titlePadding: EdgeInsets.zero,
-                                                    contentPadding: EdgeInsets.all(10.sp),
-                                                    insetPadding: EdgeInsets.all(12.sp),
-                                                    children: [
+                                                ],),);
+                                              }else{
+                                                showBalanceDialog(context: context, promotionAmountController: promotionAmountController, docId: widget.dealModel.dealId!);
+                                              }
 
-                                                      SizedBox(height: 1.h,),
-                                                      Text('Amount Per Click / APC : 2\$',
-                                                        style: poppinsMedium(fontSize: 12.sp),),
-                                                      SizedBox(height: 2.h,),
-
-                                                      Text('Enter your budget for promotion',
-                                                        style: poppinsMedium(fontSize: 12.sp),),
-                                                      SizedBox(height: 1.h,),
-                                                      TextFieldWidget(
-                                                        text: 'Enter your budget for promotion',
-                                                        textController: promotionAmountController,
-                                                        inputFormatters: [
-                                                          FilteringTextInputFormatter.digitsOnly,
-                                                        ],
-                                                        onEditComplete: (){
-                                                          FocusScope.of(context).unfocus();
-                                                          // setState(() {
-                                                          //
-                                                          // });
-                                                        },
-                                                        keyboardType: TextInputType.number,),
-                                                      SizedBox(height: 2.h,),
-
-                                                      Align(alignment: Alignment.topRight,
-                                                        child: (promotionAmountController.text.toDouble() % apc == 0)
-                                                            ? Text('You will get $totalClicks clicks')
-                                                            : Text(
-                                                            'Budget is not multiple to the Number of clicks',style: poppinsRegular(fontSize: 10.sp,color: AppColors.gradientStartColor),),),
-
-                                                      SizedBox(height: 3.h,),
-                                                      ButtonWidget(onSwipe: () async{
-
-                                                        if(promotionAmountController.text.isEmptyOrNull){
-                                                          showSnackBar('Field is required','Promotion budget field is required');
-                                                        } else if (budget != null && apc > 0 && budget >= 0) {
-                                                          // Convert budget to integer by truncating the decimal part
-                                                          final double budgetInt = budget.toDouble();
-
-                                                          // Check if the integer value of budget is a multiple of apc
-                                                          if (budgetInt % apc == 0) {
-                                                            await homeController.updateCollection(widget.dealModel.dealId!, CollectionsKey.DEALS, {
-                                                              DealKey.ISPROMOTIONSTART: true,
-                                                            }).then((value) {
-                                                              Get.back();
-                                                              toast('You have started a promotion on the deal');
-                                                            });
-                                                          } else {
-                                                            // Handle the case where the integer value of the budget is not a multiple of apc.
-                                                            toast('Budget must be a multiple of the cost per click.');
-                                                          }
-                                                        } else {
-                                                          toast('Please enter a valid budget and ensure cost per click is greater than zero.');
-                                                        }
-                                                      }, text: 'ADD BALANCE')
-
-
-                                                    ],
-
-                                                  );
-                                                }
-                                              ));
                                             },
                                             child: Container(
                                               height: 2.5.h,

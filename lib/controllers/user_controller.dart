@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:skhickens_app/controllers/home_controller.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/modals/reward_modal.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
@@ -177,5 +178,8 @@ class UserController extends GetxController {
     await setValue(SharedPrefKey.email, userModel.email);
     await setValue(SharedPrefKey.photo, userModel.image);
     await setValue(SharedPrefKey.address, userModel.address);
+    await setValue(UserKey.BALANCE, userModel.balance);
+    await setValue(UserKey.ISPROMOTIONSTART, userModel.isPromotionStart);
+    await setValue(UserKey.ISVERIFIED, userModel.isVerified);
   }
 }

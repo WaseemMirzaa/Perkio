@@ -4,12 +4,14 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/views/User/user_profile_view.dart';
 import 'package:skhickens_app/views/help_view.dart';
+import 'package:skhickens_app/widgets/common/common_widgets.dart';
 import 'package:skhickens_app/widgets/settings_list_items.dart';
 
 class SettingsView extends StatefulWidget {
@@ -23,13 +25,13 @@ class _SettingsViewState extends State<SettingsView> {
 
   List settingsItems = [
     {
+      'icon': AppAssets.moneyIcon,
+      'title': 'Promotional Balance:',
+    },
+    {
       'icon': AppAssets.evaluationImg,
       'title': TempLanguage.txtManageAccount,
     },
-    // {
-    //   'icon': AppAssets.managementImg,
-    //   'title': TempLanguage.txtSubscription,
-    // },
     {
       'icon': AppAssets.networkImg,
       'title': TempLanguage.txtShare,
@@ -50,6 +52,8 @@ class _SettingsViewState extends State<SettingsView> {
 
   var controller = Get.find<UserController>();
 
+  final promotionalBalanceController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,30 +71,35 @@ class _SettingsViewState extends State<SettingsView> {
               itemBuilder: (context, index)=> GestureDetector(
                   onTap: (){
                     switch(index){
-                      case 0:
+                      case 1:
                         {
                           getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.to(()=> const UserProfileView()) : Get.toNamed(AppRoutes.profileSettingsBusiness);
                           break;
                         }
-                      case 1:{
+                      case 2:{
                         shareDummyLink();
                         break;
                       }
-                      case 2:{
+                      case 3:{
                         Get.toNamed(AppRoutes.termsAndConditions);
                         break;
                       }
-                      case 3:{
+                      case 4:{
                         Get.toNamed(AppRoutes.privacyPolicy);
                         break;
                       }
-                      case 4:{
-                        Get.to(()=>HelpView());
+                      case 5:{
+                        Get.to(()=> const HelpView());
                         break;
                       }
                     }
                   },
-                  child: SettingsListItems(path: settingsItems[index]['icon'], text: settingsItems[index]['title'],)),
+                  child: index == 0 ? BalanceTile(path: settingsItems[index]['icon'], text: "${settingsItems[index]['title']} ${getIntAsync(UserKey.BALANCE)}", onAdd: (){
+                    showBalanceDialog(context: context, promotionAmountController: promotionalBalanceController, docId: getStringAsync(SharedPrefKey.uid),fromSettings: true).then((value)=> setState(() {
+
+                    }));
+                    
+                  }) : SettingsListItems(path: settingsItems[index]['icon'], text: settingsItems[index]['title'],)),
         
             ),
             GestureDetector(

@@ -14,6 +14,7 @@ class BusinessController extends GetxController{
   void onInit() {
     super.onInit();
     getPPS();
+    getAmountPerClick();
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD DEAL
@@ -91,6 +92,18 @@ class BusinessController extends GetxController{
     }, onError: (error) {
       print('Error fetching PPS: $error');
       pps.value = 0;  // Optionally handle error case
+    });
+    return businessServices.getPPS();
+  }
+
+  var apc = Rx<int?>(null);
+  /// Get PPS
+  Stream<int?> getAmountPerClick(){
+    businessServices.getAmountPerClick().listen((ppsValue) {
+      apc.value = ppsValue;  // Update the reactive variable
+    }, onError: (error) {
+      print('Error fetching PPS: $error');
+      apc.value = 0;  // Optionally handle error case
     });
     return businessServices.getPPS();
   }

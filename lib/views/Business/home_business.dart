@@ -4,6 +4,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/controllers/business_controller.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
@@ -47,8 +48,14 @@ class _HomeBusinessState extends State<HomeBusiness> {
             children: [
               SizedBox(height: 25.h,),
               Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: Text(TempLanguage.lblMyDeals, style: poppinsMedium(fontSize: 18),),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(TempLanguage.lblMyDeals, style: poppinsMedium(fontSize: 18),),
+                    Text("${getIntAsync(UserKey.BALANCE)}\$ Remaining")
+                  ],
+                ),
               ),
               SizedBox(height: 1.h,),
               StreamBuilder<List<DealModel>>(

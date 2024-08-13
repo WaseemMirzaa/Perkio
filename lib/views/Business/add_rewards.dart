@@ -202,6 +202,8 @@ class _AddRewardsState extends State<AddRewards> {
                     showSnackBar('Empty Fields', 'Please enter the reward name');
                   } else if((myController.pointsToRedeemController.text.isEmptyOrNull)){
                     showSnackBar('Empty Fields', 'Please enter the points to redeem (PTR)');
+                  } else if(points == 0){
+                    showSnackBar('Amount incorrect', 'Budget should not be zero');
                   } else if (homeController.pickedImage == null) {
                     showSnackBar('Empty Fields', 'Please upload the reward logo');
                   } else if (points % controller.pps.value! != 0) {

@@ -260,6 +260,24 @@ class BusinessServices{
 
   }
 
+  /// Get amount per click
+  Stream<int?> getAmountPerClick(){
+    try{
+      final documentRef = db.collection(CollectionsKey.SETTINGS).doc('apc');
+      return documentRef.snapshots().map((snapshot){
+        if(snapshot.exists){
+          var ppsValue = snapshot.data()?['apc'];
+          return ppsValue as int?;
+        }else{
+          return null;
+        }
+      });
+    }catch (e){
+      return Stream.value(null);
+    }
+
+  }
+
 
   //............ Add Reward
   Future<bool> addReward(RewardModel rewardModel) async {

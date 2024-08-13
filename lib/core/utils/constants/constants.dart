@@ -10,6 +10,9 @@ class UserKey {
   static const String WEBSITE = "website";
   static const String BUSINESSID = "businessId";
   static const String LOGO = "logo";
+  static const String BALANCE = "balance";
+  static const String ISPROMOTIONSTART = 'isPromotionStart';
+  static const String ISVERIFIED = 'isVerified';
 }
 
 class CollectionsKey{
@@ -49,5 +52,10 @@ class RewardKey {
   static const String CREATEDAT = 'createdAt';
   static const String USES = 'uses';
   static const String REWARDPARAM = 'rewardParam';
+}
 
+class StatusKey{
+  static const String verified = 'verified';
+  static const String pending = 'pending';
+  static const String rejected = 'rejected';
 }

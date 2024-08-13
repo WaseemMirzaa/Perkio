@@ -71,6 +71,7 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
 
               TextFieldWidget(text: TempLanguage.lblPassword, path: AppAssets.unlockImg, textController: controller.passwordController,
                 keyboardType: TextInputType.visiblePassword, focusNode: passwordFocusNode,
+                isPassword: true,
                 onEditComplete: ()=>unFocusChange(context),),
 
               const SpacerBoxVertical(height: 20),

@@ -90,7 +90,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                   children: [
                     Obx(() {
                       return (homeController.pickedImage != null)
-                          ? Image.file(homeController.pickedImage!,height: 30.h,width: 100.w,fit: BoxFit.fill,)
+                          ? Image.file(homeController.pickedImage!,height: 30.h,width: 100.w,fit: BoxFit.cover,)
                           : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull ? Image.network(getStringAsync(SharedPrefKey.photo),height: 30.h,width: 100.w,fit: BoxFit.fill,) :  Image.asset(AppAssets.imageHeader,fit: BoxFit.fill,height: 30.h,width: 100.w,);
                     }),
                     BackButtonWidget(),
@@ -217,21 +217,36 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         const SizedBox(height: 20,),
                         !enabled.value ? SizedBox() : ButtonWidget(onSwipe: ()async{
                           if (enabled.value) {
-                            bool success = await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
-                              UserKey.USERNAME: userNameController.text,
-                              UserKey.EMAIL: emailController.text,
-                              UserKey.PHONENO: phoneNoController.text,
-                              UserKey.ADDRESS: addressController.text,
-                              UserKey.WEBSITE: websiteController.text,
-                              UserKey.BUSINESSID: businessIdController.text
-                            });
-                            if (success) {
-                              X.showSnackBar(
-                                  'Success', 'User data updated successfully!');
-                              enabled.value = false;
-                            } else {
-                              X.showSnackBar('Error', 'Failed to update user data.',);
+                            if(userNameController.text.isEmptyOrNull){
+                              X.showSnackBar('Fields Required', 'Name is required');
+                            }else if(emailController.text.isEmptyOrNull){
+                              X.showSnackBar('Fields Required', 'Email is required');
+                            }else if(phoneNoController.text.isEmptyOrNull){
+                              X.showSnackBar('Fields Required', 'Phone is required');
+                            }else if(addressController.text.isEmptyOrNull){
+                              X.showSnackBar('Fields Required', 'Address is required');
+                            }else if(websiteController.text.isEmptyOrNull){
+                              X.showSnackBar('Fields Required', 'Website is required');
+                            }else if(businessIdController.text.isEmptyOrNull){
+                              X.showSnackBar('Fields Required', 'Business ID is required');
+                            }else{
+                              bool success = await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
+                                UserKey.USERNAME: userNameController.text,
+                                UserKey.EMAIL: emailController.text,
+                                UserKey.PHONENO: phoneNoController.text,
+                                UserKey.ADDRESS: addressController.text,
+                                UserKey.WEBSITE: websiteController.text,
+                                UserKey.BUSINESSID: businessIdController.text
+                              });
+                              if (success) {
+                                X.showSnackBar(
+                                    'Success', 'User data updated successfully!');
+                                enabled.value = false;
+                              } else {
+                                X.showSnackBar('Error', 'Failed to update user data.',);
+                              }
                             }
+
                           } else {
                             enabled.value = true;
                           }

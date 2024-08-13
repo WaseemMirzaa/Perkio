@@ -96,6 +96,7 @@ class UserController extends GetxController {
     if (result != null) {
       userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
       final stripeCustomerId = await StripePayment.createStripeCustomer(email: userModel.email!);
+      print("STRIPE: $stripeCustomerId");
       if(!stripeCustomerId.isEmptyOrNull){
         userModel.stripeCustomerId = stripeCustomerId;
       }

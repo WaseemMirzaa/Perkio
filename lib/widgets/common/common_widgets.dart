@@ -9,6 +9,7 @@ import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/networking/stripe.dart';
 import 'package:skhickens_app/services/business_services.dart';
 import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
@@ -90,48 +91,44 @@ Future showBalanceDialog({
                 SizedBox(height: 3.h,),
                 ButtonWidget(onSwipe: () async {
                   if (promotionAmountController.text.isEmptyOrNull) {
-                    showSnackBar('Field is required', 'Please enter your budget');
+                    toast('Please enter your budget');
                   } else if(promotionAmountController.text == '0'){
-                    showSnackBar('Budget Low', 'Budget should greater then zero');
+                    toast('Budget should greater than zero');
                   } else if (budget != null && controller.apc.value! > 0 && budget >= 0) {
                     input = promotionAmountController.text;
                     budget = input.isEmptyOrNull ? 0 : int.parse(input);
                     totalClicks = budget == null ? 0 : budget ~/ controller.apc.value!;
                     final double budgetInt = budget.toDouble();
                     if (budgetInt % controller.apc.value! == 0 && !fromSettings) {
-                      final userInfo = await userController.getUser(getStringAsync(SharedPrefKey.uid));
-                      if(userInfo != null) {
-                        int updateAmount = userInfo.balance! + budget;
-                        await homeController.updateCollection(getStringAsync(getStringAsync(UserKey.USERID)), CollectionsKey.USERS, {
-                          UserKey.BALANCE: updateAmount,
-                          UserKey.ISPROMOTIONSTART: true,
-                        }).then((value) async{
-                          await homeController.updateCollection(docId, CollectionsKey.DEALS, {
-                            DealKey.ISPROMOTIONSTART: true,
+                      await StripePayment.initPaymentSheet(amount: budget * 100, customerId: getStringAsync(UserKey.STRIPECUSTOMERID)).then((value)async{
+                          await homeController.updateCollection(getStringAsync(getStringAsync(UserKey.USERID)), CollectionsKey.USERS, {
+                            UserKey.ISPROMOTIONSTART: true,
+                          }).then((value) async{
+                            await homeController.updateCollection(docId, CollectionsKey.DEALS, {
+                              DealKey.ISPROMOTIONSTART: true,
+                            });
+                            await setValue(UserKey.ISPROMOTIONSTART, true);
+                            promotionAmountController.clear();
+                            Get.back();
+                            toast('You have added amount in your wallet');
                           });
-                          await setValue(UserKey.ISPROMOTIONSTART, true);
-                          await setValue(UserKey.BALANCE, updateAmount);
-                          promotionAmountController.clear();
-                          Get.back();
-                          toast('You have added amount in your wallet');
-                        });
-                      }else {
-                        toast('User not found');
-                      }
+                      });
                     }else if(budgetInt % controller.apc.value! == 0 && fromSettings){
-                      final userInfo = await userController.getUser(getStringAsync(SharedPrefKey.uid));
-                      if(userInfo != null) {
-                        int updateAmount = userInfo.balance! + budget;
-                        await homeController.updateCollection(docId, CollectionsKey.USERS, {
-                          UserKey.BALANCE: updateAmount,
-                        }).then((value) async{
-                          await setValue(UserKey.BALANCE, updateAmount).then((value)=> Get.back());
-                          promotionAmountController.clear();
-                          toast('You have added amount in your wallet');
-                        });
-                      }else {
-                        toast('User not found');
-                      }
+                      await StripePayment.initPaymentSheet(amount: budget, customerId: getStringAsync(UserKey.STRIPECUSTOMERID)).then((value)async{
+                        // final userInfo = await userController.getUser(getStringAsync(SharedPrefKey.uid));
+                        // if(userInfo != null) {
+                        //   int updateAmount = userInfo.balance! + budget;
+                        //   await homeController.updateCollection(docId, CollectionsKey.USERS, {
+                        //     UserKey.BALANCE: updateAmount,
+                        //   }).then((value) async{
+                        //     await setValue(UserKey.BALANCE, updateAmount).then((value)=> Get.back());
+                        //     promotionAmountController.clear();
+                        //     toast('You have added amount in your wallet');
+                        //   });
+                        // }else {
+                        //   toast('User not found');
+                        // }
+                      });
                     } else {
                       toast('Budget must be a multiple of the cost per click.');
                     }

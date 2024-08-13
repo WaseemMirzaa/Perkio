@@ -48,8 +48,7 @@ class BalanceTile extends StatelessWidget {
         const SpacerBoxHorizontal(width: 20),
         ImageIcon(AssetImage(path),size: 20.sp,color: AppColors.whiteColor,),
         SpacerBoxHorizontal(width: 3.w),
-        Text(text, style: poppinsRegular(fontSize: 14.sp,color: AppColors.whiteColor),),
-        const Spacer(),
+        Expanded(child: Text(text, style: poppinsRegular(fontSize: 14.sp,color: AppColors.whiteColor),maxLines: 1,)),
 
         GestureDetector(onTap: onAdd, child: Container(
           margin: const EdgeInsets.only(right: 12),

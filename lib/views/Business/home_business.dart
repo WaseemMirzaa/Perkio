@@ -9,6 +9,7 @@ import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/services/business_services.dart';
+import 'package:skhickens_app/views/Business/add_deals.dart';
 import 'package:skhickens_app/widgets/business_home_list_items.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_comp.dart';
@@ -97,7 +98,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ButtonWidget(onSwipe: (){
-                Get.toNamed(AppRoutes.addDeal);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> AddDeals()));
               }, text: TempLanguage.btnLblSwipeToAddDeal),
             ],
           ),

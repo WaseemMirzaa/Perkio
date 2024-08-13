@@ -2,11 +2,21 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:skhickens_app/controllers/home_controller.dart';
+import 'package:skhickens_app/controllers/user_controller.dart';
+import 'package:skhickens_app/services/home_services.dart';
+import 'package:skhickens_app/services/user_services.dart';
+import '../core/utils/constants/app_const.dart';
+import '../core/utils/constants/constants.dart';
 import 'dio_helper.dart';
 
 
 class StripePayment {
+
+  static final homeController = Get.put(HomeController(HomeServices()));
+  static final userController = Get.put(UserController(UserServices()));
 
   static Future<String> createStripeCustomer({required String email}) async {
     String params = DioHelper.getJsonString({"email": email});
@@ -75,11 +85,24 @@ class StripePayment {
         await Stripe.instance.presentPaymentSheet();
 
         /// add user firebase logic
-        ///
-        /// add user firebase logic
-      }
-    } catch (e) {
+        final userInfo = await userController.getUser(getStringAsync(SharedPrefKey.uid));
+        if (userInfo != null) {
+          print("The past $amount");
+          int currentBalance = userInfo.balance ?? 0;
+          int newAmount = amount ?? 0;
+          int updateAmount = currentBalance + newAmount;
+          print("Amount is: $updateAmount");
+          await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS, {
+            UserKey.BALANCE: updateAmount,
+          }).then((value) async {
+            await setValue(UserKey.BALANCE, updateAmount).then((value) => Get.back());
+            toast('You have added amount in your wallet');
+          });
+
+          /// add user firebase logic
+        }
+      } } catch (e) {
       toast('Something went wrong. Try again later');
     }
-  }
+}
 }

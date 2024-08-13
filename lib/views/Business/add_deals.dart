@@ -38,6 +38,7 @@ class AddDeals extends StatelessWidget {
   Widget build(BuildContext context) {
     return LoaderOverlay(
       child: Scaffold(
+
         backgroundColor: AppColors.whiteColor,
         appBar: PreferredSize(preferredSize: Size.fromHeight(12.h),child: customAppBar(),),
 
@@ -189,10 +190,7 @@ class AddDeals extends StatelessWidget {
                           myController.clearTextFields();
                           homeController.setImageNull();
                           context.loaderOverlay.hide();
-                          Get.offAll(() => BottomBarView(
-                              isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                                  ? true
-                                  : false));
+                          Get.back();
                         });
                       }
                 }, text: TempLanguage.btnLblSwipeToAdd),
@@ -203,4 +201,9 @@ class AddDeals extends StatelessWidget {
       ),
     );
   }
+
+   Future<bool> _onWillPop() async {
+     return false;
+   }
+
 }

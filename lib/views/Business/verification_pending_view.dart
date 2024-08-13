@@ -13,7 +13,7 @@ class VerificationPendingView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-      Text('Your account is ${getStringAsync(UserKey.ISVERIFIED)}')
+      Text('Your account verification status is: ${getStringAsync(UserKey.ISVERIFIED)}')
     ],));
   }
 }

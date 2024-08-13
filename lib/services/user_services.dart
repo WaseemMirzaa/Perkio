@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/modals/deal_modal.dart';
 import 'package:skhickens_app/modals/reward_modal.dart';

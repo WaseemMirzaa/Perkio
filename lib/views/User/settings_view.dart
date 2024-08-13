@@ -26,7 +26,7 @@ class _SettingsViewState extends State<SettingsView> {
   List settingsItems = [
     {
       'icon': AppAssets.moneyIcon,
-      'title': 'Promotional Balance:',
+      'title': 'Wallet Balance:',
     },
     {
       'icon': AppAssets.evaluationImg,

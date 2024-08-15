@@ -1,18 +1,23 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/controllers/home_controller.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:skhickens_app/core/utils/app_utils/GeoLocationHelper.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/constants.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/home_services.dart';
+import 'package:skhickens_app/views/place_picker/address_model.dart';
+import 'package:skhickens_app/views/place_picker/place_picker.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_comp.dart';
@@ -58,11 +63,12 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
 
   Future<void> getUser() async {
     businessProfile = await controller.getUser(getStringAsync(SharedPrefKey.uid));
+    final address = await GeoLocationHelper.getCityFromGeoPoint(businessProfile!.latLong!);
     _userProfileStreamController.add(businessProfile!);
     userNameController.text = businessProfile?.userName ?? 'Not Set';
     emailController.text = businessProfile?.email ?? 'Not Set';
     phoneNoController.text = businessProfile?.phoneNo ?? 'Not Set';
-    addressController.text = businessProfile?.address ?? 'Not Set';
+    addressController.text = address ?? 'Not Set';
     websiteController.text = businessProfile?.website ?? 'Not Set';
     businessIdController.text = businessProfile?.businessId ?? 'Not Set';
   }
@@ -91,7 +97,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                     Obx(() {
                       return (homeController.pickedImage != null)
                           ? Image.file(homeController.pickedImage!,height: 30.h,width: 100.w,fit: BoxFit.cover,)
-                          : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull ? Image.network(getStringAsync(SharedPrefKey.photo),height: 30.h,width: 100.w,fit: BoxFit.fill,) :  Image.asset(AppAssets.imageHeader,fit: BoxFit.fill,height: 30.h,width: 100.w,);
+                          : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull ? Image.network(getStringAsync(SharedPrefKey.photo),height: 30.h,width: 100.w,fit: BoxFit.cover,) :  Image.asset(AppAssets.imageHeader,fit: BoxFit.fill,height: 30.h,width: 100.w,);
                     }),
                     BackButtonWidget(),
                     Positioned(
@@ -155,7 +161,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                 UserKey.USERNAME: userNameController.text,
                                 UserKey.EMAIL: emailController.text,
                                 UserKey.PHONENO: phoneNoController.text,
-                                UserKey.ADDRESS: addressController.text,
+                                UserKey.LATLONG: addressController.text,
                                 UserKey.WEBSITE: websiteController.text,
                                 UserKey.BUSINESSID: businessIdController.text
                               });
@@ -205,7 +211,15 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
 
                         ProfileListItems(path: AppAssets.profile4,
                           textController: addressController,
-                          enabled: enabled.value,),
+                        onTap: enabled.value ? ()async{
+                          AddressModel address = await Navigator.push(context, MaterialPageRoute(builder: (context) => PlacesPick(currentLocation: LatLng(businessProfile.latLong!.latitude, businessProfile.latLong!.longitude))));
+                          if (address != null) {
+                            addressController.text = await address!.subAdministrativeArea.toString();
+                            await setValue(SharedPrefKey.latitude, address!.latitude);
+                            await setValue(SharedPrefKey.longitude, address!.longitude);
+                          }
+                        } : null,
+                        ),
                         const SizedBox(height: 10,),
                         ProfileListItems(path: AppAssets.profile5,
                           textController: websiteController,
@@ -234,7 +248,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                 UserKey.USERNAME: userNameController.text,
                                 UserKey.EMAIL: emailController.text,
                                 UserKey.PHONENO: phoneNoController.text,
-                                UserKey.ADDRESS: addressController.text,
+                                UserKey.LATLONG: GeoPoint(getDoubleAsync(SharedPrefKey.latitude), getDoubleAsync(SharedPrefKey.longitude)),
                                 UserKey.WEBSITE: websiteController.text,
                                 UserKey.BUSINESSID: businessIdController.text
                               });

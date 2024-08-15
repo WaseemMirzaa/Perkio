@@ -9,6 +9,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/views/auth/signup_view.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
@@ -57,7 +58,7 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                 onTap: (){
             controller.clearTextFields();
 
-            Get.toNamed(AppRoutes.signupUser);
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> const SignupView()));
                 },
                 child: Text(getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? TempLanguage.txtNewUser : TempLanguage.txtNewBusiness, style: poppinsRegular(fontSize: 13))),
               ],
@@ -82,7 +83,7 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                     controller.emailErrorText.value = validateEmail(controller.emailController.text);
                     controller.passErrorText.value = validatePassword(controller.passwordController.text);
                     if (controller.emailErrorText.value == "" && controller.passErrorText.value == "") {
-                      await controller.signIn(controller.emailController.text, controller.passwordController.text).then((value)=>Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false )));
+                      await controller.signIn(controller.emailController.text, controller.passwordController.text).then((value)=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false ))));
                     } else {
                       if(controller.emailErrorText.isNotEmpty){
                         Get.snackbar('Error', controller.emailErrorText.value);
@@ -93,8 +94,10 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                       }
                     }
                     }, text: TempLanguage.btnLblSwipeToLogin)),
-                       const SpacerBoxVertical(height: 20),
-                      Text(TempLanguage.txtForgotPassword, style: poppinsMedium(fontSize: 15.sp, color: AppColors.secondaryText),)
+              SpacerBoxVertical(height: 1.5.h),
+                      TextButton(
+                          onPressed: (){},
+                          child: Text(TempLanguage.txtForgotPassword, style: poppinsMedium(fontSize: 15.sp, color: AppColors.secondaryText),))
 
           ],),
         ),

@@ -8,7 +8,7 @@ class UserModel {
   String? phoneNo;
   String? image;
   String? logo;
-  String? address;
+  GeoPoint? latLong;
   String? website;
   String? role;
   String? businessId;
@@ -24,7 +24,7 @@ class UserModel {
     this.email,
     this.phoneNo,
     this.image,
-    this.address,
+    this.latLong,
     this.website,
     this.logo,
     this.role,
@@ -45,7 +45,7 @@ class UserModel {
       phoneNo: data[UserKey.PHONENO] ?? '',
       image: data[UserKey.IMAGE] ?? '',
       logo: data[UserKey.LOGO] ?? '',
-      address: data[UserKey.ADDRESS],
+      latLong: data[UserKey.LATLONG],
       website: data[UserKey.WEBSITE],
       role: data[UserKey.ROLE],
       businessId: data[UserKey.BUSINESSID],
@@ -64,7 +64,7 @@ class UserModel {
       phoneNo: map[UserKey.PHONENO],
       image: map[UserKey.IMAGE],
       logo: map[UserKey.LOGO],
-      address: map[UserKey.ADDRESS],
+      latLong: map[UserKey.LATLONG],
       website: map[UserKey.WEBSITE],
       role: map[UserKey.ROLE],
       businessId: map[UserKey.BUSINESSID],
@@ -86,7 +86,7 @@ class UserModel {
       UserKey.PHONENO: phoneNo ?? '',
       UserKey.IMAGE: image,
       UserKey.LOGO: logo,
-      UserKey.ADDRESS: address,
+      UserKey.LATLONG: latLong ?? GeoPoint(0, 0),
       UserKey.WEBSITE: website,
       UserKey.ROLE: role,
       UserKey.BUSINESSID: businessId,

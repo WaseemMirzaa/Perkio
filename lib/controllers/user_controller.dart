@@ -22,6 +22,7 @@ class UserController extends GetxController {
 
   HomeController homeController = Get.put(HomeController(HomeServices()));
 
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -89,7 +90,12 @@ class UserController extends GetxController {
     }
   }
 
-  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
+  //
+  Stream<UserModel?> getUserByStream(String userId) {
+    return userServices.getUserByStream(userId);
+  }
+
+    //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
   Future<void> signUp(UserModel userModel) async {
     loading.value = true;
     String? result = await authServices.signUp(userModel);
@@ -183,7 +189,8 @@ class UserController extends GetxController {
     await setValue(SharedPrefKey.userName, userModel.userName);
     await setValue(SharedPrefKey.email, userModel.email);
     await setValue(SharedPrefKey.photo, userModel.image);
-    await setValue(SharedPrefKey.address, userModel.address);
+    await setValue(SharedPrefKey.latitude, userModel.latLong!.latitude);
+    await setValue(SharedPrefKey.longitude, userModel.latLong!.longitude);
     await setValue(UserKey.BALANCE, userModel.balance);
     await setValue(UserKey.ISPROMOTIONSTART, userModel.isPromotionStart);
     await setValue(UserKey.ISVERIFIED, userModel.isVerified);

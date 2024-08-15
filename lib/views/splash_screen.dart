@@ -5,15 +5,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
+import 'package:skhickens_app/core/utils/app_utils/GeoLocationHelper.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/constants.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/services/user_services.dart';
 import 'package:skhickens_app/views/Business/verification_pending_view.dart';
+import 'package:skhickens_app/views/auth/login_view.dart';
 import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:skhickens_app/views/role_selection/role_selection_view.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
@@ -32,21 +34,30 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.microtask(() async {
       final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        final user = await userController.getUser(currentUser.uid);
+      print("ID is ${currentUser?.uid}");
+      if (currentUser?.uid != null) {
+        final user = await userController.getUser(currentUser!.uid);
 
         if (user != null) {
+
           userController.userModel.value = user;
+          final address = await GeoLocationHelper.getCityFromGeoPoint(user!.latLong!);
+
+          if(!address.isEmptyOrNull){
+            await setValue(SharedPrefKey.address, address);
+          }
           if(userController.userModel.value.isVerified == StatusKey.verified) {
-            Get.off(() =>
-                BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                    ? true
-                    : false));
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                ? true
+                : false)),(route)=>false);
+                // BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                //     ? true
+                //     : false));
           }else{
-            Get.off(()=> const VerificationPendingView());
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> VerificationPendingView()), (route)=>false);
           }
         } else {
-          Get.offNamed(AppRoutes.loginUser);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LoginView()), (route)=> false);
         }
       } else {
 
@@ -99,7 +110,8 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 30,),
               ButtonWidget(onSwipe: (){
-                Get.toNamed(AppRoutes.selection);
+
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> const SelectionScreen()));
               }, text: TempLanguage.btnLblSwipeToStart,isGradient: false,),
               ],)
             ],

@@ -89,8 +89,9 @@ class StripePayment {
         if (userInfo != null) {
           print("The past $amount");
           int currentBalance = userInfo.balance ?? 0;
-          int newAmount = amount ?? 0;
-          int updateAmount = currentBalance + newAmount;
+          double newAmount = amount/100;
+          print("After division $newAmount");
+          int updateAmount = currentBalance + newAmount.toInt();
           print("Amount is: $updateAmount");
           await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS, {
             UserKey.BALANCE: updateAmount,

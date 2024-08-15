@@ -6,7 +6,7 @@ class UserKey {
   static const String PHONENO = "phoneNo";
   static const String IMAGE = "image";
   static const String ROLE = "role";
-  static const String ADDRESS = "address";
+  static const String LATLONG = "latLong";
   static const String WEBSITE = "website";
   static const String BUSINESSID = "businessId";
   static const String LOGO = "logo";

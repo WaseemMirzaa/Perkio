@@ -7,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/controllers/home_controller.dart';
 import 'package:skhickens_app/controllers/user_controller.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:skhickens_app/core/utils/app_utils/GeoLocationHelper.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/constants.dart';
@@ -54,12 +55,13 @@ class _UserProfileViewState extends State<UserProfileView> {
 
   Future<void> getUser() async {
     userProfile = await controller.getUser(NBUtils.getStringAsync(SharedPrefKey.uid));
+    final address = await GeoLocationHelper.getCityFromGeoPoint(userProfile!.latLong!);
     _userProfileStreamController.add(userProfile!);
 
     userNameController.text = userProfile?.userName ?? '';
     emailController.text = userProfile?.email ?? '';
     phoneNoController.text = userProfile?.phoneNo ?? '';
-    addressController.text = userProfile?.address ?? '';
+    addressController.text = address ?? '';
   }
 
   @override
@@ -114,7 +116,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                                     UserKey.USERNAME: userNameController.text,
                                     UserKey.EMAIL: emailController.text,
                                     UserKey.PHONENO: phoneNoController.text,
-                                    UserKey.ADDRESS: addressController.text,
+                                    UserKey.LATLONG: addressController.text,
                                   });
                                   if (success) {
                                     // Update successful

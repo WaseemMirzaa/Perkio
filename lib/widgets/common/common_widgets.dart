@@ -25,7 +25,6 @@ Future showBalanceDialog({
   bool fromSettings = false,
 }) {
   final homeController = Get.put(HomeController(HomeServices()));
-  final userController = Get.put(UserController(UserServices()));
   final controller = Get.put(BusinessController(BusinessServices()));
   return showAdaptiveDialog(context: context, builder: (context) =>
       StatefulBuilder(
@@ -109,25 +108,13 @@ Future showBalanceDialog({
                             });
                             await setValue(UserKey.ISPROMOTIONSTART, true);
                             promotionAmountController.clear();
-                            Get.back();
+
                             toast('You have added amount in your wallet');
                           });
                       });
                     }else if(budgetInt % controller.apc.value! == 0 && fromSettings){
-                      await StripePayment.initPaymentSheet(amount: budget, customerId: getStringAsync(UserKey.STRIPECUSTOMERID)).then((value)async{
-                        // final userInfo = await userController.getUser(getStringAsync(SharedPrefKey.uid));
-                        // if(userInfo != null) {
-                        //   int updateAmount = userInfo.balance! + budget;
-                        //   await homeController.updateCollection(docId, CollectionsKey.USERS, {
-                        //     UserKey.BALANCE: updateAmount,
-                        //   }).then((value) async{
-                        //     await setValue(UserKey.BALANCE, updateAmount).then((value)=> Get.back());
-                        //     promotionAmountController.clear();
-                        //     toast('You have added amount in your wallet');
-                        //   });
-                        // }else {
-                        //   toast('User not found');
-                        // }
+                      await StripePayment.initPaymentSheet(amount: budget * 100, customerId: getStringAsync(UserKey.STRIPECUSTOMERID)).then((value)async{
+                        Get.back();
                       });
                     } else {
                       toast('Budget must be a multiple of the cost per click.');

@@ -7,5 +7,7 @@ class SharedPrefKey{
   static const String email = 'email';
   static const String photo = 'photo';
   static const String address = 'address';
+  static const String latitude = 'latitude';
+  static const String longitude = 'longitude';
 
 }

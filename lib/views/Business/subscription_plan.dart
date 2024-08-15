@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:skhickens_app/core/utils/constants/app_const.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
+import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
@@ -51,11 +54,11 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
               const gradientTile(),
               const SpacerBoxVertical(height: 20),
               PlanTiles(heading: TempLanguage.txtMonthly, price: '4.99', desc: TempLanguage.txtPerfectForStarters,onTap: (){
-                widget.fromSignUp ? Navigator.pushNamedAndRemoveUntil(context,AppRoutes.bottomBarView,(route)=>false) : Get.back();
+                widget.fromSignUp ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)),(route)=>false) : Navigator.pop(context);
               },),
               const SpacerBoxVertical(height: 20),
                PlanTiles(heading: TempLanguage.txtYearly, price: '45', desc: TempLanguage.txtSave24,onTap: (){
-                widget.fromSignUp ?  Navigator.pushNamedAndRemoveUntil(context,AppRoutes.bottomBarView,(route)=>false) : Get.back();
+                widget.fromSignUp ?  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)),(route)=>false) : Get.back();
               },
 
               ),

@@ -10,6 +10,7 @@ import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/services/business_services.dart';
+import 'package:skhickens_app/views/Business/add_rewards.dart';
 import 'package:skhickens_app/widgets/business_rewards_tiles.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_comp.dart';
@@ -72,7 +73,7 @@ class RewardsBusiness extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: ButtonWidget(onSwipe: (){
-              Get.toNamed(AppRoutes.addReward);
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> AddRewards()));
             }, text: TempLanguage.btnLblSwipeToAddRewards),
           ),
         ),);

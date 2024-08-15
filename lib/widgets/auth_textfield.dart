@@ -15,6 +15,8 @@ class TextFieldWidget extends StatelessWidget {
   final Function(String)? onSubmit;
   final Function(String)? onChanged;
   final Widget? prefixIcon;
+  final bool isReadOnly;
+  final Function()? onTap;
   List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   TextFieldWidget({super.key,
@@ -23,6 +25,8 @@ class TextFieldWidget extends StatelessWidget {
     this.isPassword = false,this.onEditComplete, this.focusNode, this.keyboardType,
     this.prefixIcon,
      this.inputFormatters,
+    this.isReadOnly = false,
+    this.onTap,
   });
 
   @override
@@ -43,6 +47,7 @@ class TextFieldWidget extends StatelessWidget {
                 ]
               ),
               child: TextFormField(
+                readOnly: isReadOnly,
                 obscureText: isPassword,
                 controller: textController,
                 onEditingComplete: onEditComplete,
@@ -50,6 +55,7 @@ class TextFieldWidget extends StatelessWidget {
                 keyboardType: keyboardType,
                 onFieldSubmitted: onSubmit,
                 onChanged: onChanged,
+                onTap: onTap,
                 inputFormatters: inputFormatters,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(2.h),

@@ -5,6 +5,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/views/User/business_detail.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
@@ -41,7 +42,7 @@ class BusinessDetailTile extends StatelessWidget {
                                             Text(TempLanguage.txtBusinessName, style: poppinsMedium(fontSize: 14),),
                                             GestureDetector(
                                               onTap: (){
-                                                Get.toNamed(AppRoutes.businessDetail);
+                                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const BusinessDetail()));
                                               },
                                               child: Text(TempLanguage.txtViewRating, style: poppinsMedium(fontSize: 7.sp, color: AppColors.yellowColor),)),
                                           ],

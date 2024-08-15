@@ -47,7 +47,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    myController.dealNameController.text = widget.dealModel.dealName!;
+    myController.dealNameController.text = widget.dealModel.dealName.capitalizeEachWord();
     myController.counter.value = widget.dealModel.uses!;
   }
 
@@ -199,7 +199,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
                   context.loaderOverlay.show();
                   final imageLink = homeController.pickedImage == null ? null : await homeController.uploadImageToFirebaseWithCustomPath(homeController.pickedImage!.path, 'Deals/${DateTime.now().toIso8601String()}');
                   print("Link Is: $imageLink");
-                  widget.dealModel.dealName = myController.dealNameController.text;
+                  widget.dealModel.dealName = myController.dealNameController.text.toLowerCase();
                   widget.dealModel.uses = myController.counter.value;
                   widget.dealModel.image = imageLink.isEmptyOrNull ? widget.dealModel.image : imageLink;
 

@@ -17,9 +17,6 @@ import 'package:skhickens_app/widgets/common/common_widgets.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 
-import '../networking/stripe.dart';
-import 'snackbar_widget.dart';
-
 class BusinessHomeListItems extends StatefulWidget {
   BusinessHomeListItems({super.key, required this.dealModel});
   DealModel dealModel;
@@ -76,7 +73,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 const SpacerBoxVertical(height: 10),
-                                              Text(widget.dealModel.dealName ?? '', style: poppinsMedium(fontSize: 13.sp),),
+                                              Text(widget.dealModel.dealName.capitalizeEachWord() ?? '', style: poppinsMedium(fontSize: 13.sp),),
                                               const SpacerBoxVertical(height: 5),
                                               Text(widget.dealModel.companyName ?? '', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
                                               const SpacerBoxVertical(height: 5),

@@ -7,12 +7,14 @@ class ProfileListItems extends StatelessWidget {
   final String path;
   final TextEditingController textController;
   final bool enabled;
+  final Function()? onTap;
 
   const ProfileListItems({
     super.key,
     required this.path,
     required this.textController,
-    this.enabled = false
+    this.enabled = false,
+    this.onTap
   });
 
   @override
@@ -20,8 +22,9 @@ class ProfileListItems extends StatelessWidget {
     return TextField(
       controller: textController,
       maxLines: 1,
-      enabled: enabled,
+      readOnly: enabled ? false : true,
       style: poppinsRegular(fontSize: 14.sp),
+      onTap: onTap,
       decoration: InputDecoration(
         prefixIcon: Padding(
           padding: EdgeInsets.all(10.sp),
@@ -42,9 +45,9 @@ class ProfileListItems extends StatelessWidget {
             width: 1.0,
           ),
         ),
-        focusedBorder: const UnderlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: AppColors.gradientStartColor,
+            color: enabled ? AppColors.gradientStartColor : AppColors.hintText.withOpacity(0.5) ,
             width: 1.0,
           ),
         ),

@@ -6,6 +6,7 @@ import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
+import 'package:skhickens_app/views/Business/add_deals.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/business_detail_tile.dart';
 import 'package:skhickens_app/widgets/business_detail_tiles.dart';
@@ -103,7 +104,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                   Expanded(
                     child:GestureDetector(
                       onTap: (){
-                        Get.toNamed(AppRoutes.dealDetail);
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> AddDeals()));
                       },
                       child: ListView(
                         padding: EdgeInsets.symmetric(vertical: 1.5.h),

@@ -5,6 +5,7 @@ import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/views/User/reward_redeem_detail.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
@@ -48,8 +49,7 @@ class _ScanScreenState extends State<ScanScreen> {
           const SpacerBoxVertical(height: 80),
           GestureDetector(
             onTap: (){
-              Get.toNamed(AppRoutes.rewardRedeemDetail);
-            },
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> const RewardRedeemDetail()));            },
             child: Container(
                       height: 100,
                       width: 100,

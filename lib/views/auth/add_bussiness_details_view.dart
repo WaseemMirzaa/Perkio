@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
@@ -14,33 +17,62 @@ import 'package:skhickens_app/modals/user_modal.dart';
 import 'package:skhickens_app/services/home_services.dart';
 import 'package:skhickens_app/services/user_services.dart';
 import 'package:skhickens_app/views/Business/verification_pending_view.dart';
+import 'package:skhickens_app/views/User/location_change_screen.dart';
+import 'package:skhickens_app/views/place_picker/address_model.dart';
+import 'package:skhickens_app/views/place_picker/place_picker.dart';
 import 'package:skhickens_app/widgets/auth_components/authComponents.dart';
 import 'package:skhickens_app/widgets/auth_textfield.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
 import 'package:skhickens_app/widgets/common_comp.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/widgets/common_text_field.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/widgets/custom_container.dart';
 import 'package:skhickens_app/widgets/primary_layout_widget/secondary_layout.dart';
 import '../../widgets/snackbar_widget.dart' as X;
 
 
-class AddBusinessDetailsView extends StatelessWidget {
+class AddBusinessDetailsView extends StatefulWidget {
   AddBusinessDetailsView({super.key,required this.userModel});
   UserModel userModel;
+
+  @override
+  State<AddBusinessDetailsView> createState() => _AddBusinessDetailsViewState();
+}
+
+class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
   final businessIdController = TextEditingController();
+
   final businessAddressController = TextEditingController();
+
   final websiteController = TextEditingController();
 
   final homeController = Get.put(HomeController(HomeServices()));
+
   final userController = Get.put(UserController(UserServices()));
 
   final businessAddressNode = FocusNode();
-  final websiteNode = FocusNode();
-  final businessIDNode = FocusNode();
 
+  final websiteNode = FocusNode();
+
+  final businessIDNode = FocusNode();
+  final homeServices = HomeServices();
+  LatLng? latLng;
+  AddressModel? address;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() async {
+      await getAndFill();
+    });
+    if (address != null) {
+      businessAddressController.text = address!.completeAddress!;
+    }
+    else {
+      homeServices.getCurrentLocation().then((value) => getAndFill());
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +102,16 @@ class AddBusinessDetailsView extends StatelessWidget {
 
                 Text('Business Address', style: poppinsRegular(fontSize: 13),),
                 const SpacerBoxVertical(height: 10),
-                TextFieldWidget(text: 'Business Address',textController: businessAddressController,focusNode: businessAddressNode,onEditComplete: ()=> focusChange(context, businessAddressNode, websiteNode),),
+                TextFieldWidget(text: 'Business Address',textController: businessAddressController,focusNode: businessAddressNode,onEditComplete: ()=> focusChange(context, businessAddressNode, websiteNode),isReadOnly: true,
+                onTap: ()async{
+                  // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationChangeScreen()));
+                  address = await Navigator.push(context, MaterialPageRoute(builder: (context) => PlacesPick(currentLocation: latLng ?? LatLng(38.00000000,-97.00000000))));
+                  if (address != null) {
+                    businessAddressController.text = await address!.completeAddress.toString();
+                    await setValue(SharedPrefKey.latitude, address!.latitude);
+                    await setValue(SharedPrefKey.longitude, address!.longitude);
+                  }                },
+                ),
                 const SpacerBoxVertical(height: 20),
                 Text('Website', style: poppinsRegular(fontSize: 13),),
                 const SpacerBoxVertical(height: 10),
@@ -165,15 +206,15 @@ class AddBusinessDetailsView extends StatelessWidget {
                     X.showSnackBar('Fields Required', 'Please upload the business image');
                   } else {
                     context.loaderOverlay.show();
-                    userModel.address = businessAddressController.text;
-                    userModel.website = websiteController.text;
-                    userModel.businessId = businessIdController.text;
+                    widget.userModel.latLong = GeoPoint(getDoubleAsync(SharedPrefKey.latitude), getDoubleAsync(SharedPrefKey.longitude));
+                    widget.userModel.website = websiteController.text;
+                    widget.userModel.businessId = businessIdController.text;
                     if(getStringAsync(SharedPrefKey.role) == SharedPrefKey.business){
-                      userModel.image = homeController.pickedImage?.path;
-                      userModel.logo = homeController.pickedImage2?.path;
+                      widget.userModel.image = homeController.pickedImage?.path;
+                      widget.userModel.logo = homeController.pickedImage2?.path;
                     }
-                    await userController.signUp(userModel).then((value){
-                      Get.to(()=> VerificationPendingView());
+                    await userController.signUp(widget.userModel).then((value){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> const VerificationPendingView()));
                       homeController.setImageNull();
                       homeController.clearLogo();
                       context.loaderOverlay.hide();
@@ -189,5 +230,31 @@ class AddBusinessDetailsView extends StatelessWidget {
       ),
 
       );
+  }
+
+  Future<void> getAndFill() async {
+    latLng = await homeServices.getCurrentLocation();
+    final currentLocation = await homeServices.getAddress(latLng ?? LatLng(0, 0));
+    await addingAddress(currentLocation ?? Placemark());
+    businessAddressController.text = "${currentLocation?.street} , ${currentLocation?.locality} , ${currentLocation?.administrativeArea} , ${currentLocation?.country}";
+  }
+  Future<void> addingAddress(Placemark currentAddress) async {
+    address = AddressModel(
+      administrativeArea: currentAddress.administrativeArea,
+      subAdministrativeArea: currentAddress.subAdministrativeArea,
+      completeAddress: "${currentAddress.street}, ${currentAddress.administrativeArea}, ${currentAddress.country}",
+      country: currentAddress.country,
+      isoCountryCode: currentAddress.isoCountryCode,
+      locality: currentAddress.locality,
+      subLocality: currentAddress.subLocality,
+      name: currentAddress.name,
+      postalCode: currentAddress.postalCode,
+      street: currentAddress.street,
+      subThoroughfare: currentAddress.subThoroughfare,
+      thoroughfare: currentAddress.thoroughfare,
+      latitude: getDoubleAsync(SharedPrefKey.latitude),
+      longitude: getDoubleAsync(SharedPrefKey.longitude),
+    );
+    log("CURRENT ADDRESS MODEL>>>>>>>>>>>>>>>>>>>>>>>>. ${address!.country}");
   }
 }

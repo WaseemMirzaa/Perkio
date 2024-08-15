@@ -3,6 +3,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:skhickens_app/core/utils/constants/app_const.dart';
 
 class HomeServices{
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -38,6 +44,41 @@ class HomeServices{
       return downloadUrl;
     } catch (e) {
       log("Error is: $e");
+      return null;
+    }
+  }
+
+  Future<LatLng?> getCurrentLocation() async {
+    LatLng? latLng;
+    if (await Permission.location.isGranted) {
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        latLng = LatLng(position.latitude, position.longitude);
+        await setValue(SharedPrefKey.latitude, latLng.latitude);
+        await setValue(SharedPrefKey.longitude, latLng.longitude);
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      await Permission.location.request();
+      await getCurrentLocation();
+    }
+    return latLng ?? null;
+  }
+  Future<Placemark?> getAddress(LatLng latLng) async {
+    try {
+      var address = await GeocodingPlatform.instance!.placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+      if (address.isNotEmpty) {
+        var placeMark = address.first;
+        return placeMark;
+      } else {
+        print("No placemarks found");
+        return null;
+      }
+    } catch (e) {
+      print("Error getting address: $e");
       return null;
     }
   }

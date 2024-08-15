@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/views/User/scan_screen.dart';
 import 'package:skhickens_app/widgets/back_button_widget.dart';
 import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/detail_tile.dart';
@@ -108,9 +108,7 @@ class _RewardDetailState extends State<RewardDetail> {
               Center(
                 child: GestureDetector(
                   onTap: (){
-                    Get.toNamed(
-                      AppRoutes.scanScreen
-                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ScanScreen()));
                   },
                   child: Container(
                     height: 100,

@@ -9,6 +9,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
 import 'package:skhickens_app/services/business_services.dart';
+import 'package:skhickens_app/views/Business/add_deals.dart';
 import 'package:skhickens_app/widgets/business_extended_tiles.dart';
 import 'package:skhickens_app/widgets/business_home_list_items.dart';
 import 'package:skhickens_app/widgets/button_widget.dart';
@@ -28,32 +29,26 @@ class PromotedDealView extends StatefulWidget {
 
 class _PromotedDealViewState extends State<PromotedDealView> {
   final businessController = Get.put(BusinessController(BusinessServices()));
-  String searchQuery = '';
-  final searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return PrimaryLayoutWidget(
-        header: SizedBox(height: 25.h,
-        child: customAppBarWithTextField(searchController: searchController, onChanged: (value){
-      setState(() {
-        searchQuery = value;
-      });
-    }),
+        header: SizedBox(height: 15.h,
+        child: customAppBar(),
     ),
     body: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(height: 25.h,),
+          SizedBox(height: 16.h,),
           Padding(
             padding: const EdgeInsets.only(left: 12),
             child: Text(TempLanguage.lblPromotedDeal, style: poppinsMedium(fontSize: 18),),
           ),
          SizedBox(height: 1.h,),
          StreamBuilder<List<DealModel>>(
-            stream: businessController.getMyPromotedDeal(getStringAsync(SharedPrefKey.uid),searchQuery: searchQuery),
+            stream: businessController.getMyPromotedDeal(getStringAsync(SharedPrefKey.uid)),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: circularProgressBar());
@@ -87,7 +82,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
     footer: Padding(
       padding: const EdgeInsets.all(12.0),
       child: ButtonWidget(onSwipe: (){
-        Get.toNamed(AppRoutes.addDeal);
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> AddDeals()));
         }, text: TempLanguage.btnLblSwipeToAddDeal),
     ));
 

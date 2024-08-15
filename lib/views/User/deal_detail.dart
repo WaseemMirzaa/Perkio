@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
@@ -11,6 +12,9 @@ import 'package:skhickens_app/widgets/common_space.dart';
 import 'package:skhickens_app/widgets/congratulation_dialog.dart';
 import 'package:skhickens_app/widgets/detail_tile.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+
+import '../../core/utils/constants/app_const.dart';
+import '../bottom_bar_view/bottom_bar_view.dart';
 
 class DealDetail extends StatefulWidget {
   const DealDetail({super.key});
@@ -59,7 +63,7 @@ class _DealDetailState extends State<DealDetail> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: ButtonWidget(onSwipe: (){
                     showCongratulationDialog(onDone: (){
-                      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.bottomBarView,(route)=>false);
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)),(route)=>false);
                     });
                   }, text: TempLanguage.btnLblSwipeToRedeem),
                 )

@@ -50,6 +50,18 @@ class UserServices {
     }
   }
 
+  // get user stream data
+  Stream<UserModel?> getUserByStream(String userId) {
+    return _userCollection.doc(userId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return UserModel.fromDocumentSnapshot(snapshot);
+      } else {
+        print("User Not Found");
+        return null; // User not found
+      }
+    });
+  }
+
   //............ Get Deals
   Future<List<DealModel>> getDeals() async {
     final querySnapshot = await _dealCollection.get();

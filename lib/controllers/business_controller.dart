@@ -33,7 +33,7 @@ class BusinessController extends GetxController{
 
   /// Update my deals
   Future<bool> editMyDeal(DealModel dealModel)async{
-    dealModel.dealParams = businessServices.setSearchParam(dealModel.dealName!);
+    dealModel.dealParams = businessServices.setSearchParam(dealModel.dealName!.toLowerCase());
     print("Uses are: ${dealModel.uses}");
     print("Params are: ${dealModel.dealParams}");
     return await businessServices.editMyDeal(dealModel);

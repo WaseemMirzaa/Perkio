@@ -9,8 +9,11 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:skhickens_app/views/Business/profile_settings_business.dart';
 import 'package:skhickens_app/views/User/user_profile_view.dart';
 import 'package:skhickens_app/views/help_view.dart';
+import 'package:skhickens_app/views/privacy_policy.dart';
+import 'package:skhickens_app/views/terms_conditions.dart';
 import 'package:skhickens_app/widgets/common/common_widgets.dart';
 import 'package:skhickens_app/widgets/settings_list_items.dart';
 
@@ -73,7 +76,7 @@ class _SettingsViewState extends State<SettingsView> {
                     switch(index){
                       case 1:
                         {
-                          getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.to(()=> const UserProfileView()) : Get.toNamed(AppRoutes.profileSettingsBusiness);
+                          getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Navigator.push(context, MaterialPageRoute(builder: (context)=> const UserProfileView())) : Navigator.push(context, MaterialPageRoute(builder: (context)=> const ProfileSettingsBusiness()));
                           break;
                         }
                       case 2:{
@@ -81,15 +84,15 @@ class _SettingsViewState extends State<SettingsView> {
                         break;
                       }
                       case 3:{
-                        Get.toNamed(AppRoutes.termsAndConditions);
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> const TermsAndConditions()));
                         break;
                       }
                       case 4:{
-                        Get.toNamed(AppRoutes.privacyPolicy);
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> const PrivacyPolicy()));
                         break;
                       }
                       case 5:{
-                        Get.to(()=> const HelpView());
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const HelpView()));
                         break;
                       }
                     }

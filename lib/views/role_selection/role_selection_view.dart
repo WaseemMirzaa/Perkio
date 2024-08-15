@@ -3,20 +3,15 @@ import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/app_const.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/temp_language.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/views/auth/login_view.dart';
 import 'package:skhickens_app/widgets/selection_tile.dart';
 
-class SelectionScreen extends StatefulWidget {
+class SelectionScreen extends StatelessWidget {
   const SelectionScreen({super.key});
 
-  @override
-  State<SelectionScreen> createState() => _SelectionScreenState();
-}
-
-class _SelectionScreenState extends State<SelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,17 +35,17 @@ class _SelectionScreenState extends State<SelectionScreen> {
                   GestureDetector(
                     onTap: ()async{
                       await setValue(SharedPrefKey.role, SharedPrefKey.user);
-                      Get.toNamed(AppRoutes.loginUser);
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> const LoginView()));
                     },
                     child: const SelectionTile(imgPath: AppAssets.userSel, text: 'USER')),
                 const SizedBox(width: 20,),
                 GestureDetector(
                   onTap: ()async{
                     await setValue(SharedPrefKey.role, SharedPrefKey.business);
-                    Get.toNamed(AppRoutes.loginUser);
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const LoginView()));
                   },
                   child: const SelectionTile(imgPath: AppAssets.businessSel, text: 'BUSINESS')),
-                
+
                 ],),
               )
             ],

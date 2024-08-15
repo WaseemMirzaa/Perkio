@@ -9,6 +9,7 @@ import 'package:skhickens_app/routes/app_routes.dart';
 import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
 import 'package:skhickens_app/core/utils/constants/app_assets.dart';
 import 'package:skhickens_app/core/utils/constants/text_styles.dart';
+import 'package:skhickens_app/views/User/favourites.dart';
 import 'package:skhickens_app/widgets/available_list_items.dart';
 import 'package:skhickens_app/widgets/category_list_items.dart';
 import 'package:skhickens_app/widgets/common_comp.dart';
@@ -107,7 +108,7 @@ class _HomeUserState extends State<HomeUser> {
                           final DealModel deal = deals[index];
                           return  GestureDetector(
                               onTap: (){
-                                Get.toNamed(AppRoutes.favouritesScreen);
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> FavouritesScreen()));
                               },
                               child: AvailableListItems(dealId: deal.dealId ?? '', dealName: deal.dealName ?? '', restaurantName: deal.companyName ?? '', dealPrice: deal.image ?? '',));
                         },

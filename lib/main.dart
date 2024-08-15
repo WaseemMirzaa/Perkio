@@ -59,7 +59,6 @@ class MyApp extends StatelessWidget {
             ),
             home: const SplashScreen(),
             initialBinding: MyBinding(),
-            getPages: AppRoutes.routes,
           ),
         );
       }

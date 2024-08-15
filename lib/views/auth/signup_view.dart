@@ -53,7 +53,9 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [Text(TempLanguage.txtSignup, style: poppinsMedium(fontSize: 18)),
-                    Text(TempLanguage.txtLogin, style: poppinsRegular(fontSize: 13, color: AppColors.hintText)),
+                    GestureDetector(
+                        onTap: (){Navigator.pop(context);},
+                        child: Text(TempLanguage.txtLogin, style: poppinsRegular(fontSize: 13, color: AppColors.hintText))),
                 ],
               ),
                 const SpacerBoxVertical(height: 10),
@@ -115,7 +117,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                             if (confirm.value) {
                               UserModel userModel = UserModel(email: controller.emailController.text, userName: controller.userNameController.text, phoneNo: controller.phoneController.text, role: getStringAsync(SharedPrefKey.role),password: controller.passwordController.text, isVerified: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? StatusKey.verified : StatusKey.pending);
                               getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? controller.signUp(userModel
-                              ) : Get.to(()=> AddBusinessDetailsView(userModel: userModel,));
+                              ) : Navigator.push(context, MaterialPageRoute(builder: (context)=> AddBusinessDetailsView(userModel: userModel,)));
                             } else {
                               Get.snackbar('Error', 'Please Accept Terms & Conditions To Continue');
                             }

@@ -5,10 +5,10 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/firebase_options.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
-import 'package:skhickens_app/bindings/bindings.dart';
-import 'package:skhickens_app/views/splash_screen.dart';
+import 'package:swipe_app/firebase_options.dart';
+import 'package:swipe_app/routes/app_routes.dart';
+import 'package:swipe_app/bindings/bindings.dart';
+import 'package:swipe_app/views/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

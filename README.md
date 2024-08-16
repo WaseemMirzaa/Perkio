@@ -1,4 +1,4 @@
-# skhickens_app
+# swipe_app
 
 A new Flutter project.
 

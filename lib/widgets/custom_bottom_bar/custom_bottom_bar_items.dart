@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
 class CustomBottomBarItem extends StatelessWidget {
   final IconData icon;

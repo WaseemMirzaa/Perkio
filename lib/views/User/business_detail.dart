@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/controllers/ui_controllers/business_detail_controller.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
-import 'package:skhickens_app/views/Business/add_deals.dart';
-import 'package:skhickens_app/widgets/back_button_widget.dart';
-import 'package:skhickens_app/widgets/business_detail_tile.dart';
-import 'package:skhickens_app/widgets/business_detail_tiles.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/routes/app_routes.dart';
+import 'package:swipe_app/views/Business/add_deals.dart';
+import 'package:swipe_app/widgets/back_button_widget.dart';
+import 'package:swipe_app/widgets/business_detail_tile.dart';
+import 'package:swipe_app/widgets/business_detail_tiles.dart';
+import 'package:swipe_app/widgets/common_space.dart';
+import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class BusinessDetail extends StatefulWidget {
   const BusinessDetail({super.key});

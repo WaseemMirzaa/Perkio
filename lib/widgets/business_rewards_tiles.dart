@@ -3,16 +3,16 @@ import 'package:get/get.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/controllers/business_controller.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/modals/reward_modal.dart';
-import 'package:skhickens_app/services/business_services.dart';
-import 'package:skhickens_app/views/Business/edit_my_deal.dart';
-import 'package:skhickens_app/views/Business/edit_rewards.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/controllers/business_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/modals/reward_modal.dart';
+import 'package:swipe_app/services/business_services.dart';
+import 'package:swipe_app/views/Business/edit_my_deal.dart';
+import 'package:swipe_app/views/Business/edit_rewards.dart';
+import 'package:swipe_app/widgets/common_space.dart';
+import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class BusinessRewardsTiles extends StatelessWidget {
   BusinessRewardsTiles({super.key, required this.rewardModel});

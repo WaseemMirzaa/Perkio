@@ -2,22 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skhickens_app/controllers/user_controller.dart';
-import 'package:skhickens_app/modals/deal_modal.dart';
+import 'package:swipe_app/controllers/user_controller.dart';
+import 'package:swipe_app/modals/deal_modal.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
-import 'package:skhickens_app/controllers/ui_controllers/favourites_screen_controller.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/views/User/deal_detail.dart';
-import 'package:skhickens_app/views/User/reward_detail.dart';
-import 'package:skhickens_app/widgets/common_comp.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/widgets/custom_appBar/custom_appBar.dart';
-import 'package:skhickens_app/widgets/favourites_widget.dart';
-import 'package:skhickens_app/widgets/rewards_list_items.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/routes/app_routes.dart';
+import 'package:swipe_app/controllers/ui_controllers/favourites_screen_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/User/deal_detail.dart';
+import 'package:swipe_app/views/User/reward_detail.dart';
+import 'package:swipe_app/widgets/common_comp.dart';
+import 'package:swipe_app/widgets/common_space.dart';
+import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
+import 'package:swipe_app/widgets/favourites_widget.dart';
+import 'package:swipe_app/widgets/rewards_list_items.dart';
+import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 
 class FavouritesScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
 
 class CustomImageContainer extends StatelessWidget {
   const CustomImageContainer({super.key});

@@ -8,7 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:skhickens_app/core/utils/constants/app_const.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 
 class HomeServices{
   final FirebaseStorage _storage = FirebaseStorage.instance;

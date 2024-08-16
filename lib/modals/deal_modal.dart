@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:skhickens_app/core/utils/constants/constants.dart';
+import 'package:swipe_app/core/utils/constants/constants.dart';
 
 class DealModel {
   String? businessId;

@@ -11,17 +11,17 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/core/utils/constants/app_statics.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
-import 'package:skhickens_app/views/place_picker/address_model.dart';
-import 'package:skhickens_app/views/place_picker/apis.dart';
-import 'package:skhickens_app/views/place_picker/common.dart';
-import 'package:skhickens_app/views/place_picker/get_current_location.dart';
-import 'package:skhickens_app/views/place_picker/location_utils.dart';
-import 'package:skhickens_app/views/place_picker/suggestion.dart';
-import 'package:skhickens_app/widgets/button_widget.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/app_statics.dart';
+import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/views/place_picker/address_model.dart';
+import 'package:swipe_app/views/place_picker/apis.dart';
+import 'package:swipe_app/views/place_picker/common.dart';
+import 'package:swipe_app/views/place_picker/get_current_location.dart';
+import 'package:swipe_app/views/place_picker/location_utils.dart';
+import 'package:swipe_app/views/place_picker/suggestion.dart';
+import 'package:swipe_app/widgets/button_widget.dart';
 
 typedef AddressCallback = void Function(AddressModel val);
 
@@ -347,8 +347,8 @@ class _PlacesPickState extends State<PlacesPick> {
                                   ),
                                   child: ListTile(
                                     leading: Image.asset(
-                                      AppAssets.locationPin,
-                                      width: 25,
+                                      AppAssets.currentLocationPin,
+                                      width: 40,
                                     ),
                                     title: Text(
                                       location.value,

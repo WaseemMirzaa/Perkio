@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:skhickens_app/core/utils/constants/constants.dart';
+import 'package:swipe_app/core/utils/constants/constants.dart';
 
 class RewardModel{
   String? businessId;

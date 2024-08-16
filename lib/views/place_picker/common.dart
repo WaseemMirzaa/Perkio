@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:skhickens_app/views/place_picker/address_model.dart';
-import 'package:skhickens_app/views/place_picker/get_current_location.dart';
+import 'package:swipe_app/views/place_picker/address_model.dart';
+import 'package:swipe_app/views/place_picker/get_current_location.dart';
 
 Future<CurrentLocationModel> getAddressFromLatLng(
     {AddressModel? address, LatLng? latLon}) async {

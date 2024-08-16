@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import 'package:skhickens_app/services/home_services.dart';
+import 'package:swipe_app/services/home_services.dart';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
 class HomeController extends GetxController{
   HomeServices homeService;

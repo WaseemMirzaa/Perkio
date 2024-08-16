@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
 
 class SecondaryLayoutWidget extends StatelessWidget {

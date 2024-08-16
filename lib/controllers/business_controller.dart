@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:skhickens_app/modals/deal_modal.dart';
-import 'package:skhickens_app/modals/reward_modal.dart';
-import 'package:skhickens_app/services/business_services.dart';
-import 'package:skhickens_app/widgets/snackbar_widget.dart';
+import 'package:swipe_app/modals/deal_modal.dart';
+import 'package:swipe_app/modals/reward_modal.dart';
+import 'package:swipe_app/services/business_services.dart';
+import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 class BusinessController extends GetxController{
   BusinessServices businessServices;

@@ -1,4 +1,4 @@
-package com.example.skhickens_app
+package com.example.swipe_app
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

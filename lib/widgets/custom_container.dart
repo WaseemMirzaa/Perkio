@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
 
 class CustomShapeContainer extends StatelessWidget {
 

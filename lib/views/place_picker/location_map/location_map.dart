@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/views/place_picker/permission_utils.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/views/place_picker/permission_utils.dart';
 
 class LocationService extends StatefulWidget {
   final Widget child;

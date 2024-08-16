@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/widgets/common_space.dart';
 
 class SettingsListItems extends StatelessWidget {
     final String path;

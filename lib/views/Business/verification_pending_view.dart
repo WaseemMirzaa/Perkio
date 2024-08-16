@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:skhickens_app/core/utils/constants/constants.dart';
-import 'package:skhickens_app/widgets/common_comp.dart';
-import 'package:skhickens_app/widgets/primary_layout_widget/secondary_layout.dart';
+import 'package:swipe_app/core/utils/constants/constants.dart';
+import 'package:swipe_app/widgets/common_comp.dart';
+import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 
 class VerificationPendingView extends StatelessWidget {
   const VerificationPendingView({super.key});

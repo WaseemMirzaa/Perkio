@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
 class BackButtonWidget extends StatelessWidget {
   BackButtonWidget({super.key,this.padding});

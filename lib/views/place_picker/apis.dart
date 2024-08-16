@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:skhickens_app/views/place_picker/dio.dart';
-import 'package:skhickens_app/views/place_picker/key.dart';
-import 'package:skhickens_app/views/place_picker/suggestion.dart';
+import 'package:swipe_app/views/place_picker/dio.dart';
+import 'package:swipe_app/views/place_picker/key.dart';
+import 'package:swipe_app/views/place_picker/suggestion.dart';
 import 'package:uuid/uuid.dart';
 
 class Apis{

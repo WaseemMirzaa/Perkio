@@ -3,7 +3,7 @@
     <!-- and/or -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
-        android:label="skhickens_app"
+        android:label="Swipe"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="false"
         android:icon="@mipmap/ic_launcher">

@@ -3,22 +3,22 @@
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:nb_utils/nb_utils.dart';
 // import 'package:sizer/sizer.dart';
-// import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-// import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-// import 'package:skhickens_app/core/utils/constants/app_const.dart';
-// import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-// import 'package:skhickens_app/routes/app_routes.dart';
-// import 'package:skhickens_app/views/Business/subscription_plan.dart';
-// import 'package:skhickens_app/views/bottom_bar_view/bottom_bar_view.dart';
-// import 'package:skhickens_app/views/place_picker/apis.dart';
-// import 'package:skhickens_app/views/place_picker/place_picker.dart';
-// import 'package:skhickens_app/views/place_picker/suggestion.dart';
-// import 'package:skhickens_app/widgets/button_widget.dart';
-// import 'package:skhickens_app/widgets/common_space.dart';
-// import 'package:skhickens_app/widgets/custom_appBar/custom_appBar.dart';
-// import 'package:skhickens_app/widgets/custom_container.dart';
-// import 'package:skhickens_app/widgets/search_field.dart';
-// import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+// import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+// import 'package:swipe_app/core/utils/constants/app_assets.dart';
+// import 'package:swipe_app/core/utils/constants/app_const.dart';
+// import 'package:swipe_app/core/utils/constants/text_styles.dart';
+// import 'package:swipe_app/routes/app_routes.dart';
+// import 'package:swipe_app/views/Business/subscription_plan.dart';
+// import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+// import 'package:swipe_app/views/place_picker/apis.dart';
+// import 'package:swipe_app/views/place_picker/place_picker.dart';
+// import 'package:swipe_app/views/place_picker/suggestion.dart';
+// import 'package:swipe_app/widgets/button_widget.dart';
+// import 'package:swipe_app/widgets/common_space.dart';
+// import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
+// import 'package:swipe_app/widgets/custom_container.dart';
+// import 'package:swipe_app/widgets/search_field.dart';
+// import 'package:swipe_app/core/utils/constants/temp_language.dart';
 //
 // class LocationChangeScreen extends StatefulWidget {
 //   LocationChangeScreen({super.key, this.isChangeLocation = false,this.currentLocation = const LatLng(38.00000000,-97.00000000)});

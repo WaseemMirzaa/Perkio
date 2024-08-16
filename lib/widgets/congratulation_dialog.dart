@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/widgets/common_space.dart';
+import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 void showCongratulationDialog({Function? onDone}) {
     Get.dialog(

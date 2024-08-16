@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:skhickens_app/routes/app_routes.dart';
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart';
-import 'package:skhickens_app/core/utils/constants/app_assets.dart';
-import 'package:skhickens_app/core/utils/constants/text_styles.dart';
-import 'package:skhickens_app/views/User/business_detail.dart';
-import 'package:skhickens_app/widgets/common_space.dart';
-import 'package:skhickens_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/routes/app_routes.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/User/business_detail.dart';
+import 'package:swipe_app/widgets/common_space.dart';
+import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class DetailTile extends StatelessWidget {
   const DetailTile({super.key});

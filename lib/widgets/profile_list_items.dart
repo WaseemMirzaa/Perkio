@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart'; // Assuming you're using the sizer package for responsive sizing
-import 'package:skhickens_app/core/utils/app_colors/app_colors.dart'; // Import your AppColors
-import 'package:skhickens_app/core/utils/constants/text_styles.dart'; // Import your custom text styles
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart'; // Import your AppColors
+import 'package:swipe_app/core/utils/constants/text_styles.dart'; // Import your custom text styles
 
 class ProfileListItems extends StatelessWidget {
   final String path;

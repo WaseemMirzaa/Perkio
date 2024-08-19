@@ -7,6 +7,7 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_container.dart';
@@ -54,11 +55,11 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
               const gradientTile(),
               const SpacerBoxVertical(height: 20),
               PlanTiles(heading: TempLanguage.txtMonthly, price: '4.99', desc: TempLanguage.txtPerfectForStarters,onTap: (){
-                widget.fromSignUp ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)),(route)=>false) : Navigator.pop(context);
+                widget.fromSignUp ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Navigator.pop(context);
               },),
               const SpacerBoxVertical(height: 20),
                PlanTiles(heading: TempLanguage.txtYearly, price: '45', desc: TempLanguage.txtSave24,onTap: (){
-                widget.fromSignUp ?  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)),(route)=>false) : Get.back();
+                widget.fromSignUp ?  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Get.back();
               },
 
               ),

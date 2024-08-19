@@ -68,7 +68,7 @@ Widget networkImageComp(String? link, Function() onTap)=>GestureDetector(
 
 Widget circularProgressBar()=>const CircularProgressIndicator(color: AppColors.gradientStartColor,);
 
-Widget titleBarComp(String title)=>Stack(
+Widget titleBarComp(String title,{Function()? onBack})=>Stack(
   children: [
     CustomShapeContainer(height: 22.h,),
     Padding(
@@ -77,7 +77,7 @@ Widget titleBarComp(String title)=>Stack(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SpacerBoxVertical(height: 40),
-          BackButtonWidget(padding: EdgeInsets.zero,),
+          BackButtonWidget(padding: EdgeInsets.zero,onBack: onBack,),
           Center(child: Text(title, style: poppinsMedium(fontSize: 25),))
         ],
       ),

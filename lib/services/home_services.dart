@@ -1,13 +1,16 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 
 class HomeServices{
@@ -48,24 +51,31 @@ class HomeServices{
     }
   }
 
-  Future<LatLng?> getCurrentLocation() async {
+  Future<LatLng?> getCurrentLocation({BuildContext? context}) async {
     LatLng? latLng;
     if (await Permission.location.isGranted) {
-      try {
+
         Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
         latLng = LatLng(position.latitude, position.longitude);
         await setValue(SharedPrefKey.latitude, latLng.latitude);
         await setValue(SharedPrefKey.longitude, latLng.longitude);
-      } catch (e) {
-        print('Error: $e');
-      }
+      // } catch (e) {
+      //   print('Error: $e');
+      // }
     } else {
-      await Permission.location.request();
-      await getCurrentLocation();
+      await LocationPermissionManager.requestLocationPermissionWithConsentDialog(scaffoldContext: context!,
+          onGranted: ()async{
+            print("ON GRANTED");
+        await getCurrentLocation();
+      }, onDenied: ()async{
+            print("ON DENIED");
+            showAdaptiveDialog(context: context, builder: (context)=> PermissionDeniedDialog());
+          });
+
     }
-    return latLng ?? null;
+    return latLng;
   }
   Future<Placemark?> getAddress(LatLng latLng) async {
     try {

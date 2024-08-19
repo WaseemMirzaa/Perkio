@@ -13,6 +13,7 @@ import 'package:swipe_app/services/auth_services.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/splash_screen.dart';
 import 'package:swipe_app/widgets/activation_dialog.dart';
 
@@ -71,23 +72,31 @@ class UserController extends GetxController {
 
   ///💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN IN
 
-  Future<void> signIn(String email, String password) async {
-    loading.value = true;
-    String? result = await authServices.signIn(email, password);
-    if (result == null) {
-      UserModel? userModel = await userServices.getUserById(FirebaseAuth.instance.currentUser!.uid);
-      if (userModel != null) {
-        await setUserInfo(userModel);
-        loading.value = false;
-        clearTextFields();
+  Future<bool> signIn(String email, String password) async {
+    try{
+      loading.value = true;
+      String? result = await authServices.signIn(email, password);
+      if (result == null) {
+        UserModel? userModel = await userServices.getUserById(FirebaseAuth.instance.currentUser!.uid);
+        if (userModel != null) {
+          await setUserInfo(userModel);
+          loading.value = false;
+          clearTextFields();
+        } else {
+          loading.value = false;
+          // Get.snackbar('Error', 'Failed to fetch user data.', snackPosition: SnackPosition.TOP);
+          return false;
+        }
       } else {
         loading.value = false;
-        Get.snackbar('Error', 'Failed to fetch user data.', snackPosition: SnackPosition.TOP);
+        // Get.snackbar('Error', 'Incorrect email and password', snackPosition: SnackPosition.TOP);
+        return false;
       }
-    } else {
-      loading.value = false;
-      Get.snackbar('Error', result, snackPosition: SnackPosition.TOP);
+      return true;
+    }catch (e){
+      return false;
     }
+
   }
 
   //
@@ -119,7 +128,7 @@ class UserController extends GetxController {
       loading.value = false;
       
       clearTextFields();
-      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.off(() => BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)) : showActivationDialog();
+      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.off(() => LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))) : null;
     } else {
       loading.value = false;
       Get.snackbar('Error', 'Account not created', snackPosition: SnackPosition.TOP);

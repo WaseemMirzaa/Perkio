@@ -19,7 +19,7 @@ class CustomBottomBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => onTap(),
-      padding: EdgeInsets.symmetric(horizontal: 8.w,vertical: 0),
+      padding: EdgeInsets.symmetric(horizontal: 5.w,vertical: 0),
       // highlightColor: AppColors.whiteColor.withOpacity(0.5),
       icon: Column(
         mainAxisAlignment: MainAxisAlignment.center,

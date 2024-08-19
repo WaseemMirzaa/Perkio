@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
@@ -35,6 +33,9 @@ class PlacesPick extends StatefulWidget {
 }
 
 class _PlacesPickState extends State<PlacesPick> {
+
+
+
   GoogleMapController? mapController; //contrller for Google map
   CameraPosition? cameraPosition;
   // RxString location = "".obs;
@@ -57,6 +58,7 @@ class _PlacesPickState extends State<PlacesPick> {
   @override
   void initState() {
     super.initState();
+    print("The passed Lat Long is: ${widget.currentLocation}");
     cameraPosition = CameraPosition(
       target: widget.currentLocation,
       zoom: 14.0,
@@ -76,258 +78,132 @@ class _PlacesPickState extends State<PlacesPick> {
             builder: (ctx, snap) {
               if (snap.hasData) {
                 CurrentLocationModel currentLocationModel = snap.data ?? CurrentLocationModel();
+                print("Current Location Model is : ${currentLocationModel.latLon}");
                 AddressModel? address = currentLocationModel.address;
-                return Stack(children: [
-                  GoogleMap(
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    zoomGesturesEnabled: true,
-                    //enable Zoom in, out on map
-                    initialCameraPosition: CameraPosition(
-                      target: widget.currentLocation, //initial position
-                      zoom: 14.0, //initial zoom level
-                    ),
-                    mapType: MapType.normal,
-                    //map type
-                    onMapCreated: (controller) async {
-                      List<Placemark> placemarks = await placemarkFromCoordinates(
-                        cameraPosition?.target.latitude ?? widget.currentLocation.latitude,
-                        cameraPosition?.target.longitude ?? widget.currentLocation.longitude,
-                        // localeIdentifier: "en"
-                      );
+                print("The Address Locatiom Model is : ${address}");
 
-                      if (placemarks.isNotEmpty) {
-                        address?.locality = placemarks.first.locality;
+                return Obx(()=> Stack(children: [
+                    GoogleMap(
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      zoomGesturesEnabled: true,
+                      //enable Zoom in, out on map
+                      initialCameraPosition: CameraPosition(
+                        target: widget.currentLocation, //initial position
+                        zoom: 14.0, //initial zoom level
+                      ),
+                      mapType: MapType.normal,
+                      //map type
+                      onMapCreated: (controller) async {
+                        List<Placemark> placemarks = await placemarkFromCoordinates(
+                          cameraPosition?.target.latitude ?? widget.currentLocation.latitude,
+                          cameraPosition?.target.longitude ?? widget.currentLocation.longitude,
+                          // localeIdentifier: "en"
+                        );
 
-                        address?.postalCode = placemarks.first.postalCode;
-                        address?.street = placemarks.first.street;
-                        address?.name = placemarks.first.name;
-                        address?.administrativeArea = placemarks.first.administrativeArea;
-                        address?.country = placemarks.first.country;
-                        address?.subAdministrativeArea = placemarks.first.subAdministrativeArea;
-                        address?.longitude = widget.currentLocation.longitude;
-                        address?.latitude = widget.currentLocation.latitude;
-                        address?.completeAddress = location.value;
+                        if (placemarks.isNotEmpty) {
+                          address?.locality = placemarks.first.locality;
 
-                        //method called when map is created
-                        ///
-                        // setState(() {});
-                        mapController = controller;
+                          address?.postalCode = placemarks.first.postalCode;
+                          address?.street = placemarks.first.street;
+                          address?.name = placemarks.first.name;
+                          address?.administrativeArea = placemarks.first.administrativeArea;
+                          address?.country = placemarks.first.country;
+                          address?.subAdministrativeArea = placemarks.first.subAdministrativeArea;
+                          address?.longitude = widget.currentLocation.longitude;
+                          address?.latitude = widget.currentLocation.latitude;
+                          address?.completeAddress = location.value;
 
-                        location.value =("${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}");
+                          //method called when map is created
+                          ///
+                          // setState(() {});
+                          mapController = controller;
 
-                        if (isFirstTime) {
-                          final loc = await LocationUtils.fetchLocation();
-                          Position position = Position(
-                              altitudeAccuracy: 0.0,
-                              longitude: loc.longitude,
-                              latitude: loc.latitude,
-                              timestamp: DateTime.now(),
-                              accuracy: 0.0,
-                              altitude: 0.0,
-                              heading: 0.0,
-                              speed: 0.0,
-                              speedAccuracy: 100,
-                              headingAccuracy: 100);
-                          await animateToPosition(lat: position.latitude, long: position.longitude);
-                          isFirstTime = false;
+                          location.value =("${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}");
+
+                          if (isFirstTime) {
+                            final loc = await LocationUtils.fetchLocation();
+                            Position position = Position(
+                                altitudeAccuracy: 0.0,
+                                longitude: loc.longitude,
+                                latitude: loc.latitude,
+                                timestamp: DateTime.now(),
+                                accuracy: 0.0,
+                                altitude: 0.0,
+                                heading: 0.0,
+                                speed: 0.0,
+                                speedAccuracy: 100,
+                                headingAccuracy: 100);
+                            await animateToPosition(lat: position.latitude, long: position.longitude);
+                            isFirstTime = false;
+                          }
                         }
-                      }
-                    },
+                      },
 
-                    onCameraMove: (CameraPosition cameraPositiona) async {
-                      cameraPosition = cameraPositiona;
-                    },
-                    onCameraIdle: () async {
-                      //when map drag stops
-                      List<Placemark> placemarks = await placemarkFromCoordinates(
-                        cameraPosition?.target.latitude ?? widget.currentLocation.latitude,
-                        cameraPosition?.target.longitude ?? widget.currentLocation.longitude,
-                      );
-                      if (placemarks.isNotEmpty) {
-                        address?.locality = placemarks.first.locality;
-                        address?.postalCode = placemarks.first.postalCode;
-                        address?.street = placemarks.first.street;
-                        address?.name = placemarks.first.name;
-                        address?.administrativeArea = placemarks.first.administrativeArea;
-                        address?.country = placemarks.first.country;
-                        address?.subAdministrativeArea = placemarks.first.subAdministrativeArea;
-                        address?.longitude = cameraPosition?.target.latitude;
-                        address?.latitude = cameraPosition?.target.longitude;
-                        location.value = ("${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}");
+                      onCameraMove: (CameraPosition cameraPositiona) async {
+                        cameraPosition = cameraPositiona;
+                      },
+                      onCameraIdle: () async {
+                        //when map drag stops
+                        List<Placemark> placemarks = await placemarkFromCoordinates(
+                          cameraPosition?.target.latitude ?? widget.currentLocation.latitude,
+                          cameraPosition?.target.longitude ?? widget.currentLocation.longitude,
+                        );
+                        if (placemarks.isNotEmpty) {
+                          address?.locality = placemarks.first.locality;
+                          address?.postalCode = placemarks.first.postalCode;
+                          address?.street = placemarks.first.street;
+                          address?.name = placemarks.first.name;
+                          address?.administrativeArea = placemarks.first.administrativeArea;
+                          address?.country = placemarks.first.country;
+                          address?.subAdministrativeArea = placemarks.first.subAdministrativeArea;
+                          address?.longitude = cameraPosition?.target.latitude;
+                          address?.latitude = cameraPosition?.target.longitude;
+                          location.value = ("${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}");
 
 
-                        address?.completeAddress = location.value;
-                      }
-                    },
-                  ),
-                  Center(
-                    child: Image.asset(
-                      AppAssets.locationPin,
-                      scale: 3,
+                          address?.completeAddress = location.value;
+                        }
+                      },
                     ),
-                  ),
-                  SizedBox(
-                    height: ContextExtensions(context).height(),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          top: 70,
-                          child: Row(
-                            children: [
-                              10.width,
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: const BoxDecoration(gradient: LinearGradient(colors: [
-                                    AppColors.gradientStartColor,
-                                    AppColors.gradientEndColor,
-                                  ])),
-                                  child: const Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
-                                  ),
-                                ).cornerRadiusWithClipRRect(100.0),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 10),
 
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(30),
-                                    topRight: Radius.circular(30),
-                                    bottomLeft: Radius.circular(30),
-                                    bottomRight: Radius.circular(30),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 2,
-                                      blurRadius: 5,
-                                      offset: const Offset(0, 3), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                //margin: const EdgeInsets.symmetric(horizontal: 25),
-                                height: 50,
-
-                                child: TextField(
-                                  controller: _controller,
-                                  readOnly: true,
-                                  onTap: () async {
-                                    final Suggestion? result = await showSearch(
-                                      context: context,
-                                      delegate: AddressSearch(),
-                                    );
-                                    // This will change the text displayed in the TextField
-                                    if (result != null && !result.placeId.isEmptyOrNull) {
-                                      // result.
-
-                                      CameraPosition newPostition;
-
-                                      newPostition = await Apis.getPlaceDetailFromId(
-                                        result.placeId ?? "",
-                                      );
-
-                                      mapController?.animateCamera(CameraUpdate.newCameraPosition(newPostition));
-
-                                      // setState(() {
-                                      _controller.text = result.description!;
-                                      setState(() {
-
-                                      });
-                                      // cameraPosition = newPostition;
-
-                                      // });
-                                    }
+                    Center(
+                      child: Image.asset(
+                        AppAssets.locationPin,
+                        scale: 3,
+                      ),
+                    ),
+                    SizedBox(
+                      height: ContextExtensions(context).height(),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            top: 70,
+                            child: Row(
+                              children: [
+                                10.width,
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
                                   },
-                                  decoration: InputDecoration(
-                                    icon: Container(
-                                      margin: const EdgeInsets.only(left: 20, bottom: 10),
-                                      width: 10,
-                                      height: 10,
-                                      child: currLocIconPress
-                                          ? const Icon(
-                                              Icons.search,
-                                              color: Colors.black,
-                                            )
-                                          : const Icon(
-                                              Icons.search,
-                                              color: Colors.green,
-                                            ),
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(gradient: LinearGradient(colors: [
+                                      AppColors.gradientStartColor,
+                                      AppColors.gradientEndColor,
+                                    ])),
+                                    child: const Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
                                     ),
-                                    hintText: 'Search',
-                                    border: InputBorder.none,
-                                    contentPadding: const EdgeInsets.only(
-                                      left: 10.0,
-                                      right: 10.0,
-                                    ),
-                                  ),
+                                  ).cornerRadiusWithClipRRect(100.0),
                                 ),
-                              ).expand(),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 4.0, bottom: 15),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: GestureDetector(
-                                      onTap: () async {
-                                        await animateToPosition();
-                                        if (!isGotLocation) {
-                                          isGotLocation = true;
+                                Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 10),
 
-                                          // final loc = await locationController.fetchLocation();
-                                          final loc = await LocationUtils.fetchLocation();
-                                          Position position = Position(
-                                              longitude: loc.longitude,
-                                              latitude: loc.latitude,
-                                              timestamp: DateTime.now(),
-                                              accuracy: 0.0,
-                                              altitude: 0.0,
-                                              heading: 0.0,
-                                              speed: 0.0,
-                                              speedAccuracy: 0.0,
-                                              altitudeAccuracy: 100,
-                                              headingAccuracy: 100);
-                                          await animateToPosition(lat: position.latitude, long: position.longitude);
-                                          isFirstTime = false;
-                                        }
-                                      },
-                                      child: Container(
-                                          height: 40,
-                                          width: 40,
-                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.white70, border: Border.all(color: Colors.grey)),
-                                          child: const Icon(
-                                            size: 25,
-                                            Icons.gps_fixed,
-                                            // Icons.gps_not_fixed_outlined,
-                                            color: Colors.black87,
-                                            // color: white,
-                                          ))
-                                      // .cornerRadiusWithClipRRect(15),
-                                      ),
-                                ),
-                              ),
-                              10.height,
-                              Container(
-                                  padding: const EdgeInsets.all(0),
-                                  width: MediaQuery.of(context).size.width - 40,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: const BorderRadius.only(
@@ -345,53 +221,189 @@ class _PlacesPickState extends State<PlacesPick> {
                                       ),
                                     ],
                                   ),
-                                  child: ListTile(
-                                    leading: Image.asset(
-                                      AppAssets.currentLocationPin,
-                                      width: 40,
+                                  //margin: const EdgeInsets.symmetric(horizontal: 25),
+                                  height: 50,
+
+                                  child: TextField(
+                                    controller: _controller,
+                                    readOnly: true,
+                                    onTap: () async {
+                                      final Suggestion? result = await showSearch(
+                                        context: context,
+                                        delegate: AddressSearch(),
+                                      );
+                                      // This will change the text displayed in the TextField
+                                      if (result != null && !result.placeId.isEmptyOrNull) {
+                                        // result.
+
+                                        CameraPosition newPostition;
+
+                                        newPostition = await Apis.getPlaceDetailFromId(
+                                          result.placeId ?? "",
+                                        );
+
+                                        mapController?.animateCamera(CameraUpdate.newCameraPosition(newPostition));
+
+                                        // setState(() {
+                                        _controller.text = result.description!;
+                                        setState(() {
+
+                                        });
+                                        // cameraPosition = newPostition;
+
+                                        // });
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      icon: Container(
+                                        margin: const EdgeInsets.only(left: 20, bottom: 10),
+                                        width: 10,
+                                        height: 10,
+                                        child: currLocIconPress
+                                            ? const Icon(
+                                                Icons.search,
+                                                color: Colors.black,
+                                              )
+                                            : const Icon(
+                                                Icons.search,
+                                                color: Colors.green,
+                                              ),
+                                      ),
+                                      hintText: 'Search',
+                                      border: InputBorder.none,
+                                      contentPadding: const EdgeInsets.only(
+                                        left: 10.0,
+                                        right: 10.0,
+                                      ),
                                     ),
-                                    title: Text(
-                                      location.value,
-                                      style: const TextStyle(fontSize: 18),
-                                    ),
-                                    dense: true,
-                                  )),
-                              15.height,
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 1.5.w),
-                                child: ButtonWidget(onSwipe: ()async {
-                                List<Placemark> placeMarks = await placemarkFromCoordinates(
-                                cameraPosition?.target.latitude ?? widget.currentLocation.latitude,
-                                cameraPosition?.target.longitude ?? widget.currentLocation.longitude,
-                                );
-                                if (address != null && placeMarks.isNotEmpty) {
-                                address.locality = placeMarks.first.locality ?? placeMarks.first.country;
-
-                                address.postalCode = placeMarks.first.postalCode;
-                                address.street = placeMarks.first.street;
-                                address.name = placeMarks.first.name;
-                                address.administrativeArea = placeMarks.first.administrativeArea;
-                                address.country = placeMarks.first.country;
-                                address.subAdministrativeArea = placeMarks.first.subAdministrativeArea;
-                                address.longitude = cameraPosition?.target.longitude ?? widget.currentLocation.longitude;
-                                address.latitude = cameraPosition?.target.latitude ?? widget.currentLocation.latitude;
-                                AppStatics.geoPoint = GeoPoint(cameraPosition?.target.latitude ?? widget.currentLocation.latitude, cameraPosition?.target.longitude ?? widget.currentLocation.longitude);
-                                location.value = ("${placeMarks.first.name}, ${placeMarks.first.locality}, ${placeMarks.first.administrativeArea}");
-
-                                address.completeAddress = location.value;
-                                Navigator.pop(context, address);
-                                }
-                                }, text: TempLanguage.btnLblSwipeToSelect).cornerRadiusWithClipRRect(10),
-                              ),
-
-                              50.height
-                            ],
+                                  ),
+                                ).expand(),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                ]);
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 4.0, bottom: 15),
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: GestureDetector(
+                                        onTap: () async {
+                                          await animateToPosition();
+                                          if (!isGotLocation) {
+                                            isGotLocation = true;
+
+                                            // final loc = await locationController.fetchLocation();
+                                            final loc = await LocationUtils.fetchLocation();
+                                            Position position = Position(
+                                                longitude: loc.longitude,
+                                                latitude: loc.latitude,
+                                                timestamp: DateTime.now(),
+                                                accuracy: 0.0,
+                                                altitude: 0.0,
+                                                heading: 0.0,
+                                                speed: 0.0,
+                                                speedAccuracy: 0.0,
+                                                altitudeAccuracy: 100,
+                                                headingAccuracy: 100);
+                                            await animateToPosition(lat: position.latitude, long: position.longitude);
+                                            isFirstTime = false;
+                                          }
+                                        },
+                                        child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.white70, border: Border.all(color: Colors.grey)),
+                                            child: const Icon(
+                                              size: 25,
+                                              Icons.gps_fixed,
+                                              // Icons.gps_not_fixed_outlined,
+                                              color: Colors.black87,
+                                              // color: white,
+                                            ))
+                                        // .cornerRadiusWithClipRRect(15),
+                                        ),
+                                  ),
+                                ),
+                                10.height,
+                                Container(
+                                      padding: const EdgeInsets.all(0),
+                                      width: MediaQuery.of(context).size.width - 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(30),
+                                          topRight: Radius.circular(30),
+                                          bottomLeft: Radius.circular(30),
+                                          bottomRight: Radius.circular(30),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 3), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      child: ListTile(
+                                        leading: Image.asset(
+                                          AppAssets.currentLocationPin,
+                                          width: 40,
+                                        ),
+                                        title: Text(
+                                          location.value,
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                        dense: true,
+                                      ),
+                                ),
+                                15.height,
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 1.5.w),
+                                  child: ButtonWidget(onSwipe: ()async {
+                                  List<Placemark> placeMarks = await placemarkFromCoordinates(
+                                  cameraPosition?.target.latitude ?? widget.currentLocation.latitude,
+                                  cameraPosition?.target.longitude ?? widget.currentLocation.longitude,
+                                  );
+                                  print("Place Marks are: $placeMarks");
+                                  if (address != null && placeMarks.isNotEmpty) {
+                                  address.locality = placeMarks.first.locality ?? placeMarks.first.country;
+                                  print("If Condition is True");
+
+                                  address.postalCode = placeMarks.first.postalCode;
+                                  address.street = placeMarks.first.street;
+                                  address.name = placeMarks.first.name;
+                                  address.administrativeArea = placeMarks.first.administrativeArea;
+                                  address.country = placeMarks.first.country;
+                                  address.subAdministrativeArea = placeMarks.first.subAdministrativeArea;
+                                  address.longitude = cameraPosition?.target.longitude ?? widget.currentLocation.longitude;
+                                  address.latitude = cameraPosition?.target.latitude ?? widget.currentLocation.latitude;
+                                  AppStatics.geoPoint = GeoPoint(cameraPosition?.target.latitude ?? widget.currentLocation.latitude, cameraPosition?.target.longitude ?? widget.currentLocation.longitude);
+                                  location.value = ("${placeMarks.first.name}, ${placeMarks.first.locality}, ${placeMarks.first.administrativeArea}");
+                                  address.completeAddress = location.value;
+                                  Navigator.pop(context, address);
+
+                                  }
+                                  print("Full ELse Condition is Called ${address?.completeAddress}");
+
+                                  }, text: TempLanguage.btnLblSwipeToSelect).cornerRadiusWithClipRRect(10),
+                                ),
+
+                                50.height
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ]),
+                );
               } else if (snap.hasError) {
                 toast(snap.error.toString());
                 Navigator.pop(context);

@@ -11,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/modals/user_modal.dart';
@@ -19,6 +20,8 @@ import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/Business/verification_pending_view.dart';
 import 'package:swipe_app/views/User/location_change_screen.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
+import 'package:swipe_app/views/place_picker/location_utils.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
@@ -63,14 +66,17 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
     // TODO: implement initState
     super.initState();
     Future.microtask(() async {
-      await getAndFill();
+      if (address != null) {
+        businessAddressController.text = address!.completeAddress!;
+      }
+      else {
+        await homeServices.getCurrentLocation(context: context).then((value) {
+          print("Then Called");
+          getAndFill();
+        });
+      }
     });
-    if (address != null) {
-      businessAddressController.text = address!.completeAddress!;
-    }
-    else {
-      homeServices.getCurrentLocation().then((value) => getAndFill());
-    }
+
 
   }
 
@@ -104,13 +110,20 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                 const SpacerBoxVertical(height: 10),
                 TextFieldWidget(text: 'Business Address',textController: businessAddressController,focusNode: businessAddressNode,onEditComplete: ()=> focusChange(context, businessAddressNode, websiteNode),isReadOnly: true,
                 onTap: ()async{
+                  bool isPremitt = await LocationPermissionManager().requestLocationPermission(context);
                   // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationChangeScreen()));
-                  address = await Navigator.push(context, MaterialPageRoute(builder: (context) => PlacesPick(currentLocation: latLng ?? LatLng(38.00000000,-97.00000000))));
-                  if (address != null) {
-                    businessAddressController.text = await address!.completeAddress.toString();
-                    await setValue(SharedPrefKey.latitude, address!.latitude);
-                    await setValue(SharedPrefKey.longitude, address!.longitude);
-                  }                },
+                  if(isPremitt) {
+                    address = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                        LocationService(child: PlacesPick(currentLocation: latLng ?? const LatLng(-97.00000000, 38.00000000)))));
+                    if (address != null) {
+                      businessAddressController.text = address!.completeAddress.toString();
+                      await setValue(SharedPrefKey.latitude, address!.latitude);
+                      await setValue(SharedPrefKey.longitude, address!.longitude);
+                    }
+                  }else{
+                    X.showSnackBar('Allow Location Permissions', 'Please allow location permissions');
+                  }
+                  },
                 ),
                 const SpacerBoxVertical(height: 20),
                 Text('Website', style: poppinsRegular(fontSize: 13),),
@@ -214,7 +227,7 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                       widget.userModel.logo = homeController.pickedImage2?.path;
                     }
                     await userController.signUp(widget.userModel).then((value){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> const VerificationPendingView()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> VerificationPendingView()));
                       homeController.setImageNull();
                       homeController.clearLogo();
                       context.loaderOverlay.hide();
@@ -233,10 +246,12 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
   }
 
   Future<void> getAndFill() async {
-    latLng = await homeServices.getCurrentLocation();
-    final currentLocation = await homeServices.getAddress(latLng ?? LatLng(0, 0));
-    await addingAddress(currentLocation ?? Placemark());
-    businessAddressController.text = "${currentLocation?.street} , ${currentLocation?.locality} , ${currentLocation?.administrativeArea} , ${currentLocation?.country}";
+    if(await LocationPermissionManager().requestLocationPermission(context)){
+      latLng = await homeServices.getCurrentLocation(context: context);
+      final currentLocation = await homeServices.getAddress(latLng ?? const LatLng(0, 0));
+      await addingAddress(currentLocation ?? const Placemark());
+      businessAddressController.text = "${currentLocation?.street} , ${currentLocation?.locality} , ${currentLocation?.administrativeArea} , ${currentLocation?.country}";
+    }
   }
   Future<void> addingAddress(Placemark currentAddress) async {
     address = AddressModel(

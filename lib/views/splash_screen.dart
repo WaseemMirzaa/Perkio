@@ -6,6 +6,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_utils/GeoLocationHelper.dart';
+import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
@@ -15,6 +16,7 @@ import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/Business/verification_pending_view.dart';
 import 'package:swipe_app/views/auth/login_view.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/role_selection/role_selection_view.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
@@ -47,17 +49,16 @@ class _SplashScreenState extends State<SplashScreen> {
             await setValue(SharedPrefKey.address, address);
           }
           if(userController.userModel.value.isVerified == StatusKey.verified) {
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+            bool isGranted = await LocationPermissionManager.requestLocationPermissions(context);
+            isGranted ?
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
                 ? true
-                : false)),(route)=>false);
-                // BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                //     ? true
-                //     : false));
+                : false))),(route)=>false) : await LocationPermissionManager.requestLocationPermissions(context);
           }else{
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> VerificationPendingView()), (route)=>false);
           }
         } else {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LoginView()), (route)=> false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LoginView()), (route)=> false);
         }
       } else {
 

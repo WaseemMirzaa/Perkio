@@ -34,7 +34,6 @@ void showActivationDialog() {
               GestureDetector(
                 onTap: () {
                   Get.back();
-
                 },
                 child: Container(
                   height: 55,

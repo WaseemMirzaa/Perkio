@@ -17,6 +17,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/modals/user_modal.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -212,7 +213,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         ProfileListItems(path: AppAssets.profile4,
                           textController: addressController,
                         onTap: enabled.value ? ()async{
-                          AddressModel address = await Navigator.push(context, MaterialPageRoute(builder: (context) => PlacesPick(currentLocation: LatLng(businessProfile.latLong!.latitude, businessProfile.latLong!.longitude))));
+                          AddressModel address = await Navigator.push(context, MaterialPageRoute(builder: (context) => LocationService(child: PlacesPick(currentLocation: LatLng(businessProfile.latLong!.latitude, businessProfile.latLong!.longitude)))));
                           if (address != null) {
                             addressController.text = await address!.subAdministrativeArea.toString();
                             await setValue(SharedPrefKey.latitude, address!.latitude);

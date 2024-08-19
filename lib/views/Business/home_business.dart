@@ -20,6 +20,7 @@ import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/Business/add_deals.dart';
 import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/business_home_list_items.dart';
@@ -48,13 +49,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
   @override
   Widget build(BuildContext context) {
     return PrimaryLayoutWidget(
-        // header: SizedBox(height: 25.h,
-        //   child: customAppBarWithTextField(searchController: searchController, onChanged: (value){
-        //     setState(() {
-        //       searchQuery = value;
-        //     });
-        //   }, geoPoint: AppStatics.geoPoint),
-        // ),
+
       header: SizedBox(
         height: 25.h,
         child: Padding(
@@ -76,9 +71,10 @@ class _HomeBusinessState extends State<HomeBusiness> {
                       Expanded(child:  Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children: [
                         Text(getStringAsync(SharedPrefKey.userName), style: poppinsRegular(fontSize: 13.sp),),
                         GestureDetector(onTap: ()async {
-                          AddressModel address = await Get.to(() =>
-                              PlacesPick(currentLocation: LatLng(getDoubleAsync(SharedPrefKey.latitude),
-                                  getDoubleAsync(SharedPrefKey.longitude)),));
+                          AddressModel address = await Navigator.push(context, MaterialPageRoute(builder: (context)=> PlacesPick(currentLocation: LatLng(getDoubleAsync(SharedPrefKey.latitude),
+                                  getDoubleAsync(SharedPrefKey.longitude)),)));
+
+                          print("Address is \n\n\n ${address.latitude}");
                           if (address != null) {
                             final add = await GeoLocationHelper.getCityFromGeoPoint(
                                 GeoPoint(address.latitude!, address.longitude!));
@@ -96,6 +92,8 @@ class _HomeBusinessState extends State<HomeBusiness> {
 
                                   });
                             });
+                          }else{
+                            toast("Not updated");
                           }
                         }
                           ,

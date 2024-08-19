@@ -4,14 +4,15 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
 class BackButtonWidget extends StatelessWidget {
-  BackButtonWidget({super.key,this.padding});
+  BackButtonWidget({super.key,this.padding,  this.onBack});
   EdgeInsetsGeometry? padding;
+  Function()? onBack;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: padding ?? const EdgeInsets.only(left: 12,right: 12,bottom: 12,top: 52),
       child: GestureDetector(
-        onTap: (){
+        onTap: onBack ?? (){
           Navigator.pop(context);
         },
         child: Container(

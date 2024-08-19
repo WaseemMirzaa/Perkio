@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/place_picker/permission_utils.dart';
 
 class LocationService extends StatefulWidget {
@@ -15,37 +17,6 @@ class LocationService extends StatefulWidget {
 }
 
 class _LocationServiceState extends State<LocationService> {
-  // final Stream<ServiceStatus> locationStream = Geolocator.getServiceStatusStream();
-  // final StreamController<ServiceStatus> customStreamController = StreamController<ServiceStatus>.broadcast();
-  //
-  // Stream<ServiceStatus>? mergedStream;
-  // final StreamController<ServiceStatus> mergedStreamController = StreamController<ServiceStatus>.broadcast();
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   PermissionUtils.checkStatus().then((value) {
-  //     if (value) {
-  //       customStreamController.sink.add(ServiceStatus.enabled);
-  //     } else {
-  //       customStreamController.sink.add(ServiceStatus.disabled);
-  //     }
-  //   });
-  //
-  //   locationStream.listen(mergedStreamController.sink.add);
-  //   customStreamController.stream.listen(mergedStreamController.sink.add);
-  //
-  //   mergedStream = mergedStreamController.stream;
-  // }
-  //
-  //
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   customStreamController.close();
-  //   mergedStreamController.close();
-  // }
 
   Stream<ServiceStatus>? mergedStream;
   final StreamController<ServiceStatus> mergedStreamController =
@@ -88,11 +59,11 @@ class _LocationServiceState extends State<LocationService> {
             return const LocationServiceErrorWidget();
           }
         }
-        return Column(
+        return const Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(),
+            CircularProgressIndicator(),
           ],
         ); // Loading indicator while waiting for data.
       },
@@ -113,12 +84,13 @@ class LocationServiceErrorWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                AppAssets.foodImg,
+                AppAssets.currentLocationPin,
                 // scale: 4,
                 height: 300,
                 fit: BoxFit.fitHeight,
               ),
-             Text('Please enable GPS on your phone to use the app'),
+              SizedBox(height: 2.h,),
+              Text('Please enable GPS on your phone to use the app',style: poppinsBold(fontSize: 12.sp),textAlign: TextAlign.center,),
             ],
           ),
         ),

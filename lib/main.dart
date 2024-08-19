@@ -6,8 +6,11 @@ import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/firebase_options.dart';
+import 'package:swipe_app/modals/user_modal.dart';
 import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/bindings/bindings.dart';
+import 'package:swipe_app/views/Business/verification_pending_view.dart';
+import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
 import 'package:swipe_app/views/splash_screen.dart';
 
 void main() async {
@@ -52,12 +55,12 @@ class MyApp extends StatelessWidget {
           },
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
+            title: 'Swipe',
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: const SplashScreen(),
+            home: SplashScreen(),
             initialBinding: MyBinding(),
           ),
         );

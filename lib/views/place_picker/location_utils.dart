@@ -46,5 +46,7 @@ class LocationUtils{
     return await Geolocator.getCurrentPosition();
   }
 
+  
+
 
 }

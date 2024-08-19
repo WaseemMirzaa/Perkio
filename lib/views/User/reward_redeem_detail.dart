@@ -8,6 +8,7 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
@@ -99,7 +100,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: ButtonWidget(onSwipe: (){
                   showCongratulationDialog(onDone: (){
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false)),(route)=>false);
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false);
                   });
                 }, text: TempLanguage.btnLblSwipeToRedeem),
               )

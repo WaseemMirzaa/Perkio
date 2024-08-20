@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
-import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
-import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/widgets/back_button_widget.dart';
+import 'package:swipe_app/modals/notification_model.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
-import 'package:swipe_app/widgets/common_space.dart';
-import 'package:swipe_app/widgets/custom_container.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 
 class NotificationsView extends StatefulWidget {
@@ -18,6 +13,7 @@ class NotificationsView extends StatefulWidget {
 }
 
 class _NotificationsViewState extends State<NotificationsView> {
+
   @override
   Widget build(BuildContext context) {
     return SecondaryLayoutWidget(
@@ -26,34 +22,39 @@ class _NotificationsViewState extends State<NotificationsView> {
         child: Column(
           children: [
             SizedBox(height: 22.h,),
-            ListView.builder(
-              itemCount: 1,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index)=> const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(child: Text('No Notifications found'))
-                // Row(children: [
-                //   CircleAvatar(radius: 25.sp,backgroundImage: const AssetImage(AppAssets.profileImg),),
-                //   const SizedBox(width: 10,),
-                //   Expanded(
-                //     child: Column(children: [
-                //       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text('Booking Confirmed',style: poppinsBold(fontSize: 11.sp),),
-                //           Text('11:23 AM',style: poppinsBold(fontSize: 9.sp,color: AppColors.hintText.withOpacity(0.6)),),
-                //         ],
-                //       ),
-                //       Text('Your booking with BD Jones has been confirmed...',maxLines: 2,overflow: TextOverflow.ellipsis,style: poppinsRegular(fontSize: 10.sp),
-                //       ),
-                //     ],
-                //     ),
-                //   ),
-                // ],
-                // ),
-              ),
+            StreamBuilder<List<NotificationModel>?>(
+              stream: null,
+              builder: (context, snapshot) {
+                return ListView.builder(
+                  itemCount: 1,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index)=> const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Center(child: Text('No Notifications found'))
+                    // Row(children: [
+                    //   CircleAvatar(radius: 25.sp,backgroundImage: const AssetImage(AppAssets.profileImg),),
+                    //   const SizedBox(width: 10,),
+                    //   Expanded(
+                    //     child: Column(children: [
+                    //       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           Text('Booking Confirmed',style: poppinsBold(fontSize: 11.sp),),
+                    //           Text('11:23 AM',style: poppinsBold(fontSize: 9.sp,color: AppColors.hintText.withOpacity(0.6)),),
+                    //         ],
+                    //       ),
+                    //       Text('Your booking with BD Jones has been confirmed...',maxLines: 2,overflow: TextOverflow.ellipsis,style: poppinsRegular(fontSize: 10.sp),
+                    //       ),
+                    //     ],
+                    //     ),
+                    //   ),
+                    // ],
+                    // ),
+                  ),
+                );
+              }
             ),
           ],
         ),

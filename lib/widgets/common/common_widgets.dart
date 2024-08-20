@@ -113,9 +113,18 @@ Future showBalanceDialog({
                           });
                       });
                     }else if(budgetInt % controller.apc.value! == 0 && fromSettings){
-                      await StripePayment.initPaymentSheet(amount: budget * 100, customerId: getStringAsync(UserKey.STRIPECUSTOMERID)).then((value)async{
-                        Get.back();
-                      });
+                      FocusScope.of(context).unfocus();
+                      input = promotionAmountController.text;
+                      budget = input.isEmptyOrNull ? 0 : int.parse(input);
+                      totalClicks = budget == null ? 0 : budget ~/ controller.apc.value!;
+
+                      print("Total Clicks are: $totalClicks");
+                      final double budgetInt = budget.toDouble();
+                      if(budgetInt % controller.apc.value! == 0){
+                        await StripePayment.initPaymentSheet(amount: budget * 100, customerId: getStringAsync(UserKey.STRIPECUSTOMERID)).then((value)async{
+                        });
+                      }
+
                     } else {
                       toast('Budget must be a multiple of the cost per click.');
                     }

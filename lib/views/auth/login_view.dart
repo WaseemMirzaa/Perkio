@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/mixins/validate_textfield.dart';
@@ -86,9 +87,13 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                     controller.passErrorText.value = validatePassword(controller.passwordController.text);
                     if (controller.emailErrorText.value == "" && controller.passErrorText.value == "") {
                       final isAuthenticated = await controller.signIn(controller.emailController.text, controller.passwordController.text);
-                      if(isAuthenticated){
+                      if(isAuthenticated && await LocationPermissionManager.requestLocationPermissions(context)){
+                        // if(LocationPermissionManager().requestLocationPermissions(context))
                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false ))));
-                      }else{
+                      }else if(!await LocationPermissionManager.requestLocationPermissions(context)){
+                        showSnackBar('Location Needed', 'Location permissions are needed');
+                      } else{
+
                         showSnackBar('Error', 'Incorrect email and password');
                       }
                     } else {

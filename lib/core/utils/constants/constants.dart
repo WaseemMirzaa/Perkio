@@ -21,6 +21,7 @@ class CollectionsKey{
   static const String DEALS = 'deals';
   static const String REWARDS = 'reward';
   static const String SETTINGS = 'settings';
+  static const String NOTIFICATIONS = 'notifications';
 }
 
 class DealKey {
@@ -53,6 +54,16 @@ class RewardKey {
   static const String CREATEDAT = 'createdAt';
   static const String USES = 'uses';
   static const String REWARDPARAM = 'rewardParam';
+}
+class NotificationKey{
+  static const String NOTIFICATIONID = 'notificationId';
+  static const String SENDERID = 'senderId';
+  static const String RECEIVERID = 'receiverId';
+  static const String NOTIFICATIONTITLE = 'notificationTitle';
+  static const String NOTIFICATIONMESSAGE = 'notificationMessage';
+  static const String NOTIFICATIONTYPE = 'notificationType';
+  static const String EVENTID = 'eventId';
+  static const String TIMESTAMP = 'timestamp';
 }
 
 class StatusKey{

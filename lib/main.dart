@@ -11,6 +11,7 @@ import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/bindings/bindings.dart';
 import 'package:swipe_app/views/Business/verification_pending_view.dart';
 import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
+import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/splash_screen.dart';
 
 void main() async {

@@ -36,7 +36,6 @@ class DealModel {
   });
 
   factory DealModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
-    // Use this factory method to convert Firebase DocumentSnapshot to Deal object
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return DealModel(
       dealId: snapshot.id,

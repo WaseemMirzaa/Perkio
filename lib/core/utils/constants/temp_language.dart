@@ -24,12 +24,12 @@ class TempLanguage{
   static const String txtBusinessName = 'Business Name';
   static const String txtUserName = 'User Name';
   static const String txtLocation = 'Location';
-  static const String txtAddDetails = 'Add Details';
+  static const String txtAddDetails = 'Add Deal Details';
   static const String txtDeal = 'Deal';
   static const String txtRewardName = 'Reward Name';
   static const String txtSuperDuper = 'Super Duper';
   static const String txtDealPrice = 'Deal Price';
-  static const String txtUses = 'Uses';
+  static const String txtUses = 'USES';
   static const String txtRequiredPointsToRedeem = 'Required Points to Redeem';
   static const String txtDetails = 'Details';
   static const String txtLogin = 'LOGIN';
@@ -83,7 +83,7 @@ class TempLanguage{
   static const String txtFeatured = 'Featured';
   static const String txtNotifications = 'Notifications';
   static const String txtRestaurantName = 'Restaurant Name';
-  static const String txtUses3 = "Uses 3";
+  static const String txtUses3 = "USES 3";
   static const String txtViewRating = 'VIEW Rating';
   static const String txtViewDeals = 'VIEW DEALS';
   static const String txtRating = '4.4 (8.1k)';

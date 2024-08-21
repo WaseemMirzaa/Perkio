@@ -14,7 +14,7 @@ class FavouritesWidget extends StatelessWidget {
   final String dealPrice;
   final String uses;
   final String location;
-  const FavouritesWidget({this.dealId = '', this.dealName = 'Deal Name', this.restaurantName = 'Restaurant Name', this.dealPrice = '\$25', this.uses = 'Uses 3', this.location = '4773 Waldeck Street, US'});
+  const FavouritesWidget({this.dealId = '', this.dealName = 'Deal Name', this.restaurantName = 'Restaurant Name', this.dealPrice = '\$25', this.uses = 'USES 3', this.location = '4773 Waldeck Street, US'});
 
   @override
   Widget build(BuildContext context) {

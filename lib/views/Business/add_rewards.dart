@@ -49,7 +49,7 @@ class _AddRewardsState extends State<AddRewards> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SpacerBoxVertical(height: 10),
-                Center(child: Text("Rewards Details", style: poppinsMedium(fontSize: 14),)),
+                Center(child: Text("Add Rewards Details", style: poppinsMedium(fontSize: 14),)),
                 const SpacerBoxVertical(height: 20),
 
                 Text('Rewards Name', style: poppinsRegular(fontSize: 13)),

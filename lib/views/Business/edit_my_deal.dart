@@ -66,7 +66,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SpacerBoxVertical(height: 10),
-                Center(child: Text(TempLanguage.txtAddDetails, style: poppinsMedium(fontSize: 14),)),
+                Center(child: Text('Edit Deal Details', style: poppinsMedium(fontSize: 14),)),
                 const SpacerBoxVertical(height: 20),
                 Text('Deal Name', style: poppinsRegular(fontSize: 13),),
                 const SpacerBoxVertical(height: 10),

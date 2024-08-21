@@ -9,6 +9,7 @@ import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/modals/user_modal.dart';
 import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/bindings/bindings.dart';
+import 'package:swipe_app/views/Business/subscription_plan.dart';
 import 'package:swipe_app/views/Business/verification_pending_view.dart';
 import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
 import 'package:swipe_app/views/notifications/notifications_view.dart';
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: SplashScreen(),
+            home: const SplashScreen(),
             initialBinding: MyBinding(),
           ),
         );

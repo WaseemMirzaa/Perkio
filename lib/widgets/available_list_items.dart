@@ -17,7 +17,7 @@ class AvailableListItems extends StatelessWidget {
   final String uses;
   final String location;
   bool isFeatured;
-  AvailableListItems({this.dealId = '', this.dealName = 'Deal Name', this.restaurantName = 'Restaurant Name', this.dealPrice = '\$25', this.uses = 'Uses 3', this.location = '4773 Waldeck Street, US',this.isFeatured = true});
+  AvailableListItems({this.dealId = '', this.dealName = 'Deal Name', this.restaurantName = 'Restaurant Name', this.dealPrice = '\$25', this.uses = 'USES 3', this.location = '4773 Waldeck Street, US',this.isFeatured = true});
 
   @override
   Widget build(BuildContext context) {

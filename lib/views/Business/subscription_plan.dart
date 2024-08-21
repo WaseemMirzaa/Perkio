@@ -11,6 +11,8 @@ import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_container.dart';
+import 'package:swipe_app/widgets/primary_layout_widget/primary_layout.dart';
+import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 import 'package:swipe_app/widgets/subscription_plan_tiles.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
@@ -24,49 +26,44 @@ class SubscriptionPlan extends StatefulWidget {
 class _SubscriptionPlanState extends State<SubscriptionPlan> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
+    return SecondaryLayoutWidget(header:  Stack(
+      children: [
+        CustomShapeContainer(height: 21.h,),
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomShapeContainer(height: 21.h,),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SpacerBoxVertical(height: 40),
-                    BackButtonWidget(padding: EdgeInsets.zero,),
-                    Center(child: Text(TempLanguage.txtSubscriptionPlan, style: poppinsMedium(fontSize: 25),))
-                  ],
-                ),
-              ),
+              const SpacerBoxVertical(height: 40),
+              BackButtonWidget(padding: EdgeInsets.zero,),
+              Center(child: Text(TempLanguage.txtSubscriptionPlan, style: poppinsMedium(fontSize: 25),))
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(TempLanguage.txtChooseAPlan, style: poppinsMedium(fontSize: 18),),
-          ),
-          Expanded(child: ListView(
-            padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
-            children: [
-              const gradientTile(),
-              const SpacerBoxVertical(height: 20),
-              PlanTiles(heading: TempLanguage.txtMonthly, price: '4.99', desc: TempLanguage.txtPerfectForStarters,onTap: (){
-                widget.fromSignUp ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Navigator.pop(context);
-              },),
-              const SpacerBoxVertical(height: 20),
-               PlanTiles(heading: TempLanguage.txtYearly, price: '45', desc: TempLanguage.txtSave24,onTap: (){
-                widget.fromSignUp ?  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Get.back();
-              },
+        ),
+      ],
+    ),body:  ListView(
+      padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+      children: [
+        SizedBox(height: 22.h,),
+        const gradientTile(),
+        const SpacerBoxVertical(height: 20),
 
-              ),
-            ],
-          ))
-        ],
-      ),
-    );
+        Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Text(TempLanguage.txtChooseAPlan, style: poppinsMedium(fontSize: 18),),
+        ),
+        const SpacerBoxVertical(height: 20),
+        PlanTiles(heading: TempLanguage.txtMonthly, price: '4.99', desc: '',onTap: (){
+          widget.fromSignUp ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Navigator.pop(context);
+        },),
+        const SpacerBoxVertical(height: 20),
+        PlanTiles(heading: TempLanguage.txtYearly, price: '45', desc: '\$60 (crossed out), save 24% with yearly subscription',onTap: (){
+          widget.fromSignUp ?  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Get.back();
+        },
+
+
+        ),
+      ],
+    ),);
   }
 }

@@ -65,7 +65,7 @@ class _EditMyRewardsState extends State<EditMyRewards> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SpacerBoxVertical(height: 10),
-                Center(child: Text('Reward Detail', style: poppinsMedium(fontSize: 14),)),
+                Center(child: Text('Edit Reward Detail', style: poppinsMedium(fontSize: 14),)),
                 const SpacerBoxVertical(height: 20),
                 Text('Reward Name', style: poppinsRegular(fontSize: 13),),
                 const SpacerBoxVertical(height: 10),

@@ -78,7 +78,7 @@ Widget customAppBar({String? userName,
                             final add = await GeoLocationHelper.getCityFromGeoPoint(GeoPoint(address.latitude!, address.longitude!));
                             await setValue(SharedPrefKey.address, add);
                             await setValue(SharedPrefKey.latitude, address.latitude);
-                            await setValue(SharedPrefKey.latitude, address.longitude);
+                            await setValue(SharedPrefKey.longitude, address.longitude);
                             await homeController.updateCollection(
                                 getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,
                                 {

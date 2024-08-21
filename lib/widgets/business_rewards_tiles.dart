@@ -153,7 +153,7 @@ class BusinessRewardsTiles extends StatelessWidget {
                     alignment: Alignment.bottomRight,
                     child: Padding(
                       padding: EdgeInsets.all(6.sp),
-                      child: Text("Uses ${rewardModel.uses}",style: poppinsMedium(fontSize: 12.sp),),
+                      child: Text("USES ${rewardModel.uses}",style: poppinsMedium(fontSize: 12.sp),),
                     ))
               ],
             )

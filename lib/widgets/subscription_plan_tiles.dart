@@ -32,23 +32,24 @@ class gradientTile extends StatelessWidget {
 
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(AppAssets.checkMark, scale: 3,),
                 const SpacerBoxHorizontal(width: 10),
-                Text(TempLanguage.txtRedeemDeals, style: metropolisExtraBold(fontSize: 15.sp, color: AppColors.whiteColor),)
+                Expanded(child: Text('Get Access to Unlimited Deals and Rewards', style: metropolisExtraBold(fontSize: 14.sp, color: AppColors.whiteColor),))
               ],
             ),
           ),
           const SpacerBoxVertical(height: 10),
                                                         Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10),
                                                           child: Row(
                                                             children: [
                                                               Image.asset(AppAssets.checkMark, scale: 3,),
                                                               const SpacerBoxHorizontal(width: 10),
-                                                              Text(TempLanguage.txtGetRewards, style: metropolisExtraBold(fontSize: 15.sp, color: AppColors.whiteColor),)
+                                                              Expanded(child: Text("Save Hundreds Each Month", style: metropolisExtraBold(fontSize: 14.sp, color: AppColors.whiteColor),))
                                                             ],
                                                           ),
                                                         )
@@ -63,14 +64,14 @@ class PlanTiles extends StatelessWidget {
   final String price;
   final String desc;
   final Function()? onTap;
-  const PlanTiles({super.key, required this.heading, required this.price, required this.desc, this.onTap});
+  PlanTiles({super.key, required this.heading, required this.price, required this.desc, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-                    height: 16.5.h,
+                    height: 17.h,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(width: 1, color: AppColors.borderColor),
@@ -86,6 +87,8 @@ class PlanTiles extends StatelessWidget {
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
+                                        desc.isNotEmpty ? const SizedBox.shrink() : SizedBox(height: 2.h,),
+
                                         Text(heading, style: metropolisMedium(fontSize: 22.sp,height: 0.6),),
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +97,7 @@ class PlanTiles extends StatelessWidget {
                                           Text('\$', style: metropolisRegular(fontSize: 14.sp,),),
                                           Text(price, style: metropolisMedium(fontSize: 36.sp),),
                                         ],),
-                                        Text(desc, style: metropolisMedium(fontSize: 15.sp,height: 0.2),),
+                                       desc.isNotEmpty ? Text(desc,textAlign: TextAlign.center,style: metropolisRegular(fontSize: 12.sp,height: 1.2),) : const SizedBox.shrink(),
                                       ],
                                     ),
                   ),

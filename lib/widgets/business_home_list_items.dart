@@ -98,7 +98,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                                 SizedBox(height: 1.h,),
                                                 Padding(
                                                 padding: const EdgeInsets.only(left: 20),
-                                                child: Text("Uses ${widget.dealModel.uses}",style: poppinsMedium(fontSize: 13.sp),),
+                                                child: Text("USES ${widget.dealModel.uses}",style: poppinsMedium(fontSize: 13.sp),),
                                               ),
                                               const SpacerBoxVertical(height: 5),
                                               ],

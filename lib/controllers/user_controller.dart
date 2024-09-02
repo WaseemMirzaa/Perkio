@@ -22,7 +22,6 @@ class UserController extends GetxController {
 
   HomeController homeController = Get.put(HomeController(HomeServices()));
 
-
   @override
   void onInit() {
     // TODO: implement onInit
@@ -31,7 +30,6 @@ class UserController extends GetxController {
     passwordController = TextEditingController();
     userNameController = TextEditingController();
     phoneController = TextEditingController();
-
   }
 
   @override
@@ -42,7 +40,6 @@ class UserController extends GetxController {
     phoneController.dispose();
     passwordController.dispose();
     userNameController.dispose();
-
   }
 
   void clearTextFields() {
@@ -68,15 +65,15 @@ class UserController extends GetxController {
   late TextEditingController phoneController;
   late TextEditingController userNameController;
 
-
   ///💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN IN
 
   Future<bool> signIn(String email, String password) async {
-    try{
+    try {
       loading.value = true;
       String? result = await authServices.signIn(email, password);
       if (result == null) {
-        UserModel? userModel = await userServices.getUserById(FirebaseAuth.instance.currentUser!.uid);
+        UserModel? userModel = await userServices
+            .getUserById(FirebaseAuth.instance.currentUser!.uid);
         if (userModel != null) {
           await setUserInfo(userModel);
           loading.value = false;
@@ -92,10 +89,9 @@ class UserController extends GetxController {
         return false;
       }
       return true;
-    }catch (e){
+    } catch (e) {
       return false;
     }
-
   }
 
   //
@@ -103,37 +99,49 @@ class UserController extends GetxController {
     return userServices.getUserByStream(userId);
   }
 
-    //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
+  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
   Future<void> signUp(UserModel userModel) async {
     loading.value = true;
     String? result = await authServices.signUp(userModel);
     if (result != null) {
       userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-      final stripeCustomerId = await StripePayment.createStripeCustomer(email: userModel.email!);
+      final stripeCustomerId =
+          await StripePayment.createStripeCustomer(email: userModel.email!);
       print("STRIPE: $stripeCustomerId");
-      if(!stripeCustomerId.isEmptyOrNull){
+      if (!stripeCustomerId.isEmptyOrNull) {
         userModel.stripeCustomerId = stripeCustomerId;
       }
-      if(getStringAsync(SharedPrefKey.role) == SharedPrefKey.business){
-        final logoLink = await homeController.uploadImageToFirebaseWithCustomPath(userModel.logo!, 'business_logo/$result');
-        final image = await homeController.uploadImageToFirebaseOnID(userModel.image!, result);
-        if(logoLink != null && image != null){
+      if (getStringAsync(SharedPrefKey.role) == SharedPrefKey.business) {
+        final logoLink =
+            await homeController.uploadImageToFirebaseWithCustomPath(
+                userModel.logo!, 'business_logo/$result');
+        final image = await homeController.uploadImageToFirebaseOnID(
+            userModel.image!, result);
+        if (logoLink != null && image != null) {
           userModel.logo = logoLink;
           userModel.image = image;
           await setValue(SharedPrefKey.photo, image);
         }
       }
-      await addUserData(userModel).then((value) async => await setUserInfo(userModel));
+      await addUserData(userModel)
+          .then((value) async => await setUserInfo(userModel));
       loading.value = false;
-      
+
       clearTextFields();
-      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Get.off(() => LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))) : null;
+      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+          ? Get.off(() => LocationService(
+              child: BottomBarView(
+                  isUser:
+                      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                          ? true
+                          : false)))
+          : null;
     } else {
       loading.value = false;
-      Get.snackbar('Error', 'Account not created', snackPosition: SnackPosition.TOP);
+      Get.snackbar('Error', 'Account not created',
+          snackPosition: SnackPosition.TOP);
     }
   }
-
 
   ///♦Heart
   /// ♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️
@@ -173,7 +181,8 @@ class UserController extends GetxController {
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET FAVOURITE DEALS
 
   Future<List<DealModel>> getFavouriteDeals() async {
-    var res = await userServices.getFavouriteDeals(authServices.auth.currentUser!.uid);
+    var res = await userServices
+        .getFavouriteDeals(authServices.auth.currentUser!.uid);
     return res;
   }
 
@@ -191,17 +200,29 @@ class UserController extends GetxController {
     userServices.unLikeDeal(dealId);
   }
 
-  Future<void> setUserInfo(UserModel userModel)async{
+  Future<void> setUserInfo(UserModel userModel) async {
     await setValue(SharedPrefKey.uid, userModel.userId);
     await setValue(SharedPrefKey.role, userModel.role);
     await setValue(SharedPrefKey.userName, userModel.userName);
     await setValue(SharedPrefKey.email, userModel.email);
-    await setValue(SharedPrefKey.photo, userModel.image);
-    await setValue(SharedPrefKey.latitude, userModel.latLong!.latitude);
-    await setValue(SharedPrefKey.longitude, userModel.latLong!.longitude);
-    await setValue(UserKey.BALANCE, userModel.balance);
-    await setValue(UserKey.ISPROMOTIONSTART, userModel.isPromotionStart);
-    await setValue(UserKey.ISVERIFIED, userModel.isVerified);
-    await setValue(UserKey.STRIPECUSTOMERID, userModel.stripeCustomerId);
+
+    // Handle the image null case
+    await setValue(SharedPrefKey.photo, userModel.image ?? "");
+
+    // Handle potential null values for latLong
+    if (userModel.latLong != null) {
+      await setValue(SharedPrefKey.latitude, userModel.latLong!.latitude);
+      await setValue(SharedPrefKey.longitude, userModel.latLong!.longitude);
+    } else {
+      // Provide default values if latLong is null
+      await setValue(SharedPrefKey.latitude, 0);
+      await setValue(SharedPrefKey.longitude, 0);
+    }
+
+    await setValue(UserKey.BALANCE, userModel.balance ?? 0);
+    await setValue(
+        UserKey.ISPROMOTIONSTART, userModel.isPromotionStart ?? false);
+    await setValue(UserKey.ISVERIFIED, userModel.isVerified ?? false);
+    await setValue(UserKey.STRIPECUSTOMERID, userModel.stripeCustomerId ?? "");
   }
 }

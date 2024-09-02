@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 
 class DealModel {

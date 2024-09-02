@@ -6,22 +6,14 @@ import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/firebase_options.dart';
-import 'package:swipe_app/modals/user_modal.dart';
-import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/bindings/bindings.dart';
-import 'package:swipe_app/views/Business/subscription_plan.dart';
-import 'package:swipe_app/views/Business/verification_pending_view.dart';
-import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
-import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initialize();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // UserServices userServices = UserServices();
   // String? userId = await userServices.getCurrentUserIdFromPreferences();
@@ -29,7 +21,8 @@ void main() async {
   // Widget home = userId != null
   //   ? (isUser == true ? const BottomBarView(isUser: true) : const BottomBarView(isUser: false))
   //   : const SplashScreen();
-  Stripe.publishableKey = 'pk_test_51PQ2iD00So438QdeQFWS7Bz2EyESwD51vEyhC0QFY2RqwA7rqp1xktxV8FHGbzm1XppVO4bWy9vStrGOS3BV76Q900auavqmqT';
+  Stripe.publishableKey =
+      'pk_test_51PQ2iD00So438QdeQFWS7Bz2EyESwD51vEyhC0QFY2RqwA7rqp1xktxV8FHGbzm1XppVO4bWy9vStrGOS3BV76Q900auavqmqT';
   Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
@@ -42,31 +35,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Sizer(
-      builder: (context, orientation, deviceType) {
-        return GestureDetector(
-          onTap: (){
-            try {
-              FocusManager.instance.primaryFocus?.unfocus();
-            } catch (e, stacktrace) {
-              if (kDebugMode) {
-                print('Error in onTap: $e');
-                print('Stacktrace: $stacktrace');
-              }
+    return Sizer(builder: (context, orientation, deviceType) {
+      return GestureDetector(
+        onTap: () {
+          try {
+            FocusManager.instance.primaryFocus?.unfocus();
+          } catch (e, stacktrace) {
+            if (kDebugMode) {
+              print('Error in onTap: $e');
+              print('Stacktrace: $stacktrace');
             }
-          },
-          child: GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Swipe',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
-            ),
-            home: const SplashScreen(),
-            initialBinding: MyBinding(),
+          }
+        },
+        child: GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Swipe',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
           ),
-        );
-      }
-    );
+          home: const SplashScreen(),
+          initialBinding: MyBinding(),
+        ),
+      );
+    });
   }
 }

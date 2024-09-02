@@ -6,7 +6,6 @@ import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart'
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/mixins/validate_textfield.dart';
-import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';

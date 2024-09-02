@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
-import 'package:swipe_app/modals/notification_model.dart';
+import 'package:swipe_app/models/notification_model.dart';
 
 class NotificationServices{
   final db = FirebaseFirestore.instance;

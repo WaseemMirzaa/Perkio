@@ -29,7 +29,7 @@ class RewardModel{
   factory RewardModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return RewardModel(
-      rewardId: snapshot.id ?? '',
+      rewardId: snapshot.id,
       businessId: data[RewardKey.BUSINESSID] ?? '',
       rewardName: data[RewardKey.REWARDNAME] ?? '',
       noOfUsed: data[RewardKey.NOOFUSED] ?? 0,

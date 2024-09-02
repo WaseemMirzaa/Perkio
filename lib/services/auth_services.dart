@@ -1,10 +1,11 @@
+// ignore_for_file: unused_local_variable, unused_catch_clause
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
-import 'package:swipe_app/modals/user_modal.dart';
+import 'package:swipe_app/models/user_modal.dart';
 
 class AuthServices {
   final auth = FirebaseAuth.instance;

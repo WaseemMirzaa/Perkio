@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:swipe_app/modals/deal_modal.dart';
-import 'package:swipe_app/modals/reward_modal.dart';
+import 'package:swipe_app/models/deal_modal.dart';
+import 'package:swipe_app/models/reward_modal.dart';
 import 'package:swipe_app/services/business_services.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart';
 

@@ -1,4 +1,5 @@
-import 'dart:io';
+
+// ignore_for_file: must_be_immutable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,18 +11,15 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
-import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/modals/user_modal.dart';
+import 'package:swipe_app/models/user_modal.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/Business/verification_pending_view.dart';
-import 'package:swipe_app/views/User/location_change_screen.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
-import 'package:swipe_app/views/place_picker/location_utils.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';

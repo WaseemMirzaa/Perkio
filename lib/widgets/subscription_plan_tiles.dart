@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
-import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +14,7 @@ import '../core/utils/constants/app_const.dart';
 import '../core/utils/constants/constants.dart';
 import 'dio_helper.dart';
 
-
 class StripePayment {
-
   static final homeController = Get.put(HomeController(HomeServices()));
   static final userController = Get.put(UserController(UserServices()));
 
@@ -60,7 +60,8 @@ class StripePayment {
     required String customerId,
   }) async {
     try {
-      final data = await createPaymentSheet(amount: amount, customerId: customerId);
+      final data =
+          await createPaymentSheet(amount: amount, customerId: customerId);
       var customer = data?['customer'] ?? '';
       //String? paymentIntent = data?['paymentIntent'];
       var clientSecret = data?['clientSecret'] ?? '';
@@ -85,25 +86,29 @@ class StripePayment {
         await Stripe.instance.presentPaymentSheet();
 
         /// add user firebase logic
-        final userInfo = await userController.getUser(getStringAsync(SharedPrefKey.uid));
+        final userInfo =
+            await userController.getUser(getStringAsync(SharedPrefKey.uid));
         if (userInfo != null) {
           print("The past $amount");
           int currentBalance = userInfo.balance ?? 0;
-          double newAmount = amount/100;
+          double newAmount = amount / 100;
           print("After division $newAmount");
           int updateAmount = currentBalance + newAmount.toInt();
           print("Amount is: $updateAmount");
-          await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS, {
+          await homeController.updateCollection(
+              getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS, {
             UserKey.BALANCE: updateAmount,
           }).then((value) async {
-            await setValue(UserKey.BALANCE, updateAmount).then((value) => Get.back());
+            await setValue(UserKey.BALANCE, updateAmount)
+                .then((value) => Get.back());
             toast('You have added amount in your wallet');
           });
 
           /// add user firebase logic
         }
-      } } catch (e) {
+      }
+    } catch (e) {
       toast('Something went wrong. Try again later');
     }
-}
+  }
 }

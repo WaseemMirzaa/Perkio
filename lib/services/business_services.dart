@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
-import 'package:swipe_app/modals/deal_modal.dart';
-import 'package:swipe_app/modals/reward_modal.dart';
+import 'package:swipe_app/models/deal_modal.dart';
+import 'package:swipe_app/models/reward_modal.dart';
 
 class BusinessServices{
   final auth = FirebaseAuth.instance;

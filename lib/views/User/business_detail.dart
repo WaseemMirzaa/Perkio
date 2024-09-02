@@ -5,7 +5,6 @@ import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/routes/app_routes.dart';
 import 'package:swipe_app/views/Business/add_deals.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/business_detail_tile.dart';

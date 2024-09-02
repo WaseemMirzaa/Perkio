@@ -12,7 +12,7 @@ import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/modals/user_modal.dart';
+import 'package:swipe_app/models/user_modal.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';

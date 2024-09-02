@@ -9,7 +9,7 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/modals/deal_modal.dart';
+import 'package:swipe_app/models/deal_modal.dart';
 import 'package:swipe_app/services/business_services.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/views/Business/edit_my_deal.dart';

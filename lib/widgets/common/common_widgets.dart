@@ -5,17 +5,13 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/business_controller.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
-import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
-import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/networking/stripe.dart';
 import 'package:swipe_app/services/business_services.dart';
 import 'package:swipe_app/services/home_services.dart';
-import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
-import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 import '../../core/utils/constants/constants.dart';
 Future showBalanceDialog({

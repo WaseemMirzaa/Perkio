@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
-import 'package:swipe_app/modals/notification_model.dart';
+import 'package:swipe_app/models/notification_model.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 

@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
-import 'package:swipe_app/modals/deal_modal.dart';
-import 'package:swipe_app/modals/reward_modal.dart';
-import 'package:swipe_app/modals/user_modal.dart';
+import 'package:swipe_app/models/deal_modal.dart';
+import 'package:swipe_app/models/reward_modal.dart';
+import 'package:swipe_app/models/user_modal.dart';
 import 'package:swipe_app/services/auth_services.dart';
 
 class UserServices {

@@ -14,7 +14,7 @@ import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/models/user_modal.dart';
+import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
@@ -30,11 +30,11 @@ class ProfileSettingsBusiness extends StatefulWidget {
   const ProfileSettingsBusiness({super.key});
 
   @override
-  State<ProfileSettingsBusiness> createState() => _ProfileSettingsBusinessState();
+  State<ProfileSettingsBusiness> createState() =>
+      _ProfileSettingsBusinessState();
 }
 
 class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
-
   var controller = Get.find<UserController>();
   late StreamController<UserModel> _userProfileStreamController;
   late UserModel? businessProfile;
@@ -63,8 +63,10 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
   }
 
   Future<void> getUser() async {
-    businessProfile = await controller.getUser(getStringAsync(SharedPrefKey.uid));
-    final address = await GeoLocationHelper.getCityFromGeoPoint(businessProfile!.latLong!);
+    businessProfile =
+        await controller.getUser(getStringAsync(SharedPrefKey.uid));
+    final address =
+        await GeoLocationHelper.getCityFromGeoPoint(businessProfile!.latLong!);
     _userProfileStreamController.add(businessProfile!);
     userNameController.text = businessProfile?.userName ?? 'Not Set';
     emailController.text = businessProfile?.email ?? 'Not Set';
@@ -77,28 +79,44 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      body: StreamBuilder<UserModel>(
-        stream: _userProfileStreamController.stream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: circularProgressBar());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: Text('No data available'));
-          }
-          final businessProfile = snapshot.data!;
-          return Column(
-              children: [
+        backgroundColor: AppColors.whiteColor,
+        body: StreamBuilder<UserModel>(
+            stream: _userProfileStreamController.stream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: circularProgressBar());
+              }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              if (!snapshot.hasData) {
+                return const Center(child: Text('No data available'));
+              }
+              final businessProfile = snapshot.data!;
+              return Column(children: [
                 Stack(
                   children: [
                     Obx(() {
                       return (homeController.pickedImage != null)
-                          ? Image.file(homeController.pickedImage!,height: 30.h,width: 100.w,fit: BoxFit.cover,)
-                          : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull ? Image.network(getStringAsync(SharedPrefKey.photo),height: 30.h,width: 100.w,fit: BoxFit.cover,) :  Image.asset(AppAssets.imageHeader,fit: BoxFit.fill,height: 30.h,width: 100.w,);
+                          ? Image.file(
+                              homeController.pickedImage!,
+                              height: 30.h,
+                              width: 100.w,
+                              fit: BoxFit.cover,
+                            )
+                          : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull
+                              ? Image.network(
+                                  getStringAsync(SharedPrefKey.photo),
+                                  height: 30.h,
+                                  width: 100.w,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  AppAssets.imageHeader,
+                                  fit: BoxFit.fill,
+                                  height: 30.h,
+                                  width: 100.w,
+                                );
                     }),
                     BackButtonWidget(),
                     Positioned(
@@ -106,176 +124,292 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                       top: 6.h,
                       child: GestureDetector(
                         onTap: () {
-                          showAdaptiveDialog(context: context, builder: (context)=> AlertDialog(
-                            title: Text('Pick Image',style: poppinsBold(fontSize: 15),),
-                            content: const Text('Upload profile from gallery or catch with Camera'),
-                            actions: [
-                              IconButton(onPressed: ()async{
-                                Get.back();
-                                await homeController.pickImageFromGallery().then((value)async{
-                                  String? path = await homeController.uploadImageToFirebaseOnID(homeController.pickedImage?.path ?? '', getStringAsync(SharedPrefKey.uid));
-                                  if(!path.isEmptyOrNull){
-                                    homeController.updateCollection(getStringAsync(SharedPrefKey.uid), 'users',
-                                        {
-                                          UserKey.IMAGE: path
-                                        });
-                                  }
-                                });
-                              }, icon: const Icon(Icons.drive_file_move_outline)),
-                              IconButton(onPressed: ()async{
-                                Get.back();
-                                await homeController.pickImageFromCamera().then((value)async{
-                                 String? path = await homeController.uploadImageToFirebaseOnID(homeController.pickedImage?.path ?? '', getStringAsync(SharedPrefKey.uid));
-                                 print("The path is: === $path");
-                                 if(!path.isEmptyOrNull){
-                                   print("DB called");
-                                   homeController.updateCollection(getStringAsync(SharedPrefKey.uid), 'users',
-                                       {
-                                         UserKey.IMAGE: path
-                                       });
-                                 }
-                                  });
-                              }, icon: const Icon(Icons.camera_alt_outlined)),
-                            ],
-                          ));
+                          showAdaptiveDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text(
+                                      'Pick Image',
+                                      style: poppinsBold(fontSize: 15),
+                                    ),
+                                    content: const Text(
+                                        'Upload profile from gallery or catch with Camera'),
+                                    actions: [
+                                      IconButton(
+                                          onPressed: () async {
+                                            Get.back();
+                                            await homeController
+                                                .pickImageFromGallery()
+                                                .then((value) async {
+                                              String? path = await homeController
+                                                  .uploadImageToFirebaseOnID(
+                                                      homeController.pickedImage
+                                                              ?.path ??
+                                                          '',
+                                                      getStringAsync(
+                                                          SharedPrefKey.uid));
+                                              if (!path.isEmptyOrNull) {
+                                                homeController.updateCollection(
+                                                    getStringAsync(
+                                                        SharedPrefKey.uid),
+                                                    'users',
+                                                    {UserKey.IMAGE: path});
+                                              }
+                                            });
+                                          },
+                                          icon: const Icon(
+                                              Icons.drive_file_move_outline)),
+                                      IconButton(
+                                          onPressed: () async {
+                                            Get.back();
+                                            await homeController
+                                                .pickImageFromCamera()
+                                                .then((value) async {
+                                              String? path = await homeController
+                                                  .uploadImageToFirebaseOnID(
+                                                      homeController.pickedImage
+                                                              ?.path ??
+                                                          '',
+                                                      getStringAsync(
+                                                          SharedPrefKey.uid));
+                                              print("The path is: === $path");
+                                              if (!path.isEmptyOrNull) {
+                                                print("DB called");
+                                                homeController.updateCollection(
+                                                    getStringAsync(
+                                                        SharedPrefKey.uid),
+                                                    'users',
+                                                    {UserKey.IMAGE: path});
+                                              }
+                                            });
+                                          },
+                                          icon: const Icon(
+                                              Icons.camera_alt_outlined)),
+                                    ],
+                                  ));
                         },
                         child: Container(
                             padding: const EdgeInsets.all(7),
                             decoration: const BoxDecoration(
                                 color: AppColors.whiteColor,
-                                shape: BoxShape.circle
-                            ), child: Icon(Icons.camera_enhance_rounded, size: 20.sp,)),
+                                shape: BoxShape.circle),
+                            child: Icon(
+                              Icons.camera_enhance_rounded,
+                              size: 20.sp,
+                            )),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 2.h,),
+                SizedBox(
+                  height: 2.h,
+                ),
                 Obx(() {
-                  return !enabled.value ?  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 30),
-                      child: GestureDetector(
-                          onTap: () async {
-                            if (enabled.value) {
-                              bool success = await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
-                                UserKey.USERNAME: userNameController.text,
-                                UserKey.EMAIL: emailController.text,
-                                UserKey.PHONENO: phoneNoController.text,
-                                UserKey.LATLONG: addressController.text,
-                                UserKey.WEBSITE: websiteController.text,
-                                UserKey.BUSINESSID: businessIdController.text
-                              });
-                              if (success) {
-                                X.showSnackBar(
-                                    'Success', 'User data updated successfully!');
-                                enabled.value = false;
-                              } else {
-                                X.showSnackBar('Error', 'Failed to update user data.',);
-                              }
-                            } else {
-                              enabled.value = true;
-                            }
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Icon(Icons.edit,size: 16.sp,color: AppColors.hintText,),
-                              SizedBox(width: 1.w,),
-                              Text(
-                                TempLanguage.txtEdit ,
-                                style: poppinsRegular(fontSize: 12.sp, color: AppColors
-                                    .hintText),),
-
-
-                            ],
-                          )),
-                    ),
-                  ): SizedBox(height: 2.h,);
+                  return !enabled.value
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: GestureDetector(
+                                onTap: () async {
+                                  if (enabled.value) {
+                                    bool success = await homeController
+                                        .updateCollection(
+                                            getStringAsync(SharedPrefKey.uid),
+                                            CollectionsKey.USERS, {
+                                      UserKey.USERNAME: userNameController.text,
+                                      UserKey.EMAIL: emailController.text,
+                                      UserKey.PHONENO: phoneNoController.text,
+                                      UserKey.LATLONG: addressController.text,
+                                      UserKey.WEBSITE: websiteController.text,
+                                      UserKey.BUSINESSID:
+                                          businessIdController.text
+                                    });
+                                    if (success) {
+                                      X.showSnackBar('Success',
+                                          'User data updated successfully!');
+                                      enabled.value = false;
+                                    } else {
+                                      X.showSnackBar(
+                                        'Error',
+                                        'Failed to update user data.',
+                                      );
+                                    }
+                                  } else {
+                                    enabled.value = true;
+                                  }
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                      size: 16.sp,
+                                      color: AppColors.hintText,
+                                    ),
+                                    SizedBox(
+                                      width: 1.w,
+                                    ),
+                                    Text(
+                                      TempLanguage.txtEdit,
+                                      style: poppinsRegular(
+                                          fontSize: 12.sp,
+                                          color: AppColors.hintText),
+                                    ),
+                                  ],
+                                )),
+                          ),
+                        )
+                      : SizedBox(
+                          height: 2.h,
+                        );
                 }),
                 Expanded(
-                  child: Obx(()=> ListView(
-                      padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+                  child: Obx(
+                    () => ListView(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
                       children: [
-                        ProfileListItems(path: AppAssets.profile1,
+                        ProfileListItems(
+                          path: AppAssets.profile1,
                           textController: userNameController,
-                          enabled: enabled.value,),
-                        const SizedBox(height: 10,),
-                        ProfileListItems(path: AppAssets.profile2,
-                          textController: phoneNoController,
-                          enabled: enabled.value,),
-                        const SizedBox(height: 10,),
-                        ProfileListItems(path: AppAssets.profile3,
-                          textController: emailController,),
-                        const SizedBox(height: 10,),
-
-                        ProfileListItems(path: AppAssets.profile4,
-                          textController: addressController,
-                        onTap: enabled.value ? ()async{
-                          AddressModel address = await Navigator.push(context, MaterialPageRoute(builder: (context) => LocationService(child: PlacesPick(currentLocation: LatLng(businessProfile.latLong!.latitude, businessProfile.latLong!.longitude)))));
-                          if (address != null) {
-                            addressController.text = await address!.subAdministrativeArea.toString();
-                            await setValue(SharedPrefKey.latitude, address!.latitude);
-                            await setValue(SharedPrefKey.longitude, address!.longitude);
-                          }
-                        } : null,
+                          enabled: enabled.value,
                         ),
-                        const SizedBox(height: 10,),
-                        ProfileListItems(path: AppAssets.profile5,
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ProfileListItems(
+                          path: AppAssets.profile2,
+                          textController: phoneNoController,
+                          enabled: enabled.value,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ProfileListItems(
+                          path: AppAssets.profile3,
+                          textController: emailController,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ProfileListItems(
+                          path: AppAssets.profile4,
+                          textController: addressController,
+                          onTap: enabled.value
+                              ? () async {
+                                  AddressModel address = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LocationService(
+                                              child: PlacesPick(
+                                                  currentLocation: LatLng(
+                                                      businessProfile
+                                                          .latLong!.latitude,
+                                                      businessProfile.latLong!
+                                                          .longitude)))));
+                                  if (address != null) {
+                                    addressController.text = await address!
+                                        .subAdministrativeArea
+                                        .toString();
+                                    await setValue(SharedPrefKey.latitude,
+                                        address!.latitude);
+                                    await setValue(SharedPrefKey.longitude,
+                                        address!.longitude);
+                                  }
+                                }
+                              : null,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ProfileListItems(
+                          path: AppAssets.profile5,
                           textController: websiteController,
-                          enabled: enabled.value,),
-                        const SizedBox(height: 10,),
-                        ProfileListItems(path: AppAssets.profile6,
+                          enabled: enabled.value,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ProfileListItems(
+                          path: AppAssets.profile6,
                           textController: businessIdController,
-                          enabled: enabled.value,),
-                        const SizedBox(height: 20,),
-                        !enabled.value ? SizedBox() : ButtonWidget(onSwipe: ()async{
-                          if (enabled.value) {
-                            if(userNameController.text.isEmptyOrNull){
-                              X.showSnackBar('Fields Required', 'Name is required');
-                            }else if(emailController.text.isEmptyOrNull){
-                              X.showSnackBar('Fields Required', 'Email is required');
-                            }else if(phoneNoController.text.isEmptyOrNull){
-                              X.showSnackBar('Fields Required', 'Phone is required');
-                            }else if(addressController.text.isEmptyOrNull){
-                              X.showSnackBar('Fields Required', 'Address is required');
-                            }else if(websiteController.text.isEmptyOrNull){
-                              X.showSnackBar('Fields Required', 'Website is required');
-                            }else if(businessIdController.text.isEmptyOrNull){
-                              X.showSnackBar('Fields Required', 'Business ID is required');
-                            }else{
-                              bool success = await homeController.updateCollection(getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,{
-                                UserKey.USERNAME: userNameController.text,
-                                UserKey.EMAIL: emailController.text,
-                                UserKey.PHONENO: phoneNoController.text,
-                                UserKey.LATLONG: GeoPoint(getDoubleAsync(SharedPrefKey.latitude), getDoubleAsync(SharedPrefKey.longitude)),
-                                UserKey.WEBSITE: websiteController.text,
-                                UserKey.BUSINESSID: businessIdController.text
-                              });
-                              if (success) {
-                                X.showSnackBar(
-                                    'Success', 'User data updated successfully!');
-                                enabled.value = false;
-                              } else {
-                                X.showSnackBar('Error', 'Failed to update user data.',);
-                              }
-                            }
-
-                          } else {
-                            enabled.value = true;
-                          }
-                        }, text: !enabled.value ? TempLanguage.txtEdit : 'Save',),
+                          enabled: enabled.value,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        !enabled.value
+                            ? SizedBox()
+                            : ButtonWidget(
+                                onSwipe: () async {
+                                  if (enabled.value) {
+                                    if (userNameController.text.isEmptyOrNull) {
+                                      X.showSnackBar('Fields Required',
+                                          'Name is required');
+                                    } else if (emailController
+                                        .text.isEmptyOrNull) {
+                                      X.showSnackBar('Fields Required',
+                                          'Email is required');
+                                    } else if (phoneNoController
+                                        .text.isEmptyOrNull) {
+                                      X.showSnackBar('Fields Required',
+                                          'Phone is required');
+                                    } else if (addressController
+                                        .text.isEmptyOrNull) {
+                                      X.showSnackBar('Fields Required',
+                                          'Address is required');
+                                    } else if (websiteController
+                                        .text.isEmptyOrNull) {
+                                      X.showSnackBar('Fields Required',
+                                          'Website is required');
+                                    } else if (businessIdController
+                                        .text.isEmptyOrNull) {
+                                      X.showSnackBar('Fields Required',
+                                          'Business ID is required');
+                                    } else {
+                                      bool success = await homeController
+                                          .updateCollection(
+                                              getStringAsync(SharedPrefKey.uid),
+                                              CollectionsKey.USERS, {
+                                        UserKey.USERNAME:
+                                            userNameController.text,
+                                        UserKey.EMAIL: emailController.text,
+                                        UserKey.PHONENO: phoneNoController.text,
+                                        UserKey.LATLONG: GeoPoint(
+                                            getDoubleAsync(
+                                                SharedPrefKey.latitude),
+                                            getDoubleAsync(
+                                                SharedPrefKey.longitude)),
+                                        UserKey.WEBSITE: websiteController.text,
+                                        UserKey.BUSINESSID:
+                                            businessIdController.text
+                                      });
+                                      if (success) {
+                                        X.showSnackBar('Success',
+                                            'User data updated successfully!');
+                                        enabled.value = false;
+                                      } else {
+                                        X.showSnackBar(
+                                          'Error',
+                                          'Failed to update user data.',
+                                        );
+                                      }
+                                    }
+                                  } else {
+                                    enabled.value = true;
+                                  }
+                                },
+                                text: !enabled.value
+                                    ? TempLanguage.txtEdit
+                                    : 'Save',
+                              ),
                       ],
-
                     ),
                   ),
                 ),
-          ]
-          );
-        }
-    )
-    );
+              ]);
+            }));
   }
 }
 /**

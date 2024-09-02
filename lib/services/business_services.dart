@@ -4,10 +4,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
-import 'package:swipe_app/models/deal_modal.dart';
-import 'package:swipe_app/models/reward_modal.dart';
+import 'package:swipe_app/models/deal_model.dart';
+import 'package:swipe_app/models/reward_model.dart';
 
-class BusinessServices{
+class BusinessServices {
   final auth = FirebaseAuth.instance;
   final CollectionReference _dealCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.DEALS);
@@ -20,15 +20,16 @@ class BusinessServices{
 
   //............ Add Deal
   Future<bool> addDeal(DealModel dealModel) async {
-    List<String> nameSearchParams = setSearchParam(dealModel.dealName!.toLowerCase());
+    List<String> nameSearchParams =
+        setSearchParam(dealModel.dealName!.toLowerCase());
     dealModel.dealParams = nameSearchParams;
     print("MODEL DATA IS: ${dealModel.dealParams}");
     try {
-    final docRef = _dealCollection.doc();
-    final dealId = docRef.id;
-    dealModel.dealId = dealId;
-    await docRef.set(dealModel.toMap());
-    return true;
+      final docRef = _dealCollection.doc();
+      final dealId = docRef.id;
+      dealModel.dealId = dealId;
+      await docRef.set(dealModel.toMap());
+      return true;
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Firebase Error', e.toString());
       if (e.message != null) print(e.message!);
@@ -47,7 +48,6 @@ class BusinessServices{
     return caseSearchList;
   }
 
-
   /// Deal search by name
   Future<List<DealModel>> searchDealsByName(String dealName) async {
     try {
@@ -55,9 +55,8 @@ class BusinessServices{
       final _dealCollection = FirebaseFirestore.instance.collection('deals');
 
       // Query the collection where dealName matches the provided parameter
-      final querySnapshot = await _dealCollection
-          .where('dealName', isEqualTo: dealName)
-          .get();
+      final querySnapshot =
+          await _dealCollection.where('dealName', isEqualTo: dealName).get();
 
       // Convert the query results to a list of DealModel
       List<DealModel> deals = querySnapshot.docs.map((doc) {
@@ -86,7 +85,9 @@ class BusinessServices{
   /// Edit my rewards
   Future<bool> editMyRewards(RewardModel rewardModel) async {
     try {
-      await _rewardCollection.doc(rewardModel.rewardId).update(rewardModel.toMap());
+      await _rewardCollection
+          .doc(rewardModel.rewardId)
+          .update(rewardModel.toMap());
       return true;
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Firebase Error', e.toString());
@@ -95,13 +96,13 @@ class BusinessServices{
     }
   }
 
-
   /// Get all deals
   Stream<List<DealModel>> getDealsStream() {
     return _dealCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return DealModel.fromMap(doc.data() as Map<String, dynamic>)
-          ..dealId = doc.id; // Optional: If you need the document ID in the DealModel
+          ..dealId =
+              doc.id; // Optional: If you need the document ID in the DealModel
       }).toList();
     });
   }
@@ -117,7 +118,8 @@ class BusinessServices{
 
       query = query
           .where(DealKey.DEALNAME, isGreaterThanOrEqualTo: lowercaseQuery)
-          .where(DealKey.DEALNAME, isLessThanOrEqualTo: '$lowercaseQuery\uf8ff');
+          .where(DealKey.DEALNAME,
+              isLessThanOrEqualTo: '$lowercaseQuery\uf8ff');
     }
 
     return query.snapshots().map((snapshot) {
@@ -128,15 +130,21 @@ class BusinessServices{
     });
   }
 
-
   /// Get my promoted deals
-  Stream<List<DealModel>> getMyPromotedDeal(String uid, {String? searchQuery}){
-    Query query = FirebaseFirestore.instance.collection(CollectionsKey.DEALS).where(DealKey.BUSINESSID, isEqualTo: uid).where(DealKey.ISPROMOTIONSTART, isEqualTo: true);
-    if(searchQuery != null && searchQuery.isNotEmpty){
-      query = query.where(DealKey.DEALNAME, isGreaterThanOrEqualTo: searchQuery).where(DealKey.DEALNAME, isLessThan: '${searchQuery}z');
+  Stream<List<DealModel>> getMyPromotedDeal(String uid, {String? searchQuery}) {
+    Query query = FirebaseFirestore.instance
+        .collection(CollectionsKey.DEALS)
+        .where(DealKey.BUSINESSID, isEqualTo: uid)
+        .where(DealKey.ISPROMOTIONSTART, isEqualTo: true);
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      query = query
+          .where(DealKey.DEALNAME, isGreaterThanOrEqualTo: searchQuery)
+          .where(DealKey.DEALNAME, isLessThan: '${searchQuery}z');
     }
-    return query.snapshots().map((snapshot){
-      return snapshot.docs.map((doc)=> DealModel.fromDocumentSnapshot(doc)).toList();
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => DealModel.fromDocumentSnapshot(doc))
+          .toList();
     });
   }
 
@@ -209,42 +217,40 @@ class BusinessServices{
       return '';
     }
   }
+
   ///
-  Stream<int?> getPPS(){
-    try{
+  Stream<int?> getPPS() {
+    try {
       final documentRef = db.collection(CollectionsKey.SETTINGS).doc('pps');
-      return documentRef.snapshots().map((snapshot){
-        if(snapshot.exists){
+      return documentRef.snapshots().map((snapshot) {
+        if (snapshot.exists) {
           var ppsValue = snapshot.data()?['pps'];
           return ppsValue as int?;
-        }else{
+        } else {
           return null;
         }
       });
-    }catch (e){
+    } catch (e) {
       return Stream.value(null);
     }
-
   }
 
   /// Get amount per click
-  Stream<int?> getAmountPerClick(){
-    try{
+  Stream<int?> getAmountPerClick() {
+    try {
       final documentRef = db.collection(CollectionsKey.SETTINGS).doc('apc');
-      return documentRef.snapshots().map((snapshot){
-        if(snapshot.exists){
+      return documentRef.snapshots().map((snapshot) {
+        if (snapshot.exists) {
           var ppsValue = snapshot.data()?['apc'];
           return ppsValue as int?;
-        }else{
+        } else {
           return null;
         }
       });
-    }catch (e){
+    } catch (e) {
       return Stream.value(null);
     }
-
   }
-
 
   //............ Add Reward
   Future<bool> addReward(RewardModel rewardModel) async {

@@ -5,16 +5,16 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
-import 'package:swipe_app/models/deal_modal.dart';
-import 'package:swipe_app/models/reward_modal.dart';
-import 'package:swipe_app/models/user_modal.dart';
+import 'package:swipe_app/models/deal_model.dart';
+import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/networking/stripe.dart';
 import 'package:swipe_app/services/auth_services.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
-import 'package:swipe_app/views/splash_screen.dart';
+import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 
 class UserController extends GetxController {
   UserServices userServices;

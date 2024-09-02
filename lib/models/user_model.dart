@@ -18,23 +18,22 @@ class UserModel {
   bool? isPromotionStart;
   String? isVerified;
 
-  UserModel({
-    this.userId,
-    this.userName,
-    this.email,
-    this.phoneNo,
-    this.image,
-    this.latLong,
-    this.website,
-    this.logo,
-    this.role,
-    this.businessId,
-    this.password,
-    this.balance,
-    this.isPromotionStart,
-    this.isVerified,
-    this.stripeCustomerId
-  });
+  UserModel(
+      {this.userId,
+      this.userName,
+      this.email,
+      this.phoneNo,
+      this.image,
+      this.latLong,
+      this.website,
+      this.logo,
+      this.role,
+      this.businessId,
+      this.password,
+      this.balance,
+      this.isPromotionStart,
+      this.isVerified,
+      this.stripeCustomerId});
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
@@ -72,9 +71,6 @@ class UserModel {
       isPromotionStart: map[UserKey.ISPROMOTIONSTART] ?? false,
       isVerified: map[UserKey.ISVERIFIED] ?? StatusKey.pending,
       stripeCustomerId: map[UserKey.STRIPECUSTOMERID] ?? '',
-
-
-
     );
   }
 

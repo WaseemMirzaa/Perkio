@@ -13,7 +13,7 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/services/user_services.dart';
-import 'package:swipe_app/views/Business/verification_pending_view.dart';
+import 'package:swipe_app/views/business/verification_pending_view.dart';
 import 'package:swipe_app/views/auth/login_view.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';

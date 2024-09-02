@@ -8,11 +8,11 @@ import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
-import 'package:swipe_app/views/Business/profile_settings_business.dart';
-import 'package:swipe_app/views/User/user_profile_view.dart';
-import 'package:swipe_app/views/help_view.dart';
-import 'package:swipe_app/views/privacy_policy.dart';
-import 'package:swipe_app/views/terms_conditions.dart';
+import 'package:swipe_app/views/business/profile_settings_business.dart';
+import 'package:swipe_app/views/user/user_profile_view.dart';
+import 'package:swipe_app/views/help/help_view.dart';
+import 'package:swipe_app/views/privacy_policy/privacy_policy.dart';
+import 'package:swipe_app/views/terms_and_conditions/terms_conditions.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';
 import 'package:swipe_app/widgets/settings_list_items.dart';
 
@@ -114,8 +114,10 @@ class _SettingsViewState extends State<SettingsView> {
       ),
     );
   }
-  void shareDummyLink() {
+  void shareDummyLink() {    
     const String shareLink = 'https://swipe.com/swip-settings';
     Share.share('Check out this link: $shareLink');
   }
 }
+
+

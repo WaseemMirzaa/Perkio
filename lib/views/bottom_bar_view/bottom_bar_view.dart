@@ -4,14 +4,14 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/views/Business/home_business.dart';
-import 'package:swipe_app/views/Business/home_business_extended.dart';
-import 'package:swipe_app/views/Business/rewards_business.dart';
-import 'package:swipe_app/views/User/favourites.dart';
-import 'package:swipe_app/views/User/home_user.dart';
-import 'package:swipe_app/views/User/my_deals.dart';
-import 'package:swipe_app/views/User/settings_view.dart';
-import 'package:swipe_app/views/User/rewards_view.dart';
+import 'package:swipe_app/views/business/home_business.dart';
+import 'package:swipe_app/views/business/home_business_extended.dart';
+import 'package:swipe_app/views/business/rewards_business.dart';
+import 'package:swipe_app/views/user/favourites.dart';
+import 'package:swipe_app/views/user/home_user.dart';
+import 'package:swipe_app/views/user/my_deals.dart';
+import 'package:swipe_app/views/user/settings_view.dart';
+import 'package:swipe_app/views/user/rewards_view.dart';
 import 'package:swipe_app/widgets/custom_bottom_bar/custom_bottom_bar_items.dart';
 
 class BottomBarView extends StatefulWidget {

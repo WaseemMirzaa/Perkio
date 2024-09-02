@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/views/User/reward_detail.dart';
+import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/widgets/rewards_list_items.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';

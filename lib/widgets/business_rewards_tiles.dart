@@ -5,9 +5,9 @@ import 'package:swipe_app/controllers/business_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/models/reward_modal.dart';
+import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/business_services.dart';
-import 'package:swipe_app/views/Business/edit_rewards.dart';
+import 'package:swipe_app/views/business/edit_rewards.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 
 class BusinessRewardsTiles extends StatelessWidget {
@@ -19,7 +19,7 @@ class BusinessRewardsTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10,left: 12,right: 12),
+      padding: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
       child: Container(
         height: 18.h,
         decoration: BoxDecoration(
@@ -30,10 +30,8 @@ class BusinessRewardsTiles extends StatelessWidget {
               BoxShadow(
                   color: Colors.black.withOpacity(0.2),
                   blurRadius: 6,
-                  offset: const Offset(0, 3)
-              )
-            ]
-        ),
+                  offset: const Offset(0, 3))
+            ]),
         child: Stack(
           clipBehavior: Clip.none,
           alignment: Alignment.topRight,
@@ -42,22 +40,27 @@ class BusinessRewardsTiles extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SpacerBoxHorizontal(width: 10),
-
                 Column(
                   children: [
                     SpacerBoxVertical(height: 1.3.h),
                     Container(
                         height: 14.h,
                         width: 14.h,
-                        decoration: BoxDecoration(color: AppColors.whiteColor,
+                        decoration: BoxDecoration(
+                          color: AppColors.whiteColor,
                           borderRadius: BorderRadius.circular(14.sp),
                           boxShadow: [
-                            BoxShadow(color: AppColors.blackColor.withOpacity(0.16),offset: const Offset(0,3),blurRadius: 6.5),
+                            BoxShadow(
+                                color: AppColors.blackColor.withOpacity(0.16),
+                                offset: const Offset(0, 3),
+                                blurRadius: 6.5),
                           ],
-                          image: DecorationImage(image: NetworkImage(rewardModel.rewardLogo!),fit: BoxFit.cover),)),
+                          image: DecorationImage(
+                              image: NetworkImage(rewardModel.rewardLogo!),
+                              fit: BoxFit.cover),
+                        )),
                   ],
                 ),
-
                 const SpacerBoxHorizontal(width: 10),
                 Expanded(
                   child: Column(
@@ -65,17 +68,35 @@ class BusinessRewardsTiles extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SpacerBoxVertical(height: 10),
-                      Text(rewardModel.rewardName!, style: poppinsMedium(fontSize: 13.sp),),
+                      Text(
+                        rewardModel.rewardName!,
+                        style: poppinsMedium(fontSize: 13.sp),
+                      ),
                       const SpacerBoxVertical(height: 5),
-                      Text(rewardModel.companyName!, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                      Text(
+                        rewardModel.companyName!,
+                        style: poppinsRegular(
+                            fontSize: 10.sp, color: AppColors.hintText),
+                      ),
                       const SpacerBoxVertical(height: 5),
                       Row(
                         children: [
-                          Icon(Icons.location_on, color: AppColors.hintText, size: 12.sp,),
+                          Icon(
+                            Icons.location_on,
+                            color: AppColors.hintText,
+                            size: 12.sp,
+                          ),
                           Expanded(
                             child: Row(
                               children: [
-                                Expanded(child: Text(rewardModel.rewardAddress!, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),maxLines: 2,)),
+                                Expanded(
+                                    child: Text(
+                                  rewardModel.rewardAddress!,
+                                  style: poppinsRegular(
+                                      fontSize: 10.sp,
+                                      color: AppColors.hintText),
+                                  maxLines: 2,
+                                )),
                                 const SpacerBoxHorizontal(width: 4),
                               ],
                             ),
@@ -83,39 +104,45 @@ class BusinessRewardsTiles extends StatelessWidget {
                         ],
                       ),
                       const SpacerBoxVertical(height: 10),
-                      Text('${rewardModel.noOfUsed} People Used by now', style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
-                      const SpacerBoxVertical(height: 10),
-                      Container(
-                        height: 6,
-                        width: 120,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.grey[200],
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3)
-                              )
-                            ]
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 6,
-                              width: rewardModel.noOfUsed!.toDouble() * 5,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                gradient: const LinearGradient(
-                                  colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                            ),
-                          ],),
+                      Text(
+                        '${rewardModel.noOfUsed} People Used by now',
+                        style: poppinsRegular(
+                            fontSize: 10.sp, color: AppColors.hintText),
                       ),
+                      const SpacerBoxVertical(height: 10),
+                      // Container(
+                      //   height: 6,
+                      //   width: 120,
+                      //   decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(100),
+                      //       color: Colors.grey[200],
+                      //       boxShadow: [
+                      //         BoxShadow(
+                      //             color: Colors.black.withOpacity(0.2),
+                      //             blurRadius: 6,
+                      //             offset: const Offset(0, 3))
+                      //       ]),
+                      //   child: Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Container(
+                      //         height: 6,
+                      //         width: rewardModel.noOfUsed!.toDouble() * 5,
+                      //         decoration: BoxDecoration(
+                      //           borderRadius: BorderRadius.circular(100),
+                      //           gradient: const LinearGradient(
+                      //             colors: [
+                      //               AppColors.gradientStartColor,
+                      //               AppColors.gradientEndColor
+                      //             ],
+                      //             begin: Alignment.topLeft,
+                      //             end: Alignment.bottomRight,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -127,36 +154,62 @@ class BusinessRewardsTiles extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(onPressed: (){
-                      Get.to(()=> EditMyRewards(rewardModel: rewardModel));
-                    }, icon: ImageIcon(const AssetImage(AppAssets.editImg),size: 15.sp,color: AppColors.blackColor)),
-                    IconButton(onPressed: (){
-                      showAdaptiveDialog(context: context, builder: (context)=> AlertDialog(title: Text('Reward Deletion',style: poppinsMedium(fontSize: 14.sp),),content: const Text('Are you sure you want to delete the reward?'),actions: [
-                        TextButton(onPressed: (){
-                          Get.back();
-                        }, child: const Text('Cancel')),
-                        TextButton(onPressed: ()async{
-                          await businessController.deleteReward(rewardModel.rewardId!, rewardModel.rewardLogo!).then((value) {
-                            Get.back();
-                          }
-                          );
-                        }, child: const Text('Delete')),
-                      ],));
-                    }, icon: ImageIcon(const AssetImage(AppAssets.deleteImg),size: 15.sp,color: AppColors.redColor)),
+                    IconButton(
+                        onPressed: () {
+                          Get.to(() => EditMyRewards(rewardModel: rewardModel));
+                        },
+                        icon: ImageIcon(const AssetImage(AppAssets.editImg),
+                            size: 15.sp, color: AppColors.blackColor)),
+                    IconButton(
+                        onPressed: () {
+                          showAdaptiveDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text(
+                                      'Reward Deletion',
+                                      style: poppinsMedium(fontSize: 14.sp),
+                                    ),
+                                    content: const Text(
+                                        'Are you sure you want to delete the reward?'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: const Text('Cancel')),
+                                      TextButton(
+                                          onPressed: () async {
+                                            await businessController
+                                                .deleteReward(
+                                                    rewardModel.rewardId!,
+                                                    rewardModel.rewardLogo!)
+                                                .then((value) {
+                                              Get.back();
+                                            });
+                                          },
+                                          child: const Text('Delete')),
+                                    ],
+                                  ));
+                        },
+                        icon: ImageIcon(const AssetImage(AppAssets.deleteImg),
+                            size: 15.sp, color: AppColors.redColor)),
                   ],
                 ),
-                Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: EdgeInsets.all(6.sp),
-                      child: Text("USES ${rewardModel.uses}",style: poppinsMedium(fontSize: 12.sp),),
-                    ))
+                // Align(
+                //   alignment: Alignment.bottomRight,
+                //   child: Padding(
+                //     padding: EdgeInsets.all(6.sp),
+                //     child: Text(
+                //       "USES ${rewardModel.uses}",
+                //       style: poppinsMedium(fontSize: 12.sp),
+                //     ),
+                //   ),
+                // ),
               ],
             )
           ],
         ),
-
-                        ),
+      ),
     );
   }
 }

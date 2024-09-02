@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
-import 'package:swipe_app/models/deal_modal.dart';
+import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/views/User/favourites.dart';
+import 'package:swipe_app/views/user/favourites.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
 import 'package:swipe_app/widgets/category_list_items.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
@@ -46,11 +46,15 @@ class _HomeUserState extends State<HomeUser> {
     deals = await controller.getDeals();
     _dealStreamController.add(deals);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: PreferredSize(preferredSize: Size.fromHeight(22.h),child: customAppBar(isSearchField: true),),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(22.h),
+        child: customAppBar(isSearchField: true),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -61,38 +65,39 @@ class _HomeUserState extends State<HomeUser> {
                 //   padding: const EdgeInsets.only(left: 12),
                 //   child: Text(TempLanguage.txtCategory, style: poppinsMedium(fontSize: 18),),
                 // ),
-                const SpacerBoxVertical(height: 20),
-                SizedBox(
-                  height: 140,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: const [
-                      SpacerBoxHorizontal(width: 10,),
-                      CategoryListItems(path: AppAssets.southFood, text: TempLanguage.txtSouthIndian,),
-                      CategoryListItems(path: AppAssets.chineseFood, text: TempLanguage.txtChinese,),
-                      CategoryListItems(path: AppAssets.pizzaImg, text: TempLanguage.txtPizza,),
-                      CategoryListItems(path: AppAssets.coffeeFood, text: TempLanguage.txtTeaBeverages,),
-                      SpacerBoxHorizontal(width: 10,),
+                // const SpacerBoxVertical(height: 20),
+                // SizedBox(
+                //   height: 140,
+                //   child: ListView(
+                //     scrollDirection: Axis.horizontal,
+                //     children: const [
+                //       SpacerBoxHorizontal(width: 10,),
+                //       CategoryListItems(path: AppAssets.southFood, text: TempLanguage.txtSouthIndian,),
+                //       CategoryListItems(path: AppAssets.chineseFood, text: TempLanguage.txtChinese,),
+                //       CategoryListItems(path: AppAssets.pizzaImg, text: TempLanguage.txtPizza,),
+                //       CategoryListItems(path: AppAssets.coffeeFood, text: TempLanguage.txtTeaBeverages,),
+                //       SpacerBoxHorizontal(width: 10,),
 
-                    ],
-                  ),
-                ),
-                const SpacerBoxVertical(height: 20),
+                //     ],
+                //   ),
+                // ),
+                // const SpacerBoxVertical(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(left: 12),
-                  child: Text('Available Deals', style: poppinsMedium(fontSize: 18),),
+                  child: Text(
+                    'Available Deals',
+                    style: poppinsMedium(fontSize: 18),
+                  ),
                 ),
-                    const SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 10),
                 StreamBuilder<List<DealModel>>(
                     stream: _dealStreamController.stream,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: circularProgressBar());
                       }
                       if (snapshot.hasError) {
-                        return Center(
-                            child: Text('Error: ${snapshot.error}'));
+                        return Center(child: Text('Error: ${snapshot.error}'));
                       }
                       if (!snapshot.hasData) {
                         return Center(child: Text('No data available'));
@@ -105,17 +110,24 @@ class _HomeUserState extends State<HomeUser> {
                         padding: EdgeInsets.zero,
                         itemBuilder: (BuildContext context, int index) {
                           final DealModel deal = deals[index];
-                          return  GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> FavouritesScreen()));
+                          return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            FavouritesScreen()));
                               },
-                              child: AvailableListItems(dealId: deal.dealId ?? '', dealName: deal.dealName ?? '', restaurantName: deal.companyName ?? '', dealPrice: deal.image ?? '',));
+                              child: AvailableListItems(
+                                dealId: deal.dealId ?? '',
+                                dealName: deal.dealName ?? '',
+                                restaurantName: deal.companyName ?? '',
+                                dealPrice: deal.image ?? '',
+                              ));
                         },
                       );
-                    }
-                )
-                  ],
-
+                    })
+              ],
             ),
           ],
         ),

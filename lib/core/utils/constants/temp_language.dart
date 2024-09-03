@@ -1,4 +1,4 @@
-class TempLanguage{
+class TempLanguage {
   static const String btnLblSwipeToAdd = 'SWIPE TO ADD';
   static const String btnLblSwipeToAddDeal = 'SWIPE TO ADD NEW DEAL';
   static const String btnLblSwipeToLogin = 'SWIPE TO LOGIN';
@@ -19,7 +19,8 @@ class TempLanguage{
   static const String lblOffers = 'OFFERS';
   static const String lblEmailId = 'Email ID';
   static const String lblPassword = 'Password';
-  static const String txtPointsToRedeemPoints = 'Collect points to\nredeem special rewards';
+  static const String txtPointsToRedeemPoints =
+      'Collect points to\nredeem special rewards';
   static const String txtHowToUse = 'HOW TO USE?';
   static const String txtBusinessName = 'Business Name';
   static const String txtUserName = 'User Name';
@@ -58,6 +59,7 @@ class TempLanguage{
   static const String txtSkhickens = 'Skhickens';
   static const String txtYourFavorite = 'Your Favourite';
   static const String txtCategory = 'Category';
+  static const String txtFeaturedCategoryDeals = 'Featured Deals';
   static const String txtSouthIndian = 'South Indian';
   static const String txtChinese = 'Chinese';
   static const String txtPizza = 'Pizza';
@@ -70,14 +72,17 @@ class TempLanguage{
   static const String txtPrivacy = 'Privacy';
   static const String txtHelp = 'Help';
   static const String txtRewardInfo = 'Reward Info';
-  static const String txtLoremIpsumShort = "Don't bother typing “lorem ipsum” into\nGoogle translate. If you already tried,\nyou may have gotten anything from";
+  static const String txtLoremIpsumShort =
+      "Don't bother typing “lorem ipsum” into\nGoogle translate. If you already tried,\nyou may have gotten anything from";
   static const String txtPoints = 'Points';
   static const String txtSpendMore = 'Spend More';
   static const String txtScanReceipt = 'Scan Receipt';
   static const String txtScanning = 'Scanning...';
   static const String txtPrivacyPolicy = 'Privacy Policy';
-  static const String txtLoremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut interdum magna a massa efficitur, eget gravida elit laoreet. Donec luctus leo id augue efficitur sollicitudin. Cras placerat augue varius, egestas quam vel, bibendum enim. Nunc elementum semper eleifend. Etiam fringilla massa erat, sit amet sagittis est efficitur sed. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer vestibulum imperdiet sapien a tristique. Aliquam consequat rhoncus ante at laoreet. Nulla ullamcorper mi nunc. Nulla pulvinar imperdiet efficitur.Cras sit amet tristique leo. Morbi eu ipsum in erat pharetra condimentum rhoncus nec velit. Aenean blandit id nibh sodales convallis. Suspendisse faucibus ligula euismod fermentum vulputate. Proin non augue id nunc commodo feugiat. Sed nunc lectus, posuere id condimentum vel, tristique sed ex. Sed fringilla neque dolor, et lacinia augue scelerisque eget. Sed ac sem at sapien imperdiet faucibus. Fusce quam risus, aliquam vel bibendum at, ultrices id sem. Quisque ut suscipit purus. Vestibulum sed hendrerit est. Curabitur fermentum dolor ut arcu ultricies laoreet. Donec malesuada venenatis magna, eget tempor eros. Aenean leo purus, egestas finibus sollicitudin ac, ultrices nec ligula. Morbi lorem nisl, vestibulum et lectus sed, porttitor pharetra nibh.Vivamus justo sem, ornare laoreet maximus a, vestibulum vitae risus. Nunc metus augue, lacinia in purus non, fermentum aliquet dui. Cras nisl nunc, tincidunt vel nibh at, mollis vulputate diam. Morbi varius, urna sed molestie iaculis, metus diam iaculis libero, nec congue nisi ex et nisi. Suspendisse potenti. Aenean cursus mollis purus sit amet fringilla. Nunc rhoncus enim eu purus imperdiet mollis. Vivamus cursus placerat laoreet. Ut rhoncus turpis et dui porta rutrum. Quisque nec lorem purus. Duis facilisis eros at euismod porta. Etiam eu turpis vel tortor mollis gravida in quis nisl. Etiam iaculis velit augue, quis tincidunt massa suscipit et. Donec quis tristique sapien, non faucibus ligula. Nunc tempor fringilla pellentesque. Cras odio leo, sodales sit amet tortor vitae, lobortis luctus massa.";
-  static const String txtProfileActivation = 'Your profile activation is pending. You will receive an email once the Swipe team verifies your business information. Thank you.';
+  static const String txtLoremIpsum =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut interdum magna a massa efficitur, eget gravida elit laoreet. Donec luctus leo id augue efficitur sollicitudin. Cras placerat augue varius, egestas quam vel, bibendum enim. Nunc elementum semper eleifend. Etiam fringilla massa erat, sit amet sagittis est efficitur sed. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer vestibulum imperdiet sapien a tristique. Aliquam consequat rhoncus ante at laoreet. Nulla ullamcorper mi nunc. Nulla pulvinar imperdiet efficitur.Cras sit amet tristique leo. Morbi eu ipsum in erat pharetra condimentum rhoncus nec velit. Aenean blandit id nibh sodales convallis. Suspendisse faucibus ligula euismod fermentum vulputate. Proin non augue id nunc commodo feugiat. Sed nunc lectus, posuere id condimentum vel, tristique sed ex. Sed fringilla neque dolor, et lacinia augue scelerisque eget. Sed ac sem at sapien imperdiet faucibus. Fusce quam risus, aliquam vel bibendum at, ultrices id sem. Quisque ut suscipit purus. Vestibulum sed hendrerit est. Curabitur fermentum dolor ut arcu ultricies laoreet. Donec malesuada venenatis magna, eget tempor eros. Aenean leo purus, egestas finibus sollicitudin ac, ultrices nec ligula. Morbi lorem nisl, vestibulum et lectus sed, porttitor pharetra nibh.Vivamus justo sem, ornare laoreet maximus a, vestibulum vitae risus. Nunc metus augue, lacinia in purus non, fermentum aliquet dui. Cras nisl nunc, tincidunt vel nibh at, mollis vulputate diam. Morbi varius, urna sed molestie iaculis, metus diam iaculis libero, nec congue nisi ex et nisi. Suspendisse potenti. Aenean cursus mollis purus sit amet fringilla. Nunc rhoncus enim eu purus imperdiet mollis. Vivamus cursus placerat laoreet. Ut rhoncus turpis et dui porta rutrum. Quisque nec lorem purus. Duis facilisis eros at euismod porta. Etiam eu turpis vel tortor mollis gravida in quis nisl. Etiam iaculis velit augue, quis tincidunt massa suscipit et. Donec quis tristique sapien, non faucibus ligula. Nunc tempor fringilla pellentesque. Cras odio leo, sodales sit amet tortor vitae, lobortis luctus massa.";
+  static const String txtProfileActivation =
+      'Your profile activation is pending. You will receive an email once the Swipe team verifies your business information. Thank you.';
   static const String txtBuyOneGetOne = 'Buy 1 Yogurt, Get 1 Free!';
   static const String txtMil = '280 Mil';
   static const String txtFeatured = 'Featured';
@@ -94,7 +99,8 @@ class TempLanguage{
   static const String txtViews = 'Views';
   static const String txtStopPromotion = 'Stop Promotion';
   static const String txtPromote = 'Promote';
-  static const String txtCongratulations = 'You have successfully recorded a minimum of five voice messages for your voice cloning. Please continue recording more for better accuracy or press skip to go to the next step.';
+  static const String txtCongratulations =
+      'You have successfully recorded a minimum of five voice messages for your voice cloning. Please continue recording more for better accuracy or press skip to go to the next step.';
   static const String txtPointsAway = '200 Points Away';
   static const String txtSearch = 'Search';
   static const String txtRedeemDeals = 'Redeem Unlimited Deals';

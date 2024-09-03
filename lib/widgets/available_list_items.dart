@@ -16,12 +16,14 @@ class AvailableListItems extends StatelessWidget {
   final String uses;
   final String location;
   bool isFeatured;
+  final String image;
   AvailableListItems(
       {this.dealId = '',
       this.dealName = 'Deal Name',
       this.restaurantName = 'Restaurant Name',
       this.dealPrice = '\$25',
       this.uses = 'USES 3',
+      this.image = '',
       this.location = '4773 Waldeck Street, US',
       this.isFeatured = true});
 
@@ -29,6 +31,8 @@ class AvailableListItems extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = Get.find<UserController>();
     RxBool tapped = false.obs;
+    // Determine which image to display
+
     return Container(
       height: 140,
       margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
@@ -56,14 +60,27 @@ class AvailableListItems extends StatelessWidget {
               Column(
                 children: [
                   SpacerBoxVertical(height: 1.3.h),
-                  Expanded(child: Image.asset(AppAssets.restaurantImg1)),
+                  if (image.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, top: 20),
+                      child: SizedBox(
+                          height: 80,
+                          width: 70,
+                          child: Image.network(image, fit: BoxFit.cover)),
+                    )
+                  else
+                    Expanded(
+                      child: Image.asset(AppAssets.restaurantImg1,
+                          fit: BoxFit.cover),
+                    ),
                   // Text(dealPrice,style: poppinsMedium(fontSize: 15.sp),),
                 ],
               ),
               Positioned(
-                  left: -0.5.h,
-                  top: -1.h,
-                  child: Obx(() {
+                left: -0.5.h,
+                top: -1.h,
+                child: Obx(
+                  () {
                     return IconButton(
                         onPressed: () {
                           tapped.value
@@ -83,7 +100,9 @@ class AvailableListItems extends StatelessWidget {
                               ? AppColors.redColor
                               : AppColors.hintText,
                         ));
-                  }))
+                  },
+                ),
+              ),
             ],
           ),
           const SpacerBoxHorizontal(width: 10),
@@ -179,7 +198,7 @@ class AvailableListItems extends StatelessWidget {
                     : const SizedBox.shrink(),
                 const SpacerBoxVertical(height: 10),
                 Text(
-                  uses,
+                  'USES ' + uses,
                   style: poppinsMedium(fontSize: 13.sp),
                 )
               ],

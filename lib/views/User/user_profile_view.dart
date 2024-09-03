@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,14 +65,22 @@ class _UserProfileViewState extends State<UserProfileView> {
   Future<void> getUser() async {
     userProfile =
         await controller.getUser(NBUtils.getStringAsync(SharedPrefKey.uid));
-    final address =
-        await GeoLocationHelper.getCityFromGeoPoint(userProfile!.latLong!);
-    _userProfileStreamController.add(userProfile!);
 
-    userNameController.text = userProfile?.userName ?? '';
-    emailController.text = userProfile?.email ?? '';
-    phoneNoController.text = userProfile?.phoneNo ?? '';
-    addressController.text = address ?? '';
+    // Debug print to check the type of latLong
+    print('Type of latLong: ${userProfile?.latLong.runtimeType}');
+
+    if (userProfile?.latLong is GeoPoint) {
+      final address =
+          await GeoLocationHelper.getCityFromGeoPoint(userProfile!.latLong!);
+      userNameController.text = userProfile?.userName ?? '';
+      emailController.text = userProfile?.email ?? '';
+      phoneNoController.text = userProfile?.phoneNo ?? '';
+      addressController.text = address ?? '';
+    } else {
+      print('latLong is not a GeoPoint.');
+    }
+
+    _userProfileStreamController.add(userProfile!);
   }
 
   AddressModel? address;
@@ -190,7 +199,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                 Expanded(
                     child: Obx(
                   () => ListView(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: EdgeInsets.symmetric(vertical: 8),
                     children: [
                       ProfileListItems(
                         path: AppAssets.profile1,
@@ -216,14 +225,19 @@ class _UserProfileViewState extends State<UserProfileView> {
                                         .requestLocationPermission(context);
                                 // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationChangeScreen()));
                                 if (isPremitt) {
+                                  print(SharedPrefKey.latitude.toDouble() +
+                                      SharedPrefKey.longitude.toDouble());
                                   address = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => LocationService(
                                               child: PlacesPick(
                                                   currentLocation: latLng ??
-                                                      const LatLng(33.6292752,
-                                                          73.1170099)))));
+                                                      LatLng(
+                                                          userProfile.latLong!
+                                                              .latitude,
+                                                          userProfile.latLong!
+                                                              .longitude)))));
                                   if (address != null) {
                                     addressController.text =
                                         address!.completeAddress.toString();

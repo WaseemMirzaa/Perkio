@@ -12,6 +12,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/core/utils/mixins/validate_textfield.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
+import 'package:swipe_app/views/location/select_location_view.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -174,7 +175,13 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                             : StatusKey.pending);
                                 getStringAsync(SharedPrefKey.role) ==
                                         SharedPrefKey.user
-                                    ? controller.signUp(userModel)
+                                    ? Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SelectLocation(
+                                                  userModel: userModel,
+                                                )))    //controller.signUp(userModel)
                                     : Navigator.push(
                                         context,
                                         MaterialPageRoute(

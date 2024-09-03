@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/deals_controllers.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
-import 'package:swipe_app/core/utils/constants/app_assets.dart';
+
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/favourites.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
-import 'package:swipe_app/widgets/category_list_items.dart';
+
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
@@ -61,27 +62,76 @@ class _HomeUserState extends State<HomeUser> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 12),
-                //   child: Text(TempLanguage.txtCategory, style: poppinsMedium(fontSize: 18),),
-                // ),
-                // const SpacerBoxVertical(height: 20),
-                // SizedBox(
-                //   height: 140,
-                //   child: ListView(
-                //     scrollDirection: Axis.horizontal,
-                //     children: const [
-                //       SpacerBoxHorizontal(width: 10,),
-                //       CategoryListItems(path: AppAssets.southFood, text: TempLanguage.txtSouthIndian,),
-                //       CategoryListItems(path: AppAssets.chineseFood, text: TempLanguage.txtChinese,),
-                //       CategoryListItems(path: AppAssets.pizzaImg, text: TempLanguage.txtPizza,),
-                //       CategoryListItems(path: AppAssets.coffeeFood, text: TempLanguage.txtTeaBeverages,),
-                //       SpacerBoxHorizontal(width: 10,),
+                //from here
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(
+                    TempLanguage.txtFeaturedCategoryDeals,
+                    style: poppinsMedium(fontSize: 18),
+                  ),
+                ),
+                const SpacerBoxVertical(height: 20),
+                GetX<DealsController>(
+                  init: DealsController(),
+                  builder: (controller) {
+                    if (controller.isLoading.value) {
+                      return Center(child: circularProgressBar());
+                    }
 
-                //     ],
-                //   ),
-                // ),
-                // const SpacerBoxVertical(height: 20),
+                    if (controller.hasError.value) {
+                      return Center(child: Text('Error fetching promotions'));
+                    }
+
+                    if (controller.promotions.isEmpty) {
+                      return Center(child: Text('No promotions available'));
+                    }
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FavouritesScreen()));
+                      },
+                      child: SizedBox(
+                        height: 150, // Set the height of the ListView
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            SpacerBoxHorizontal(width: 10),
+                            ...controller.promotions.map((doc) {
+                              final imageUrl = doc[
+                                  'image']; // Assuming 'image' is the field for the image URL
+                              final name = doc[
+                                  'dealName']; // Assuming 'dealName' is the field for the deal name
+                              final dealId = doc['dealId'];
+                              final companyName = doc['companyName'];
+                              final uses = doc['uses'];
+                              final location = doc['location'];
+
+                              return SizedBox(
+                                width: 350, // Set the width for each item
+
+                                child: AvailableListItems(
+                                  image: imageUrl,
+                                  dealName: name,
+                                  dealId: dealId,
+                                  restaurantName: companyName,
+                                  uses: uses.toString(),
+                                  location: location,
+                                ),
+                              );
+                            }).toList(),
+                            SpacerBoxHorizontal(width: 10),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SpacerBoxVertical(height: 20),
+
+                //to here
                 Padding(
                   padding: const EdgeInsets.only(left: 12),
                   child: Text(
@@ -122,7 +172,10 @@ class _HomeUserState extends State<HomeUser> {
                                 dealId: deal.dealId ?? '',
                                 dealName: deal.dealName ?? '',
                                 restaurantName: deal.companyName ?? '',
-                                dealPrice: deal.image ?? '',
+                                uses: deal.uses.toString(),
+                                isFeatured: deal.isPromotionStar!,
+                                image: deal.image ?? '',
+                                location: deal.location ?? '',
                               ));
                         },
                       );

@@ -215,8 +215,8 @@ class UserController extends GetxController {
       await setValue(SharedPrefKey.longitude, userModel.latLong!.longitude);
     } else {
       // Provide default values if latLong is null
-      await setValue(SharedPrefKey.latitude, 0);
-      await setValue(SharedPrefKey.longitude, 0);
+      await setValue(SharedPrefKey.latitude, 0.0);
+      await setValue(SharedPrefKey.longitude, 0.0);
     }
 
     await setValue(UserKey.BALANCE, userModel.balance ?? 0);

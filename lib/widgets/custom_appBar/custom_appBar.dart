@@ -25,89 +25,157 @@ import '../../core/utils/constants/app_assets.dart';
 final homeController = Get.put(HomeController(HomeServices()));
 final userController = Get.put(UserController(UserServices()));
 
-Widget customAppBar({String? userName,
+Widget customAppBar({
+  String? userName,
   String? userImage,
   String? userLocation,
   String hintText = 'Search',
   bool isLocation = true,
+  bool isNotification = true,
   Function(String)? onChanged,
   bool isSearchField = false,
   Color appBarBackColor = AppColors.appBarBackColor,
-  Widget? widget,}){
+  Widget? widget,
+}) {
   return Padding(
     padding: EdgeInsets.only(top: 1.h),
     child: Stack(
       alignment: Alignment.center,
       children: [
-        Image.asset(AppAssets.header, width: 100.w, height: 100.h, fit: BoxFit.fill,),
+        Image.asset(
+          AppAssets.header,
+          width: 100.w,
+          height: 100.h,
+          fit: BoxFit.fill,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(children: [
-                CircleAvatar(radius: 20.sp,
-                  backgroundImage: !getStringAsync(SharedPrefKey.photo).isEmptyOrNull
-                      ? NetworkImage(getStringAsync(SharedPrefKey.photo))
-                      : AssetImage(userImage ?? AppAssets.profileImg),
-                ),
-                const SizedBox(width: 10,),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(userName ?? getStringAsync(SharedPrefKey.userName),
-                      style: poppinsRegular(fontSize: 13.sp),),
-                    isLocation ? Row(
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20.sp,
+                    backgroundImage:
+                        !getStringAsync(SharedPrefKey.photo).isEmptyOrNull
+                            ? NetworkImage(getStringAsync(SharedPrefKey.photo))
+                            : AssetImage(userImage ?? AppAssets.profileImg),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FutureBuilder(future: GeoLocationHelper.getCityFromGeoPoint(GeoPoint(getDoubleAsync(SharedPrefKey.latitude), getDoubleAsync(SharedPrefKey.longitude))),
-                          builder: (context, snapshot) {
-                          if(snapshot.connectionState == ConnectionState.waiting){
-                            return Text("Loading...",style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),);
-                          }
-                            return Text(snapshot.data ?? 'Loading...',
-                              style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),);
-                          }
+                        Text(
+                          userName ?? getStringAsync(SharedPrefKey.userName),
+                          style: poppinsRegular(fontSize: 13.sp),
                         ),
-                        const SizedBox(width: 10,),
-                        GestureDetector(onTap: () async {
-                          AddressModel address = await Get.to(() =>
-                              LocationService(child: PlacesPick(currentLocation: LatLng(
-                                  getDoubleAsync(SharedPrefKey.latitude),
-                                  getDoubleAsync(SharedPrefKey.longitude)),)));
-                          if (address != null) {
-                            final add = await GeoLocationHelper.getCityFromGeoPoint(GeoPoint(address.latitude!, address.longitude!));
-                            await setValue(SharedPrefKey.address, add);
-                            await setValue(SharedPrefKey.latitude, address.latitude);
-                            await setValue(SharedPrefKey.longitude, address.longitude);
-                            await homeController.updateCollection(
-                                getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,
-                                {
-                                  UserKey.LATLONG: GeoPoint(getDoubleAsync(SharedPrefKey.latitude),
-                                      getDoubleAsync(SharedPrefKey.longitude))
-                                });
-                          }
-                        },
-                          child: Text('Change Location',
-                            style: poppinsRegular(fontSize: 8, color: AppColors.blueColor),),)
+                        isLocation
+                            ? Row(
+                                children: [
+                                  FutureBuilder(
+                                      future: GeoLocationHelper
+                                          .getCityFromGeoPoint(GeoPoint(
+                                              getDoubleAsync(
+                                                  SharedPrefKey.latitude),
+                                              getDoubleAsync(
+                                                  SharedPrefKey.longitude))),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return Text(
+                                            "Loading...",
+                                            style: poppinsRegular(
+                                                fontSize: 10.sp,
+                                                color: AppColors.hintText),
+                                          );
+                                        }
+                                        return Text(
+                                          snapshot.data ?? 'Loading...',
+                                          style: poppinsRegular(
+                                              fontSize: 10.sp,
+                                              color: AppColors.hintText),
+                                        );
+                                      }),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      AddressModel address =
+                                          await Get.to(() => LocationService(
+                                                  child: PlacesPick(
+                                                currentLocation: LatLng(
+                                                    getDoubleAsync(
+                                                        SharedPrefKey.latitude),
+                                                    getDoubleAsync(SharedPrefKey
+                                                        .longitude)),
+                                              )));
+                                      if (address != null) {
+                                        final add = await GeoLocationHelper
+                                            .getCityFromGeoPoint(GeoPoint(
+                                                address.latitude!,
+                                                address.longitude!));
+                                        await setValue(
+                                            SharedPrefKey.address, add);
+                                        await setValue(SharedPrefKey.latitude,
+                                            address.latitude);
+                                        await setValue(SharedPrefKey.longitude,
+                                            address.longitude);
+                                        await homeController.updateCollection(
+                                            getStringAsync(SharedPrefKey.uid),
+                                            CollectionsKey.USERS, {
+                                          UserKey.LATLONG: GeoPoint(
+                                              getDoubleAsync(
+                                                  SharedPrefKey.latitude),
+                                              getDoubleAsync(
+                                                  SharedPrefKey.longitude))
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      'Change Location',
+                                      style: poppinsRegular(
+                                          fontSize: 8,
+                                          color: AppColors.blueColor),
+                                    ),
+                                  )
+                                ],
+                              )
+                            : SizedBox.shrink(),
                       ],
-                    ) : widget!,
-                  ],),),
-
-                GestureDetector(
-                    onTap: () {
-                      Get.to(() => const NotificationsView());
-                    },
-                    child: Image.asset(AppAssets.notificationImg, scale: 3.5,)),
-              ],
+                    ),
+                  ),
+                  isNotification
+                      ? GestureDetector(
+                          onTap: () {
+                            Get.to(() => const NotificationsView());
+                          },
+                          child: Image.asset(
+                            AppAssets.notificationImg,
+                            scale: 3.5,
+                          ))
+                      : SizedBox.shrink(),
+                ],
               ),
-              isSearchField ?
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextFieldWidget(text: hintText,
-                  textController: TextEditingController(),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.hintText,),
-                  onChanged: onChanged,),
-              ) : const SizedBox.shrink(),
+              isSearchField
+                  ? Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextFieldWidget(
+                        text: hintText,
+                        textController: TextEditingController(),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: AppColors.hintText,
+                        ),
+                        onChanged: onChanged,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
         ),
@@ -115,7 +183,6 @@ Widget customAppBar({String? userName,
     ),
   );
 }
-
 
 Widget customAppBarWithTextField({
   required TextEditingController searchController,
@@ -128,78 +195,151 @@ Widget customAppBarWithTextField({
   Function()? onTap,
   bool isReadyOnly = false,
   Color appBarBackColor = AppColors.appBarBackColor,
-  Widget? widget,}) => Padding(
-    padding: EdgeInsets.only(top: 2.h),
-    child: Stack(
-    alignment: Alignment.center,
-    children: [
-      Image.asset(AppAssets.header,width: 100.w,height: 100.h,fit: BoxFit.fill,),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(children: [
-              CircleAvatar(radius: 20.sp,
-                backgroundImage: !getStringAsync(SharedPrefKey.photo).isEmptyOrNull ? NetworkImage(getStringAsync(SharedPrefKey.photo)) : AssetImage(userImage ??AppAssets.profileImg),
-              ),
-              const SizedBox(width: 10,),
-              Expanded(child:  Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children: [
-                Text(userName ?? getStringAsync(SharedPrefKey.userName), style: poppinsRegular(fontSize: 13.sp),),
-                isLocation ?
-                    GestureDetector(onTap: ()async {
-                      AddressModel address = await Get.to(() =>
-                          PlacesPick(currentLocation: LatLng(getDoubleAsync(SharedPrefKey.latitude),
-                              getDoubleAsync(SharedPrefKey.longitude)),));
-                      print("Address is : ${address.locality}");
-                      if (address != null) {
-                        final add = await GeoLocationHelper.getCityFromGeoPoint(
-                            GeoPoint(address.latitude!, address.longitude!));
-                        await setValue(SharedPrefKey.address, add);
-                        await setValue(SharedPrefKey.latitude, address.latitude);
-                        await setValue(SharedPrefKey.longitude, address.longitude);
-                        await homeController.updateCollection(
-                            getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,
-                            {
-                              UserKey.LATLONG: GeoPoint(getDoubleAsync(SharedPrefKey.latitude),
-                                  getDoubleAsync(SharedPrefKey.longitude))
-                            });
-                      }
-                    }
-                      ,
-                      child: Row(
+  Widget? widget,
+}) =>
+    Padding(
+      padding: EdgeInsets.only(top: 2.h),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset(
+            AppAssets.header,
+            width: 100.w,
+            height: 100.h,
+            fit: BoxFit.fill,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20.sp,
+                      backgroundImage: !getStringAsync(SharedPrefKey.photo)
+                              .isEmptyOrNull
+                          ? NetworkImage(getStringAsync(SharedPrefKey.photo))
+                          : AssetImage(userImage ?? AppAssets.profileImg),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FutureBuilder(future: GeoLocationHelper.getCityFromGeoPoint(geoPoint ?? GeoPoint(getDoubleAsync(SharedPrefKey.latitude), getDoubleAsync(SharedPrefKey.longitude))),
-                              builder: (context, snapshot) {
-                                if(snapshot.connectionState == ConnectionState.waiting){
-                                  return Text("Loading...",style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),);
-                                }
-                                return Text(snapshot.data ?? 'Loading...',
-                                  style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),);
-                              }
+                          Text(
+                            userName ?? getStringAsync(SharedPrefKey.userName),
+                            style: poppinsRegular(fontSize: 13.sp),
                           ),
-                          const SizedBox(width: 12,),
-                          Text('Change Location',style: poppinsRegular(fontSize: 8,color: AppColors.blueColor),)
+                          isLocation
+                              ? GestureDetector(
+                                  onTap: () async {
+                                    AddressModel address =
+                                        await Get.to(() => PlacesPick(
+                                              currentLocation: LatLng(
+                                                  getDoubleAsync(
+                                                      SharedPrefKey.latitude),
+                                                  getDoubleAsync(
+                                                      SharedPrefKey.longitude)),
+                                            ));
+                                    print("Address is : ${address.locality}");
+                                    if (address != null) {
+                                      final add = await GeoLocationHelper
+                                          .getCityFromGeoPoint(GeoPoint(
+                                              address.latitude!,
+                                              address.longitude!));
+                                      await setValue(
+                                          SharedPrefKey.address, add);
+                                      await setValue(SharedPrefKey.latitude,
+                                          address.latitude);
+                                      await setValue(SharedPrefKey.longitude,
+                                          address.longitude);
+                                      await homeController.updateCollection(
+                                          getStringAsync(SharedPrefKey.uid),
+                                          CollectionsKey.USERS, {
+                                        UserKey.LATLONG: GeoPoint(
+                                            getDoubleAsync(
+                                                SharedPrefKey.latitude),
+                                            getDoubleAsync(
+                                                SharedPrefKey.longitude))
+                                      });
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      FutureBuilder(
+                                          future: GeoLocationHelper
+                                              .getCityFromGeoPoint(geoPoint ??
+                                                  GeoPoint(
+                                                      getDoubleAsync(
+                                                          SharedPrefKey
+                                                              .latitude),
+                                                      getDoubleAsync(
+                                                          SharedPrefKey
+                                                              .longitude))),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return Text(
+                                                "Loading...",
+                                                style: poppinsRegular(
+                                                    fontSize: 10.sp,
+                                                    color: AppColors.hintText),
+                                              );
+                                            }
+                                            return Text(
+                                              snapshot.data ?? 'Loading...',
+                                              style: poppinsRegular(
+                                                  fontSize: 10.sp,
+                                                  color: AppColors.hintText),
+                                            );
+                                          }),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Text(
+                                        'Change Location',
+                                        style: poppinsRegular(
+                                            fontSize: 8,
+                                            color: AppColors.blueColor),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : widget!,
                         ],
                       ),
-                    ): widget!,
-              ],),),
-
-              GestureDetector(
-                  onTap: (){
-                    Get.to(()=> const NotificationsView());
-                  },
-                  child: Image.asset(AppAssets.notificationImg, scale: 3.5,)),
-            ],
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          Get.to(() => const NotificationsView());
+                        },
+                        child: Image.asset(
+                          AppAssets.notificationImg,
+                          scale: 3.5,
+                        )),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextFieldWidget(
+                    text: hintText,
+                    textController: searchController,
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: AppColors.hintText,
+                    ),
+                    onChanged: onChanged,
+                    onTap: onTap,
+                    isReadOnly: isReadyOnly,
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextFieldWidget(text: hintText, textController: searchController,prefixIcon: const Icon(Icons.search,color: AppColors.hintText,),onChanged: onChanged,onTap: onTap, isReadOnly: isReadyOnly, ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    ],
-    ),
-  );
-
+    );

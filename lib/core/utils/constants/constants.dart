@@ -16,7 +16,7 @@ class UserKey {
   static const String STRIPECUSTOMERID = 'stripeCustomerId';
 }
 
-class CollectionsKey{
+class CollectionsKey {
   static const String USERS = 'users';
   static const String DEALS = 'deals';
   static const String REWARDS = 'reward';
@@ -38,8 +38,8 @@ class DealKey {
   static const String DEALPARAMS = 'dealParams';
   static const String LIKES = 'likes';
   static const String VIEWS = 'views';
-  static const String NOOFUSEDTELLNOW ='noOfUsedTellNow';
-
+  static const String NOOFUSEDTELLNOW = 'noOfUsedTellNow';
+  static const String LATLONG = "latLong";
 }
 
 class RewardKey {
@@ -55,7 +55,8 @@ class RewardKey {
   static const String USES = 'uses';
   static const String REWARDPARAM = 'rewardParam';
 }
-class NotificationKey{
+
+class NotificationKey {
   static const String NOTIFICATIONID = 'notificationId';
   static const String SENDERID = 'senderId';
   static const String RECEIVERID = 'receiverId';
@@ -66,7 +67,7 @@ class NotificationKey{
   static const String TIMESTAMP = 'timestamp';
 }
 
-class StatusKey{
+class StatusKey {
   static const String verified = 'verified';
   static const String pending = 'pending';
   static const String rejected = 'rejected';

@@ -2,15 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/deals_controllers.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/favourites.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
+import 'package:swipe_app/widgets/common/common_widgets.dart';
 
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
@@ -43,9 +46,46 @@ class _HomeUserState extends State<HomeUser> {
     super.dispose();
   }
 
+  // Future<void> getDeals() async {
+  //   deals = await controller.getDeals();
+  //   _dealStreamController.add(deals);
+  // }
   Future<void> getDeals() async {
     deals = await controller.getDeals();
-    _dealStreamController.add(deals);
+    double userLat = getDoubleAsync(SharedPrefKey.latitude);
+    double userLon = getDoubleAsync(SharedPrefKey.longitude);
+
+    List<DealModel> sortedDeals = List.from(deals);
+
+    sortedDeals.sort((a, b) {
+      double distanceA = calculateDistance(
+          userLat,
+          userLon,
+          a.longLat!.latitude, // Replace with actual latitude field
+          a.longLat!.longitude // Replace with actual longitude field
+          );
+      double distanceB = calculateDistance(
+          userLat,
+          userLon,
+          b.longLat!.latitude, // Replace with actual latitude field
+          b.longLat!.longitude // Replace with actual longitude field
+          );
+
+      // Print distances
+      print('Deal ID: ${a.dealId}, Distance: ${distanceA}');
+      print('Deal ID: ${b.dealId}, Distance: ${distanceB}');
+
+      return distanceA.compareTo(distanceB);
+    });
+
+    // Print sorted deals with distances
+    for (var deal in sortedDeals) {
+      double distance = calculateDistance(
+          userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
+      print('Sorted Deal ID: ${deal.dealId}, Distance: ${distance}');
+    }
+
+    _dealStreamController.add(sortedDeals);
   }
 
   @override
@@ -79,11 +119,13 @@ class _HomeUserState extends State<HomeUser> {
                     }
 
                     if (controller.hasError.value) {
-                      return Center(child: Text('Error fetching promotions'));
+                      return const Center(
+                          child: Text('Error fetching promotions'));
                     }
 
                     if (controller.promotions.isEmpty) {
-                      return Center(child: Text('No promotions available'));
+                      return const Center(
+                          child: Text('No promotions available'));
                     }
 
                     return GestureDetector(
@@ -98,7 +140,6 @@ class _HomeUserState extends State<HomeUser> {
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
-                            SpacerBoxHorizontal(width: 10),
                             ...controller.promotions.map((doc) {
                               final imageUrl = doc[
                                   'image']; // Assuming 'image' is the field for the image URL
@@ -122,7 +163,7 @@ class _HomeUserState extends State<HomeUser> {
                                 ),
                               );
                             }).toList(),
-                            SpacerBoxHorizontal(width: 10),
+                            const SpacerBoxHorizontal(width: 10),
                           ],
                         ),
                       ),
@@ -130,7 +171,6 @@ class _HomeUserState extends State<HomeUser> {
                   },
                 ),
                 const SpacerBoxVertical(height: 20),
-
                 //to here
                 Padding(
                   padding: const EdgeInsets.only(left: 12),
@@ -150,16 +190,17 @@ class _HomeUserState extends State<HomeUser> {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       }
                       if (!snapshot.hasData) {
-                        return Center(child: Text('No data available'));
+                        return const Center(child: Text('No data available'));
                       }
                       final List<DealModel> deals = snapshot.data!;
                       return ListView.builder(
                         shrinkWrap: true,
                         itemCount: deals.length,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,
                         itemBuilder: (BuildContext context, int index) {
                           final DealModel deal = deals[index];
+                          print('*** ${deal.longLat} ****');
                           return GestureDetector(
                               onTap: () {
                                 Navigator.push(

@@ -8,7 +8,7 @@ import 'package:swipe_app/views/place_picker/key.dart';
 import 'package:swipe_app/views/place_picker/suggestion.dart';
 import 'package:uuid/uuid.dart';
 
-class Apis{
+class Apis {
   static String apiKey = Platform.isAndroid ? MAP_API_KEY : MAP_API_KEY;
   static Future<CameraPosition> getPlaceDetailFromId(String placeId) async {
     final url =
@@ -29,7 +29,9 @@ class Apis{
       throw Exception(DioHelper.apiErrorResponse);
     }
   }
-  static Future<List<Suggestion>> fetchSuggestions({required String input, required String lang}) async {
+
+  static Future<List<Suggestion>> fetchSuggestions(
+      {required String input, required String lang}) async {
     final sessionToken = const Uuid().v4();
     final url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=address&language=$lang&key=$apiKey&sessiontoken=$sessionToken';
@@ -51,5 +53,20 @@ class Apis{
     }
   }
 
-
+  // New method to get coordinates from city name
+  static Future<LatLng?> getCoordinatesFromCity(String cityName) async {
+    final url =
+        'https://maps.googleapis.com/maps/api/geocode/json?address=$cityName&key=$apiKey';
+    ApiResponse response = await DioHelper.get(url);
+    if (response.body != null) {
+      final result = json.decode(response.body);
+      if (result['status'] == 'OK') {
+        final location = result['results'][0]['geometry']['location'];
+        return LatLng(location['lat'], location['lng']);
+      }
+      throw Exception(result['error_message']);
+    } else {
+      throw Exception(DioHelper.apiErrorResponse);
+    }
+  }
 }

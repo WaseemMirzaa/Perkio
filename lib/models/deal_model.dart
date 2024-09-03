@@ -13,6 +13,7 @@ class DealModel {
   int? likes;
   int? views;
   String? location;
+  GeoPoint? longLat; // Use longLat field
   List<String>? favourites;
   List<String>? dealParams;
   Timestamp? createdAt;
@@ -29,6 +30,7 @@ class DealModel {
     this.likes,
     this.noOfUsedTellNow,
     this.location,
+    this.longLat, // Use longLat parameter
     this.favourites,
     this.createdAt,
     this.dealParams,
@@ -48,10 +50,15 @@ class DealModel {
       likes: data[DealKey.LIKES] ?? 0,
       views: data[DealKey.VIEWS] ?? 0,
       location: data[DealKey.LOCATION] ?? '',
-      favourites: data[DealKey.FAVOURITES] != null 
+      longLat: data[DealKey.LATLONG] != null
+          ? data[DealKey.LATLONG] as GeoPoint
+          : null, // Parse GeoPoint
+      favourites: data[DealKey.FAVOURITES] != null
           ? List<String>.from(data[DealKey.FAVOURITES])
           : [],
-      dealParams: data[DealKey.DEALPARAMS] != null ? List<String>.from(data[DealKey.DEALPARAMS]) : [],
+      dealParams: data[DealKey.DEALPARAMS] != null
+          ? List<String>.from(data[DealKey.DEALPARAMS])
+          : [],
       createdAt: data[DealKey.CREATEDAT] ?? Timestamp.now(),
     );
   }
@@ -69,16 +76,22 @@ class DealModel {
       location: map[DealKey.LOCATION],
       likes: map[DealKey.LIKES] ?? 0,
       views: map[DealKey.LIKES] ?? 0,
-      favourites: map[DealKey.FAVOURITES] != null 
+      favourites: map[DealKey.FAVOURITES] != null
           ? List<String>.from(map[DealKey.FAVOURITES])
           : [],
-      dealParams: map[DealKey.DEALPARAMS] != null ? List<String>.from(map[DealKey.DEALPARAMS]) : [],
+      dealParams: map[DealKey.DEALPARAMS] != null
+          ? List<String>.from(map[DealKey.DEALPARAMS])
+          : [],
       createdAt: map[DealKey.CREATEDAT] ?? Timestamp.now(),
+      longLat: map[DealKey.LATLONG] != null
+          ? map[DealKey.LATLONG] as GeoPoint
+          : null, //
+      // Parse GeoPoint
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    final map = {
       DealKey.DEALID: dealId ?? '',
       DealKey.BUSINESSID: businessId ?? '',
       DealKey.DEALNAME: dealName ?? '',
@@ -94,5 +107,9 @@ class DealModel {
       DealKey.DEALPARAMS: dealParams ?? [],
       DealKey.CREATEDAT: createdAt ?? Timestamp.now(),
     };
+
+    if (longLat != null) map[DealKey.LATLONG] = longLat!; // Add GeoPoint to map
+
+    return map;
   }
 }

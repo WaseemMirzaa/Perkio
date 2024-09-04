@@ -78,20 +78,29 @@ class UserServices {
     }).toList();
   }
 
-  //............ Like Deal
+// Add a user's favorite deal to Firestore
   Future<void> likeDeal(String dealId) async {
+    final userId = authServices.auth.currentUser!.uid;
     await _dealCollection.doc(dealId).update({
-      DealKey.FAVOURITES:
-          FieldValue.arrayUnion([authServices.auth.currentUser!.uid])
+      'favourites': FieldValue.arrayUnion([userId]),
     });
   }
 
-  //............ Unlike Deal
+  // Remove a user's favorite deal from Firestore
   Future<void> unLikeDeal(String dealId) async {
+    final userId = authServices.auth.currentUser!.uid;
     await _dealCollection.doc(dealId).update({
-      DealKey.FAVOURITES:
-          FieldValue.arrayRemove([authServices.auth.currentUser!.uid])
+      'favourites': FieldValue.arrayRemove([userId]),
     });
+  }
+
+  // Check if a deal is a favorite for the current user
+  Future<bool> isDealFavorite(String dealId) async {
+    final userId = authServices.auth.currentUser!.uid;
+    final dealDoc = await _dealCollection.doc(dealId).get();
+    final favorites = dealDoc.get('favourites') as List<dynamic>;
+
+    return favorites.contains(userId);
   }
 
   //............ Get Favourite Deals

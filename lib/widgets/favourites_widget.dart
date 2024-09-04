@@ -26,7 +26,7 @@ class FavouritesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool tapped = true.obs;
     return Container(
-      height: 140,
+      height: 160,
       margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(

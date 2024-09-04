@@ -194,10 +194,16 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => DealDetail()));
+                                          builder: (context) =>
+                                              const DealDetail()));
                                 },
                                 child: FavouritesWidget(
                                   dealName: favourite.dealName ?? '',
+                                  restaurantName: favourite.companyName ?? '',
+                                  dealId: favourite.dealId ?? '',
+                                  uses: favourite.uses.toString(),
+                                  location: favourite.location ?? '',
+                                  image: favourite.image ?? '',
                                 ));
                           },
                         );
@@ -207,7 +213,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RewardDetail()));
+                                builder: (context) => const RewardDetail()));
                       },
                       child: ListView(
                         padding: const EdgeInsets.symmetric(vertical: 10),

@@ -21,6 +21,7 @@ class UserController extends GetxController {
   UserController(this.userServices);
 
   HomeController homeController = Get.put(HomeController(HomeServices()));
+  var isSearching = false.obs;
 
   @override
   void onInit() {

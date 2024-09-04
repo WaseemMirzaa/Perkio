@@ -12,7 +12,6 @@ import 'package:swipe_app/views/user/favourites.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
-import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
@@ -66,16 +65,16 @@ class _HomeUserState extends State<HomeUser> {
   }
 
   void searchDeals(String query) {
-    if (query.isEmpty) {
-      _dealStreamController.add(deals);
-    } else {
-      List<DealModel> filteredDeals = deals.where((deal) {
-        return deal.dealName!.toLowerCase().contains(query.toLowerCase()) ||
-            deal.companyName!.toLowerCase().contains(query.toLowerCase());
-      }).toList();
+    final lowerCaseQuery = query.toLowerCase();
+    final filteredDeals = deals.where((deal) {
+      final dealName = deal.dealName?.toLowerCase() ?? '';
+      final companyName = deal.companyName?.toLowerCase() ?? '';
+      final isMatch = dealName.contains(lowerCaseQuery) ||
+          companyName.contains(lowerCaseQuery);
+      return isMatch;
+    }).toList();
 
-      _dealStreamController.add(filteredDeals);
-    }
+    _dealStreamController.add(filteredDeals);
   }
 
   @override
@@ -87,136 +86,164 @@ class _HomeUserState extends State<HomeUser> {
         child: customAppBar(
           isSearchField: true,
           onChanged: searchDeals,
+          isSearching: controller.isSearching,
         ),
       ),
-      body: Center(
-        // Center the entire StreamBuilder content
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center, // Center content vertically
-            crossAxisAlignment:
-                CrossAxisAlignment.center, // Center content horizontally
-            children: [
-              StreamBuilder<List<DealModel>>(
-                stream: _dealStreamController.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return circularProgressBar(); // This will be centered on the screen
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No deals available'));
-                  }
+      body: Obx(() {
+        bool isSearching = controller.isSearching.value;
 
-                  final List<DealModel> deals = snapshot.data!;
-                  // Filtering deals where isPromotionStar is true
-                  final List<DealModel> featuredDeals = deals
-                      .where((deal) => deal.isPromotionStar == true)
-                      .toList();
-                  // Deals that are not featured
-                  final List<DealModel> availableDeals = deals.toList();
+        return StreamBuilder<List<DealModel>>(
+          stream: _dealStreamController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                  child: circularProgressBar()); // Centered loading indicator
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No deals available'));
+            }
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Featured Category Deals
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: Text(
-                          TempLanguage.txtFeaturedCategoryDeals,
-                          style: poppinsMedium(fontSize: 18),
-                        ),
+            final List<DealModel> deals = snapshot.data!;
+
+            List<DealModel> featuredDeals =
+                deals.where((deal) => deal.isPromotionStar == true).toList();
+            List<DealModel> availableDeals = deals.toList();
+
+            // Combine featured and available deals
+            List<Widget> combinedList = [];
+
+            if (isSearching) {
+              combinedList.add(
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(
+                    'Searched Deals',
+                    style: poppinsMedium(fontSize: 18),
+                  ),
+                ),
+              );
+              combinedList.add(const SizedBox(height: 10));
+
+              combinedList.addAll(deals.where((deal) {
+                return deal.dealName!
+                        .toLowerCase()
+                        .contains(searchController.text.toLowerCase()) ||
+                    deal.companyName!
+                        .toLowerCase()
+                        .contains(searchController.text.toLowerCase());
+              }).map((deal) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FavouritesScreen(),
                       ),
-                      const SizedBox(height: 10),
+                    );
+                  },
+                  child: AvailableListItems(
+                    dealId: deal.dealId ?? '',
+                    dealName: deal.dealName ?? '',
+                    restaurantName: deal.companyName ?? '',
+                    uses: deal.uses.toString(),
+                    isFeatured: deal.isPromotionStar!,
+                    image: deal.image ?? '',
+                    location: deal.location ?? '',
+                  ),
+                );
+              }).toList());
+            } else {
+              combinedList.add(
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(
+                    TempLanguage.txtFeaturedCategoryDeals,
+                    style: poppinsMedium(fontSize: 18),
+                  ),
+                ),
+              );
+              combinedList.add(const SizedBox(height: 10));
 
-                      // Horizontal ListView for Featured Deals
-                      SizedBox(
-                        height:
-                            150, // Fixed height for horizontal scrolling deals
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: featuredDeals.length,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          itemBuilder: (BuildContext context, int index) {
-                            final DealModel deal = featuredDeals[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FavouritesScreen(),
-                                  ),
-                                );
-                              },
-                              child: SizedBox(
-                                width: 350, // Width for each horizontal item
-                                child: AvailableListItems(
-                                  dealId: deal.dealId ?? '',
-                                  dealName: deal.dealName ?? '',
-                                  restaurantName: deal.companyName ?? '',
-                                  uses: deal.uses.toString(),
-                                  isFeatured: deal.isPromotionStar!,
-                                  image: deal.image ?? '',
-                                  location: deal.location ?? '',
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-
-                      const SpacerBoxVertical(height: 20),
-
-                      // Available Deals
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: Text(
-                          'Available Deals',
-                          style: poppinsMedium(fontSize: 18),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      // Vertical ListView for Available Deals
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: availableDeals.length,
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        itemBuilder: (BuildContext context, int index) {
-                          final DealModel deal = availableDeals[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FavouritesScreen(),
-                                ),
-                              );
-                            },
-                            child: AvailableListItems(
-                              dealId: deal.dealId ?? '',
-                              dealName: deal.dealName ?? '',
-                              restaurantName: deal.companyName ?? '',
-                              uses: deal.uses.toString(),
-                              isFeatured: deal.isPromotionStar!,
-                              image: deal.image ?? '',
-                              location: deal.location ?? '',
+              combinedList.add(
+                SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: featuredDeals.length,
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    itemBuilder: (BuildContext context, int index) {
+                      final DealModel deal = featuredDeals[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FavouritesScreen(),
                             ),
                           );
                         },
+                        child: SizedBox(
+                          width: 350,
+                          child: AvailableListItems(
+                            dealId: deal.dealId ?? '',
+                            dealName: deal.dealName ?? '',
+                            restaurantName: deal.companyName ?? '',
+                            uses: deal.uses.toString(),
+                            isFeatured: deal.isPromotionStar!,
+                            image: deal.image ?? '',
+                            location: deal.location ?? '',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+
+              combinedList.add(const SizedBox(height: 20));
+
+              combinedList.add(
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(
+                    'Available Deals',
+                    style: poppinsMedium(fontSize: 18),
+                  ),
+                ),
+              );
+              combinedList.add(const SizedBox(height: 10));
+
+              combinedList.addAll(availableDeals.map((deal) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FavouritesScreen(),
                       ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+                    );
+                  },
+                  child: AvailableListItems(
+                    dealId: deal.dealId ?? '',
+                    dealName: deal.dealName ?? '',
+                    restaurantName: deal.companyName ?? '',
+                    uses: deal.uses.toString(),
+                    isFeatured: deal.isPromotionStar!,
+                    image: deal.image ?? '',
+                    location: deal.location ?? '',
+                  ),
+                );
+              }).toList());
+            }
+            return ListView(
+              children: combinedList,
+            );
+          },
+        );
+      }),
     );
   }
 }

@@ -36,6 +36,7 @@ Widget customAppBar({
   bool isSearchField = false,
   Color appBarBackColor = AppColors.appBarBackColor,
   Widget? widget,
+  RxBool? isSearching, // Add RxBool parameter
 }) {
   return Padding(
     padding: EdgeInsets.only(top: 1.h),
@@ -115,27 +116,25 @@ Widget customAppBar({
                                                     getDoubleAsync(SharedPrefKey
                                                         .longitude)),
                                               )));
-                                      if (address != null) {
-                                        final add = await GeoLocationHelper
-                                            .getCityFromGeoPoint(GeoPoint(
-                                                address.latitude!,
-                                                address.longitude!));
-                                        await setValue(
-                                            SharedPrefKey.address, add);
-                                        await setValue(SharedPrefKey.latitude,
-                                            address.latitude);
-                                        await setValue(SharedPrefKey.longitude,
-                                            address.longitude);
-                                        await homeController.updateCollection(
-                                            getStringAsync(SharedPrefKey.uid),
-                                            CollectionsKey.USERS, {
-                                          UserKey.LATLONG: GeoPoint(
-                                              getDoubleAsync(
-                                                  SharedPrefKey.latitude),
-                                              getDoubleAsync(
-                                                  SharedPrefKey.longitude))
-                                        });
-                                      }
+                                      final add = await GeoLocationHelper
+                                          .getCityFromGeoPoint(GeoPoint(
+                                              address.latitude!,
+                                              address.longitude!));
+                                      await setValue(
+                                          SharedPrefKey.address, add);
+                                      await setValue(SharedPrefKey.latitude,
+                                          address.latitude);
+                                      await setValue(SharedPrefKey.longitude,
+                                          address.longitude);
+                                      await homeController.updateCollection(
+                                          getStringAsync(SharedPrefKey.uid),
+                                          CollectionsKey.USERS, {
+                                        UserKey.LATLONG: GeoPoint(
+                                            getDoubleAsync(
+                                                SharedPrefKey.latitude),
+                                            getDoubleAsync(
+                                                SharedPrefKey.longitude))
+                                      });
                                     },
                                     child: Text(
                                       'Change Location',
@@ -172,7 +171,12 @@ Widget customAppBar({
                           Icons.search,
                           color: AppColors.hintText,
                         ),
-                        onChanged: onChanged,
+                        onChanged: (value) {
+                          if (onChanged != null) {
+                            onChanged(value);
+                            isSearching?.value = value.isNotEmpty;
+                          }
+                        },
                       ),
                     )
                   : const SizedBox.shrink(),
@@ -246,27 +250,24 @@ Widget customAppBarWithTextField({
                                                       SharedPrefKey.longitude)),
                                             ));
                                     print("Address is : ${address.locality}");
-                                    if (address != null) {
-                                      final add = await GeoLocationHelper
-                                          .getCityFromGeoPoint(GeoPoint(
-                                              address.latitude!,
-                                              address.longitude!));
-                                      await setValue(
-                                          SharedPrefKey.address, add);
-                                      await setValue(SharedPrefKey.latitude,
-                                          address.latitude);
-                                      await setValue(SharedPrefKey.longitude,
-                                          address.longitude);
-                                      await homeController.updateCollection(
-                                          getStringAsync(SharedPrefKey.uid),
-                                          CollectionsKey.USERS, {
-                                        UserKey.LATLONG: GeoPoint(
-                                            getDoubleAsync(
-                                                SharedPrefKey.latitude),
-                                            getDoubleAsync(
-                                                SharedPrefKey.longitude))
-                                      });
-                                    }
+                                    final add = await GeoLocationHelper
+                                        .getCityFromGeoPoint(GeoPoint(
+                                            address.latitude!,
+                                            address.longitude!));
+                                    await setValue(SharedPrefKey.address, add);
+                                    await setValue(SharedPrefKey.latitude,
+                                        address.latitude);
+                                    await setValue(SharedPrefKey.longitude,
+                                        address.longitude);
+                                    await homeController.updateCollection(
+                                        getStringAsync(SharedPrefKey.uid),
+                                        CollectionsKey.USERS, {
+                                      UserKey.LATLONG: GeoPoint(
+                                          getDoubleAsync(
+                                              SharedPrefKey.latitude),
+                                          getDoubleAsync(
+                                              SharedPrefKey.longitude))
+                                    });
                                   },
                                   child: Row(
                                     children: [

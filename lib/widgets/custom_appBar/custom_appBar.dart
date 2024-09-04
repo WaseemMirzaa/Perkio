@@ -185,12 +185,12 @@ Widget customAppBar({
 }
 
 Widget customAppBarWithTextField({
-  required TextEditingController searchController,
   String? userName,
   String? userImage,
   GeoPoint? geoPoint,
   String hintText = 'Search',
   bool isLocation = true,
+  required TextEditingController searchController,
   Function(String)? onChanged,
   Function()? onTap,
   bool isReadyOnly = false,
@@ -334,7 +334,7 @@ Widget customAppBarWithTextField({
                     ),
                     onChanged: onChanged,
                     onTap: onTap,
-                    isReadOnly: isReadyOnly,
+                    // isReadOnly: isReadyOnly,
                   ),
                 ),
               ],

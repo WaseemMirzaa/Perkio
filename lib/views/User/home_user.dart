@@ -31,18 +31,24 @@ class _HomeUserState extends State<HomeUser> {
   var controller = Get.find<UserController>();
   late StreamController<List<DealModel>> _dealStreamController;
   late List<DealModel> deals;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _dealStreamController = StreamController<List<DealModel>>();
     getDeals();
+
+    // Listen to search field changes
+    searchController.addListener(() {
+      searchDeals(searchController.text);
+    });
   }
 
   @override
   void dispose() {
     _dealStreamController.close();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -55,37 +61,29 @@ class _HomeUserState extends State<HomeUser> {
     double userLat = getDoubleAsync(SharedPrefKey.latitude);
     double userLon = getDoubleAsync(SharedPrefKey.longitude);
 
-    List<DealModel> sortedDeals = List.from(deals);
-
-    sortedDeals.sort((a, b) {
+    deals.sort((a, b) {
       double distanceA = calculateDistance(
-          userLat,
-          userLon,
-          a.longLat!.latitude, // Replace with actual latitude field
-          a.longLat!.longitude // Replace with actual longitude field
-          );
+          userLat, userLon, a.longLat!.latitude, a.longLat!.longitude);
       double distanceB = calculateDistance(
-          userLat,
-          userLon,
-          b.longLat!.latitude, // Replace with actual latitude field
-          b.longLat!.longitude // Replace with actual longitude field
-          );
-
-      // Print distances
-      print('Deal ID: ${a.dealId}, Distance: ${distanceA}');
-      print('Deal ID: ${b.dealId}, Distance: ${distanceB}');
+          userLat, userLon, b.longLat!.latitude, b.longLat!.longitude);
 
       return distanceA.compareTo(distanceB);
     });
 
-    // Print sorted deals with distances
-    for (var deal in sortedDeals) {
-      double distance = calculateDistance(
-          userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
-      print('Sorted Deal ID: ${deal.dealId}, Distance: ${distance}');
-    }
+    _dealStreamController.add(deals);
+  }
 
-    _dealStreamController.add(sortedDeals);
+  void searchDeals(String query) {
+    if (query.isEmpty) {
+      _dealStreamController.add(deals);
+    } else {
+      List<DealModel> filteredDeals = deals.where((deal) {
+        return deal.dealName!.toLowerCase().contains(query.toLowerCase()) ||
+            deal.companyName!.toLowerCase().contains(query.toLowerCase());
+      }).toList();
+
+      _dealStreamController.add(filteredDeals);
+    }
   }
 
   @override
@@ -94,7 +92,10 @@ class _HomeUserState extends State<HomeUser> {
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
-        child: customAppBar(isSearchField: true),
+        child: customAppBar(
+          isSearchField: true,
+          onChanged: searchDeals,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

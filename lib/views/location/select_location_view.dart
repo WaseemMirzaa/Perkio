@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/models/user_model.dart';
-import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';

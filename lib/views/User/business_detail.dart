@@ -12,8 +12,8 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class BusinessDetail extends StatefulWidget {
-  final String? businessId; // Add optional businessId parameter
-  const BusinessDetail({super.key, this.businessId}); // Update constructor
+  final String? businessId;
+  const BusinessDetail({super.key, this.businessId});
 
   @override
   State<BusinessDetail> createState() => _BusinessDetailState();
@@ -22,119 +22,159 @@ class BusinessDetail extends StatefulWidget {
 class _BusinessDetailState extends State<BusinessDetail> {
   final BusinessDetailController controller =
       Get.find<BusinessDetailController>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.businessId != null) {
+      controller.fetchDeals(widget.businessId!);
+      controller.fetchReward(widget.businessId!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: Obx(
-        () => Stack(
-          children: [
-            Image.asset(AppAssets.imageHeader),
-            BackButtonWidget(),
-            Padding(
-              padding: const EdgeInsets.only(top: 200),
-              child: Column(
-                children: [
-                  const SpacerBoxVertical(height: 20),
-                  const BusinessDetailTile(),
-                  const SpacerBoxVertical(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => controller.selectIndex(0),
-                          child: Container(
-                            height: 30,
-                            width: 90,
-                            decoration: BoxDecoration(
-                              gradient: controller.selectedIndex.value == 0
-                                  ? const LinearGradient(
-                                      colors: [
-                                        AppColors.gradientStartColor,
-                                        AppColors.gradientEndColor
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    )
-                                  : null,
-                              color: controller.selectedIndex.value == 0
-                                  ? null
-                                  : Colors.grey[200],
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Center(
-                              child: Text(
-                                TempLanguage.lblAllDeals,
-                                style: poppinsRegular(
-                                  fontSize: 9,
-                                  color: controller.selectedIndex.value == 0
-                                      ? AppColors.whiteColor
-                                      : Colors.black,
+        () {
+          if (controller.allDeals.isEmpty && controller.reward.value == null) {
+            return Center(
+              child: CircularProgressIndicator(), // Show loading indicator
+            );
+          }
+
+          return Stack(
+            children: [
+              Image.asset(AppAssets.imageHeader),
+              BackButtonWidget(),
+              Padding(
+                padding: const EdgeInsets.only(top: 200),
+                child: Column(
+                  children: [
+                    const SpacerBoxVertical(height: 20),
+                    const BusinessDetailTile(),
+                    const SpacerBoxVertical(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => controller.selectIndex(0),
+                            child: Container(
+                              height: 30,
+                              width: 90,
+                              decoration: BoxDecoration(
+                                gradient: controller.selectedIndex.value == 0
+                                    ? const LinearGradient(
+                                        colors: [
+                                          AppColors.gradientStartColor,
+                                          AppColors.gradientEndColor
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      )
+                                    : null,
+                                color: controller.selectedIndex.value == 0
+                                    ? null
+                                    : Colors.grey[200],
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  TempLanguage.lblAllDeals,
+                                  style: poppinsRegular(
+                                    fontSize: 9,
+                                    color: controller.selectedIndex.value == 0
+                                        ? AppColors.whiteColor
+                                        : Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        const SpacerBoxHorizontal(width: 10),
-                        GestureDetector(
-                          onTap: () => controller.selectIndex(1),
-                          child: Container(
-                            height: 30,
-                            width: 90,
-                            decoration: BoxDecoration(
-                              gradient: controller.selectedIndex.value == 1
-                                  ? const LinearGradient(
-                                      colors: [
-                                        AppColors.gradientStartColor,
-                                        AppColors.gradientEndColor
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    )
-                                  : null,
-                              color: controller.selectedIndex.value == 1
-                                  ? null
-                                  : Colors.grey[200],
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Center(
-                              child: Text(
-                                TempLanguage.lblOffers,
-                                style: poppinsRegular(
-                                  fontSize: 9,
-                                  color: controller.selectedIndex.value == 1
-                                      ? AppColors.whiteColor
-                                      : Colors.black,
+                          const SpacerBoxHorizontal(width: 10),
+                          GestureDetector(
+                            onTap: () => controller.selectIndex(1),
+                            child: Container(
+                              height: 30,
+                              width: 90,
+                              decoration: BoxDecoration(
+                                gradient: controller.selectedIndex.value == 1
+                                    ? const LinearGradient(
+                                        colors: [
+                                          AppColors.gradientStartColor,
+                                          AppColors.gradientEndColor
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      )
+                                    : null,
+                                color: controller.selectedIndex.value == 1
+                                    ? null
+                                    : Colors.grey[200],
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  TempLanguage.lblOffers,
+                                  style: poppinsRegular(
+                                    fontSize: 9,
+                                    color: controller.selectedIndex.value == 1
+                                        ? AppColors.whiteColor
+                                        : Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> AddDeals()));
-                    },
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(vertical: 1.5.h),
-                      children: const [
-                        BusinessDetailTiles(),
-                        BusinessDetailTiles(),
-                        BusinessDetailTiles(),
-                        BusinessDetailTiles(),
-                        BusinessDetailTiles(),
-                      ],
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.symmetric(vertical: 1.5.h),
+                        children: controller.selectedIndex.value == 0
+                            ? controller.allDeals.isNotEmpty
+                                ? controller.allDeals
+                                    .map((deal) =>
+                                        BusinessDetailTiles(deal: deal))
+                                    .toList()
+                                : [
+                                    Center(
+                                      child: Text(
+                                        'No deals found',
+                                        style: poppinsRegular(
+                                          fontSize: 14,
+                                          color: AppColors.hintText,
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                            : controller.reward.value != null
+                                ? controller.reward.value!
+                                    .map((reward) =>
+                                        BusinessDetailTiles(reward: reward))
+                                    .toList()
+                                : [
+                                    Center(
+                                      child: Text(
+                                        'No offers found',
+                                        style: poppinsRegular(
+                                          fontSize: 14,
+                                          color: AppColors.hintText,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                      ),
                     ),
-                  )),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       ),
     );
   }

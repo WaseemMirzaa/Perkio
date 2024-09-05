@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member, unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -39,8 +41,9 @@ class _BusinessDetailState extends State<BusinessDetail> {
       body: Obx(
         () {
           if (controller.allDeals.isEmpty && controller.reward.value == null) {
-            return Center(
-              child: CircularProgressIndicator(), // Show loading indicator
+            return const Center(
+              child:
+                  const CircularProgressIndicator(), // Show loading indicator
             );
           }
 
@@ -152,7 +155,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                                     ),
                                   ]
                             : controller.reward.value != null
-                                ? controller.reward.value!
+                                ? controller.reward.value
                                     .map((reward) =>
                                         BusinessDetailTiles(reward: reward))
                                     .toList()

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 
-class RewardModel{
+class RewardModel {
   String? businessId;
   String? rewardId;
   String? rewardName;
@@ -10,6 +10,7 @@ class RewardModel{
   String? companyName;
   String? rewardAddress;
   int? pointsToRedeem;
+  int? pointsEarned; // New optional parameter
   String? rewardLogo;
   Timestamp? createdAt;
 
@@ -22,6 +23,7 @@ class RewardModel{
     this.companyName,
     this.rewardAddress,
     this.pointsToRedeem,
+    this.pointsEarned, // Initialize the new parameter
     this.rewardLogo,
     this.createdAt,
   });
@@ -35,6 +37,8 @@ class RewardModel{
       noOfUsed: data[RewardKey.NOOFUSED] ?? 0,
       companyName: data[RewardKey.COMPANYNAME] ?? '',
       pointsToRedeem: data[RewardKey.POINTSTOREDEEM] ?? 0,
+      pointsEarned:
+          data[RewardKey.POINTSEARNED] ?? 0, // Set value for the new parameter
       rewardLogo: data[RewardKey.REWARDLOGO] ?? '',
       rewardAddress: data[RewardKey.REWARDADDRESS] ?? '',
       uses: data[RewardKey.USES] ?? 0,
@@ -52,9 +56,10 @@ class RewardModel{
       companyName: map[RewardKey.COMPANYNAME] ?? '',
       uses: map[RewardKey.USES] ?? 0,
       pointsToRedeem: map[RewardKey.POINTSTOREDEEM] ?? 0,
+      pointsEarned:
+          map[RewardKey.POINTSEARNED] ?? 0, // Set value for the new parameter
       rewardLogo: map[RewardKey.REWARDLOGO] ?? '',
       createdAt: map[RewardKey.CREATEDAT] ?? Timestamp.now(),
-
     );
   }
 
@@ -68,9 +73,9 @@ class RewardModel{
       RewardKey.REWARDADDRESS: rewardAddress ?? '',
       RewardKey.COMPANYNAME: companyName ?? '',
       RewardKey.POINTSTOREDEEM: pointsToRedeem ?? 0,
+      RewardKey.POINTSEARNED: pointsEarned ?? 0, // Include the new parameter
       RewardKey.REWARDLOGO: rewardLogo ?? '',
       RewardKey.CREATEDAT: createdAt ?? Timestamp.now(),
-
     };
   }
 }

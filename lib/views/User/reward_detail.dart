@@ -8,9 +8,12 @@ import 'package:swipe_app/views/user/scan_screen.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
+import 'package:swipe_app/models/reward_model.dart'; // Import RewardModel
 
 class RewardDetail extends StatefulWidget {
-  const RewardDetail({super.key});
+  final RewardModel? reward; // Add an optional reward parameter
+
+  const RewardDetail({super.key, this.reward}); // Update constructor
 
   @override
   State<RewardDetail> createState() => _RewardDetailState();
@@ -33,7 +36,8 @@ class _RewardDetailState extends State<RewardDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SpacerBoxVertical(height: 20),
-              const DetailTile(),
+              // Pass the reward model to DetailTile
+              DetailTile(reward: widget.reward),
               const SpacerBoxVertical(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -41,16 +45,25 @@ class _RewardDetailState extends State<RewardDetail> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(TempLanguage.txtRewardInfo, style: poppinsMedium(fontSize: 13.sp),),
+                    Text(
+                      widget.reward?.rewardName ?? TempLanguage.txtRewardInfo,
+                      style: poppinsMedium(fontSize: 13.sp),
+                    ),
                     const SpacerBoxVertical(height: 10),
-                    Text(TempLanguage.txtLoremIpsumShort, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                    Text(
+                      widget.reward?.rewardAddress ?? TempLanguage.txtLoremIpsumShort,
+                      style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),
+                    ),
                   ],
                 ),
               ),
               const SpacerBoxVertical(height: 20),
-              Center(child: Text(TempLanguage.txtPoints, style: poppinsBold(fontSize: 13.sp, color: AppColors.secondaryText),)),
-              const SpacerBoxVertical(height: 10),
-              Center(child: Text('800/1000', style: poppinsRegular(fontSize: 12.sp, color: AppColors.secondaryText),)),
+              Center(
+                child: Text(
+                  '${widget.reward?.pointsEarned ?? 0}/${widget.reward?.pointsToRedeem ?? 1000}',
+                  style: poppinsBold(fontSize: 13.sp, color: AppColors.secondaryText),
+                ),
+              ),
               const SpacerBoxVertical(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -65,24 +78,29 @@ class _RewardDetailState extends State<RewardDetail> {
                           borderRadius: BorderRadius.circular(100),
                           color: Colors.grey[200],
                           boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3)
-                        )
-                      ]
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         height: 20,
-                        width: 220,
+                        width: widget.reward != null
+                            ? (widget.reward!.pointsEarned! / widget.reward!.pointsToRedeem!) * 220
+                            : 0, // Adjust width based on progress
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: const LinearGradient(
-                          colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                            colors: [
+                              AppColors.gradientStartColor,
+                              AppColors.gradientEndColor,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                         ),
                       ),
                       Positioned(
@@ -92,13 +110,19 @@ class _RewardDetailState extends State<RewardDetail> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Text(TempLanguage.txtSpendMore, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                              Text(
+                                TempLanguage.txtSpendMore,
+                                style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),
+                              ),
                               const SpacerBoxHorizontal(width: 20),
-                              Text("\$10", style: poppinsMedium(fontSize: 10.sp),),
+                              Text(
+                                "\$10", // Use actual logic if needed
+                                style: poppinsMedium(fontSize: 10.sp),
+                              ),
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -106,23 +130,28 @@ class _RewardDetailState extends State<RewardDetail> {
               const SpacerBoxVertical(height: 40),
               Center(
                 child: GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ScanScreen()));
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ScanScreen(),
+                      ),
+                    );
                   },
                   child: Container(
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                              color: AppColors.whiteColor,
-                              boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 12,
-                              spreadRadius: 6,
-                              offset: const Offset(5, 0)
-                            )
-                          ]
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 12,
+                          spreadRadius: 6,
+                          offset: const Offset(5, 0),
+                        ),
+                      ],
                     ),
                     child: Center(
                       child: Container(
@@ -130,19 +159,21 @@ class _RewardDetailState extends State<RewardDetail> {
                         width: 80,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
-                                gradient: const LinearGradient(
-                                colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
-                                begin: Alignment.bottomLeft,
-                                end: Alignment.topRight,
-                              ),
+                          gradient: const LinearGradient(
+                            colors: [
+                              AppColors.gradientStartColor,
+                              AppColors.gradientEndColor,
+                            ],
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight,
+                          ),
                         ),
-                        child: Image.asset(AppAssets.scannerImg, scale: 3,),
+                        child: Image.asset(AppAssets.scannerImg, scale: 3),
                       ),
                     ),
                   ),
                 ),
-              )
-
+              ),
             ],
           ),
         ],

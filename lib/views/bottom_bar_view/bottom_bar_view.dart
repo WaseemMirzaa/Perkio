@@ -23,13 +23,12 @@ class BottomBarView extends StatefulWidget {
 }
 
 class _BottomBarViewState extends State<BottomBarView> {
-
   int _selectedIndex = 0;
 
   final userList = [
     const HomeUser(),
-    const RewardsView(),
-     MyDealsView(),
+    RewardsView(),
+    MyDealsView(),
     FavouritesScreen(),
     const SettingsView(),
   ];
@@ -39,7 +38,6 @@ class _BottomBarViewState extends State<BottomBarView> {
     RewardsBusiness(),
     PromotedDealView(),
     const SettingsView(),
-
   ];
 
   void _onItemTapped(int index) {
@@ -52,12 +50,15 @@ class _BottomBarViewState extends State<BottomBarView> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked : (didPop)async {
+      onPopInvoked: (didPop) async {
         bool shouldClose = await showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Exit App?',style: poppinsBold(fontSize: 15.sp),),
+              title: Text(
+                'Exit App?',
+                style: poppinsBold(fontSize: 15.sp),
+              ),
               content: const Text('Do you really want to close the app?'),
               actions: [
                 TextButton(
@@ -71,7 +72,8 @@ class _BottomBarViewState extends State<BottomBarView> {
                     Navigator.of(context).pop(true); // Close App
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.red, // Customize the color as per your preference
+                    foregroundColor: Colors
+                        .red, // Customize the color as per your preference
                   ),
                   child: const Text('Close App'),
                 ),
@@ -84,112 +86,112 @@ class _BottomBarViewState extends State<BottomBarView> {
         }
       },
       child: Scaffold(
-        body: widget.isUser ? userList.elementAt(_selectedIndex) : businessList.elementAt(_selectedIndex),
-        bottomNavigationBar: widget.isUser ? Container(
-          height: 7.h,
-          decoration: const BoxDecoration(
-              color: AppColors.whiteColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 0,
-                  blurRadius: 6,
-                  offset: Offset(0, -7)
+        body: widget.isUser
+            ? userList.elementAt(_selectedIndex)
+            : businessList.elementAt(_selectedIndex),
+        bottomNavigationBar: widget.isUser
+            ? Container(
+                height: 7.h,
+                decoration: const BoxDecoration(
+                  color: AppColors.whiteColor,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 0,
+                        blurRadius: 6,
+                        offset: Offset(0, -7)),
+                  ],
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CustomBottomBarItem(
-                    icon: Icons.home,
-                    path: AppAssets.navBarIcon1,
-                    isSelected: _selectedIndex == 0,
-                    onTap: () => _onItemTapped(0),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CustomBottomBarItem(
+                        icon: Icons.home,
+                        path: AppAssets.navBarIcon1,
+                        isSelected: _selectedIndex == 0,
+                        onTap: () => _onItemTapped(0),
+                      ),
+                      CustomBottomBarItem(
+                        icon: Icons.star_border,
+                        path: AppAssets.navBarIcon2,
+                        isSelected: _selectedIndex == 1,
+                        onTap: () => _onItemTapped(1),
+                      ),
+                      CustomBottomBarItem(
+                        icon: Icons.assignment,
+                        path: AppAssets.navBarIcon3,
+                        isSelected: _selectedIndex == 2,
+                        onTap: () => _onItemTapped(2),
+                      ),
+                      CustomBottomBarItem(
+                        icon: Icons.favorite_border,
+                        path: AppAssets.navBarIcon4,
+                        isSelected: _selectedIndex == 3,
+                        onTap: () => _onItemTapped(3),
+                      ),
+                      CustomBottomBarItem(
+                        icon: Icons.person_outline,
+                        path: AppAssets.navBarIcon5,
+                        isSelected: _selectedIndex == 4,
+                        onTap: () => _onItemTapped(4),
+                      ),
+                    ],
                   ),
-                  CustomBottomBarItem(
-                    icon: Icons.star_border,
-                    path: AppAssets.navBarIcon2,
-                    isSelected: _selectedIndex == 1,
-                    onTap: () => _onItemTapped(1),
+                ),
+              )
+            : Container(
+                height: 7.h,
+                decoration: const BoxDecoration(
+                  color: AppColors.whiteColor,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 0,
+                        blurRadius: 6,
+                        offset: Offset(0, -7)),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CustomBottomBarItem(
+                        icon: Icons.home,
+                        path: AppAssets.navBarIcon1,
+                        isSelected: _selectedIndex == 0,
+                        onTap: () => _onItemTapped(0),
+                      ),
+                      CustomBottomBarItem(
+                        icon: Icons.star_border,
+                        path: AppAssets.navBarIcon2,
+                        isSelected: _selectedIndex == 1,
+                        onTap: () => _onItemTapped(1),
+                      ),
+                      CustomBottomBarItem(
+                        icon: Icons.assignment,
+                        path: AppAssets.navBarIcon3,
+                        isSelected: _selectedIndex == 2,
+                        onTap: () => _onItemTapped(2),
+                      ),
+                      // CustomBottomBarItem(
+                      //   icon: Icons.favorite_border,
+                      //   path: AppAssets.navBarIcon4,
+                      //   isSelected: _selectedIndex == 3,
+                      //   onTap: () => _onItemTapped(3),
+                      // ),
+                      CustomBottomBarItem(
+                        icon: Icons.person_outline,
+                        path: AppAssets.navBarIcon5,
+                        isSelected: _selectedIndex == 3,
+                        onTap: () => _onItemTapped(3),
+                      ),
+                    ],
                   ),
-                  CustomBottomBarItem(
-                    icon: Icons.assignment,
-                    path: AppAssets.navBarIcon3,
-                    isSelected: _selectedIndex == 2,
-                    onTap: () => _onItemTapped(2),
-                  ),
-                  CustomBottomBarItem(
-                    icon: Icons.favorite_border,
-                    path: AppAssets.navBarIcon4,
-                    isSelected: _selectedIndex == 3,
-                    onTap: () => _onItemTapped(3),
-                  ),
-                  CustomBottomBarItem(
-                    icon: Icons.person_outline,
-                    path: AppAssets.navBarIcon5,
-                    isSelected: _selectedIndex == 4,
-                    onTap: () => _onItemTapped(4),
-                  ),
-                ],
+                ),
               ),
-            ),
-      
-        ) : Container(
-          height: 7.h,
-          decoration: const BoxDecoration(
-            color: AppColors.whiteColor,
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 0,
-                  blurRadius: 6,
-                  offset: Offset(0, -7)
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CustomBottomBarItem(
-                  icon: Icons.home,
-                  path: AppAssets.navBarIcon1,
-                  isSelected: _selectedIndex == 0,
-                  onTap: () => _onItemTapped(0),
-                ),
-                CustomBottomBarItem(
-                  icon: Icons.star_border,
-                  path: AppAssets.navBarIcon2,
-                  isSelected: _selectedIndex == 1,
-                  onTap: () => _onItemTapped(1),
-                ),
-                CustomBottomBarItem(
-                  icon: Icons.assignment,
-                  path: AppAssets.navBarIcon3,
-                  isSelected: _selectedIndex == 2,
-                  onTap: () => _onItemTapped(2),
-                ),
-                // CustomBottomBarItem(
-                //   icon: Icons.favorite_border,
-                //   path: AppAssets.navBarIcon4,
-                //   isSelected: _selectedIndex == 3,
-                //   onTap: () => _onItemTapped(3),
-                // ),
-                CustomBottomBarItem(
-                  icon: Icons.person_outline,
-                  path: AppAssets.navBarIcon5,
-                  isSelected: _selectedIndex == 3,
-                  onTap: () => _onItemTapped(3),
-                ),
-              ],
-            ),
-          ),
-      
-        ),
       ),
     );
   }

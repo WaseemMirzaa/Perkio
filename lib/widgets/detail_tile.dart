@@ -6,14 +6,17 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/business_detail.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/models/reward_model.dart'; // Import RewardModel
 
 class DetailTile extends StatelessWidget {
-  const DetailTile({super.key});
+  final RewardModel? reward; // Add RewardModel parameter
+
+  const DetailTile({super.key, this.reward}); // Update constructor
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10,left: 20,right: 20),
+      padding: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -23,45 +26,60 @@ class DetailTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(TempLanguage.txtBusinessName, style: poppinsMedium(fontSize: 13.sp),),
+                Text(reward?.companyName ?? TempLanguage.txtBusinessName,
+                    style: poppinsMedium(fontSize: 13.sp)),
                 GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> const BusinessDetail()));
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BusinessDetail(
+                                  businessId: reward?.businessId)));
                     },
-                    child: Text(TempLanguage.txtViewDeals, style: poppinsMedium(fontSize: 8.sp, color: AppColors.yellowColor),)),
-              ],
-            ),
-            const SpacerBoxVertical(height: 5),
-            Row(
-
-              children: [
-                Icon(Icons.star_half, color: AppColors.yellowColor, size: 11.sp,),
-                const SpacerBoxHorizontal(width: 4),
-                Text(TempLanguage.txtRating, style: poppinsRegular(fontSize: 10.sp, color: AppColors.yellowColor),),
+                    child: Text(TempLanguage.txtViewDeals,
+                        style: poppinsMedium(
+                            fontSize: 8.sp, color: AppColors.yellowColor))),
               ],
             ),
             const SpacerBoxVertical(height: 5),
             Row(
               children: [
-                Icon(Icons.phone, color: AppColors.hintText, size: 11.sp,),
+                Icon(Icons.star_half,
+                    color: AppColors.yellowColor, size: 11.sp),
                 const SpacerBoxHorizontal(width: 4),
-                Text(TempLanguage.txtDummyPhone, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                Text(reward?.noOfUsed.toString() ?? TempLanguage.txtRating,
+                    style: poppinsRegular(
+                        fontSize: 10.sp, color: AppColors.yellowColor)),
               ],
             ),
             const SpacerBoxVertical(height: 5),
             Row(
               children: [
-                Image.asset(AppAssets.globeImg, scale: 2.5.sp,),
+                Icon(Icons.phone, color: AppColors.hintText, size: 11.sp),
                 const SpacerBoxHorizontal(width: 4),
-                Text(TempLanguage.txtDummyWebsite, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                Text(reward?.rewardAddress ?? TempLanguage.txtDummyPhone,
+                    style: poppinsRegular(
+                        fontSize: 10.sp, color: AppColors.hintText)),
               ],
             ),
             const SpacerBoxVertical(height: 5),
             Row(
               children: [
-                Icon(Icons.location_on, color: AppColors.hintText, size: 11.sp,),
+                Image.asset(AppAssets.globeImg, scale: 2.5.sp),
                 const SpacerBoxHorizontal(width: 4),
-                Text(TempLanguage.txtDummyAddress, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
+                Text(reward?.rewardAddress ?? TempLanguage.txtDummyWebsite,
+                    style: poppinsRegular(
+                        fontSize: 10.sp, color: AppColors.hintText)),
+              ],
+            ),
+            const SpacerBoxVertical(height: 5),
+            Row(
+              children: [
+                Icon(Icons.location_on, color: AppColors.hintText, size: 11.sp),
+                const SpacerBoxHorizontal(width: 4),
+                Text(reward?.rewardAddress ?? TempLanguage.txtDummyAddress,
+                    style: poppinsRegular(
+                        fontSize: 10.sp, color: AppColors.hintText)),
               ],
             ),
             const SpacerBoxVertical(height: 5),

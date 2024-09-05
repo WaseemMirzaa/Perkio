@@ -54,6 +54,7 @@ class RewardKey {
   static const String CREATEDAT = 'createdAt';
   static const String USES = 'uses';
   static const String REWARDPARAM = 'rewardParam';
+  static const String POINTSEARNED = 'pointsEarned';
 }
 
 class NotificationKey {

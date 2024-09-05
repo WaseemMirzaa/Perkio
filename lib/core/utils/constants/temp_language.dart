@@ -89,7 +89,7 @@ class TempLanguage {
   static const String txtNotifications = 'Notifications';
   static const String txtRestaurantName = 'Restaurant Name';
   static const String txtUses3 = "USES 3";
-  static const String txtViewRating = 'VIEW Rating';
+  static const String txtViewRating = 'VIEW RATINGS';
   static const String txtViewDeals = 'VIEW DEALS';
   static const String txtRating = '4.4 (8.1k)';
   static const String txtDummyPhone = '1234 567 890';

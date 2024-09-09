@@ -10,9 +10,10 @@ class RewardModel {
   String? companyName;
   String? rewardAddress;
   int? pointsToRedeem;
-  int? pointsEarned; // New optional parameter
+  int? pointsEarned;
   String? rewardLogo;
   Timestamp? createdAt;
+  List<String>? isFavourite; // Add this field
 
   RewardModel({
     this.businessId,
@@ -23,9 +24,10 @@ class RewardModel {
     this.companyName,
     this.rewardAddress,
     this.pointsToRedeem,
-    this.pointsEarned, // Initialize the new parameter
+    this.pointsEarned,
     this.rewardLogo,
     this.createdAt,
+    this.isFavourite, // Initialize the new field
   });
 
   factory RewardModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -37,12 +39,12 @@ class RewardModel {
       noOfUsed: data[RewardKey.NOOFUSED] ?? 0,
       companyName: data[RewardKey.COMPANYNAME] ?? '',
       pointsToRedeem: data[RewardKey.POINTSTOREDEEM] ?? 0,
-      pointsEarned:
-          data[RewardKey.POINTSEARNED] ?? 0, // Set value for the new parameter
+      pointsEarned: data[RewardKey.POINTSEARNED] ?? 0,
       rewardLogo: data[RewardKey.REWARDLOGO] ?? '',
       rewardAddress: data[RewardKey.REWARDADDRESS] ?? '',
       uses: data[RewardKey.USES] ?? 0,
       createdAt: data[RewardKey.CREATEDAT] ?? Timestamp.now(),
+      isFavourite: List<String>.from(data[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
     );
   }
 
@@ -56,10 +58,10 @@ class RewardModel {
       companyName: map[RewardKey.COMPANYNAME] ?? '',
       uses: map[RewardKey.USES] ?? 0,
       pointsToRedeem: map[RewardKey.POINTSTOREDEEM] ?? 0,
-      pointsEarned:
-          map[RewardKey.POINTSEARNED] ?? 0, // Set value for the new parameter
+      pointsEarned: map[RewardKey.POINTSEARNED] ?? 0,
       rewardLogo: map[RewardKey.REWARDLOGO] ?? '',
       createdAt: map[RewardKey.CREATEDAT] ?? Timestamp.now(),
+      isFavourite: List<String>.from(map[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
     );
   }
 
@@ -73,9 +75,10 @@ class RewardModel {
       RewardKey.REWARDADDRESS: rewardAddress ?? '',
       RewardKey.COMPANYNAME: companyName ?? '',
       RewardKey.POINTSTOREDEEM: pointsToRedeem ?? 0,
-      RewardKey.POINTSEARNED: pointsEarned ?? 0, // Include the new parameter
+      RewardKey.POINTSEARNED: pointsEarned ?? 0,
       RewardKey.REWARDLOGO: rewardLogo ?? '',
       RewardKey.CREATEDAT: createdAt ?? Timestamp.now(),
+      RewardKey.ISFAVOURITE: isFavourite ?? [], // Include the new field
     };
   }
 }

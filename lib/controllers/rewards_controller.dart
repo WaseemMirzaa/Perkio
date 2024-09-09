@@ -24,4 +24,11 @@ class RewardController extends GetxController {
       log('Failed to listen to rewards: $error');
     });
   }
+
+  Future<void> toggleLike(RewardModel reward, String userId) async {
+    bool isLiked = reward.isFavourite?.contains(userId) ?? false;
+    await _rewardService.toggleLike(reward.rewardId!, userId, !isLiked);
+    // Update the local state if needed
+    listenToRewards(); // This will refresh the reward list
+  }
 }

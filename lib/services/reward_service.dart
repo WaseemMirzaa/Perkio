@@ -22,7 +22,6 @@ class RewardService {
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        // Map all document snapshots to RewardModel
         List<RewardModel> rewards = snapshot.docs
             .map((doc) => RewardModel.fromDocumentSnapshot(doc))
             .toList();
@@ -34,6 +33,26 @@ class RewardService {
     } catch (e) {
       log('Error fetching rewards: $e');
       return [];
+    }
+  }
+
+  Future<void> toggleLike(String rewardId, String userId, bool isLiked) async {
+    try {
+      DocumentReference rewardDoc = _rewardCollection.doc(rewardId);
+
+      if (isLiked) {
+        // Add userId to the isFavourite list
+        await rewardDoc.update({
+          'isFavourite': FieldValue.arrayUnion([userId]),
+        });
+      } else {
+        // Remove userId from the isFavourite list
+        await rewardDoc.update({
+          'isFavourite': FieldValue.arrayRemove([userId]),
+        });
+      }
+    } catch (e) {
+      log('Error updating like status: $e');
     }
   }
 }

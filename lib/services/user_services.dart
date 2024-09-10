@@ -113,4 +113,39 @@ class UserServices {
           doc as DocumentSnapshot<Map<String, dynamic>>);
     }).toList();
   }
+
+  // Fetch rewards based on earnedPoints map
+// Fetch rewards based on earnedPoints map
+  Future<List<RewardModel>> getRewardsForCurrentUser() async {
+    final userId = authServices.auth.currentUser!.uid;
+    final querySnapshot = await _rewardCollection.get();
+
+    // Create a list to hold rewards for the current user
+    List<RewardModel> userRewards = [];
+
+    for (var doc in querySnapshot.docs) {
+      final rewardData = doc.data() as Map<String, dynamic>;
+      final earnedPoints = rewardData['pointsEarned'] as Map<String, dynamic>?;
+
+      // Check if earnedPoints is not null and contains the userId
+      if (earnedPoints != null && earnedPoints.containsKey(userId)) {
+        userRewards.add(RewardModel.fromDocumentSnapshot(
+            doc as DocumentSnapshot<Map<String, dynamic>>));
+      }
+    }
+
+    return userRewards; // Return the list of rewards for the current user
+  }
+
+// Fetch deal based on usedBy list
+  Future<List<DealModel>> getDealsUsedByCurrentUser() async {
+    final userId = authServices.auth.currentUser!.uid;
+    final querySnapshot =
+        await _dealCollection.where('usedBy', arrayContains: userId).get();
+
+    return querySnapshot.docs.map<DealModel>((doc) {
+      return DealModel.fromDocumentSnapshot(
+          doc as DocumentSnapshot<Map<String, dynamic>>);
+    }).toList();
+  }
 }

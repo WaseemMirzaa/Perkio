@@ -188,6 +188,20 @@ class UserController extends GetxController {
     return res;
   }
 
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All REWARDS
+
+  Future<List<RewardModel>> getRewardForCurrentUser() async {
+    var res = await userServices.getRewardsForCurrentUser();
+    return res;
+  }
+
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET FAVOURITE DEALS
+
+  Future<List<DealModel>> getDealsUsedByCurrentUser() async {
+    var res = await userServices.getDealsUsedByCurrentUser();
+    return res;
+  }
+
   // Cache for favorite statuses
   var favoriteCache = <String, bool>{}.obs;
 

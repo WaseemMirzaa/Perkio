@@ -5,6 +5,7 @@ import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/user/business_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
@@ -43,8 +44,13 @@ class DetailTile extends StatelessWidget {
               Positioned(
                 top: -20,
                 left: 0,
-                child:
-                    BackButtonWidget(), // Position BackButtonWidget as needed
+                child: BackButtonWidget(
+                  onBack: () {
+                    Get.offAll(() => const BottomBarView(
+                          isUser: true,
+                        ));
+                  },
+                ), // Position BackButtonWidget as needed
               ),
             ],
           ),
@@ -94,12 +100,12 @@ class DetailTile extends StatelessWidget {
                   const SpacerBoxVertical(height: 5),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.star_half,
                         color: AppColors.yellowColor,
                         size: 10,
                       ),
-                      SpacerBoxHorizontal(width: 4),
+                      const SpacerBoxHorizontal(width: 4),
                       Text(
                         "4.5k", // Rating from model or default
                         style: poppinsRegular(
@@ -107,10 +113,11 @@ class DetailTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (user?.phoneNo != null) SpacerBoxVertical(height: 5),
+                  if (user?.phoneNo != null) const SpacerBoxVertical(height: 5),
                   Row(
                     children: [
-                      Icon(Icons.phone, color: AppColors.hintText, size: 10),
+                      const Icon(Icons.phone,
+                          color: AppColors.hintText, size: 10),
                       const SpacerBoxHorizontal(width: 4),
                       Text(
                         user?.phoneNo ?? TempLanguage.txtDummyPhone,
@@ -119,7 +126,7 @@ class DetailTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (user?.website != null) SpacerBoxVertical(height: 5),
+                  if (user?.website != null) const SpacerBoxVertical(height: 5),
                   Row(
                     children: [
                       Image.asset(AppAssets.globeImg, scale: 3),
@@ -131,10 +138,10 @@ class DetailTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (user?.latLong != null) SpacerBoxVertical(height: 5),
+                  if (user?.latLong != null) const SpacerBoxVertical(height: 5),
                   Row(
                     children: [
-                      Icon(Icons.location_on,
+                      const Icon(Icons.location_on,
                           color: AppColors.hintText, size: 10),
                       const SpacerBoxHorizontal(width: 4),
                       Text(

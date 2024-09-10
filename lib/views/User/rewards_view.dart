@@ -1,17 +1,18 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/widgets/rewards_list_items.dart';
 
 class RewardsView extends StatelessWidget {
   final RewardController _controller = Get.put(RewardController());
+  final TextEditingController searchController = TextEditingController();
 
   RewardsView({super.key});
 
@@ -20,15 +21,27 @@ class RewardsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(12.h),
-        child: customAppBar(),
+        preferredSize: Size.fromHeight(22.h),
+        child: customAppBar(
+          isSearchField: true,
+          onChanged: (value) {
+            _controller.isSearching.value = value.isNotEmpty;
+            _controller.searchRewards(
+                value); // Filter rewards based on the search input
+          },
+          isSearching: _controller.isSearching,
+        ),
       ),
       body: Obx(() {
         if (_controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (_controller.rewards.isEmpty) {
+        List<RewardModel> rewards = _controller.isSearching.value
+            ? _controller.searchedRewards
+            : _controller.rewards;
+
+        if (rewards.isEmpty) {
           return const Center(child: Text('No rewards found'));
         }
 
@@ -47,13 +60,12 @@ class RewardsView extends StatelessWidget {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _controller.rewards.length,
+                itemCount: rewards.length,
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 itemBuilder: (context, index) {
-                  final reward = _controller.rewards[index];
+                  final reward = rewards[index];
                   return GestureDetector(
                     onTap: () {
-                      log(_controller.currentUserId.value);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

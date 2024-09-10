@@ -55,4 +55,30 @@ class RewardService {
       log('Error updating like status: $e');
     }
   }
+
+  Future<void> addPointsToReward(
+      String rewardId, String userId, int points) async {
+    try {
+      DocumentReference rewardDoc = _rewardCollection.doc(rewardId);
+
+      // Update the pointsEarned map
+      await rewardDoc.update({
+        'pointsEarned.$userId': FieldValue.increment(points),
+      }).catchError((error) {
+        log('Error updating points for user $userId in reward $rewardId: $error');
+      });
+    } catch (e) {
+      log('Error adding points: $e');
+    }
+  }
+
+  Stream<RewardModel?> getRewardByIdStream(String rewardId) {
+    return _rewardCollection.doc(rewardId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return RewardModel.fromDocumentSnapshot(snapshot);
+      } else {
+        return null;
+      }
+    });
+  }
 }

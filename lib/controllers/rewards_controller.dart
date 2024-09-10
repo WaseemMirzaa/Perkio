@@ -7,9 +7,12 @@ import 'package:swipe_app/services/reward_service.dart';
 
 class RewardController extends GetxController {
   final RewardService _rewardService = RewardService();
+  var rewardModel = Rx<RewardModel?>(null); // Holds the specific reward data
 
   var rewards = <RewardModel>[].obs;
+  var searchedRewards = <RewardModel>[].obs; // List to hold searched results
   var isLoading = true.obs;
+  var isSearching = false.obs; // Observable for search status
   var currentUserId = ''.obs; // Observable variable for the current user UID
 
   @override
@@ -32,6 +35,19 @@ class RewardController extends GetxController {
       return '';
     }
   }
+
+  // Method to listen to a specific reward by rewardId
+  void listenToReward(String rewardId) {
+    isLoading(true);
+    _rewardService.getRewardByIdStream(rewardId).listen((data) {
+      rewardModel.value = data;
+      isLoading(false);
+    }).onError((error) {
+      log('Failed to listen to reward: $error');
+      isLoading(false);
+    });
+  }
+
   void listenToRewards() {
     _rewardService.getRewardStream().listen((data) {
       rewards.value = data;
@@ -39,6 +55,21 @@ class RewardController extends GetxController {
     }).onError((error) {
       log('Failed to listen to rewards: $error');
     });
+  }
+
+  // Search method to filter rewards based on search input
+  void searchRewards(String query) {
+    if (query.isEmpty) {
+      searchedRewards.assignAll(rewards); // If query is empty, show all rewards
+    } else {
+      String lowerCaseQuery = query.toLowerCase();
+      var filteredRewards = rewards.where((reward) {
+        var rewardName = reward.rewardName?.toLowerCase() ?? '';
+        var companyName = reward.companyName?.toLowerCase() ?? '';
+        return rewardName.contains(lowerCaseQuery) || companyName.contains(lowerCaseQuery);
+      }).toList();
+      searchedRewards.assignAll(filteredRewards); // Update searched rewards
+    }
   }
 
   Future<void> toggleLike(RewardModel reward, String userId) async {

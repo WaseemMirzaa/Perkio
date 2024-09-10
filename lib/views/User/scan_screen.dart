@@ -2,11 +2,14 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_document_scanner/flutter_document_scanner.dart';
+import 'package:get/get.dart';
+import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/services/reward_service.dart'; // Import the RewardService
 import 'package:swipe_app/views/user/reward_redeem_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
@@ -23,7 +26,9 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  final DocumentScannerController _controller = DocumentScannerController();
+  // final DocumentScannerController _controller = DocumentScannerController();
+  final RewardService _rewardService =
+      RewardService(); // Initialize RewardService
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +59,15 @@ class _ScanScreenState extends State<ScanScreen> {
               ],
             ),
           ),
-          SizedBox(
-            height: 375,
-            child: DocumentScanner(
-              controller: _controller,
-              onSave: (Uint8List imageBytes) {
-                debugPrint("image bytes: $imageBytes");
-              },
-            ),
-          ),
+          // SizedBox(
+          //   height: 375,
+          //   child: DocumentScanner(
+          //     controller: _controller,
+          //     onSave: (Uint8List imageBytes) {
+          //       debugPrint("image bytes: $imageBytes");
+          //     },
+          //   ),
+          // ),
           const SpacerBoxVertical(height: 80),
           Text(
             TempLanguage.txtScanning,
@@ -70,16 +75,20 @@ class _ScanScreenState extends State<ScanScreen> {
           ),
           const SpacerBoxVertical(height: 16),
           GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RewardRedeemDetail(
-                    rewardModel: widget.rewardModel,
+            onTap: () async {
+              if (widget.rewardModel != null && widget.userId != null) {
+                // Add points to reward before navigating
+                await _rewardService.addPointsToReward(
+                  widget.rewardModel!.rewardId!,
+                  widget.userId!,
+                  20,
+                );
+              }
+              Get.offAll(() => RewardRedeemDetail(
+                    rewardId: widget.rewardModel?.rewardId,
+                    businessId: widget.rewardModel?.businessId,
                     userId: widget.userId,
-                  ),
-                ),
-              );
+                  ));
             },
             child: Container(
               height: 100,

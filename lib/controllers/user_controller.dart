@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -237,5 +238,22 @@ class UserController extends GetxController {
         UserKey.ISPROMOTIONSTART, userModel.isPromotionStart ?? false);
     await setValue(UserKey.ISVERIFIED, userModel.isVerified ?? false);
     await setValue(UserKey.STRIPECUSTOMERID, userModel.stripeCustomerId ?? "");
+  }
+
+  //fetch the fav and rewards deals
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<List<RewardModel>> getFavouriteRewards() async {
+    String userId = _auth.currentUser?.uid ?? '';
+
+    // Fetch all rewards where the current user's ID is in the isFavourite list
+    QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
+        .collection('reward')
+        .where('isFavourite', arrayContains: userId)
+        .get();
+
+    return snapshot.docs.map((doc) => RewardModel.fromMap(doc.data())).toList();
   }
 }

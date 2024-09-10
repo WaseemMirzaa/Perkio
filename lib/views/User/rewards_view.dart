@@ -62,6 +62,7 @@ class RewardsView extends StatelessWidget {
                     },
                     child: RewardsListItems(
                       reward: reward,
+                      userId: _controller.currentUserId.value,
                     ),
                   );
                 },

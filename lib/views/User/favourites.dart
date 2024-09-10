@@ -1,10 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/models/deal_model.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/ui_controllers/favourites_screen_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
@@ -30,36 +29,16 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   final FavouritesScreenController myController =
       Get.find<FavouritesScreenController>();
 
-  var controller = Get.find<UserController>();
-
-  late StreamController<List<DealModel>> _favouritesStreamController;
-
-  late List<DealModel> favourites;
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _favouritesStreamController = StreamController<List<DealModel>>.broadcast();
-    getFavourites();
     Future.microtask(() {
       if (widget.isReward) {
-        myController.selectedIndex(1);
+        myController.selectIndex(1);
       } else {
-        myController.selectedIndex(0);
+        myController.selectIndex(0);
       }
     });
-  }
-
-  @override
-  void dispose() {
-    _favouritesStreamController.close();
-    super.dispose();
-  }
-
-  Future<void> getFavourites() async {
-    favourites = await controller.getFavouriteDeals();
-    _favouritesStreamController.add(favourites);
   }
 
   @override
@@ -74,21 +53,15 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         () => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            myController.selectedIndex.value == 0
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: Text(
-                      TempLanguage.txtYourFavorite,
-                      style: poppinsMedium(fontSize: 18),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: Text(
-                      TempLanguage.lblMyRewards.capitalizeEachWord(),
-                      style: poppinsMedium(fontSize: 18),
-                    ),
-                  ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                myController.selectedIndex.value == 0
+                    ? TempLanguage.txtYourFavorite
+                    : TempLanguage.lblMyRewards.capitalizeEachWord(),
+                style: poppinsMedium(fontSize: 18),
+              ),
+            ),
             const SpacerBoxVertical(height: 10),
             Padding(
               padding: const EdgeInsets.only(left: 12),
@@ -169,63 +142,61 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
             const SizedBox(height: 20),
             Expanded(
               child: myController.selectedIndex.value == 0
-                  ? StreamBuilder<List<DealModel>>(
-                      stream: _favouritesStreamController.stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: circularProgressBar());
-                        }
-                        if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        }
-                        if (!snapshot.hasData) {
-                          return const Center(child: Text('No data available'));
-                        }
-                        final List<DealModel> favourites = snapshot.data!;
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: favourites.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final DealModel favourite = favourites[index];
-                            return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const DealDetail()));
-                                },
-                                child: FavouritesWidget(
-                                  dealName: favourite.dealName ?? '',
-                                  restaurantName: favourite.companyName ?? '',
-                                  dealId: favourite.dealId ?? '',
-                                  uses: favourite.uses.toString(),
-                                  location: favourite.location ?? '',
-                                  image: favourite.image ?? '',
-                                ));
-                          },
-                        );
-                      })
-                  : GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RewardDetail()));
-                      },
-                      child: ListView(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        children: const [
-                          RewardsListItems(),
-                          RewardsListItems(),
-                          RewardsListItems(),
-                          RewardsListItems(),
-                          RewardsListItems(),
-                        ],
-                      ),
-                    ),
+                  ? Obx(() {
+                      if (myController.favouriteDeals.isEmpty) {
+                        return Center(child: Text('No Deals found'));
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: myController.favouriteDeals.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final DealModel favourite =
+                              myController.favouriteDeals[index];
+                          return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DealDetail()));
+                              },
+                              child: FavouritesWidget(
+                                dealName: favourite.dealName ?? '',
+                                restaurantName: favourite.companyName ?? '',
+                                dealId: favourite.dealId ?? '',
+                                uses: favourite.uses.toString(),
+                                location: favourite.location ?? '',
+                                image: favourite.image ?? '',
+                              ));
+                        },
+                      );
+                    })
+                  : Obx(() {
+                      if (myController.favouriteRewards.isEmpty) {
+                        return Center(child: Text('No Rewards found'));
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: myController.favouriteRewards.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final reward = myController.favouriteRewards[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RewardDetail(),
+                                ),
+                              );
+                            },
+                            child: RewardsListItems(
+                              reward: reward,
+                              userId: myController.currentUserId.value,
+                            ),
+                          );
+                        },
+                      );
+                    }),
             ),
           ],
         ),

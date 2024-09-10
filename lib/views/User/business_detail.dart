@@ -1,11 +1,11 @@
 // ignore_for_file: invalid_use_of_protected_member, unnecessary_null_comparison
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
-import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/business_detail_tile.dart';
@@ -15,7 +15,21 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class BusinessDetail extends StatefulWidget {
   final String? businessId;
-  const BusinessDetail({super.key, this.businessId});
+  final String? businessImage;
+  final String? businessRating;
+  final String? businessName;
+  final GeoPoint? businessLocation;
+  final String? businessPhone;
+  final String? businessWebsite;
+  const BusinessDetail(
+      {super.key,
+      this.businessId,
+      this.businessImage,
+      this.businessRating,
+      this.businessLocation,
+      this.businessPhone,
+      this.businessWebsite,
+      this.businessName});
 
   @override
   State<BusinessDetail> createState() => _BusinessDetailState();
@@ -49,14 +63,27 @@ class _BusinessDetailState extends State<BusinessDetail> {
 
           return Stack(
             children: [
-              Image.asset(AppAssets.imageHeader),
+              SizedBox(
+                width: double.infinity,
+                height: 200, // Set height for the image
+                child: Image.network(
+                  widget.businessImage ?? '',
+                  fit: BoxFit.cover,
+                ),
+              ),
               BackButtonWidget(),
               Padding(
                 padding: const EdgeInsets.only(top: 200),
                 child: Column(
                   children: [
                     const SpacerBoxVertical(height: 20),
-                    const BusinessDetailTile(),
+                    BusinessDetailTile(
+                      businessName: widget.businessName,
+                      rating: widget.businessRating,
+                      website: widget.businessWebsite,
+                      location: widget.businessLocation,
+                      phone: widget.businessPhone,
+                    ),
                     const SpacerBoxVertical(height: 10),
                     Padding(
                       padding: const EdgeInsets.only(left: 12),

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/ui_controllers/favourites_screen_controller.dart';
@@ -10,7 +9,6 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/views/user/reward_detail.dart';
-import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/widgets/favourites_widget.dart';
@@ -144,7 +142,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
               child: myController.selectedIndex.value == 0
                   ? Obx(() {
                       if (myController.favouriteDeals.isEmpty) {
-                        return Center(child: Text('No Deals found'));
+                        return const Center(child: Text('No Deals found'));
                       }
                       return ListView.builder(
                         shrinkWrap: true,
@@ -173,7 +171,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                     })
                   : Obx(() {
                       if (myController.favouriteRewards.isEmpty) {
-                        return Center(child: Text('No Rewards found'));
+                        return const Center(child: Text('No Rewards found'));
                       }
                       return ListView.builder(
                         shrinkWrap: true,

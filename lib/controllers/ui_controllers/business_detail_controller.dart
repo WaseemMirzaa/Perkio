@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/deals_service.dart';
 import 'package:swipe_app/services/reward_service.dart';
 import 'dart:developer' as developer;
@@ -13,6 +15,7 @@ class BusinessDetailController extends GetxController {
 
   final DealService _dealService = DealService();
   final RewardService _rewardService = RewardService();
+  Rx<UserModel?> userModel = Rx<UserModel?>(null);
 
   @override
   void onInit() {
@@ -22,6 +25,26 @@ class BusinessDetailController extends GetxController {
           'Fetching deals and reward for businessId: ${Get.parameters['businessId']}');
       fetchDeals(Get.parameters['businessId']!);
       fetchReward(Get.parameters['businessId']!);
+      fetchBusinessDetails(Get.parameters['businessId']!);
+    }
+  }
+
+  Future<void> fetchBusinessDetails(String businessId) async {
+    try {
+      developer.log('Fetching user details for businessId: $businessId');
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(businessId)
+          .get();
+      if (snapshot.exists) {
+        userModel.value = UserModel.fromDocumentSnapshot(snapshot);
+        developer
+            .log('Fetched business details successfully: ${userModel.value}');
+      } else {
+        developer.log('No business found for businessId: $businessId');
+      }
+    } catch (e) {
+      developer.log('Error fetching business details: $e');
     }
   }
 

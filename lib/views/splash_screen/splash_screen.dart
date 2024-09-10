@@ -41,28 +41,44 @@ class _SplashScreenState extends State<SplashScreen> {
         final user = await userController.getUser(currentUser!.uid);
 
         if (user != null) {
-
           userController.userModel.value = user;
-          final address = await GeoLocationHelper.getCityFromGeoPoint(user!.latLong!);
+          final address =
+              await GeoLocationHelper.getCityFromGeoPoint(user.latLong!);
 
-          if(!address.isEmptyOrNull){
+          if (!address.isEmptyOrNull) {
             await setValue(SharedPrefKey.address, address);
           }
-          if(userController.userModel.value.isVerified == StatusKey.verified) {
-            bool isGranted = await LocationPermissionManager.requestLocationPermissions(context);
-            isGranted ?
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                ? true
-                : false))),(route)=>false) : await LocationPermissionManager.requestLocationPermissions(context);
-          }else{
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> VerificationPendingView()), (route)=>false);
+          if (userController.userModel.value.isVerified == StatusKey.verified) {
+            bool isGranted =
+                await LocationPermissionManager.requestLocationPermissions(
+                    context);
+            isGranted
+                ? Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LocationService(
+                            child: BottomBarView(
+                                isUser: getStringAsync(SharedPrefKey.role) ==
+                                        SharedPrefKey.user
+                                    ? true
+                                    : false))),
+                    (route) => false)
+                : await LocationPermissionManager.requestLocationPermissions(
+                    context);
+          } else {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => VerificationPendingView()),
+                (route) => false);
           }
         } else {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LoginView()), (route)=> false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginView()),
+              (route) => false);
         }
-      } else {
-
-      }
+      } else {}
     });
   }
 
@@ -72,49 +88,87 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [AppColors.gradientStartColor,AppColors.gradientEndColor],begin: Alignment.topCenter, end: Alignment.bottomCenter)
-        ),
+            gradient: LinearGradient(colors: [
+          AppColors.gradientStartColor,
+          AppColors.gradientEndColor
+        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const SizedBox.shrink(),
-              Center(child: Column( mainAxisAlignment: MainAxisAlignment.center,
+              Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(TempLanguage.lblSwipe, style: altoysFont(fontSize: 45, color: AppColors.whiteColor), textAlign: TextAlign.center,),
-                  Text(TempLanguage.txtPointsToRedeemPoints, style: poppinsRegular(color: AppColors.whiteColor, fontSize: 16,), textAlign: TextAlign.center,),
+                  Text(
+                    TempLanguage.lblSwipe,
+                    style:
+                        altoysFont(fontSize: 45, color: AppColors.whiteColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    TempLanguage.txtPointsToRedeemPoints,
+                    style: poppinsRegular(
+                      color: AppColors.whiteColor,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               )),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
-              Text(TempLanguage.txtHowToUse, style: GoogleFonts.poppins(color: AppColors.whiteColor, fontSize: 18,),),
-              const SizedBox(height: 10,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                child: Container(
-                  height: 50.h,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                     borderRadius: const BorderRadius.all(Radius.circular(14)),
-                     boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3)// changes position of shadow
-                ),
-                              ],),
-                     child: Image.asset(AppAssets.pauseImg, scale: 3,),
-                ),
-              ),
-              const SizedBox(height: 30,),
-              ButtonWidget(onSwipe: (){
-
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> const SelectionScreen()));
-              }, text: TempLanguage.btnLblSwipeToStart,isGradient: false,),
-              ],)
+                  Text(
+                    TempLanguage.txtHowToUse,
+                    style: GoogleFonts.poppins(
+                      color: AppColors.whiteColor,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: Container(
+                      height: 50.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(14)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: const Offset(
+                                  0, 3) // changes position of shadow
+                              ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        AppAssets.pauseImg,
+                        scale: 3,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  ButtonWidget(
+                    onSwipe: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SelectionScreen()));
+                    },
+                    text: TempLanguage.btnLblSwipeToStart,
+                    isGradient: false,
+                  ),
+                ],
+              )
             ],
           ),
         ),

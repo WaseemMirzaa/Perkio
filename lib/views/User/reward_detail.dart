@@ -37,7 +37,9 @@ class _RewardDetailState extends State<RewardDetail> {
             children: [
               const SpacerBoxVertical(height: 20),
               // Pass the reward model to DetailTile
-              DetailTile(reward: widget.reward),
+              DetailTile(
+                businessId: widget.reward?.businessId,
+              ),
               const SpacerBoxVertical(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -51,8 +53,10 @@ class _RewardDetailState extends State<RewardDetail> {
                     ),
                     const SpacerBoxVertical(height: 10),
                     Text(
-                      widget.reward?.rewardAddress ?? TempLanguage.txtLoremIpsumShort,
-                      style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),
+                      widget.reward?.rewardAddress ??
+                          TempLanguage.txtLoremIpsumShort,
+                      style: poppinsRegular(
+                          fontSize: 10.sp, color: AppColors.hintText),
                     ),
                   ],
                 ),
@@ -61,7 +65,8 @@ class _RewardDetailState extends State<RewardDetail> {
               Center(
                 child: Text(
                   '${widget.reward?.pointsEarned ?? 0}/${widget.reward?.pointsToRedeem ?? 1000}',
-                  style: poppinsBold(fontSize: 13.sp, color: AppColors.secondaryText),
+                  style: poppinsBold(
+                      fontSize: 13.sp, color: AppColors.secondaryText),
                 ),
               ),
               const SpacerBoxVertical(height: 10),
@@ -89,7 +94,9 @@ class _RewardDetailState extends State<RewardDetail> {
                       Container(
                         height: 20,
                         width: widget.reward != null
-                            ? (widget.reward!.pointsEarned! / widget.reward!.pointsToRedeem!) * 220
+                            ? (widget.reward!.pointsEarned! /
+                                    widget.reward!.pointsToRedeem!) *
+                                220
                             : 0, // Adjust width based on progress
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
@@ -112,7 +119,8 @@ class _RewardDetailState extends State<RewardDetail> {
                             children: [
                               Text(
                                 TempLanguage.txtSpendMore,
-                                style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),
+                                style: poppinsRegular(
+                                    fontSize: 10.sp, color: AppColors.hintText),
                               ),
                               const SpacerBoxHorizontal(width: 20),
                               Text(

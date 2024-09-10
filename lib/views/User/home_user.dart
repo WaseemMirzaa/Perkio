@@ -8,7 +8,7 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/views/user/favourites.dart';
+import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
@@ -140,7 +140,9 @@ class _HomeUserState extends State<HomeUser> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FavouritesScreen(),
+                        builder: (context) => DealDetail(
+                          deal: deal,
+                        ),
                       ),
                     );
                   },
@@ -181,7 +183,9 @@ class _HomeUserState extends State<HomeUser> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FavouritesScreen(),
+                              builder: (context) => DealDetail(
+                                deal: deal,
+                              ),
                             ),
                           );
                         },
@@ -222,7 +226,9 @@ class _HomeUserState extends State<HomeUser> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FavouritesScreen(),
+                        builder: (context) => DealDetail(
+                          deal: deal,
+                        ),
                       ),
                     );
                   },

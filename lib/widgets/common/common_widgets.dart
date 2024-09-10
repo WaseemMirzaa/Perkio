@@ -112,9 +112,7 @@ Future showBalanceDialog({
                         toast('Please enter your budget');
                       } else if (promotionAmountController.text == '0') {
                         toast('Budget should greater than zero');
-                      } else if (budget != null &&
-                          controller.apc.value! > 0 &&
-                          budget >= 0) {
+                      } else if (controller.apc.value! > 0 && budget >= 0) {
                         input = promotionAmountController.text;
                         budget = input.isEmptyOrNull ? 0 : int.parse(input);
                         totalClicks = budget == null

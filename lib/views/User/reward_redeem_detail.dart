@@ -38,23 +38,39 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SpacerBoxVertical(height: 20),
-              const DetailTile(),
+              DetailTile(),
               const SpacerBoxVertical(height: 10),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(TempLanguage.txtRewardInfo, style: poppinsMedium(fontSize: 13.sp),),
-                    const SpacerBoxVertical(height: 10),
-                    Text(TempLanguage.txtLoremIpsumShort, style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),),
-                  ],
-                )
-              ),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        TempLanguage.txtRewardInfo,
+                        style: poppinsMedium(fontSize: 13.sp),
+                      ),
+                      const SpacerBoxVertical(height: 10),
+                      Text(
+                        TempLanguage.txtLoremIpsumShort,
+                        style: poppinsRegular(
+                            fontSize: 10.sp, color: AppColors.hintText),
+                      ),
+                    ],
+                  )),
               const SpacerBoxVertical(height: 20),
-              Center(child: Text(TempLanguage.txtPoints, style: poppinsBold(fontSize: 13.sp, color: AppColors.secondaryText),)),
+              Center(
+                  child: Text(
+                TempLanguage.txtPoints,
+                style: poppinsBold(
+                    fontSize: 13.sp, color: AppColors.secondaryText),
+              )),
               const SpacerBoxVertical(height: 10),
-              Center(child: Text('1000/1000', style: poppinsRegular(fontSize: 13.sp, color: AppColors.secondaryText),)),
+              Center(
+                  child: Text(
+                '1000/1000',
+                style: poppinsRegular(
+                    fontSize: 13.sp, color: AppColors.secondaryText),
+              )),
               const SpacerBoxVertical(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -66,29 +82,29 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                       Container(
                         height: 20,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.grey[200],
-                          boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3)
-                        )
-                      ]
-                        ),
+                            borderRadius: BorderRadius.circular(100),
+                            color: Colors.grey[200],
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3))
+                            ]),
                       ),
                       Container(
                         height: 20,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: const LinearGradient(
-                          colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                            colors: [
+                              AppColors.gradientStartColor,
+                              AppColors.gradientEndColor
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -96,13 +112,24 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
               const SpacerBoxVertical(height: 80),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: ButtonWidget(onSwipe: (){
-                  showCongratulationDialog(onDone: (){
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false);
-                  });
-                }, text: TempLanguage.btnLblSwipeToRedeem),
+                child: ButtonWidget(
+                    onSwipe: () {
+                      showCongratulationDialog(onDone: () {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LocationService(
+                                    child: BottomBarView(
+                                        isUser: getStringAsync(
+                                                    SharedPrefKey.role) ==
+                                                SharedPrefKey.user
+                                            ? true
+                                            : false))),
+                            (route) => false);
+                      });
+                    },
+                    text: TempLanguage.btnLblSwipeToRedeem),
               )
-
             ],
           ),
         ],
@@ -110,4 +137,3 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
     );
   }
 }
-

@@ -5,7 +5,6 @@ import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/scan_screen.dart';
-import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/models/reward_model.dart'; // Import RewardModel
@@ -26,12 +25,6 @@ class _RewardDetailState extends State<RewardDetail> {
       backgroundColor: AppColors.whiteColor,
       body: Column(
         children: [
-          Stack(
-            children: [
-              Image.asset(AppAssets.imageHeader),
-              BackButtonWidget(),
-            ],
-          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -124,8 +117,8 @@ class _RewardDetailState extends State<RewardDetail> {
                               ),
                               const SpacerBoxHorizontal(width: 20),
                               Text(
-                                "\$10", // Use actual logic if needed
-                                style: poppinsMedium(fontSize: 10.sp),
+                                "20 points", // Use actual logic if needed
+                                style: poppinsMedium(fontSize: 8.sp),
                               ),
                             ],
                           ),
@@ -142,7 +135,10 @@ class _RewardDetailState extends State<RewardDetail> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ScanScreen(),
+                        builder: (context) => ScanScreen(
+                          rewardModel:
+                              widget.reward, // Pass reward model to ScanScreen
+                        ),
                       ),
                     );
                   },

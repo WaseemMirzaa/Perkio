@@ -155,8 +155,9 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const DealDetail()));
+                                        builder: (context) => DealDetail(
+                                              deal: favourite,
+                                            )));
                               },
                               child: FavouritesWidget(
                                 dealName: favourite.dealName ?? '',

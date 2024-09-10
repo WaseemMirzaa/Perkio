@@ -11,9 +11,10 @@ class RewardModel {
   String? rewardAddress;
   int? pointsToRedeem;
   int? pointsEarned;
+  int? pointsPerScan; // Added field
   String? rewardLogo;
   Timestamp? createdAt;
-  List<String>? isFavourite; // Add this field
+  List<String>? isFavourite; // Added field
 
   RewardModel({
     this.businessId,
@@ -21,6 +22,7 @@ class RewardModel {
     this.noOfUsed,
     this.uses,
     this.rewardName,
+    this.pointsPerScan, // Initialize the new field
     this.companyName,
     this.rewardAddress,
     this.pointsToRedeem,
@@ -43,8 +45,10 @@ class RewardModel {
       rewardLogo: data[RewardKey.REWARDLOGO] ?? '',
       rewardAddress: data[RewardKey.REWARDADDRESS] ?? '',
       uses: data[RewardKey.USES] ?? 0,
+      pointsPerScan: data[RewardKey.POINTSPERSCAN] ?? 0, // Added field
       createdAt: data[RewardKey.CREATEDAT] ?? Timestamp.now(),
-      isFavourite: List<String>.from(data[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
+      isFavourite: List<String>.from(
+          data[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
     );
   }
 
@@ -60,8 +64,10 @@ class RewardModel {
       pointsToRedeem: map[RewardKey.POINTSTOREDEEM] ?? 0,
       pointsEarned: map[RewardKey.POINTSEARNED] ?? 0,
       rewardLogo: map[RewardKey.REWARDLOGO] ?? '',
+      pointsPerScan: map[RewardKey.POINTSPERSCAN] ?? 0, // Added field
       createdAt: map[RewardKey.CREATEDAT] ?? Timestamp.now(),
-      isFavourite: List<String>.from(map[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
+      isFavourite: List<String>.from(
+          map[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
     );
   }
 
@@ -77,6 +83,7 @@ class RewardModel {
       RewardKey.POINTSTOREDEEM: pointsToRedeem ?? 0,
       RewardKey.POINTSEARNED: pointsEarned ?? 0,
       RewardKey.REWARDLOGO: rewardLogo ?? '',
+      RewardKey.POINTSPERSCAN: pointsPerScan ?? 0, // Include the new field
       RewardKey.CREATEDAT: createdAt ?? Timestamp.now(),
       RewardKey.ISFAVOURITE: isFavourite ?? [], // Include the new field
     };

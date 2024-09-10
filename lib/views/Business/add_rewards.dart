@@ -41,7 +41,10 @@ class _AddRewardsState extends State<AddRewards> {
     return LoaderOverlay(
       child: Scaffold(
         backgroundColor: AppColors.whiteColor,
-        appBar: PreferredSize(preferredSize: Size.fromHeight(12.h), child: customAppBar(),),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(12.h),
+          child: customAppBar(),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -49,42 +52,59 @@ class _AddRewardsState extends State<AddRewards> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SpacerBoxVertical(height: 10),
-                Center(child: Text("Add Rewards Details", style: poppinsMedium(fontSize: 14),)),
+                Center(
+                    child: Text(
+                  "Add Rewards Details",
+                  style: poppinsMedium(fontSize: 14),
+                )),
                 const SpacerBoxVertical(height: 20),
-
                 Text('Rewards Name', style: poppinsRegular(fontSize: 13)),
                 const SpacerBoxVertical(height: 10),
-                TextFieldWidget(text: TempLanguage.txtSuperDuper,
-                  textController: myController.rewardNameController,focusNode: rewardNameNode, onEditComplete: ()=>focusChange(context, rewardNameNode, pointsToRedeemNode),),
+                TextFieldWidget(
+                  text: TempLanguage.txtSuperDuper,
+                  textController: myController.rewardNameController,
+                  focusNode: rewardNameNode,
+                  onEditComplete: () =>
+                      focusChange(context, rewardNameNode, pointsToRedeemNode),
+                ),
                 const SpacerBoxVertical(height: 20),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Points to Redeem', style: poppinsRegular(fontSize: 13),),
-                    Align(alignment: Alignment.centerRight, child: Text('PPS (Points Per Scan): ${controller.pps}'))
+                    Text(
+                      'Points to Redeem',
+                      style: poppinsRegular(fontSize: 13),
+                    ),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: Text('PPS (Points Per Scan): ${controller.pps}'))
                   ],
                 ),
                 const SpacerBoxVertical(height: 10),
                 TextFieldWidget(
-                  text: 'Points', textController: myController.pointsToRedeemController,keyboardType: TextInputType.number,focusNode: pointsToRedeemNode, onEditComplete: ()=>unFocusChange(context),inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                onSubmit: (value){
-                  int userInput = int.parse(value);
-                  if (userInput % controller.pps.value! == 0) {
-
-                  } else {
-                    showSnackBar('Invalid Input', 'Please enter a number that is a multiple of ${controller.pps.value}.');
-                  }
-                },
+                  text: 'Points',
+                  textController: myController.pointsToRedeemController,
+                  keyboardType: TextInputType.number,
+                  focusNode: pointsToRedeemNode,
+                  onEditComplete: () => unFocusChange(context),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onSubmit: (value) {
+                    int userInput = int.parse(value);
+                    if (userInput % controller.pps.value! == 0) {
+                    } else {
+                      showSnackBar('Invalid Input',
+                          'Please enter a number that is a multiple of ${controller.pps.value}.');
+                    }
+                  },
                 ),
                 const SpacerBoxVertical(height: 5),
-
-                const Align(alignment: Alignment.centerRight,child: Text('Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
-
+                const Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                        'Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
                 const SpacerBoxVertical(height: 20),
-                
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -92,7 +112,10 @@ class _AddRewardsState extends State<AddRewards> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(TempLanguage.txtUses, style: poppinsRegular(fontSize: 13),),
+                          Text(
+                            TempLanguage.txtUses,
+                            style: poppinsRegular(fontSize: 13),
+                          ),
                           const SpacerBoxVertical(height: 15),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -109,26 +132,27 @@ class _AddRewardsState extends State<AddRewards> {
                                       color: AppColors.whiteColor,
                                       boxShadow: [
                                         BoxShadow(
-                                            color: Colors.black.withOpacity(0.2),
+                                            color:
+                                                Colors.black.withOpacity(0.2),
                                             blurRadius: 6,
-                                            offset: const Offset(0, 3)
-                                        )
-                                      ]
-                                  ),
+                                            offset: const Offset(0, 3))
+                                      ]),
                                   child: Center(
-                                      child: Text('-', style: poppinsRegular(fontSize: 18),)
-                                  ),
+                                      child: Text(
+                                    '-',
+                                    style: poppinsRegular(fontSize: 18),
+                                  )),
                                 ),
                               ),
-
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Obx(() {
-                                  return Text("${myController.counter.value}",
-                                    style: poppinsRegular(fontSize: 17),);
+                                  return Text(
+                                    "${myController.counter.value}",
+                                    style: poppinsRegular(fontSize: 17),
+                                  );
                                 }),
                               ),
-
                               GestureDetector(
                                 onTap: () {
                                   myController.increaseCounter();
@@ -141,15 +165,16 @@ class _AddRewardsState extends State<AddRewards> {
                                       color: AppColors.whiteColor,
                                       boxShadow: [
                                         BoxShadow(
-                                            color: Colors.black.withOpacity(0.2),
+                                            color:
+                                                Colors.black.withOpacity(0.2),
                                             blurRadius: 6,
-                                            offset: const Offset(0, 3)
-                                        )
-                                      ]
-                                  ),
+                                            offset: const Offset(0, 3))
+                                      ]),
                                   child: Center(
-                                      child: Text('+', style: poppinsRegular(fontSize: 18),)
-                                  ),
+                                      child: Text(
+                                    '+',
+                                    style: poppinsRegular(fontSize: 18),
+                                  )),
                                 ),
                               )
                             ],
@@ -159,79 +184,107 @@ class _AddRewardsState extends State<AddRewards> {
                     )
                   ],
                 ),
-                const SizedBox(height: 15,),
-
-                Text('Reward  Logo', style: poppinsRegular(fontSize: 13),),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'Reward  Logo',
+                  style: poppinsRegular(fontSize: 13),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 40),
-                  child: Obx(() =>
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          uploadImageComp(homeController.pickedImage, () {
-                            showAdaptiveDialog(context: context, builder: (context) =>
-                                imageDialog(galleryTap: () {
-                                  Get.back();
-                                  homeController.pickImageFromGallery(isCropActive: false);
-                                }, cameraTap: () {
-                                  Get.back();
-                                  homeController.pickImageFromCamera(isCropActive: false);
-                                }));
-                          }),
-                          Positioned(
-                              top: -1.h,
-                              right: -0.8.h,
-                              child: IconButton(
-                                iconSize: 18.sp,
-                                onPressed: () {
-                                  homeController.setImageNull();
-                                }, icon: const Icon(
+                  child: Obx(
+                    () => Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        uploadImageComp(homeController.pickedImage, () {
+                          showAdaptiveDialog(
+                              context: context,
+                              builder: (context) => imageDialog(galleryTap: () {
+                                    Get.back();
+                                    homeController.pickImageFromGallery(
+                                        isCropActive: false);
+                                  }, cameraTap: () {
+                                    Get.back();
+                                    homeController.pickImageFromCamera(
+                                        isCropActive: false);
+                                  }));
+                        }),
+                        Positioned(
+                            top: -1.h,
+                            right: -0.8.h,
+                            child: IconButton(
+                              iconSize: 18.sp,
+                              onPressed: () {
+                                homeController.setImageNull();
+                              },
+                              icon: const Icon(
                                 Icons.close_rounded,
-                              ),)
-                          )
-                        ],
-                      ),
+                              ),
+                            ))
+                      ],
+                    ),
                   ),
                 ),
-
                 const SpacerBoxVertical(height: 50),
-                ButtonWidget(onSwipe: () async {
-                  int points = int.parse(myController.pointsToRedeemController.text);
-                  if (myController.rewardNameController.text.isEmptyOrNull) {
-                    showSnackBar('Empty Fields', 'Please enter the reward name');
-                  } else if((myController.pointsToRedeemController.text.isEmptyOrNull)){
-                    showSnackBar('Empty Fields', 'Please enter the points to redeem (PTR)');
-                  } else if(points == 0){
-                    showSnackBar('Amount incorrect', 'Budget should not be zero');
-                  } else if (homeController.pickedImage == null) {
-                    showSnackBar('Empty Fields', 'Please upload the reward logo');
-                  } else if (points % controller.pps.value! != 0) {
-                    showSnackBar('Invalid Input', 'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
-                  }else {
-                    context.loaderOverlay.show();
-                    final imageLink = await homeController.uploadImageToFirebaseWithCustomPath(
-                        homeController.pickedImage!.path,
-                        'Rewards/${DateTime.now().toIso8601String()}');
-                    print("Link Is: $imageLink");
-                    RewardModel rewardModel = RewardModel(
-                        rewardName: myController.rewardNameController.text,
-                        companyName: getStringAsync(SharedPrefKey.userName),
-                        rewardAddress: getStringAsync(SharedPrefKey.address),
-                        businessId: getStringAsync(SharedPrefKey.uid),
-                        rewardLogo: imageLink,
-                        pointsToRedeem: myController.pointsToRedeemController.text.toInt(),
-                        uses: myController.counter.value,
-                        createdAt: Timestamp.now());
-                    final isDealDone = await controller.addReward(rewardModel).then((value) {
-                      myController.clearTextFields();
-                      homeController.setImageNull();
-                      context.loaderOverlay.hide();
-                      Navigator.pop(context);
-                    });
-                    context.loaderOverlay.hide();
-                  }
-                }, text: TempLanguage.btnLblSwipeToAdd),
+                ButtonWidget(
+                    onSwipe: () async {
+                      int points =
+                          int.parse(myController.pointsToRedeemController.text);
+                      if (myController
+                          .rewardNameController.text.isEmptyOrNull) {
+                        showSnackBar(
+                            'Empty Fields', 'Please enter the reward name');
+                      } else if ((myController
+                          .pointsToRedeemController.text.isEmptyOrNull)) {
+                        showSnackBar('Empty Fields',
+                            'Please enter the points to redeem (PTR)');
+                      } else if (points == 0) {
+                        showSnackBar(
+                            'Amount incorrect', 'Budget should not be zero');
+                      } else if (homeController.pickedImage == null) {
+                        showSnackBar(
+                            'Empty Fields', 'Please upload the reward logo');
+                      } else if (points % controller.pps.value! != 0) {
+                        showSnackBar('Invalid Input',
+                            'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
+                      } else {
+                        context.loaderOverlay.show();
+                        final imageLink = await homeController
+                            .uploadImageToFirebaseWithCustomPath(
+                                homeController.pickedImage!.path,
+                                'Rewards/${DateTime.now().toIso8601String()}');
+                        print("Link Is: $imageLink");
+                        RewardModel rewardModel = RewardModel(
+                            rewardName: myController.rewardNameController.text,
+                            companyName: getStringAsync(SharedPrefKey.userName),
+                            rewardAddress:
+                                getStringAsync(SharedPrefKey.address),
+                            businessId: getStringAsync(SharedPrefKey.uid),
+                            rewardLogo: imageLink,
+                            pointsToRedeem: myController
+                                .pointsToRedeemController.text
+                                .toInt(),
+                            uses: myController.counter.value,
+                            pointsEarned: 0,
+                            pointsPerScan:
+                                controller.pps.value!, //passed the pps value
+                            createdAt: Timestamp.now());
+                        final isDealDone = await controller
+                            .addReward(rewardModel)
+                            .then((value) {
+                          myController.clearTextFields();
+                          homeController.setImageNull();
+                          context.loaderOverlay.hide();
+                          Navigator.pop(context);
+                        });
+                        context.loaderOverlay.hide();
+                      }
+                    },
+                    text: TempLanguage.btnLblSwipeToAdd),
               ],
             ),
           ),

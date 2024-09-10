@@ -1,9 +1,6 @@
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_document_scanner/flutter_document_scanner.dart';
 import 'package:get/get.dart';
-import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';

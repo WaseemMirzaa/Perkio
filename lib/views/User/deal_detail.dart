@@ -37,7 +37,6 @@ class _DealDetailState extends State<DealDetail> {
       backgroundColor: AppColors.whiteColor,
       body: Stack(
         children: [
-          
           Column(
             children: [
               const SpacerBoxVertical(height: 20),

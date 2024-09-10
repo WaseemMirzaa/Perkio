@@ -56,8 +56,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
         () {
           if (controller.allDeals.isEmpty && controller.reward.value == null) {
             return const Center(
-              child:
-                  const CircularProgressIndicator(), // Show loading indicator
+              child: CircularProgressIndicator(), // Show loading indicator
             );
           }
 
@@ -147,7 +146,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                               ),
                               child: Center(
                                 child: Text(
-                                  TempLanguage.lblOffers,
+                                  TempLanguage.lblMyRewards,
                                   style: poppinsRegular(
                                     fontSize: 9,
                                     color: controller.selectedIndex.value == 1

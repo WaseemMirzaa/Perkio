@@ -15,7 +15,8 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class RewardRedeemDetail extends StatefulWidget {
   final RewardModel? rewardModel;
-  const RewardRedeemDetail({super.key, this.rewardModel});
+  final String? userId;
+  const RewardRedeemDetail({super.key, this.rewardModel, this.userId});
 
   @override
   State<RewardRedeemDetail> createState() => _RewardRedeemDetailState();
@@ -68,8 +69,8 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
               const SpacerBoxVertical(height: 10),
               Center(
                 child: Text(
-                  '${rewardModel?.pointsEarned ?? 0}/${rewardModel?.pointsToRedeem ?? 0}',
-                  style: poppinsRegular(
+                  '${rewardModel?.pointsEarned?[widget.userId] ?? 0}/${rewardModel?.pointsToRedeem ?? 1000}',
+                  style: poppinsBold(
                       fontSize: 13.sp, color: AppColors.secondaryText),
                 ),
               ),
@@ -97,11 +98,15 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                       ),
                       Container(
                         height: 20,
-                        width: (rewardModel?.pointsEarned ?? 0) /
-                            (rewardModel?.pointsToRedeem ?? 1) *
-                            MediaQuery.of(context)
-                                .size
-                                .width, // Adjust width based on progress
+                        width:
+                            (rewardModel?.pointsEarned?[widget.userId] ?? 0) /
+                                ((rewardModel?.pointsToRedeem ?? 1) > 0
+                                    ? rewardModel!.pointsToRedeem!
+                                    : 1) *
+                                MediaQuery.of(context)
+                                    .size
+                                    .width, // Adjust width based on progress
+
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: const LinearGradient(

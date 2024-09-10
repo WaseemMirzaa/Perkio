@@ -184,7 +184,10 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const RewardDetail(),
+                                  builder: (context) => RewardDetail(
+                                    reward: reward,
+                                    userId: myController.currentUserId.value,
+                                  ),
                                 ),
                               );
                             },

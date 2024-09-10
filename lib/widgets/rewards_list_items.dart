@@ -13,8 +13,11 @@ class RewardsListItems extends StatefulWidget {
   final RewardModel? reward;
   final String? userId; // Make userId optional
 
-  const RewardsListItems(
-      {super.key, this.reward, this.userId}); // Update constructor
+  const RewardsListItems({
+    super.key,
+    this.reward,
+    this.userId,
+  });
 
   @override
   _RewardsListItemsState createState() => _RewardsListItemsState();
@@ -22,22 +25,34 @@ class RewardsListItems extends StatefulWidget {
 
 class _RewardsListItemsState extends State<RewardsListItems> {
   late bool isLiked;
+  late int pointsEarnedByUser;
 
   @override
   void initState() {
     super.initState();
-    // Handle the case where userId might be null
+
+    // Handle the case where userId and reward might be null
     isLiked = widget.userId != null &&
         widget.reward != null &&
         widget.reward!.isFavourite != null &&
         widget.reward!.isFavourite!.contains(widget.userId!);
+
+    // Fetch pointsEarned from the Map<String, int> using the userId
+    pointsEarnedByUser = (widget.userId != null &&
+            widget.reward != null &&
+            widget.reward!.pointsEarned != null)
+        ? (widget.reward!.pointsEarned![widget.userId!] ?? 0)
+        : 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    double progress = widget.reward != null
-        ? widget.reward!.pointsEarned! / widget.reward!.pointsToRedeem!
-        : 0.6;
+    // Ensure pointsToRedeem and pointsEarned are not null and prevent divide by 0
+    double progress = widget.reward != null &&
+            widget.reward!.pointsToRedeem != null &&
+            widget.reward!.pointsToRedeem! > 0
+        ? pointsEarnedByUser / widget.reward!.pointsToRedeem!
+        : 0.0;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
@@ -99,7 +114,7 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                       ),
                       const SpacerBoxVertical(height: 5),
                       Text(
-                        '${widget.reward?.pointsToRedeem ?? 1000 - (widget.reward?.pointsEarned ?? 200)} points away',
+                        '${widget.reward?.pointsToRedeem ?? 1000 - pointsEarnedByUser} points away',
                         style: poppinsRegular(
                             fontSize: 10.sp, color: AppColors.hintText),
                       ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -51,11 +53,13 @@ class RewardsView extends StatelessWidget {
                   final reward = _controller.rewards[index];
                   return GestureDetector(
                     onTap: () {
+                      log(_controller.currentUserId.value);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => RewardDetail(
                             reward: reward,
+                            userId: _controller.currentUserId.value,
                           ),
                         ),
                       );

@@ -10,7 +10,7 @@ class RewardModel {
   String? companyName;
   String? rewardAddress;
   int? pointsToRedeem;
-  int? pointsEarned;
+  Map<String, int>? pointsEarned; // Changed to Map<String, int>
   int? pointsPerScan; // Added field
   String? rewardLogo;
   Timestamp? createdAt;
@@ -26,7 +26,7 @@ class RewardModel {
     this.companyName,
     this.rewardAddress,
     this.pointsToRedeem,
-    this.pointsEarned,
+    this.pointsEarned, // Changed field type
     this.rewardLogo,
     this.createdAt,
     this.isFavourite, // Initialize the new field
@@ -41,14 +41,13 @@ class RewardModel {
       noOfUsed: data[RewardKey.NOOFUSED] ?? 0,
       companyName: data[RewardKey.COMPANYNAME] ?? '',
       pointsToRedeem: data[RewardKey.POINTSTOREDEEM] ?? 0,
-      pointsEarned: data[RewardKey.POINTSEARNED] ?? 0,
+      pointsEarned: Map<String, int>.from(data[RewardKey.POINTSEARNED] ?? {}), // Changed to Map<String, int>
       rewardLogo: data[RewardKey.REWARDLOGO] ?? '',
       rewardAddress: data[RewardKey.REWARDADDRESS] ?? '',
       uses: data[RewardKey.USES] ?? 0,
       pointsPerScan: data[RewardKey.POINTSPERSCAN] ?? 0, // Added field
       createdAt: data[RewardKey.CREATEDAT] ?? Timestamp.now(),
-      isFavourite: List<String>.from(
-          data[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
+      isFavourite: List<String>.from(data[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
     );
   }
 
@@ -62,12 +61,11 @@ class RewardModel {
       companyName: map[RewardKey.COMPANYNAME] ?? '',
       uses: map[RewardKey.USES] ?? 0,
       pointsToRedeem: map[RewardKey.POINTSTOREDEEM] ?? 0,
-      pointsEarned: map[RewardKey.POINTSEARNED] ?? 0,
+      pointsEarned: Map<String, int>.from(map[RewardKey.POINTSEARNED] ?? {}), // Changed to Map<String, int>
       rewardLogo: map[RewardKey.REWARDLOGO] ?? '',
       pointsPerScan: map[RewardKey.POINTSPERSCAN] ?? 0, // Added field
       createdAt: map[RewardKey.CREATEDAT] ?? Timestamp.now(),
-      isFavourite: List<String>.from(
-          map[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
+      isFavourite: List<String>.from(map[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
     );
   }
 
@@ -81,7 +79,7 @@ class RewardModel {
       RewardKey.REWARDADDRESS: rewardAddress ?? '',
       RewardKey.COMPANYNAME: companyName ?? '',
       RewardKey.POINTSTOREDEEM: pointsToRedeem ?? 0,
-      RewardKey.POINTSEARNED: pointsEarned ?? 0,
+      RewardKey.POINTSEARNED: pointsEarned ?? {}, // Changed to Map<String, int>
       RewardKey.REWARDLOGO: rewardLogo ?? '',
       RewardKey.POINTSPERSCAN: pointsPerScan ?? 0, // Include the new field
       RewardKey.CREATEDAT: createdAt ?? Timestamp.now(),

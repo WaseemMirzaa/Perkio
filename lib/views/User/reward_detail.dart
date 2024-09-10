@@ -11,8 +11,10 @@ import 'package:swipe_app/models/reward_model.dart'; // Import RewardModel
 
 class RewardDetail extends StatefulWidget {
   final RewardModel? reward; // Add an optional reward parameter
+  final String? userId; // Add an optional userId parameter
 
-  const RewardDetail({super.key, this.reward}); // Update constructor
+  const RewardDetail(
+      {super.key, this.reward, this.userId}); // Update constructor
 
   @override
   State<RewardDetail> createState() => _RewardDetailState();
@@ -57,7 +59,7 @@ class _RewardDetailState extends State<RewardDetail> {
               const SpacerBoxVertical(height: 20),
               Center(
                 child: Text(
-                  '${widget.reward?.pointsEarned ?? 0}/${widget.reward?.pointsToRedeem ?? 1000}',
+                  '${widget.reward?.pointsEarned?[widget.userId] ?? 0}/${widget.reward?.pointsToRedeem ?? 1000}',
                   style: poppinsBold(
                       fontSize: 13.sp, color: AppColors.secondaryText),
                 ),
@@ -86,11 +88,15 @@ class _RewardDetailState extends State<RewardDetail> {
                       ),
                       Container(
                         height: 20,
-                        width: widget.reward != null
-                            ? (widget.reward!.pointsEarned! /
-                                    widget.reward!.pointsToRedeem!) *
+                        width: (widget.reward != null &&
+                                widget.reward!.pointsToRedeem != null &&
+                                widget.reward!.pointsToRedeem! > 0)
+                            ? (widget.reward!.pointsEarned?[widget.userId!] ??
+                                    0) /
+                                widget.reward!.pointsToRedeem! *
                                 220
                             : 0, // Adjust width based on progress
+
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: const LinearGradient(
@@ -138,6 +144,7 @@ class _RewardDetailState extends State<RewardDetail> {
                         builder: (context) => ScanScreen(
                           rewardModel:
                               widget.reward, // Pass reward model to ScanScreen
+                          userId: widget.userId, // Pass userId to ScanScreen
                         ),
                       ),
                     );

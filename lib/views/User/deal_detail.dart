@@ -1,4 +1,4 @@
-import 'dart:math'; // Import to use math functions
+// Import to use math functions
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

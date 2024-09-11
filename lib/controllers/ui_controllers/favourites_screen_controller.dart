@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:swipe_app/models/deal_model.dart';
@@ -12,40 +10,46 @@ class FavouritesScreenController extends GetxController {
   RxList<RewardModel> favouriteRewards = <RewardModel>[].obs;
   final UserController userController = Get.find<UserController>();
   var currentUserId = ''.obs; // Observable variable for the current user UID
+  RxMap<String, bool> favoriteCache =
+      <String, bool>{}.obs; // Cache for favorite status
 
   @override
   void onInit() {
     super.onInit();
+    currentUserId.value =
+        getCurrentUserId(); // Initialize with the current user UID
     loadFavourites();
-    currentUserId.value = getCurrentUserId(); // Initialize with the current user UID
   }
 
-   String getCurrentUserId() {
-    // Get the current user from Firebase Auth
+  String getCurrentUserId() {
     User? user = FirebaseAuth.instance.currentUser;
-
-    // Check if user is signed in, return UID if signed in, otherwise return an empty string or handle the case
     if (user != null) {
       return user.uid;
     } else {
-      // Handle the case where the user is not signed in
-      log('No user is currently signed in.');
       return '';
     }
   }
 
-  
-
   void selectIndex(int index) {
     selectedIndex.value = index;
-    loadFavourites();  // Reload data when index changes
+    loadFavourites(); // Reload data when index changes
   }
 
   Future<void> loadFavourites() async {
     if (selectedIndex.value == 0) {
       favouriteDeals.value = await userController.getFavouriteDeals();
+      // Update favorite cache
+      favoriteCache.clear();
+      for (var deal in favouriteDeals) {
+        favoriteCache[deal.dealId!] = true;
+      }
     } else {
       favouriteRewards.value = await userController.getFavouriteRewards();
+      // Update favorite cache
+      favoriteCache.clear();
+      for (var reward in favouriteRewards) {
+        favoriteCache[reward.rewardId!] = true;
+      }
     }
   }
 }

@@ -139,24 +139,34 @@ class UserServices {
 
 // Fetch deal based on usedBy list
   Future<List<DealModel>> getDealsUsedByCurrentUser() async {
-  final userId = authServices.auth.currentUser!.uid;
+    final userId = authServices.auth.currentUser!.uid;
 
-  // Fetch deals where 'usedBy' is not empty (optimization step)
-  final querySnapshot = await _dealCollection
-      .where('usedBy', isNotEqualTo: {}) // Fetch deals where 'usedBy' exists
-      .get();
+    // Fetch deals where 'usedBy' is not empty (optimization step)
+    final querySnapshot = await _dealCollection
+        .where('usedBy', isNotEqualTo: {}) // Fetch deals where 'usedBy' exists
+        .get();
 
-  // Filter results based on whether 'usedBy' map contains the userId
-  return querySnapshot.docs
-      .where((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        final usedBy = Map<String, int>.from(data['usedBy'] ?? {});
-        return usedBy.containsKey(userId); // Only return deals where userId exists in usedBy map
-      })
-      .map<DealModel>((doc) {
-        return DealModel.fromDocumentSnapshot(doc as DocumentSnapshot<Map<String, dynamic>>);
-      })
-      .toList();
-}
+    // Filter results based on whether 'usedBy' map contains the userId
+    return querySnapshot.docs.where((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      final usedBy = Map<String, int>.from(data['usedBy'] ?? {});
+      return usedBy.containsKey(
+          userId); // Only return deals where userId exists in usedBy map
+    }).map<DealModel>((doc) {
+      return DealModel.fromDocumentSnapshot(
+          doc as DocumentSnapshot<Map<String, dynamic>>);
+    }).toList();
+  }
 
+  Future<UserModel?> fetchBusinessDetails(String businessId) async {
+    try {
+      DocumentSnapshot snapshot = await _userCollection.doc(businessId).get();
+      if (snapshot.exists) {
+        return UserModel.fromDocumentSnapshot(snapshot);
+      }
+    } catch (e) {
+      print('Error fetching business details: $e');
+    }
+    return null;
+  }
 }

@@ -8,11 +8,12 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/user/business_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
+import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
-import 'package:swipe_app/core/utils/constants/temp_language.dart'; // Import the controller
+import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class DetailTile extends StatelessWidget {
-  final String? businessId; // Optional parameter
+  final String? businessId;
 
   const DetailTile({super.key, this.businessId});
 
@@ -35,11 +36,37 @@ class DetailTile extends StatelessWidget {
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 200, // Set height for the image
-                child: Image.network(
-                  controller.userModel.value?.image ?? '',
-                  fit: BoxFit.cover,
-                ),
+                height: 200,
+                child: user?.image == null || user?.image == ''
+                    ? Center(
+                        child:
+                            circularProgressBar()) // Show loading indicator if no image URL
+                    : Image.network(
+                        user?.image ?? '',
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.gradientStartColor,
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                              ),
+                            );
+                          }
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Image.asset(AppAssets.foodImg, scale: 3),
+                          );
+                        },
+                      ),
               ),
               Positioned(
                 top: -20,
@@ -50,7 +77,7 @@ class DetailTile extends StatelessWidget {
                           isUser: true,
                         ));
                   },
-                ), // Position BackButtonWidget as needed
+                ),
               ),
             ],
           ),
@@ -67,8 +94,7 @@ class DetailTile extends StatelessWidget {
                     children: [
                       Text(
                         user?.userName ?? TempLanguage.txtBusinessName,
-                        style:
-                            poppinsMedium(fontSize: 14), // Adjusted font size
+                        style: poppinsMedium(fontSize: 14),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -90,7 +116,7 @@ class DetailTile extends StatelessWidget {
                         child: Text(
                           TempLanguage.txtViewDeals,
                           style: poppinsMedium(
-                            fontSize: 8.sp, // Adjusted font size
+                            fontSize: 8.sp,
                             color: AppColors.yellowColor,
                           ),
                         ),
@@ -107,7 +133,7 @@ class DetailTile extends StatelessWidget {
                       ),
                       const SpacerBoxHorizontal(width: 4),
                       Text(
-                        "4.5k", // Rating from model or default
+                        "4.5k",
                         style: poppinsRegular(
                             fontSize: 10, color: AppColors.yellowColor),
                       ),
@@ -149,10 +175,9 @@ class DetailTile extends StatelessWidget {
                       ),
                       const SpacerBoxHorizontal(width: 4),
                       Expanded(
-                        // Wrap the Text widget in Expanded to take up available space
                         child: Text(
                           user?.address ?? 'No Location available',
-                          overflow: TextOverflow.ellipsis, // Add this line
+                          overflow: TextOverflow.ellipsis,
                           style: poppinsRegular(
                             fontSize: 10,
                             color: AppColors.hintText,

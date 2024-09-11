@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -29,6 +31,38 @@ class DealDetail extends StatefulWidget {
 class _DealDetailState extends State<DealDetail> {
   final BusinessDetailController controller =
       Get.put(BusinessDetailController());
+  bool canSwipe = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserUsage();
+  }
+
+  // Method to check if the user can still use the deal
+  Future<void> _checkUserUsage() async {
+    String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    DocumentReference dealRef =
+        FirebaseFirestore.instance.collection('deals').doc(widget.deal!.dealId);
+
+    // Get the current deal document
+    DocumentSnapshot dealSnapshot = await dealRef.get();
+    if (dealSnapshot.exists) {
+      Map<String, dynamic> dealData =
+          dealSnapshot.data() as Map<String, dynamic>;
+
+      // Get the 'usedBy' map
+      Map<String, int> usedBy = Map<String, int>.from(dealData['usedBy'] ?? {});
+
+      // Check if the user's usage equals or exceeds the deal's maximum allowed uses
+      if ((usedBy[userId] ?? 0) >= widget.deal!.uses!) {
+        setState(() {
+          canSwipe = false; // Disable swipe if the user reached the limit
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final deal = widget.deal;
@@ -40,7 +74,6 @@ class _DealDetailState extends State<DealDetail> {
           Column(
             children: [
               const SpacerBoxVertical(height: 20),
-              //business info will pass here
               DetailTile(
                 businessId: deal!.businessId,
               ),
@@ -85,30 +118,47 @@ class _DealDetailState extends State<DealDetail> {
                 scale: 3,
               ),
               const SpacerBoxVertical(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: ButtonWidget(
-                  onSwipe: () {
-                    showCongratulationDialog(onDone: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LocationService(
-                            child: BottomBarView(
-                              isUser: getStringAsync(SharedPrefKey.role) ==
-                                      SharedPrefKey.user
-                                  ? true
-                                  : false,
+
+              // Conditionally show the swipe button if the user can still swipe
+              if (canSwipe)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ButtonWidget(
+                    onSwipe: () async {
+                      // Call the updateUsedBy method with the deal's ID
+                      await controller.updateUsedBy(deal.dealId!);
+                      showCongratulationDialog(onDone: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LocationService(
+                              child: BottomBarView(
+                                isUser: getStringAsync(SharedPrefKey.role) ==
+                                        SharedPrefKey.user
+                                    ? true
+                                    : false,
+                              ),
                             ),
                           ),
-                        ),
-                        (route) => false,
-                      );
-                    });
-                  },
-                  text: TempLanguage.btnLblSwipeToRedeem,
+                          (route) => false,
+                        );
+                      });
+                    },
+                    text: TempLanguage.btnLblSwipeToRedeem,
+                  ),
                 ),
-              ),
+              if (!canSwipe)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    "You have used this deal the maximum allowed times.",
+                    style: poppinsRegular(
+                      fontSize: 12.sp,
+                      color: AppColors.hintText,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
             ],
           ),
         ],

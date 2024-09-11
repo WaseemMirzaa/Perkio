@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
@@ -73,6 +74,37 @@ class BusinessDetailController extends GetxController {
       developer.log('Fetched reward successfully: $rewardData');
     } catch (e) {
       developer.log('Error fetching reward: $e');
+    }
+  }
+
+  //add a method to update the usedBy field
+  // add all users and used deals to the firestore
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> updateUsedBy(String dealId) async {
+    String userId = _auth.currentUser?.uid ?? '';
+
+    DocumentReference dealRef = _firestore.collection('deals').doc(dealId);
+
+    // Get the current deal document
+    DocumentSnapshot dealSnapshot = await dealRef.get();
+
+    if (dealSnapshot.exists) {
+      Map<String, dynamic> dealData =
+          dealSnapshot.data() as Map<String, dynamic>;
+
+      // Get the current 'usedBy' map or create a new one
+      Map<String, int> usedBy = Map<String, int>.from(dealData['usedBy'] ?? {});
+
+      // Increment the usage count for the current user
+      usedBy[userId] = (usedBy[userId] ?? 0) + 1;
+
+      // Update the deal document with the new 'usedBy' map
+      await dealRef.update({
+        'usedBy': usedBy,
+      });
     }
   }
 }

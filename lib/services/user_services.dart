@@ -139,13 +139,24 @@ class UserServices {
 
 // Fetch deal based on usedBy list
   Future<List<DealModel>> getDealsUsedByCurrentUser() async {
-    final userId = authServices.auth.currentUser!.uid;
-    final querySnapshot =
-        await _dealCollection.where('usedBy', arrayContains: userId).get();
+  final userId = authServices.auth.currentUser!.uid;
 
-    return querySnapshot.docs.map<DealModel>((doc) {
-      return DealModel.fromDocumentSnapshot(
-          doc as DocumentSnapshot<Map<String, dynamic>>);
-    }).toList();
-  }
+  // Fetch deals where 'usedBy' is not empty (optimization step)
+  final querySnapshot = await _dealCollection
+      .where('usedBy', isNotEqualTo: {}) // Fetch deals where 'usedBy' exists
+      .get();
+
+  // Filter results based on whether 'usedBy' map contains the userId
+  return querySnapshot.docs
+      .where((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        final usedBy = Map<String, int>.from(data['usedBy'] ?? {});
+        return usedBy.containsKey(userId); // Only return deals where userId exists in usedBy map
+      })
+      .map<DealModel>((doc) {
+        return DealModel.fromDocumentSnapshot(doc as DocumentSnapshot<Map<String, dynamic>>);
+      })
+      .toList();
+}
+
 }

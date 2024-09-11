@@ -13,10 +13,11 @@ class DealModel {
   int? likes;
   int? views;
   String? location;
-  GeoPoint? longLat; // Use longLat field
+  GeoPoint? longLat; 
   List<String>? favourites;
   List<String>? dealParams;
   Timestamp? createdAt;
+  Map<String, int>? usedBy; // Add this line
 
   DealModel({
     this.businessId,
@@ -30,10 +31,11 @@ class DealModel {
     this.likes,
     this.noOfUsedTellNow,
     this.location,
-    this.longLat, // Use longLat parameter
+    this.longLat,
     this.favourites,
     this.createdAt,
     this.dealParams,
+    this.usedBy, // Add this
   });
 
   factory DealModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -50,16 +52,11 @@ class DealModel {
       likes: data[DealKey.LIKES] ?? 0,
       views: data[DealKey.VIEWS] ?? 0,
       location: data[DealKey.LOCATION] ?? '',
-      longLat: data[DealKey.LATLONG] != null
-          ? data[DealKey.LATLONG] as GeoPoint
-          : null, // Parse GeoPoint
-      favourites: data[DealKey.FAVOURITES] != null
-          ? List<String>.from(data[DealKey.FAVOURITES])
-          : [],
-      dealParams: data[DealKey.DEALPARAMS] != null
-          ? List<String>.from(data[DealKey.DEALPARAMS])
-          : [],
+      longLat: data[DealKey.LATLONG] != null ? data[DealKey.LATLONG] as GeoPoint : null,
+      favourites: data[DealKey.FAVOURITES] != null ? List<String>.from(data[DealKey.FAVOURITES]) : [],
+      dealParams: data[DealKey.DEALPARAMS] != null ? List<String>.from(data[DealKey.DEALPARAMS]) : [],
       createdAt: data[DealKey.CREATEDAT] ?? Timestamp.now(),
+      usedBy: data['usedBy'] != null ? Map<String, int>.from(data['usedBy']) : {}, // Add this
     );
   }
 
@@ -70,23 +67,17 @@ class DealModel {
       dealName: map[DealKey.DEALNAME],
       companyName: map[DealKey.COMPANYNAME],
       image: map[DealKey.IMAGE],
+      isPromotionStar: map[DealKey.ISPROMOTIONSTART] ?? false,
       uses: map[DealKey.USES] ?? 0,
       noOfUsedTellNow: map[DealKey.NOOFUSEDTELLNOW] ?? 0,
-      isPromotionStar: map[DealKey.ISPROMOTIONSTART],
-      location: map[DealKey.LOCATION],
       likes: map[DealKey.LIKES] ?? 0,
-      views: map[DealKey.LIKES] ?? 0,
-      favourites: map[DealKey.FAVOURITES] != null
-          ? List<String>.from(map[DealKey.FAVOURITES])
-          : [],
-      dealParams: map[DealKey.DEALPARAMS] != null
-          ? List<String>.from(map[DealKey.DEALPARAMS])
-          : [],
+      views: map[DealKey.VIEWS] ?? 0,
+      location: map[DealKey.LOCATION],
+      longLat: map[DealKey.LATLONG] != null ? map[DealKey.LATLONG] as GeoPoint : null,
+      favourites: map[DealKey.FAVOURITES] != null ? List<String>.from(map[DealKey.FAVOURITES]) : [],
+      dealParams: map[DealKey.DEALPARAMS] != null ? List<String>.from(map[DealKey.DEALPARAMS]) : [],
       createdAt: map[DealKey.CREATEDAT] ?? Timestamp.now(),
-      longLat: map[DealKey.LATLONG] != null
-          ? map[DealKey.LATLONG] as GeoPoint
-          : null, //
-      // Parse GeoPoint
+      usedBy: map['usedBy'] != null ? Map<String, int>.from(map['usedBy']) : {}, // Add this
     );
   }
 
@@ -106,10 +97,10 @@ class DealModel {
       DealKey.FAVOURITES: favourites ?? [],
       DealKey.DEALPARAMS: dealParams ?? [],
       DealKey.CREATEDAT: createdAt ?? Timestamp.now(),
+      'usedBy': usedBy ?? {}, // Add this
     };
 
-    if (longLat != null) map[DealKey.LATLONG] = longLat!; // Add GeoPoint to map
-
+    if (longLat != null) map[DealKey.LATLONG] = longLat!;
     return map;
   }
 }

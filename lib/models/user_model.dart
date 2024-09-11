@@ -17,6 +17,7 @@ class UserModel {
   int? balance;
   bool? isPromotionStart;
   String? isVerified;
+  String? address; // Add this line
 
   UserModel(
       {this.userId,
@@ -33,7 +34,9 @@ class UserModel {
       this.balance,
       this.isPromotionStart,
       this.isVerified,
-      this.stripeCustomerId});
+      this.stripeCustomerId,
+      this.address // Add this line
+      });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
@@ -52,6 +55,7 @@ class UserModel {
       isPromotionStart: data[UserKey.ISPROMOTIONSTART] ?? false,
       isVerified: data[UserKey.ISVERIFIED] ?? StatusKey.pending,
       stripeCustomerId: data[UserKey.STRIPECUSTOMERID] ?? '',
+      address: data[UserKey.ADDRESS],
     );
   }
 
@@ -71,6 +75,7 @@ class UserModel {
       isPromotionStart: map[UserKey.ISPROMOTIONSTART] ?? false,
       isVerified: map[UserKey.ISVERIFIED] ?? StatusKey.pending,
       stripeCustomerId: map[UserKey.STRIPECUSTOMERID] ?? '',
+      address: map[UserKey.ADDRESS], // Add this line
     );
   }
 
@@ -82,7 +87,7 @@ class UserModel {
       UserKey.PHONENO: phoneNo ?? '',
       UserKey.IMAGE: image,
       UserKey.LOGO: logo,
-      UserKey.LATLONG: latLong ?? GeoPoint(0, 0),
+      UserKey.LATLONG: latLong ?? const GeoPoint(0, 0),
       UserKey.WEBSITE: website,
       UserKey.ROLE: role,
       UserKey.BUSINESSID: businessId,
@@ -90,6 +95,7 @@ class UserModel {
       UserKey.ISPROMOTIONSTART: isPromotionStart ?? false,
       UserKey.ISVERIFIED: isVerified ?? StatusKey.pending,
       UserKey.STRIPECUSTOMERID: stripeCustomerId ?? '',
+      UserKey.ADDRESS: address, // Add this line
     };
   }
 }

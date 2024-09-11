@@ -20,7 +20,7 @@ class BusinessDetail extends StatefulWidget {
   final String? businessImage;
   final String? businessRating;
   final String? businessName;
-  final GeoPoint? businessLocation;
+  final String? businessLocation;
   final String? businessPhone;
   final String? businessWebsite;
   const BusinessDetail(

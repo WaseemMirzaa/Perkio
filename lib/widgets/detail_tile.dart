@@ -79,7 +79,7 @@ class DetailTile extends StatelessWidget {
                                 businessImage: user?.image,
                                 businessRating: '4.5k',
                                 businessName: user?.userName,
-                                businessLocation: user?.latLong,
+                                businessLocation: user?.address,
                                 businessPhone: user?.phoneNo,
                                 businessWebsite: user?.website,
                                 businessId: businessId,
@@ -113,19 +113,20 @@ class DetailTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (user?.phoneNo != null) const SpacerBoxVertical(height: 5),
-                  Row(
-                    children: [
-                      const Icon(Icons.phone,
-                          color: AppColors.hintText, size: 10),
-                      const SpacerBoxHorizontal(width: 4),
-                      Text(
-                        user?.phoneNo ?? TempLanguage.txtDummyPhone,
-                        style: poppinsRegular(
-                            fontSize: 10, color: AppColors.hintText),
-                      ),
-                    ],
-                  ),
+                  const SpacerBoxVertical(height: 5),
+                  if (user?.phoneNo != null)
+                    Row(
+                      children: [
+                        const Icon(Icons.phone,
+                            color: AppColors.hintText, size: 10),
+                        const SpacerBoxHorizontal(width: 4),
+                        Text(
+                          user?.phoneNo ?? 'No Phone available',
+                          style: poppinsRegular(
+                              fontSize: 10, color: AppColors.hintText),
+                        ),
+                      ],
+                    ),
                   if (user?.website != null) const SpacerBoxVertical(height: 5),
                   Row(
                     children: [
@@ -138,14 +139,14 @@ class DetailTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (user?.latLong != null) const SpacerBoxVertical(height: 5),
+                  const SpacerBoxVertical(height: 5),
                   Row(
                     children: [
                       const Icon(Icons.location_on,
                           color: AppColors.hintText, size: 10),
                       const SpacerBoxHorizontal(width: 4),
                       Text(
-                        "${user!.latLong!.latitude}, ${user.latLong!.longitude}",
+                        user?.address ?? 'No Location available',
                         style: poppinsRegular(
                             fontSize: 10, color: AppColors.hintText),
                       ),

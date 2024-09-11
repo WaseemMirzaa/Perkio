@@ -13,7 +13,7 @@ class BusinessDetailTile extends StatelessWidget {
   final String? businessName;
   final String? rating;
   final String? website;
-  final GeoPoint? location;
+  final String? location;
   final String? phone;
 
   const BusinessDetailTile({
@@ -50,7 +50,7 @@ class BusinessDetailTile extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -70,16 +70,16 @@ class BusinessDetailTile extends StatelessWidget {
                       )),
                 ],
               ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               if (rating != null)
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.star_half,
                       color: AppColors.yellowColor,
                       size: 10,
                     ),
-                    SpacerBoxHorizontal(width: 4),
+                    const SpacerBoxHorizontal(width: 4),
                     Text(
                       rating!,
                       style: poppinsRegular(
@@ -87,16 +87,16 @@ class BusinessDetailTile extends StatelessWidget {
                     ),
                   ],
                 ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
               if (phone != null)
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.phone,
                       color: AppColors.hintText,
                       size: 10,
                     ),
-                    SpacerBoxHorizontal(width: 4),
+                    const SpacerBoxHorizontal(width: 4),
                     Text(
                       phone!,
                       style: poppinsRegular(
@@ -104,42 +104,38 @@ class BusinessDetailTile extends StatelessWidget {
                     ),
                   ],
                 ),
-              SpacerBoxVertical(height: 5),
-              if (website != null)
-                Row(
-                  children: [
-                    Image.asset(
-                      AppAssets.globeImg,
-                      scale: 3,
-                    ),
-                    SpacerBoxHorizontal(width: 4),
-                    Text(
-                      website!,
-                      style: poppinsRegular(
-                          fontSize: 10, color: AppColors.hintText),
-                    ),
-                  ],
-                ),
-              SpacerBoxVertical(height: 5),
-              if (location != null)
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      color: AppColors.hintText,
-                      size: 10,
-                    ),
-                    SpacerBoxHorizontal(width: 4),
-                    Text(
-                      location!.latitude.toString() +
-                          ', ' +
-                          location!.longitude.toString(),
-                      style: poppinsRegular(
-                          fontSize: 10, color: AppColors.hintText),
-                    ),
-                  ],
-                ),
-              SpacerBoxVertical(height: 5),
+              const SpacerBoxVertical(height: 5),
+              Row(
+                children: [
+                  Image.asset(
+                    AppAssets.globeImg,
+                    scale: 3,
+                  ),
+                  const SpacerBoxHorizontal(width: 4),
+                  Text(
+                    website!,
+                    style:
+                        poppinsRegular(fontSize: 10, color: AppColors.hintText),
+                  ),
+                ],
+              ),
+              const SpacerBoxVertical(height: 5),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    color: AppColors.hintText,
+                    size: 10,
+                  ),
+                  const SpacerBoxHorizontal(width: 4),
+                  Text(
+                    location ?? 'No Location available',
+                    style:
+                        poppinsRegular(fontSize: 10, color: AppColors.hintText),
+                  ),
+                ],
+              ),
+              const SpacerBoxVertical(height: 5),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(

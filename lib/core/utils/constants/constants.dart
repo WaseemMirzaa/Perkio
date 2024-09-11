@@ -14,6 +14,7 @@ class UserKey {
   static const String ISPROMOTIONSTART = 'isPromotionStart';
   static const String ISVERIFIED = 'isVerified';
   static const String STRIPECUSTOMERID = 'stripeCustomerId';
+  static const String ADDRESS = 'address';
 }
 
 class CollectionsKey {

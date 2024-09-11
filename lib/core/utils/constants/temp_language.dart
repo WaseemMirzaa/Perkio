@@ -100,7 +100,7 @@ class TempLanguage {
   static const String txtStopPromotion = 'Stop Promotion';
   static const String txtPromote = 'Promote';
   static const String txtCongratulations =
-      'You have successfully recorded a minimum of five voice messages for your voice cloning. Please continue recording more for better accuracy or press skip to go to the next step.';
+      '';
   static const String txtPointsAway = '200 Points Away';
   static const String txtSearch = 'Search';
   static const String txtRedeemDeals = 'Redeem Unlimited Deals';

@@ -39,7 +39,9 @@ class _DealDetailState extends State<DealDetail> {
     _checkUserUsage();
   }
 
-  // Method to check if the user can still use the deal
+  int userCurrentUsage =
+      0; // Add this variable to store the user's current usage
+
   Future<void> _checkUserUsage() async {
     String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     DocumentReference dealRef =
@@ -54,8 +56,11 @@ class _DealDetailState extends State<DealDetail> {
       // Get the 'usedBy' map
       Map<String, int> usedBy = Map<String, int>.from(dealData['usedBy'] ?? {});
 
+      // Check and update the user's current usage
+      userCurrentUsage = usedBy[userId] ?? 0;
+
       // Check if the user's usage equals or exceeds the deal's maximum allowed uses
-      if ((usedBy[userId] ?? 0) >= widget.deal!.uses!) {
+      if (userCurrentUsage >= widget.deal!.uses!) {
         setState(() {
           canSwipe = false; // Disable swipe if the user reached the limit
         });
@@ -127,26 +132,36 @@ class _DealDetailState extends State<DealDetail> {
                     onSwipe: () async {
                       // Call the updateUsedBy method with the deal's ID
                       await controller.updateUsedBy(deal.dealId!);
-                      showCongratulationDialog(onDone: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LocationService(
-                              child: BottomBarView(
-                                isUser: getStringAsync(SharedPrefKey.role) ==
-                                        SharedPrefKey.user
-                                    ? true
-                                    : false,
+
+                      // Calculate remaining uses (deal.uses! - userCurrentUsage - 1 after swipe)
+                      int remainingUses = deal.uses! - userCurrentUsage - 1;
+
+                      // Show the congratulation dialog with remaining uses
+                      showCongratulationDialog(
+                        onDone: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LocationService(
+                                child: BottomBarView(
+                                  isUser: getStringAsync(SharedPrefKey.role) ==
+                                          SharedPrefKey.user
+                                      ? true
+                                      : false,
+                                ),
                               ),
                             ),
-                          ),
-                          (route) => false,
-                        );
-                      });
+                            (route) => false,
+                          );
+                        },
+                        remainingUses:
+                            remainingUses, // Pass remaining uses here
+                      );
                     },
                     text: TempLanguage.btnLblSwipeToRedeem,
                   ),
                 ),
+
               if (!canSwipe)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),

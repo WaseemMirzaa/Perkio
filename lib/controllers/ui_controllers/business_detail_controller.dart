@@ -17,10 +17,14 @@ class BusinessDetailController extends GetxController {
   final DealService _dealService = DealService();
   final RewardService _rewardService = RewardService();
   Rx<UserModel?> userModel = Rx<UserModel?>(null);
+  String? currentUserId; // Store the current user's UID
 
   @override
   void onInit() {
     super.onInit();
+
+    // Get the current user UID from Firebase Auth
+    currentUserId = FirebaseAuth.instance.currentUser?.uid;
     if (Get.parameters['businessId'] != null) {
       developer.log(
           'Fetching deals and reward for businessId: ${Get.parameters['businessId']}');

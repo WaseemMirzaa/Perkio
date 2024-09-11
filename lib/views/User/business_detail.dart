@@ -7,6 +7,8 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/user/deal_detail.dart';
+import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/business_detail_tile.dart';
 import 'package:swipe_app/widgets/business_detail_tiles.dart';
@@ -166,8 +168,17 @@ class _BusinessDetailState extends State<BusinessDetail> {
                         children: controller.selectedIndex.value == 0
                             ? controller.allDeals.isNotEmpty
                                 ? controller.allDeals
-                                    .map((deal) =>
-                                        BusinessDetailTiles(deal: deal))
+                                    .map((deal) => GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DealDetail(deal: deal),
+                                            ),
+                                          );
+                                        },
+                                        child: BusinessDetailTiles(deal: deal)))
                                     .toList()
                                 : [
                                     Center(
@@ -182,8 +193,21 @@ class _BusinessDetailState extends State<BusinessDetail> {
                                   ]
                             : controller.reward.value != null
                                 ? controller.reward.value
-                                    .map((reward) =>
-                                        BusinessDetailTiles(reward: reward))
+                                    .map((reward) => GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RewardDetail(
+                                                      userId: controller
+                                                          .currentUserId,
+                                                      reward: reward),
+                                            ),
+                                          );
+                                        },
+                                        child: BusinessDetailTiles(
+                                            reward: reward)))
                                     .toList()
                                 : [
                                     Center(

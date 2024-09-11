@@ -23,6 +23,11 @@ class RewardDetail extends StatefulWidget {
 class _RewardDetailState extends State<RewardDetail> {
   @override
   Widget build(BuildContext context) {
+    // Calculate remaining points to achieve the reward
+    final pointsEarned = widget.reward?.pointsEarned?[widget.userId] ?? 0;
+    final pointsToRedeem = widget.reward?.pointsToRedeem ?? 0;
+    final remainingPoints = pointsToRedeem - pointsEarned;
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: Column(
@@ -59,7 +64,7 @@ class _RewardDetailState extends State<RewardDetail> {
               const SpacerBoxVertical(height: 20),
               Center(
                 child: Text(
-                  '${widget.reward?.pointsEarned?[widget.userId] ?? 0}/${widget.reward?.pointsToRedeem ?? 1000}',
+                  '$pointsEarned/$pointsToRedeem',
                   style: poppinsBold(
                       fontSize: 13.sp, color: AppColors.secondaryText),
                 ),
@@ -88,15 +93,9 @@ class _RewardDetailState extends State<RewardDetail> {
                       ),
                       Container(
                         height: 20,
-                        width: (widget.reward != null &&
-                                widget.reward!.pointsToRedeem != null &&
-                                widget.reward!.pointsToRedeem! > 0)
-                            ? (widget.reward!.pointsEarned?[widget.userId!] ??
-                                    0) /
-                                widget.reward!.pointsToRedeem! *
-                                220
+                        width: (pointsToRedeem > 0)
+                            ? (pointsEarned / pointsToRedeem * 220)
                             : 0, // Adjust width based on progress
-
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: const LinearGradient(
@@ -123,7 +122,7 @@ class _RewardDetailState extends State<RewardDetail> {
                               ),
                               const SpacerBoxHorizontal(width: 20),
                               Text(
-                                "20 points", // Use actual logic if needed
+                                "$remainingPoints points", // Display remaining points
                                 style: poppinsMedium(fontSize: 8.sp),
                               ),
                             ],

@@ -1,6 +1,5 @@
 // ignore_for_file: invalid_use_of_protected_member, unnecessary_null_comparison
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -11,7 +10,7 @@ import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/business_detail_tile.dart';
-import 'package:swipe_app/widgets/business_detail_tiles.dart';
+import 'package:swipe_app/widgets/business_detail_tiles_for_client.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
@@ -178,7 +177,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                                             ),
                                           );
                                         },
-                                        child: BusinessDetailTiles(deal: deal)))
+                                        child: BusinessDetailTilesforClientSide(deal: deal)))
                                     .toList()
                                 : [
                                     Center(
@@ -206,7 +205,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                                             ),
                                           );
                                         },
-                                        child: BusinessDetailTiles(
+                                        child: BusinessDetailTilesforClientSide(
                                             reward: reward)))
                                     .toList()
                                 : [

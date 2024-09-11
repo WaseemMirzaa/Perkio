@@ -165,10 +165,12 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                 top: 5,
                 right: 5,
                 child: IconButton(
-                  icon: Icon(
-                    isLiked ? Icons.favorite : Icons.favorite_border,
-                    color: isLiked ? Colors.red : Colors.grey,
+                  icon: Image.asset(
+                    isLiked ? AppAssets.likeFilledImg : AppAssets.likeImg,
+                    width: 12.sp,
+                    height: 12.sp,
                   ),
+                  iconSize: 12.sp, // Set the icon size here
                   onPressed: () async {
                     if (widget.userId != null && widget.reward != null) {
                       await Get.find<RewardController>().toggleLike(
@@ -181,7 +183,7 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                     }
                   },
                 ),
-              ),
+              )
           ],
         ),
       ),

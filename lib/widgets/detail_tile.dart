@@ -142,13 +142,22 @@ class DetailTile extends StatelessWidget {
                   const SpacerBoxVertical(height: 5),
                   Row(
                     children: [
-                      const Icon(Icons.location_on,
-                          color: AppColors.hintText, size: 10),
+                      const Icon(
+                        Icons.location_on,
+                        color: AppColors.hintText,
+                        size: 10,
+                      ),
                       const SpacerBoxHorizontal(width: 4),
-                      Text(
-                        user?.address ?? 'No Location available',
-                        style: poppinsRegular(
-                            fontSize: 10, color: AppColors.hintText),
+                      Expanded(
+                        // Wrap the Text widget in Expanded to take up available space
+                        child: Text(
+                          user?.address ?? 'No Location available',
+                          overflow: TextOverflow.ellipsis, // Add this line
+                          style: poppinsRegular(
+                            fontSize: 10,
+                            color: AppColors.hintText,
+                          ),
+                        ),
                       ),
                     ],
                   ),

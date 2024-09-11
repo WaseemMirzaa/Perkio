@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -128,10 +127,16 @@ class BusinessDetailTile extends StatelessWidget {
                     size: 10,
                   ),
                   const SpacerBoxHorizontal(width: 4),
-                  Text(
-                    location ?? 'No Location available',
-                    style:
-                        poppinsRegular(fontSize: 10, color: AppColors.hintText),
+                  Expanded(
+                    // Wrap the Text widget in Expanded to take up available space
+                    child: Text(
+                      location ?? 'No Location available',
+                      overflow: TextOverflow.ellipsis, // Add this line
+                      style: poppinsRegular(
+                        fontSize: 10,
+                        color: AppColors.hintText,
+                      ),
+                    ),
                   ),
                 ],
               ),

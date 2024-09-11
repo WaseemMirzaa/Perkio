@@ -96,7 +96,7 @@ class _DealDetailState extends State<DealDetail> {
                           style: poppinsMedium(fontSize: 13.sp),
                         ),
                         Text(
-                          deal.location ?? TempLanguage.txtMilesAway,
+                          TempLanguage.txtMilesAway,
                           style: poppinsRegular(
                             fontSize: 10.sp,
                             color: AppColors.hintText,

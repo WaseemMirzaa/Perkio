@@ -8,11 +8,11 @@ import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
-class BusinessDetailTiles extends StatelessWidget {
+class BusinessDetailTilesforClientSide extends StatelessWidget {
   final DealModel? deal; // Optional deal parameter
   final RewardModel? reward; // Optional reward parameter
 
-  const BusinessDetailTiles({super.key, this.deal, this.reward});
+  const BusinessDetailTilesforClientSide({super.key, this.deal, this.reward});
 
   @override
   Widget build(BuildContext context) {
@@ -73,18 +73,18 @@ class BusinessDetailTiles extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 10),
                 Text(
                   dealName ?? TempLanguage.txtDealName,
                   style: poppinsMedium(fontSize: 14),
                 ),
-                SpacerBoxVertical(height: 5),
+                const SpacerBoxVertical(height: 5),
                 Text(
                   companyName ?? TempLanguage.txtRestaurantName,
                   style:
                       poppinsRegular(fontSize: 12, color: AppColors.hintText),
                 ),
-                SpacerBoxVertical(height: 5),
+                const SpacerBoxVertical(height: 5),
                 Row(
                   children: [
                     Icon(
@@ -94,7 +94,7 @@ class BusinessDetailTiles extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        location ?? '280 Mil',
+                        '280 Mil',
                         style: poppinsRegular(
                             fontSize: 12, color: AppColors.hintText),
                         maxLines: 2,
@@ -109,8 +109,8 @@ class BusinessDetailTiles extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8),
             child: Column(
               children: [
-                SpacerBoxVertical(height: 10),
-                Container(
+                const SpacerBoxVertical(height: 10),
+                const SizedBox(
                   height: 15,
                   width: 40,
                 ),

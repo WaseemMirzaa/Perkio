@@ -55,7 +55,7 @@ class _MyDealsViewState extends State<MyDealsView> {
               padding: const EdgeInsets.only(left: 12),
               child: Text(
                 myController.selectedIndex.value == 0
-                    ? TempLanguage.txtYourFavorite
+                    ? TempLanguage.txtDeal
                     : TempLanguage.lblMyRewards.capitalizeEachWord(),
                 style: poppinsMedium(fontSize: 18),
               ),

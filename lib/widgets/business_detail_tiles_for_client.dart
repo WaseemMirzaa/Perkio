@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/widgets/common/common_widgets.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
@@ -16,12 +19,26 @@ class BusinessDetailTilesforClientSide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use reward data if available, otherwise fallback to deal data
     final image = reward?.rewardLogo ?? deal?.image;
     final dealName = reward?.rewardName ?? deal?.dealName;
     final companyName = reward?.companyName ?? deal?.companyName;
-    final location = reward?.rewardAddress ?? deal?.location;
     final uses = reward?.uses ?? deal?.uses ?? 0;
+
+    // Calculate distance if it's a deal
+    String distanceText = '';
+    if (deal != null && deal!.location != null) {
+      double userLat = getDoubleAsync(SharedPrefKey.latitude);
+      double userLon = getDoubleAsync(SharedPrefKey.longitude);
+
+      final distance = calculateDistance(
+        userLat,
+        userLon,
+        deal!.longLat!.latitude,
+        deal!.longLat!.longitude,
+      );
+      distanceText =
+          '${distance.toStringAsFixed(1)} miles'; // Display distance in km
+    }
 
     return Container(
       height: 130,
@@ -85,23 +102,42 @@ class BusinessDetailTilesforClientSide extends StatelessWidget {
                       poppinsRegular(fontSize: 12, color: AppColors.hintText),
                 ),
                 const SpacerBoxVertical(height: 5),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      color: AppColors.hintText,
-                      size: 12.sp,
-                    ),
-                    Expanded(
-                      child: Text(
-                        '280 Mil',
-                        style: poppinsRegular(
-                            fontSize: 12, color: AppColors.hintText),
-                        maxLines: 2,
+                if (deal != null)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: AppColors.hintText,
+                        size: 12.sp,
                       ),
-                    ),
-                  ],
-                ),
+                      Expanded(
+                        child: Text(
+                          distanceText, // Display calculated distance
+                          style: poppinsRegular(
+                              fontSize: 12, color: AppColors.hintText),
+                          maxLines: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                if (reward != null)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: AppColors.hintText,
+                        size: 12.sp,
+                      ),
+                      Expanded(
+                        child: Text(
+                          reward!.rewardAddress!,
+                          style: poppinsRegular(
+                              fontSize: 12, color: AppColors.hintText),
+                          maxLines: 2,
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),

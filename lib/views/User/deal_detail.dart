@@ -1,3 +1,5 @@
+import 'dart:math'; // Import to use math functions
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -9,6 +11,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
+import 'package:swipe_app/widgets/common/common_widgets.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/congratulation_dialog.dart';
@@ -25,6 +28,8 @@ class DealDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double userLat = getDoubleAsync(SharedPrefKey.latitude);
+    double userLon = getDoubleAsync(SharedPrefKey.longitude);
     final deal = this.deal;
     final controller = Get.find<BusinessDetailController>();
 
@@ -32,6 +37,17 @@ class DealDetail extends StatelessWidget {
       return Scaffold(
         backgroundColor: AppColors.whiteColor,
         body: _buildError('Deal not found'),
+      );
+    }
+
+    // Calculate distance if deal location is available
+    double distance = 0;
+    if (deal.longLat != null) {
+      distance = calculateDistance(
+        userLat,
+        userLon,
+        deal.longLat!.latitude,
+        deal.longLat!.longitude,
       );
     }
 
@@ -50,7 +66,7 @@ class DealDetail extends StatelessWidget {
 
           bool canSwipe = snapshot.data ?? true;
 
-          return _buildDealInfo(context, deal, canSwipe);
+          return _buildDealInfo(context, deal, canSwipe, distance);
         },
       ),
     );
@@ -96,7 +112,8 @@ class DealDetail extends StatelessWidget {
     );
   }
 
-  Widget _buildDealInfo(BuildContext context, DealModel deal, bool canSwipe) {
+  Widget _buildDealInfo(
+      BuildContext context, DealModel deal, bool canSwipe, double distance) {
     final controller = Get.find<BusinessDetailController>();
 
     return Column(
@@ -117,7 +134,7 @@ class DealDetail extends StatelessWidget {
                     style: poppinsMedium(fontSize: 13.sp),
                   ),
                   Text(
-                    TempLanguage.txtMilesAway,
+                    '${distance.toStringAsFixed(2)} miles', // Display distance
                     style: poppinsRegular(
                       fontSize: 10.sp,
                       color: AppColors.hintText,

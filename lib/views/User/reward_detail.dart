@@ -4,17 +4,18 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/user/reward_redeem_detail.dart';
 import 'package:swipe_app/views/user/scan_screen.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
-import 'package:swipe_app/models/reward_model.dart'; // Import RewardModel
+import 'package:swipe_app/models/reward_model.dart';
+import 'package:get/get.dart'; // Import Get package
 
 class RewardDetail extends StatefulWidget {
-  final RewardModel? reward; // Add an optional reward parameter
-  final String? userId; // Add an optional userId parameter
+  final RewardModel? reward;
+  final String? userId;
 
-  const RewardDetail(
-      {super.key, this.reward, this.userId}); // Update constructor
+  const RewardDetail({super.key, this.reward, this.userId});
 
   @override
   State<RewardDetail> createState() => _RewardDetailState();
@@ -22,13 +23,29 @@ class RewardDetail extends StatefulWidget {
 
 class _RewardDetailState extends State<RewardDetail> {
   @override
+  void initState() {
+    super.initState();
+
+    // Check if the user's points equal the total points to redeem
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pointsEarned = widget.reward?.pointsEarned?[widget.userId] ?? 0;
+      final pointsToRedeem = widget.reward?.pointsToRedeem ?? 0;
+
+      if (pointsEarned >= pointsToRedeem) {
+        Get.offAll(() => RewardRedeemDetail(
+              rewardId: widget.reward?.rewardId,
+              businessId: widget.reward?.businessId,
+              userId: widget.userId,
+            ));
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Calculate remaining points to achieve the reward
     final pointsEarned = widget.reward?.pointsEarned?[widget.userId] ?? 0;
     final pointsToRedeem = widget.reward?.pointsToRedeem ?? 0;
     final remainingPoints = pointsToRedeem - pointsEarned;
-
-    // Get number of uses for the current user from usedBy map
     final int userUses = widget.reward?.usedBy?[widget.userId] ?? 0;
 
     return Scaffold(
@@ -39,7 +56,6 @@ class _RewardDetailState extends State<RewardDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SpacerBoxVertical(height: 20),
-              // Pass the reward model to DetailTile
               DetailTile(
                 businessId: widget.reward?.businessId,
               ),
@@ -99,7 +115,7 @@ class _RewardDetailState extends State<RewardDetail> {
                         width: (pointsToRedeem > 0)
                             ? (pointsEarned / pointsToRedeem) *
                                 (MediaQuery.of(context).size.width - 60)
-                            : 0, // Adjust width based on points earned
+                            : 0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: const LinearGradient(
@@ -126,7 +142,7 @@ class _RewardDetailState extends State<RewardDetail> {
                               ),
                               const SpacerBoxHorizontal(width: 20),
                               Text(
-                                "$remainingPoints points", // Display remaining points
+                                "$remainingPoints points",
                                 style: poppinsMedium(fontSize: 8.sp),
                               ),
                             ],
@@ -138,11 +154,7 @@ class _RewardDetailState extends State<RewardDetail> {
                 ),
               ),
               const SpacerBoxVertical(height: 40),
-
-              // Conditionally show the scan button based on the number of uses
-              if (userUses <
-                  widget.reward!
-                      .uses!) // Show scan button if uses are less than 3
+              if (userUses < widget.reward!.uses!)
                 Center(
                   child: GestureDetector(
                     onTap: () {
@@ -150,9 +162,8 @@ class _RewardDetailState extends State<RewardDetail> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ScanScreen(
-                            rewardModel: widget
-                                .reward, // Pass reward model to ScanScreen
-                            userId: widget.userId, // Pass userId to ScanScreen
+                            rewardModel: widget.reward,
+                            userId: widget.userId,
                           ),
                         ),
                       );

@@ -99,8 +99,7 @@ class TempLanguage {
   static const String txtViews = 'Views';
   static const String txtStopPromotion = 'Stop Promotion';
   static const String txtPromote = 'Promote';
-  static const String txtCongratulations =
-      '';
+  static const String txtCongratulations = '';
   static const String txtPointsAway = '200 Points Away';
   static const String txtSearch = 'Search';
   static const String txtRedeemDeals = 'Redeem Unlimited Deals';

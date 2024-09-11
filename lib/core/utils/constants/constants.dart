@@ -58,6 +58,7 @@ class RewardKey {
   static const String POINTSEARNED = 'pointsEarned';
   static const String ISFAVOURITE = 'isFavourite';
   static const String POINTSPERSCAN = 'pointsPerScan';
+  static const String USEDBY = 'usedBy';
 }
 
 class NotificationKey {

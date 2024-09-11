@@ -167,6 +167,7 @@ class DealDetail extends StatelessWidget {
                     );
                   },
                   remainingUses: remainingUses + 1,
+                  message: 'deal',
                 );
               },
               text: TempLanguage.btnLblSwipeToRedeem,

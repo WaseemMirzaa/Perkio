@@ -28,6 +28,9 @@ class _RewardDetailState extends State<RewardDetail> {
     final pointsToRedeem = widget.reward?.pointsToRedeem ?? 0;
     final remainingPoints = pointsToRedeem - pointsEarned;
 
+    // Get number of uses for the current user from usedBy map
+    final int userUses = widget.reward?.usedBy?[widget.userId] ?? 0;
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: Column(
@@ -94,8 +97,9 @@ class _RewardDetailState extends State<RewardDetail> {
                       Container(
                         height: 20,
                         width: (pointsToRedeem > 0)
-                            ? (pointsEarned / pointsToRedeem * 220)
-                            : 0, // Adjust width based on progress
+                            ? (pointsEarned / pointsToRedeem) *
+                                (MediaQuery.of(context).size.width - 60)
+                            : 0, // Adjust width based on points earned
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: const LinearGradient(
@@ -134,56 +138,61 @@ class _RewardDetailState extends State<RewardDetail> {
                 ),
               ),
               const SpacerBoxVertical(height: 40),
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ScanScreen(
-                          rewardModel:
-                              widget.reward, // Pass reward model to ScanScreen
-                          userId: widget.userId, // Pass userId to ScanScreen
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: AppColors.whiteColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 12,
-                          spreadRadius: 6,
-                          offset: const Offset(5, 0),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Container(
-                        height: 80,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          gradient: const LinearGradient(
-                            colors: [
-                              AppColors.gradientStartColor,
-                              AppColors.gradientEndColor,
-                            ],
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
+
+              // Conditionally show the scan button based on the number of uses
+              if (userUses <
+                  widget.reward!
+                      .uses!) // Show scan button if uses are less than 3
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ScanScreen(
+                            rewardModel: widget
+                                .reward, // Pass reward model to ScanScreen
+                            userId: widget.userId, // Pass userId to ScanScreen
                           ),
                         ),
-                        child: Image.asset(AppAssets.scannerImg, scale: 3),
+                      );
+                    },
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: AppColors.whiteColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 12,
+                            spreadRadius: 6,
+                            offset: const Offset(5, 0),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            gradient: const LinearGradient(
+                              colors: [
+                                AppColors.gradientStartColor,
+                                AppColors.gradientEndColor,
+                              ],
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight,
+                            ),
+                          ),
+                          child: Image.asset(AppAssets.scannerImg, scale: 3),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ],

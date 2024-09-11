@@ -129,9 +129,11 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                         ),
                         Container(
                           height: 20,
+                          // Adjust width based on user points and total width minus padding
                           width: (userPoints /
                                   (pointsToRedeem > 0 ? pointsToRedeem : 1)) *
-                              MediaQuery.of(context).size.width,
+                              (MediaQuery.of(context).size.width -
+                                  60), // Subtract 60 for horizontal padding
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             gradient: const LinearGradient(
@@ -150,26 +152,47 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                 ),
                 const SpacerBoxVertical(height: 80),
 
-                // Conditionally show ButtonWidget only when points are sufficient
+                // Inside RewardRedeemDetail widget
+
                 if (userPoints >= pointsToRedeem)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: ButtonWidget(
-                      onSwipe: () {
-                        showCongratulationDialog(onDone: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LocationService(
-                                child: BottomBarView(
-                                  isUser: getStringAsync(SharedPrefKey.role) ==
-                                      SharedPrefKey.user,
+                      onSwipe: () async {
+                        // Get the current number of uses from the rewardModel
+                        final int currentUses = rewardModel.uses ?? 0;
+
+                        // Update the reward usage in Firestore
+                        await _rewardController.updateRewardUsage(
+                          widget.rewardId!,
+                          widget.userId!,
+                        );
+
+                        // Calculate the remaining uses (subtracting 1)
+                        final int remainingUses =
+                            currentUses > 0 ? currentUses - 1 : 0;
+
+                        // Show the congratulation dialog with the remaining uses
+                        showCongratulationDialog(
+                          onDone: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LocationService(
+                                  child: BottomBarView(
+                                    isUser:
+                                        getStringAsync(SharedPrefKey.role) ==
+                                            SharedPrefKey.user,
+                                  ),
                                 ),
                               ),
-                            ),
-                            (route) => false,
-                          );
-                        });
+                              (route) => false,
+                            );
+                          },
+                          message: 'reward',
+                          remainingUses:
+                              remainingUses, // Pass the remaining uses here
+                        );
                       },
                       text: TempLanguage.btnLblSwipeToRedeem,
                     ),

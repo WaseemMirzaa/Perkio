@@ -270,6 +270,7 @@ class _AddRewardsState extends State<AddRewards> {
                                 .toInt(),
                             uses: myController.counter.value,
                             pointsEarned: {},
+                            usedBy: {},
                             pointsPerScan:
                                 controller.pps.value!, //passed the pps value
                             createdAt: Timestamp.now());

@@ -114,7 +114,10 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                       ),
                       const SpacerBoxVertical(height: 5),
                       Text(
-                        '${widget.reward?.pointsToRedeem ?? 1000 - pointsEarnedByUser} points away',
+                        widget.reward != null &&
+                                widget.reward!.pointsToRedeem != null
+                            ? '${(widget.reward!.pointsToRedeem! - pointsEarnedByUser).clamp(0, widget.reward!.pointsToRedeem!)} points away'
+                            : '1000 points away',
                         style: poppinsRegular(
                             fontSize: 10.sp, color: AppColors.hintText),
                       ),

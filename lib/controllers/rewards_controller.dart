@@ -1,8 +1,9 @@
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/reward_service.dart';
 
@@ -86,21 +87,23 @@ class RewardController extends GetxController {
   Future<void> updateRewardUsage(String rewardId, String userId) async {
     try {
       log(userId);
-      final rewardDoc =
-          FirebaseFirestore.instance.collection('reward').doc(rewardId);
 
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        final snapshot = await transaction.get(rewardDoc);
+      final firestore = FirebaseFirestore.instance;
+      final rewardDoc = firestore.collection('reward').doc(rewardId);
+      final receiptsCollection = rewardDoc.collection('receipts');
 
-        if (!snapshot.exists) {
+      await firestore.runTransaction((transaction) async {
+        final rewardSnapshot = await transaction.get(rewardDoc);
+
+        if (!rewardSnapshot.exists) {
           throw Exception("Reward does not exist");
         }
 
         // Get current usedBy and pointsEarned data
         Map<String, dynamic> usedBy =
-            snapshot.get('usedBy') as Map<String, dynamic>? ?? {};
+            rewardSnapshot.get('usedBy') as Map<String, dynamic>? ?? {};
         Map<String, dynamic> pointsEarned =
-            snapshot.get('pointsEarned') as Map<String, dynamic>? ?? {};
+            rewardSnapshot.get('pointsEarned') as Map<String, dynamic>? ?? {};
 
         // Update the usage count for the user
         int currentUses = usedBy[userId] ?? 0;
@@ -116,7 +119,34 @@ class RewardController extends GetxController {
           'usedBy': usedBy,
           'pointsEarned': pointsEarned,
         });
+
+        // Query the receipts subcollection for the matching userId
+        final querySnapshot = await receiptsCollection.get();
+
+        // Ensure we're working with a QuerySnapshot
+        for (final doc in querySnapshot.docs) {
+          if (doc.id == userId) {
+            // Delete the matching document
+            transaction.delete(doc.reference);
+            break; // Assuming there should be only one matching document
+          }
+        }
       });
+
+      // Delete images from Firebase Storage after the transaction is committed
+      final storage = FirebaseStorage.instance;
+      final userImagesRef = storage.ref().child('receipts/$rewardId/$userId');
+      final listResult = await userImagesRef.listAll();
+
+      // Delete all files in the folder
+      for (final fileRef in listResult.items) {
+        await fileRef.delete();
+      }
+
+      // Optionally, delete the folder itself (if it has no other files or folders)
+      if (listResult.items.isEmpty && listResult.prefixes.isEmpty) {
+        await userImagesRef.delete();
+      }
     } catch (e) {
       log('Error updating reward usage and points: $e');
     }

@@ -204,17 +204,18 @@ class _RewardDetailState extends State<RewardDetail> {
                     ),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  "You have used this reward the maximum allowed times.",
-                  style: poppinsRegular(
-                    fontSize: 12.sp,
-                    color: AppColors.hintText,
+              if (userUses >= widget.reward!.uses!)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    "You have used this reward the maximum allowed times.",
+                    style: poppinsRegular(
+                      fontSize: 12.sp,
+                      color: AppColors.hintText,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              ),
             ],
           ),
         ],

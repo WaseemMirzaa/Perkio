@@ -24,7 +24,6 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-
   List settingsItems = [
     {
       'icon': AppAssets.moneyIcon,
@@ -70,54 +69,90 @@ class _SettingsViewState extends State<SettingsView> {
               itemCount: settingsItems.length,
               scrollDirection: Axis.vertical,
               physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index)=> GestureDetector(
-                  onTap: (){
-                    switch(index){
+              itemBuilder: (context, index) => GestureDetector(
+                  onTap: () {
+                    switch (index) {
                       case 1:
                         {
-                          getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? Navigator.push(context, MaterialPageRoute(builder: (context)=> const UserProfileView())) : Navigator.push(context, MaterialPageRoute(builder: (context)=> const ProfileSettingsBusiness()));
+                          getStringAsync(SharedPrefKey.role) ==
+                                  SharedPrefKey.user
+                              ? Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const UserProfileView()))
+                              : Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProfileSettingsBusiness()));
                           break;
                         }
-                      case 2:{
-                        shareDummyLink();
-                        break;
-                      }
-                      case 3:{
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> const TermsAndConditions()));
-                        break;
-                      }
-                      case 4:{
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> const PrivacyPolicy()));
-                        break;
-                      }
-                      case 5:{
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const HelpView()));
-                        break;
-                      }
+                      case 2:
+                        {
+                          shareDummyLink();
+                          break;
+                        }
+                      case 3:
+                        {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TermsAndConditions()));
+                          break;
+                        }
+                      case 4:
+                        {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const PrivacyPolicy()));
+                          break;
+                        }
+                      case 5:
+                        {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HelpView()));
+                          break;
+                        }
                     }
                   },
-                  child: index == 0 ? BalanceTile(path: settingsItems[index]['icon'], text: "${settingsItems[index]['title']} ${getIntAsync(UserKey.BALANCE)}", onAdd: (){
-                    showBalanceDialog(context: context, promotionAmountController: promotionalBalanceController, docId: getStringAsync(SharedPrefKey.uid),fromSettings: true).then((value)=> setState(() {
-
-                    }));
-                    
-                  }) : SettingsListItems(path: settingsItems[index]['icon'], text: settingsItems[index]['title'],)),
-        
+                  child: index == 0
+                      ? BalanceTile(
+                          path: settingsItems[index]['icon'],
+                          text:
+                              "${settingsItems[index]['title']} ${getIntAsync(UserKey.BALANCE)}",
+                          onAdd: () {
+                            showBalanceDialog(
+                                    context: context,
+                                    promotionAmountController:
+                                        promotionalBalanceController,
+                                    docId: getStringAsync(SharedPrefKey.uid),
+                                    fromSettings: true)
+                                .then((value) => setState(() {}));
+                          })
+                      : SettingsListItems(
+                          path: settingsItems[index]['icon'],
+                          text: settingsItems[index]['title'],
+                        )),
             ),
             GestureDetector(
-                onTap: (){
+                onTap: () {
                   controller.logout();
                 },
-                child: const SettingsListItems(path: AppAssets.helpImg, text: 'Logout')),
+                child: const SettingsListItems(
+                    path: AppAssets.helpImg, text: 'Logout')),
           ],
         ),
       ),
     );
   }
-  void shareDummyLink() {    
+
+  void shareDummyLink() {
     const String shareLink = 'https://swipe.com/swip-settings';
     Share.share('Check out this link: $shareLink');
   }
 }
-
-

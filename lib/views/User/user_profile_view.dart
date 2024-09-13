@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class _UserProfileViewState extends State<UserProfileView> {
   TextEditingController phoneNoController = TextEditingController();
   //open map to fetch this points
   TextEditingController addressController = TextEditingController();
+
   RxBool enabled = false.obs;
 
   final homeController = Get.put(HomeController(HomeServices()));
@@ -69,16 +71,11 @@ class _UserProfileViewState extends State<UserProfileView> {
     // Debug print to check the type of latLong
     print('Type of latLong: ${userProfile?.latLong.runtimeType}');
 
-    if (userProfile?.latLong is GeoPoint) {
-      final address =
-          await GeoLocationHelper.getCityFromGeoPoint(userProfile!.latLong!);
-      userNameController.text = userProfile?.userName ?? '';
-      emailController.text = userProfile?.email ?? '';
-      phoneNoController.text = userProfile?.phoneNo ?? '';
-      addressController.text = address ?? '';
-    } else {
-      print('latLong is not a GeoPoint.');
-    }
+    final address = userProfile!.address ?? 'No Address';
+    userNameController.text = userProfile?.userName ?? '';
+    emailController.text = userProfile?.email ?? '';
+    phoneNoController.text = userProfile?.phoneNo ?? '';
+    addressController.text = address;
 
     _userProfileStreamController.add(userProfile!);
   }
@@ -143,7 +140,11 @@ class _UserProfileViewState extends State<UserProfileView> {
                                 UserKey.USERNAME: userNameController.text,
                                 UserKey.EMAIL: emailController.text,
                                 UserKey.PHONENO: phoneNoController.text,
-                                UserKey.LATLONG: addressController.text,
+                                UserKey.ADDRESS: addressController.text,
+                                UserKey.LATLONG: latLng != null
+                                    ? GeoPoint(
+                                        latLng!.latitude, latLng!.longitude)
+                                    : null,
                               });
                               if (success) {
                                 // Update successful
@@ -164,8 +165,9 @@ class _UserProfileViewState extends State<UserProfileView> {
                                 // Get.snackbar('Error', 'Failed to update user data.',
                                 //     snackPosition: SnackPosition.TOP);
                               }
-                            } else
+                            } else {
                               enabled.value = true;
+                            }
                           },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +201,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                 Expanded(
                     child: Obx(
                   () => ListView(
-                    padding: EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     children: [
                       ProfileListItems(
                         path: AppAssets.profile1,
@@ -239,12 +241,18 @@ class _UserProfileViewState extends State<UserProfileView> {
                                                           userProfile.latLong!
                                                               .longitude)))));
                                   if (address != null) {
+                                    latLng = LatLng(address!.latitude!,
+                                        address!.longitude!);
+                                    log('**${latLng!.latitude}');
+                                    log('**${latLng!.longitude}');
                                     addressController.text =
                                         address!.completeAddress.toString();
                                     await setValue(SharedPrefKey.latitude,
                                         address!.latitude);
                                     await setValue(SharedPrefKey.longitude,
                                         address!.longitude);
+                                    await setValue(SharedPrefKey.address,
+                                        address!.completeAddress);
                                   }
                                 } else {
                                   X.showSnackBar('Allow Location Permissions',

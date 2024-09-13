@@ -236,6 +236,7 @@ class UserController extends GetxController {
 
     // Handle the image null case
     await setValue(SharedPrefKey.photo, userModel.image ?? "");
+    await setValue(SharedPrefKey.address, userModel.address ?? "");
 
     // Handle potential null values for latLong
     if (userModel.latLong != null) {

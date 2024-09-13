@@ -87,7 +87,7 @@ class _PlacesPickState extends State<PlacesPick> {
                 snap.data ?? CurrentLocationModel();
             print("Current Location Model is : ${currentLocationModel.latLon}");
             AddressModel? address = currentLocationModel.address;
-            print("The Address Locatiom Model is : ${address}");
+            print("The Address Locatiom Model is : $address");
 
             return Obx(
               () => Stack(children: [
@@ -459,6 +459,8 @@ class _PlacesPickState extends State<PlacesPick> {
                                           if (widget.isUserLocation) {
                                             widget.userModel!.latLong =
                                                 geoPoint;
+                                            widget.userModel!.address =
+                                                location.value;
                                             controller
                                                 .signUp(widget.userModel!);
                                           } else {

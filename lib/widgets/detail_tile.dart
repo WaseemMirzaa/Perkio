@@ -15,7 +15,9 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 class DetailTile extends StatelessWidget {
   final String? businessId;
 
-  const DetailTile({super.key, this.businessId});
+  final bool isRedeeming;
+
+  const DetailTile({super.key, this.businessId, this.isRedeeming = false});
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +70,7 @@ class DetailTile extends StatelessWidget {
                         },
                       ),
               ),
+              if(!isRedeeming)              
               Positioned(
                 top: -20,
                 left: 0,

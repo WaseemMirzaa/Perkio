@@ -9,6 +9,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
+import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/congratulation_dialog.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
@@ -28,12 +29,12 @@ class RewardRedeemDetail extends StatefulWidget {
 
 class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
   final RewardController _rewardController = Get.put(RewardController());
+  bool isRedeeming = false; // New state variable
 
   @override
   void initState() {
     super.initState();
 
-    // Ensure the reward fetching happens after the first frame is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.rewardId != null) {
         _rewardController.listenToReward(widget.rewardId!);
@@ -47,7 +48,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
       backgroundColor: AppColors.whiteColor,
       body: Obx(() {
         if (_rewardController.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: circularProgressBar());
         }
 
         final rewardModel = _rewardController.rewardModel.value;
@@ -56,164 +57,167 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
           return const Center(child: Text("No reward found."));
         }
 
-        // Get the points earned by the user and the points needed to redeem
         final int userPoints = rewardModel.pointsEarned?[widget.userId] ?? 0;
         final int pointsToRedeem = rewardModel.pointsToRedeem ?? 1000;
 
-        return Column(
+        return Stack(
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SpacerBoxVertical(height: 20),
-                DetailTile(
-                  businessId: widget.businessId,
-                ),
-                const SpacerBoxVertical(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        TempLanguage.txtRewardInfo,
-                        style: poppinsMedium(fontSize: 13.sp),
-                      ),
-                      const SpacerBoxVertical(height: 10),
-                      Text(
-                        rewardModel.rewardName ??
-                            TempLanguage.txtLoremIpsumShort,
-                        style: poppinsRegular(
-                            fontSize: 10.sp, color: AppColors.hintText),
-                      ),
-                    ],
-                  ),
-                ),
-                const SpacerBoxVertical(height: 20),
-                Center(
-                  child: Text(
-                    TempLanguage.txtPoints,
-                    style: poppinsBold(
-                        fontSize: 13.sp, color: AppColors.secondaryText),
-                  ),
-                ),
-                const SpacerBoxVertical(height: 10),
-                Center(
-                  child: Text(
-                    '$userPoints/$pointsToRedeem',
-                    style: poppinsBold(
-                        fontSize: 13.sp, color: AppColors.secondaryText),
-                  ),
-                ),
-                const SpacerBoxVertical(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: SizedBox(
-                    height: 45,
-                    child: Stack(
-                      alignment: Alignment.bottomLeft,
-                      children: [
-                        Container(
-                          height: 20,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.grey[200],
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 6,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 20,
-                          // Adjust width based on user points and total width minus padding
-                          width: (userPoints /
-                                  (pointsToRedeem > 0 ? pointsToRedeem : 1)) *
-                              (MediaQuery.of(context).size.width -
-                                  60), // Subtract 60 for horizontal padding
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            gradient: const LinearGradient(
-                              colors: [
-                                AppColors.gradientStartColor,
-                                AppColors.gradientEndColor
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                        ),
-                      ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SpacerBoxVertical(height: 20),
+                    DetailTile(
+                      businessId: widget.businessId,
+                      isRedeeming: isRedeeming,
                     ),
-                  ),
-                ),
-                const SpacerBoxVertical(height: 80),
-
-                // Inside RewardRedeemDetail widget
-
-                if (userPoints >= pointsToRedeem)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: ButtonWidget(
-                      onSwipe: () async {
-                        // Update the reward usage in Firestore
-                        await _rewardController.updateRewardUsage(
-                          widget.rewardId!,
-                          widget.userId!,
-                        );
-
-                        int remainingUses = 0;
-
-                        // Check if user ID exists in the usedBy map
-                        if (rewardModel.usedBy?.containsKey(widget.userId) ??
-                            false) {
-                          // Calculate the remaining uses
-                          remainingUses =
-                              (rewardModel.usedBy![widget.userId] ?? 0) + 1;
-                          log("*****Remaining Uses for User: $remainingUses");
-                        } else {
-                          log("*****User ID not found in the usedBy map");
-                        }
-
-// Also log the full map for debugging purposes
-                        log("*****usedBy Map: ${rewardModel.usedBy}");
-
-                        if (remainingUses == rewardModel.uses) {
-                          remainingUses = 0;
-                        } else {
-                          remainingUses = rewardModel.uses! - remainingUses;
-                        }
-
-                        // Show the congratulation dialog with the remaining uses
-                        showCongratulationDialog(
-                          onDone: () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LocationService(
-                                  child: BottomBarView(
-                                    isUser:
-                                        getStringAsync(SharedPrefKey.role) ==
-                                            SharedPrefKey.user,
+                    const SpacerBoxVertical(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            TempLanguage.txtRewardInfo,
+                            style: poppinsMedium(fontSize: 13.sp),
+                          ),
+                          const SpacerBoxVertical(height: 10),
+                          Text(
+                            rewardModel.rewardName ??
+                                TempLanguage.txtLoremIpsumShort,
+                            style: poppinsRegular(
+                                fontSize: 10.sp, color: AppColors.hintText),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SpacerBoxVertical(height: 20),
+                    Center(
+                      child: Text(
+                        TempLanguage.txtPoints,
+                        style: poppinsBold(
+                            fontSize: 13.sp, color: AppColors.secondaryText),
+                      ),
+                    ),
+                    const SpacerBoxVertical(height: 10),
+                    Center(
+                      child: Text(
+                        '$userPoints/$pointsToRedeem',
+                        style: poppinsBold(
+                            fontSize: 13.sp, color: AppColors.secondaryText),
+                      ),
+                    ),
+                    const SpacerBoxVertical(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: SizedBox(
+                        height: 45,
+                        child: Stack(
+                          alignment: Alignment.bottomLeft,
+                          children: [
+                            Container(
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: Colors.grey[200],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
                                   ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 20,
+                              width: (userPoints /
+                                      (pointsToRedeem > 0
+                                          ? pointsToRedeem
+                                          : 1)) *
+                                  (MediaQuery.of(context).size.width - 60),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.gradientStartColor,
+                                    AppColors.gradientEndColor
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
                               ),
-                              (route) => false,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SpacerBoxVertical(height: 80),
+                    if (userPoints >= pointsToRedeem && !isRedeeming)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: ButtonWidget(
+                          onSwipe: () async {
+                            setState(() {
+                              isRedeeming = true;
+                            });
+
+                            await _rewardController.updateRewardUsage(
+                              widget.rewardId!,
+                              widget.userId!,
+                            );
+
+                            int remainingUses = 0;
+
+                            if (rewardModel.usedBy
+                                    ?.containsKey(widget.userId) ??
+                                false) {
+                              remainingUses =
+                                  (rewardModel.usedBy![widget.userId] ?? 0) + 1;
+                            }
+
+                            if (remainingUses == rewardModel.uses) {
+                              remainingUses = 0;
+                            } else {
+                              remainingUses = rewardModel.uses! - remainingUses;
+                            }
+
+                            // Show the congratulation dialog
+                            showCongratulationDialog(
+                              onDone: () {
+                                setState(() {
+                                  isRedeeming = false;
+                                });
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LocationService(
+                                      child: BottomBarView(
+                                        isUser: getStringAsync(
+                                                SharedPrefKey.role) ==
+                                            SharedPrefKey.user,
+                                      ),
+                                    ),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
+                              message: 'reward',
+                              remainingUses: remainingUses,
                             );
                           },
-                          message: 'reward',
-                          remainingUses:
-                              remainingUses, // Pass the remaining uses here
-                        );
-                      },
-                      text: TempLanguage.btnLblSwipeToRedeem,
-                    ),
-                  ),
+                          text: TempLanguage.btnLblSwipeToRedeem,
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ),
+            if (isRedeeming)
+              Center(
+                child: circularProgressBar(),
+              ),
           ],
         );
       }),

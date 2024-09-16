@@ -4,8 +4,7 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
-
-import 'package:swipe_app/widgets/custom_container_for_image.dart';
+import 'package:swipe_app/widgets/custom_container.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 
 class PrivacyPolicy extends StatefulWidget {
@@ -22,26 +21,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
       header: Stack(
         children: [
           // Using Sizer for a responsive height
-          CustomPaint(
-            painter: MyCustomPainter(),
-            child: const SizedBox(
-                height: 200,
-                width: 400,
-                child: Center(
-                    child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Pakistan'),
-                      Spacer(),
-                      Text('VS'),
-                      Spacer(),
-                      Text('India'),
-                    ],
-                  ),
-                ))),
-          ),
+          CustomShapeContainer(),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
@@ -63,7 +43,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 32),
         children: [
           SizedBox(height: 22.h),
           Padding(

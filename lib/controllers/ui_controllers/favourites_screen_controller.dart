@@ -41,14 +41,16 @@ class FavouritesScreenController extends GetxController {
       // Update favorite cache
       favoriteCache.clear();
       for (var deal in favouriteDeals) {
-        favoriteCache[deal.dealId!] = true;
+        favoriteCache[deal.dealId!] =
+            true; // Ensure cache is populated correctly
       }
     } else {
       favouriteRewards.value = await userController.getFavouriteRewards();
       // Update favorite cache
       favoriteCache.clear();
       for (var reward in favouriteRewards) {
-        favoriteCache[reward.rewardId!] = true;
+        favoriteCache[reward.rewardId!] =
+            true; // Ensure cache is populated correctly
       }
     }
   }

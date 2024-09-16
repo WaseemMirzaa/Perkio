@@ -32,6 +32,51 @@ class UserController extends GetxController {
     passwordController = TextEditingController();
     userNameController = TextEditingController();
     phoneController = TextEditingController();
+
+    // Fetch favorite deals on controller initialization
+    fetchAndCacheFavouriteDeals();
+  }
+
+  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET FAVOURITE DEALS
+
+  Future<List<DealModel>> getFavouriteDeals() async {
+    var res = await userServices
+        .getFavouriteDeals(authServices.auth.currentUser!.uid);
+    return res;
+  }
+
+  // Cache for favorite statuses
+  var favoriteCache = <String, bool>{}.obs;
+
+//♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ LIKE DEAL
+  Future<void> likeDeal(String dealId) async {
+    await userServices.likeDeal(dealId);
+    favoriteCache[dealId] = true; // Update cache
+  }
+
+  //💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚 UNLIKE DEAL
+  Future<void> unLikeDeal(String dealId) async {
+    await userServices.unLikeDeal(dealId);
+    favoriteCache[dealId] = false; // Update cache
+  }
+
+  // Fetch and cache favorite status
+  Future<bool> isDealFavorite(String dealId) async {
+    if (favoriteCache.containsKey(dealId)) {
+      return favoriteCache[dealId]!;
+    }
+
+    bool isFavorite = await userServices.isDealFavorite(dealId);
+    favoriteCache[dealId] = isFavorite; // Update cache
+    return isFavorite;
+  }
+
+  /// Fetch and cache all favorite deals on initialization
+  Future<void> fetchAndCacheFavouriteDeals() async {
+    List<DealModel> favouriteDeals = await getFavouriteDeals();
+    for (var deal in favouriteDeals) {
+      favoriteCache[deal.dealId!] = true; // Cache the favorite status
+    }
   }
 
   @override
@@ -180,14 +225,6 @@ class UserController extends GetxController {
     return res;
   }
 
-  //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET FAVOURITE DEALS
-
-  Future<List<DealModel>> getFavouriteDeals() async {
-    var res = await userServices
-        .getFavouriteDeals(authServices.auth.currentUser!.uid);
-    return res;
-  }
-
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All REWARDS
 
   Future<List<RewardModel>> getRewardForCurrentUser() async {
@@ -200,32 +237,6 @@ class UserController extends GetxController {
   Future<List<DealModel>> getDealsUsedByCurrentUser() async {
     var res = await userServices.getDealsUsedByCurrentUser();
     return res;
-  }
-
-  // Cache for favorite statuses
-  var favoriteCache = <String, bool>{}.obs;
-
-//♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ LIKE DEAL
-  Future<void> likeDeal(String dealId) async {
-    await userServices.likeDeal(dealId);
-    favoriteCache[dealId] = true; // Update cache
-  }
-
-  //💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚💚 UNLIKE DEAL
-  Future<void> unLikeDeal(String dealId) async {
-    await userServices.unLikeDeal(dealId);
-    favoriteCache[dealId] = false; // Update cache
-  }
-
-  // Fetch and cache favorite status
-  Future<bool> isDealFavorite(String dealId) async {
-    if (favoriteCache.containsKey(dealId)) {
-      return favoriteCache[dealId]!;
-    }
-
-    bool isFavorite = await userServices.isDealFavorite(dealId);
-    favoriteCache[dealId] = isFavorite; // Update cache
-    return isFavorite;
   }
 
   Future<void> setUserInfo(UserModel userModel) async {

@@ -17,6 +17,7 @@ class FavouritesWidget extends StatelessWidget {
   final String image;
 
   const FavouritesWidget({
+    super.key,
     this.dealId = '',
     this.dealName = 'Deal Name',
     this.restaurantName = 'Restaurant Name',
@@ -83,11 +84,13 @@ class FavouritesWidget extends StatelessWidget {
                     onPressed: () async {
                       if (isFavorite) {
                         await controller.unLikeDeal(dealId);
+                        controller.favoriteCache[dealId] =
+                            false; // Update cache
                       } else {
                         await controller.likeDeal(dealId);
+                        controller.favoriteCache[dealId] = true; // Update cache
                       }
                       // Update UI after operation
-                      // Here, you might need to force UI refresh if required
                     },
                     padding: EdgeInsets.zero,
                     icon: ImageIcon(

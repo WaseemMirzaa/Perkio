@@ -77,6 +77,8 @@ class UserController extends GetxController {
     for (var deal in favouriteDeals) {
       favoriteCache[deal.dealId!] = true; // Cache the favorite status
     }
+    // Notify the UI that favorite status has changed
+    favoriteCache.refresh(); // This will notify observers (UI) to update
   }
 
   @override

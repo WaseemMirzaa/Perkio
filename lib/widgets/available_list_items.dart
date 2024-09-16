@@ -18,7 +18,8 @@ class AvailableListItems extends StatelessWidget {
   final bool isFeatured;
   final String image;
 
-  AvailableListItems({
+  const AvailableListItems({
+    super.key,
     this.dealId = '',
     this.dealName = 'Deal Name',
     this.restaurantName = 'Restaurant Name',

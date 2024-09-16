@@ -159,18 +159,33 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: ButtonWidget(
                       onSwipe: () async {
-                        // Get the current number of uses from the rewardModel
-                        final int currentUses = rewardModel.uses ?? 0;
-
                         // Update the reward usage in Firestore
                         await _rewardController.updateRewardUsage(
                           widget.rewardId!,
                           widget.userId!,
                         );
 
-                        // Calculate the remaining uses (subtracting 1)
-                        final int remainingUses =
-                            currentUses > 0 ? currentUses - 1 : 0;
+                        int remainingUses = 0;
+
+                        // Check if user ID exists in the usedBy map
+                        if (rewardModel.usedBy?.containsKey(widget.userId) ??
+                            false) {
+                          // Calculate the remaining uses
+                          remainingUses =
+                              (rewardModel.usedBy![widget.userId] ?? 0) + 1;
+                          log("*****Remaining Uses for User: $remainingUses");
+                        } else {
+                          log("*****User ID not found in the usedBy map");
+                        }
+
+// Also log the full map for debugging purposes
+                        log("*****usedBy Map: ${rewardModel.usedBy}");
+
+                        if (remainingUses == rewardModel.uses) {
+                          remainingUses = 0;
+                        } else {
+                          remainingUses = rewardModel.uses! - remainingUses;
+                        }
 
                         // Show the congratulation dialog with the remaining uses
                         showCongratulationDialog(

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
-import 'package:swipe_app/core/utils/app_utils/GeoLocationHelper.dart';
 import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
@@ -144,7 +142,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                                 UserKey.LATLONG: latLng != null
                                     ? GeoPoint(
                                         latLng!.latitude, latLng!.longitude)
-                                    : null,
+                                    : userProfile.latLong,
                               });
                               if (success) {
                                 // Update successful
@@ -252,7 +250,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                                     await setValue(SharedPrefKey.longitude,
                                         address!.longitude);
                                     await setValue(SharedPrefKey.address,
-                                        address!.completeAddress);
+                                        addressController.text);
                                   }
                                 } else {
                                   X.showSnackBar('Allow Location Permissions',

@@ -4,7 +4,8 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_space.dart';
-import 'package:swipe_app/widgets/custom_container.dart';
+
+import 'package:swipe_app/widgets/custom_container_for_image.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 
 class PrivacyPolicy extends StatefulWidget {
@@ -18,31 +19,62 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
   @override
   Widget build(BuildContext context) {
     return SecondaryLayoutWidget(
-        header: Stack(
-          children: [
-            CustomShapeContainer(height: 22.h,),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SpacerBoxVertical(height: 40),
-                  BackButtonWidget(padding: EdgeInsets.zero,),
-                  Center(child: Text(TempLanguage.txtPrivacyPolicy, style: poppinsMedium(fontSize: 25),))
-                ],
-              ),
+      header: Stack(
+        children: [
+          // Using Sizer for a responsive height
+          CustomPaint(
+            painter: MyCustomPainter(),
+            child: const SizedBox(
+                height: 200,
+                width: 400,
+                child: Center(
+                    child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Pakistan'),
+                      Spacer(),
+                      Text('VS'),
+                      Spacer(),
+                      Text('India'),
+                    ],
+                  ),
+                ))),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SpacerBoxVertical(height: 40),
+                BackButtonWidget(
+                  padding: EdgeInsets.zero,
+                ),
+                Center(
+                  child: Text(
+                    TempLanguage.txtPrivacyPolicy,
+                    style: poppinsMedium(fontSize: 25),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            SizedBox(height: 22.h,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(TempLanguage.txtLoremIpsum, style: poppinsRegular(fontSize: 15),),
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          SizedBox(height: 22.h),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              TempLanguage.txtLoremIpsum,
+              style: poppinsRegular(fontSize: 15),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

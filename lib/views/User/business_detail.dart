@@ -64,6 +64,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
 
           return Stack(
             children: [
+              const SpacerBoxVertical(height: 36),
               ClipPath(
                 clipper: CustomMessageClipper(),
                 child: SizedBox(

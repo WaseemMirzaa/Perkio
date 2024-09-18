@@ -9,6 +9,7 @@ import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/user/business_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_clipper.dart';
 
 class DetailTile extends StatelessWidget {
@@ -34,6 +35,7 @@ class DetailTile extends StatelessWidget {
         children: [
           Stack(
             children: [
+              const SpacerBoxVertical(height: 36),
               ClipPath(
                 clipper: CustomMessageClipper(),
                 child: SizedBox(

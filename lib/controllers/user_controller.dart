@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +11,7 @@ import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/networking/stripe.dart';
 import 'package:swipe_app/services/auth_services.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/services/reward_service.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
@@ -23,6 +23,8 @@ class UserController extends GetxController {
 
   HomeController homeController = Get.put(HomeController(HomeServices()));
   var isSearching = false.obs;
+
+  final RewardService _rewardService = RewardService();
 
   @override
   void onInit() {
@@ -268,20 +270,23 @@ class UserController extends GetxController {
     await setValue(UserKey.STRIPECUSTOMERID, userModel.stripeCustomerId ?? "");
   }
 
-  //fetch the fav and rewards deals
+  Future<List<RewardModel>> fetchFavouriteRewards() async {
+    List<RewardModel> favouriteRewards =
+        await _rewardService.getFavouriteRewards();
+    // Handle the fetched rewards
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Future<List<RewardModel>> getFavouriteRewards() async {
-    String userId = _auth.currentUser?.uid ?? '';
-
-    // Fetch all rewards where the current user's ID is in the isFavourite list
-    QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
-        .collection('reward')
-        .where('isFavourite', arrayContains: userId)
-        .get();
-
-    return snapshot.docs.map((doc) => RewardModel.fromMap(doc.data())).toList();
+    return favouriteRewards;
   }
+
+  // Future<List<RewardModel>> getFavouriteRewards() async {
+  //   String userId = _auth.currentUser?.uid ?? '';
+
+  //   // Fetch all rewards where the current user's ID is in the isFavourite list
+  //   QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
+  //       .collection('reward')
+  //       .where('isFavourite', arrayContains: userId)
+  //       .get();
+
+  //   return snapshot.docs.map((doc) => RewardModel.fromMap(doc.data())).toList();
+  // }
 }

@@ -1,11 +1,13 @@
-
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/reward_service.dart';
+import 'package:swipe_app/views/user/reward_redeem_detail.dart';
 
 class RewardController extends GetxController {
   final RewardService _rewardService = RewardService();
@@ -16,6 +18,9 @@ class RewardController extends GetxController {
   var isLoading = true.obs;
   var isSearching = false.obs; // Observable for search status
   var currentUserId = ''.obs; // Observable variable for the current user UID
+  final ImagePicker _picker = ImagePicker();
+  var isLoadingforscan = false.obs; // Observable to track loading state
+  var progress = 0.0.obs; // Observable to track progress
 
   @override
   void onInit() {
@@ -149,6 +154,57 @@ class RewardController extends GetxController {
       }
     } catch (e) {
       log('Error updating reward usage and points: $e');
+    }
+  }
+
+  //cleaning scan screen
+
+  Future<void> pickImageAndUpload(
+      RewardModel rewardModel, String userId) async {
+    isLoadingforscan.value = true;
+
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+
+    if (image != null) {
+      try {
+        final file = File(image.path);
+
+        // Get the UploadTask and track progress
+        final uploadTask =
+            await _rewardService.uploadReceiptImage(file, rewardModel, userId);
+
+        // Listen to snapshot events for progress tracking
+        uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+          if (taskSnapshot.state == TaskState.running) {
+            progress.value = (taskSnapshot.bytesTransferred.toDouble() /
+                taskSnapshot.totalBytes.toDouble());
+          }
+        });
+
+        // Complete the upload and get the download URL
+        final snapshot = await uploadTask.whenComplete(() {});
+        final downloadUrl = await snapshot.ref.getDownloadURL();
+
+        // Save the receipt and add points
+        await _rewardService.saveReceipt(rewardModel, userId, downloadUrl);
+        await _rewardService.addPointsToReward(
+            rewardModel.rewardId!, userId, 20);
+
+        // Navigate to the reward detail screen
+        Get.offAll(() => RewardRedeemDetail(
+              rewardId: rewardModel.rewardId,
+              businessId: rewardModel.businessId,
+              userId: userId,
+            ));
+      } catch (e) {
+        print("Error uploading image: $e");
+      } finally {
+        isLoadingforscan.value = false;
+        progress.value = 0.0;
+      }
+    } else {
+      isLoadingforscan.value = false;
+      progress.value = 0.0;
     }
   }
 }

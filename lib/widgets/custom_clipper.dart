@@ -8,7 +8,7 @@ class CustomMessageClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     double width = size.width;
-    double height = 210;
+    double height = 270;
     double rheight = height - height / 3; // Height where the notch starts
     double notchRadius = 25; // Radius of the rounded notch
 

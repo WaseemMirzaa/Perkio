@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
@@ -79,7 +79,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                     children: [
                       const SpacerBoxVertical(height: 10),
                       Text(
-                        widget.dealModel.dealName.capitalizeEachWord() ?? '',
+                        widget.dealModel.dealName.capitalizeEachWord(),
                         style: poppinsMedium(fontSize: 13.sp),
                       ),
                       const SpacerBoxVertical(height: 5),

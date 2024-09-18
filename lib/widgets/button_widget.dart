@@ -10,7 +10,11 @@ class ButtonWidget extends StatelessWidget {
   final VoidCallback onSwipe;
   final String text;
   final bool isGradient;
-  ButtonWidget({super.key, required this.onSwipe, required this.text,this.isGradient = true});
+  ButtonWidget(
+      {super.key,
+      required this.onSwipe,
+      required this.text,
+      this.isGradient = true});
   final GlobalKey<SlideActionState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
@@ -20,9 +24,10 @@ class ButtonWidget extends StatelessWidget {
       onSubmit: () {
         Future.delayed(
           const Duration(seconds: 1),
-              () => _key.currentState?.reset(),
+          () => _key.currentState?.reset(),
         );
         onSwipe();
+        return null;
       },
       text: text,
       sliderButtonIcon: Container(
@@ -31,23 +36,37 @@ class ButtonWidget extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isGradient ? AppColors.whiteColor : null,
-            gradient: isGradient ? null : const LinearGradient(
-              colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
+            gradient: isGradient
+                ? null
+                : const LinearGradient(
+                    colors: [
+                      AppColors.gradientStartColor,
+                      AppColors.gradientEndColor
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+          ),
+          child: Image.asset(
+            AppAssets.swipeImg,
+            scale: 2.5,
+          )),
+      sliderButtonIconPadding: 0,
+      textStyle: poppinsBold(
+          fontSize: 14,
+          color: isGradient ? AppColors.whiteColor : AppColors.blackColor),
+      outerColor: Colors.grey[200],
+      innerColor: Colors.black,
+      gradient: isGradient
+          ? const LinearGradient(
+              colors: [
+                AppColors.gradientStartColor,
+                AppColors.gradientEndColor
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-            ),
-          ),
-          child: Image.asset(AppAssets.swipeImg,scale: 2.5,)
-      ),
-      sliderButtonIconPadding: 0,
-      textStyle: poppinsBold(fontSize: 14, color: isGradient ? AppColors.whiteColor : AppColors.blackColor),
-      outerColor:  Colors.grey[200],
-      innerColor: Colors.black,
-      gradient: isGradient ? const LinearGradient(
-        colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ) : null,
+            )
+          : null,
     );
   }
 }

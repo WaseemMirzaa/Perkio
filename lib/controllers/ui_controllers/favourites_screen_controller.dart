@@ -45,7 +45,7 @@ class FavouritesScreenController extends GetxController {
             true; // Ensure cache is populated correctly
       }
     } else {
-      favouriteRewards.value = await userController.getFavouriteRewards();
+      favouriteRewards.value = await userController.fetchFavouriteRewards();
       // Update favorite cache
       favoriteCache.clear();
       for (var reward in favouriteRewards) {

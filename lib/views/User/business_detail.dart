@@ -13,6 +13,7 @@ import 'package:swipe_app/widgets/business_detail_tile.dart';
 import 'package:swipe_app/widgets/business_detail_tiles_for_client.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/custom_clipper.dart';
 
 class BusinessDetail extends StatefulWidget {
   final String? businessId;
@@ -63,12 +64,34 @@ class _BusinessDetailState extends State<BusinessDetail> {
 
           return Stack(
             children: [
-              SizedBox(
-                width: double.infinity,
-                height: 200, // Set height for the image
-                child: Image.network(
-                  widget.businessImage ?? '',
-                  fit: BoxFit.cover,
+              ClipPath(
+                clipper: CustomMessageClipper(),
+                child: SizedBox(
+                  height: 210,
+                  width: double.infinity,
+                  child: Image.network(
+                    widget.businessImage ?? '', // Replace with your image URL
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    (loadingProgress.expectedTotalBytes ?? 1)
+                                : null,
+                          ),
+                        );
+                      }
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Icon(Icons.error, color: Colors.red),
+                      );
+                    },
+                  ),
                 ),
               ),
               BackButtonWidget(),
@@ -177,7 +200,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
                                             ),
                                           );
                                         },
-                                        child: BusinessDetailTilesforClientSide(deal: deal)))
+                                        child: BusinessDetailTilesforClientSide(
+                                            deal: deal)))
                                     .toList()
                                 : [
                                     Center(

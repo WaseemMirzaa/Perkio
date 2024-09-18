@@ -118,7 +118,7 @@ class DealDetail extends StatelessWidget {
 
     return Column(
       children: [
-        const SpacerBoxVertical(height: 20),
+        const SpacerBoxVertical(height: 36),
         DetailTile(businessId: deal.businessId),
         const SpacerBoxVertical(height: 10),
         Padding(

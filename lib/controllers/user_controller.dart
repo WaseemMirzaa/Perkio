@@ -153,45 +153,69 @@ class UserController extends GetxController {
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
   Future<void> signUp(UserModel userModel) async {
     loading.value = true;
-    String? result = await authServices.signUp(userModel);
-    if (result != null) {
-      userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-      final stripeCustomerId =
-          await StripePayment.createStripeCustomer(email: userModel.email!);
-      print("STRIPE: $stripeCustomerId");
-      if (!stripeCustomerId.isEmptyOrNull) {
-        userModel.stripeCustomerId = stripeCustomerId;
-      }
-      if (getStringAsync(SharedPrefKey.role) == SharedPrefKey.business) {
-        final logoLink =
-            await homeController.uploadImageToFirebaseWithCustomPath(
-                userModel.logo!, 'business_logo/$result');
-        final image = await homeController.uploadImageToFirebaseOnID(
-            userModel.image!, result);
-        if (logoLink != null && image != null) {
-          userModel.logo = logoLink;
-          userModel.image = image;
-          await setValue(SharedPrefKey.photo, image);
+    try {
+      String? result = await authServices.signUp(userModel);
+
+      if (result != null) {
+        userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+        final stripeCustomerId =
+            await StripePayment.createStripeCustomer(email: userModel.email!);
+        print("STRIPE: $stripeCustomerId");
+
+        if (!stripeCustomerId.isEmptyOrNull) {
+          userModel.stripeCustomerId = stripeCustomerId;
         }
+
+        if (getStringAsync(SharedPrefKey.role) == SharedPrefKey.business) {
+          final logoLink =
+              await homeController.uploadImageToFirebaseWithCustomPath(
+                  userModel.logo!, 'business_logo/$result');
+          final image = await homeController.uploadImageToFirebaseOnID(
+              userModel.image!, result);
+
+          if (logoLink != null && image != null) {
+            userModel.logo = logoLink;
+            userModel.image = image;
+            await setValue(SharedPrefKey.photo, image);
+          }
+        }
+
+        await addUserData(userModel)
+            .then((value) async => await setUserInfo(userModel));
+
+        loading.value = false;
+        clearTextFields();
+
+        // Navigate based on user role
+        if (getStringAsync(SharedPrefKey.role) == SharedPrefKey.user) {
+          Get.off(() => LocationService(
+              child: BottomBarView(
+                  isUser: getStringAsync(SharedPrefKey.role) ==
+                      SharedPrefKey.user)));
+        }
+      } else {
+        loading.value = false;
+        Get.snackbar('Error', 'Account not created',
+            snackPosition: SnackPosition.TOP);
       }
-      await addUserData(userModel)
-          .then((value) async => await setUserInfo(userModel));
+    } on FirebaseAuthException catch (e) {
       loading.value = false;
 
-      clearTextFields();
-      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-          ? Get.off(() => LocationService(
-              child: BottomBarView(
-                  isUser:
-                      getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                          ? true
-                          : false)))
-          : null;
-    } else {
+      // Display the exact Firebase error message, including Recaptcha-related errors
+      Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
+          snackPosition: SnackPosition.TOP);
+    } catch (e) {
       loading.value = false;
-      Get.snackbar('Error', 'Account not created',
+
+      // Catch other unknown errors
+      Get.snackbar('Error', 'An unknown error occurred',
           snackPosition: SnackPosition.TOP);
     }
+  }
+
+  Future<bool> addUserData(UserModel userModel) async {
+    return await userServices.addUserData(userModel);
   }
 
   ///♦Heart
@@ -202,10 +226,6 @@ class UserController extends GetxController {
   }
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 ADD TO FIREBASE
-
-  Future<bool> addUserData(UserModel userModel) async {
-    return await userServices.addUserData(userModel);
-  }
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 GET USER
 
@@ -277,16 +297,4 @@ class UserController extends GetxController {
 
     return favouriteRewards;
   }
-
-  // Future<List<RewardModel>> getFavouriteRewards() async {
-  //   String userId = _auth.currentUser?.uid ?? '';
-
-  //   // Fetch all rewards where the current user's ID is in the isFavourite list
-  //   QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
-  //       .collection('reward')
-  //       .where('isFavourite', arrayContains: userId)
-  //       .get();
-
-  //   return snapshot.docs.map((doc) => RewardModel.fromMap(doc.data())).toList();
-  // }
 }

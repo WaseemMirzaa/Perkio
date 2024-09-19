@@ -23,16 +23,21 @@ class AuthServices {
   }
 
   //............ SignUp
-  Future<String?> signUp(UserModel userModel,) async {
+  Future<String?> signUp(UserModel userModel) async {
     try {
-      await auth.createUserWithEmailAndPassword(email: userModel.email!, password: userModel.password!);
-      User? user = auth.currentUser;
-      if (user != null) {
-        await setValue(SharedPrefKey.uid ,user.uid);
-      }
-      return user!.uid; // Sign-up success, return null
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: userModel.email!,
+        password: userModel.password!,
+      );
+      return userCredential
+          .user?.uid; // Return the user's UID on successful sign up
     } on FirebaseAuthException catch (e) {
-      return null ;
+      // Throw the FirebaseAuthException, so the caller can handle it
+      rethrow; // Important: Rethrow the exception so it can be handled by the caller
+    } catch (e) {
+      // Throw an unknown error exception if something unexpected happens
+      throw Exception('Unknown error occurred during sign-up');
     }
   }
 

@@ -22,6 +22,7 @@ import 'package:swipe_app/views/place_picker/get_current_location.dart';
 import 'package:swipe_app/views/place_picker/location_utils.dart';
 import 'package:swipe_app/views/place_picker/suggestion.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
+import 'package:swipe_app/widgets/common_comp.dart';
 
 typedef AddressCallback = void Function(AddressModel val);
 
@@ -398,82 +399,92 @@ class _PlacesPickState extends State<PlacesPick> {
                               ),
                             ),
                             15.height,
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 1.5.w),
-                              child: ButtonWidget(
-                                      onSwipe: () async {
-                                        List<Placemark> placeMarks =
-                                            await placemarkFromCoordinates(
-                                          cameraPosition?.target.latitude ??
-                                              widget.currentLocation.latitude,
-                                          cameraPosition?.target.longitude ??
-                                              widget.currentLocation.longitude,
-                                        );
-                                        print("Place Marks are: $placeMarks");
-                                        if (address != null &&
-                                            placeMarks.isNotEmpty) {
-                                          address.locality =
-                                              placeMarks.first.locality ??
-                                                  placeMarks.first.country;
-                                          print("If Condition is True");
+                            if (controller.loading.value)
+                              circularProgressBar()
+                            else
+                              Padding(
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 1.5.w),
+                                child: ButtonWidget(
+                                        onSwipe: () async {
+                                          List<Placemark> placeMarks =
+                                              await placemarkFromCoordinates(
+                                            cameraPosition?.target.latitude ??
+                                                widget.currentLocation.latitude,
+                                            cameraPosition?.target.longitude ??
+                                                widget
+                                                    .currentLocation.longitude,
+                                          );
+                                          print("Place Marks are: $placeMarks");
+                                          if (address != null &&
+                                              placeMarks.isNotEmpty) {
+                                            address.locality =
+                                                placeMarks.first.locality ??
+                                                    placeMarks.first.country;
+                                            print("If Condition is True");
 
-                                          address.postalCode =
-                                              placeMarks.first.postalCode;
-                                          address.street =
-                                              placeMarks.first.street;
-                                          address.name = placeMarks.first.name;
-                                          address.administrativeArea =
-                                              placeMarks
-                                                  .first.administrativeArea;
-                                          address.country =
-                                              placeMarks.first.country;
-                                          address.subAdministrativeArea =
-                                              placeMarks
-                                                  .first.subAdministrativeArea;
-                                          address.longitude = cameraPosition
-                                                  ?.target.longitude ??
-                                              widget.currentLocation.longitude;
-                                          address.latitude = cameraPosition
-                                                  ?.target.latitude ??
-                                              widget.currentLocation.latitude;
-                                          AppStatics.geoPoint = GeoPoint(
-                                              cameraPosition?.target.latitude ??
-                                                  widget
-                                                      .currentLocation.latitude,
-                                              cameraPosition
-                                                      ?.target.longitude ??
-                                                  widget.currentLocation
-                                                      .longitude);
-                                          location.value =
-                                              ("${placeMarks.first.name}, ${placeMarks.first.locality}, ${placeMarks.first.administrativeArea}");
-                                          address.completeAddress =
-                                              location.value;
-                                          //moving back to previous screen
-                                          // Create a GeoPoint from the address coordinates
-                                          GeoPoint? geoPoint = GeoPoint(
-                                              address.latitude!,
-                                              address
-                                                  .longitude!); // Adjust based on your implementation
+                                            address.postalCode =
+                                                placeMarks.first.postalCode;
+                                            address.street =
+                                                placeMarks.first.street;
+                                            address.name =
+                                                placeMarks.first.name;
+                                            address.administrativeArea =
+                                                placeMarks
+                                                    .first.administrativeArea;
+                                            address.country =
+                                                placeMarks.first.country;
+                                            address.subAdministrativeArea =
+                                                placeMarks.first
+                                                    .subAdministrativeArea;
+                                            address.longitude = cameraPosition
+                                                    ?.target.longitude ??
+                                                widget
+                                                    .currentLocation.longitude;
+                                            address.latitude = cameraPosition
+                                                    ?.target.latitude ??
+                                                widget.currentLocation.latitude;
+                                            AppStatics.geoPoint = GeoPoint(
+                                                cameraPosition
+                                                        ?.target.latitude ??
+                                                    widget.currentLocation
+                                                        .latitude,
+                                                cameraPosition
+                                                        ?.target.longitude ??
+                                                    widget.currentLocation
+                                                        .longitude);
+                                            location.value =
+                                                ("${placeMarks.first.name}, ${placeMarks.first.locality}, ${placeMarks.first.administrativeArea}");
+                                            address.completeAddress =
+                                                location.value;
+                                            //moving back to previous screen
+                                            // Create a GeoPoint from the address coordinates
+                                            GeoPoint? geoPoint = GeoPoint(
+                                                address.latitude!,
+                                                address
+                                                    .longitude!); // Adjust based on your implementation
 
 // Update the existing UserModel instance with new values
-                                          if (widget.isUserLocation) {
-                                            widget.userModel!.latLong =
-                                                geoPoint;
-                                            widget.userModel!.address =
-                                                location.value;
-                                            controller
-                                                .signUp(widget.userModel!);
-                                          } else {
-                                            // For Navigator.pop, pass back the updated address with additional info
-                                            Navigator.pop(context, address);
+                                            if (widget.isUserLocation) {
+                                              widget.userModel!.latLong =
+                                                  geoPoint;
+                                              widget.userModel!.address =
+                                                  location.value;
+
+                                              //let's navigate
+                                              controller
+                                                  .signUp(widget.userModel!);
+                                            } else {
+                                              // For Navigator.pop, pass back the updated address with additional info
+                                              Navigator.pop(context, address);
+                                            }
                                           }
-                                        }
-                                        print(
-                                            "Full ELse Condition is Called ${address?.completeAddress}");
-                                      },
-                                      text: TempLanguage.btnLblSwipeToSelect)
-                                  .cornerRadiusWithClipRRect(10),
-                            ),
+                                          print(
+                                              "Full ELse Condition is Called ${address?.completeAddress}");
+                                        },
+                                        text: TempLanguage.btnLblSwipeToSelect)
+                                    .cornerRadiusWithClipRRect(10),
+                              ),
                             50.height
                           ],
                         ),
@@ -529,30 +540,33 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   @override
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder<List<Suggestion>>(
-      // We will put the api call here
       future: Apis.fetchSuggestions(
           input: query, lang: Localizations.localeOf(context).languageCode),
-      builder: (context, snapshot) => query == ''
-          ? Center(
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                child: const Text('Search location'),
-              ),
-            )
-          : snapshot.hasData
-              ? ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => ListTile(
-                    // we will display the data returned from our future here
-                    title: Text(snapshot.data![index].description.toString()),
-                    onTap: () {
-                      close(context, snapshot.data![index]);
-                    },
-                  ),
-                  itemCount: snapshot.data!.length,
-                )
-              : const Center(child: Text("Loading...")),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: Text("Loading..."));
+        }
+        // if (snapshot.hasError) {
+        //   return Center(child: Text("Error: ${snapshot.error}"));
+        // }
+        if (snapshot.hasData) {
+          if (snapshot.data!.isEmpty) {
+            return const Center(child: Text('No results found.'));
+          }
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => ListTile(
+              title: Text(snapshot.data![index].description.toString()),
+              onTap: () {
+                close(context, snapshot.data![index]);
+              },
+            ),
+            itemCount: snapshot.data!.length,
+          );
+        }
+        return const Center(child: Text("No data available."));
+      },
     );
   }
 }

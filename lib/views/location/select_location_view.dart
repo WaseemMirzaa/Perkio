@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:sizer/sizer.dart';
-import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+
+import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/models/user_model.dart';
+import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
-import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 
 class SelectLocation extends StatefulWidget {
   final UserModel userModel;
@@ -18,95 +19,112 @@ class SelectLocation extends StatefulWidget {
 
 class _SelectLocationState extends State<SelectLocation> {
   late GoogleMapController mapController;
-  LatLng _initialPosition = const LatLng(37.42796133580664, -122.085749655962);
+  final homeServices = HomeServices();
+  LatLng? latLng;
+  AddressModel? address;
+  bool isPermitted = false;
+  bool isLoading = true; // Track loading state
+  TextEditingController businessAddressController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getUserLocation();
+    _initializeLocation();
   }
 
-  Future<void> _getUserLocation() async {
-    Position position = await _determinePosition();
-    setState(() {
-      _initialPosition = LatLng(position.latitude, position.longitude);
-    });
-  }
+  Future<void> _initializeLocation() async {
+    bool permissionGranted =
+        await LocationPermissionManager().requestLocationPermission(context);
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+    if (permissionGranted) {
+      setState(() {
+        isPermitted = true;
+      });
+      await _getAndFill();
+    } else {
+      setState(() {
+        isPermitted = false;
+        isLoading = false; // Stop loading if permission is denied
+      });
     }
+  }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+  Future<void> _getAndFill() async {
+    try {
+      latLng = await homeServices.getCurrentLocation(context: context);
+      if (latLng != null) {
+        final currentLocation =
+            await homeServices.getAddress(latLng ?? const LatLng(0, 0));
+        await _addingAddress(currentLocation ?? const Placemark());
+        businessAddressController.text =
+            "${currentLocation?.street}, ${currentLocation?.locality}, ${currentLocation?.administrativeArea}, ${currentLocation?.country}";
       }
+    } catch (e) {
+      print("Error getting location: $e");
+    } finally {
+      setState(() {
+        isLoading = false; // Stop loading once location is fetched
+      });
     }
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition();
+  Future<void> _addingAddress(Placemark currentAddress) async {
+    address = AddressModel(
+      administrativeArea: currentAddress.administrativeArea,
+      subAdministrativeArea: currentAddress.subAdministrativeArea,
+      completeAddress:
+          "${currentAddress.street}, ${currentAddress.administrativeArea}, ${currentAddress.country}",
+      country: currentAddress.country,
+      isoCountryCode: currentAddress.isoCountryCode,
+      locality: currentAddress.locality,
+      subLocality: currentAddress.subLocality,
+      name: currentAddress.name,
+      postalCode: currentAddress.postalCode,
+      street: currentAddress.street,
+      subThoroughfare: currentAddress.subThoroughfare,
+      thoroughfare: currentAddress.thoroughfare,
+      latitude: latLng?.latitude ?? 0.0,
+      longitude: latLng?.longitude ?? 0.0,
+    );
+    print("Current Address: ${address!.completeAddress}");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(22.h),
-        child: customAppBar(
-          isSearchField: true,
-          isLocation: false,
-          isNotification: false,
-        ),
-      ),
-      body: LocationService(
-        child: PlacesPick(
-          isUserLocation: true,
-          userModel: widget.userModel,
-          currentLocation: _initialPosition,
-        ),
-      ),
+      body: isLoading
+          ? const Center(
+              child:
+                  CircularProgressIndicator(), // Show a loading indicator while fetching location
+            )
+          : isPermitted && latLng != null
+              ? LocationService(
+                  child: PlacesPick(
+                    isUserLocation: true,
+                    userModel: widget.userModel,
+                    currentLocation: latLng!,
+                  ),
+                )
+              : Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                          'Location permission is required to show the map.'),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            isLoading =
+                                true; // Show loading indicator while retrying
+                          });
+                          await _initializeLocation(); // Retry permission and location initialization
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
     );
   }
 }
-
-
-
-//  ProfileListItems(
-//                           path: AppAssets.profile4,
-//                           textController: addressController,
-//                           onTap: enabled.value
-//                               ? () async {
-//                                   AddressModel address = await Navigator.push(
-//                                       context,
-//                                       MaterialPageRoute(
-//                                           builder: (context) => LocationService(
-//                                               child: PlacesPick(
-//                                                   currentLocation: LatLng(
-//                                                       businessProfile
-//                                                           .latLong!.latitude,
-//                                                       businessProfile.latLong!
-//                                                           .longitude)))));
-//                                   if (address != null) {
-//                                     addressController.text = await address!
-//                                         .subAdministrativeArea
-//                                         .toString();
-//                                     await setValue(SharedPrefKey.latitude,
-//                                         address!.latitude);
-//                                     await setValue(SharedPrefKey.longitude,
-//                                         address!.longitude);
-//                                   }
-//                                 }
-//                               : null,
-//                         ),,

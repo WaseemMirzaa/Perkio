@@ -181,7 +181,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                             builder: (context) =>
                                                 SelectLocation(
                                                   userModel: userModel,
-                                                )))    //controller.signUp(userModel)
+                                                ))) //controller.signUp(userModel)
                                     : Navigator.push(
                                         context,
                                         MaterialPageRoute(

@@ -113,6 +113,7 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                                 final isAuthenticated = await controller.signIn(
                                     controller.emailController.text,
                                     controller.passwordController.text);
+                                controller.fetchAndCacheFavouriteDeals();
                                 if (isAuthenticated &&
                                     await LocationPermissionManager
                                         .requestLocationPermissions(context)) {

@@ -184,10 +184,19 @@ class _PlacesPickState extends State<PlacesPick> {
                     }
                   },
                 ),
-                Center(
-                  child: Image.asset(
-                    AppAssets.locationPin,
-                    scale: 3,
+                Positioned(
+                  left: MediaQuery.of(context).size.width / 2 -
+                      25, // Adjust to center
+                  top: MediaQuery.of(context).size.height / 2 -
+                      50, // Adjust to center
+                  child: IgnorePointer(
+                    ignoring:
+                        true, // Prevents the image from intercepting touch events
+                    child: Image.asset(
+                      AppAssets.locationPin,
+                      width: 200, // Adjust the width
+                      height: 200, // Adjust the height
+                    ),
                   ),
                 ),
                 SizedBox(

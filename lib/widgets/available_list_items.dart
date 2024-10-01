@@ -90,8 +90,11 @@ class AvailableListItems extends StatelessWidget {
                   child: IconButton(
                     onPressed: () {
                       if (isFavorite) {
+                        controller.decreaseDealLikes(dealId);
+
                         controller.unLikeDeal(dealId);
                       } else {
+                        controller.incrementDealLikes(dealId);
                         controller.likeDeal(dealId);
                       }
                     },

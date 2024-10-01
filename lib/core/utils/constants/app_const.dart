@@ -1,4 +1,4 @@
-class SharedPrefKey{
+class SharedPrefKey {
   static const String role = 'role';
   static const String user = 'user';
   static const String business = 'business';
@@ -9,5 +9,4 @@ class SharedPrefKey{
   static const String address = 'address';
   static const String latitude = 'latitude';
   static const String longitude = 'longitude';
-
 }

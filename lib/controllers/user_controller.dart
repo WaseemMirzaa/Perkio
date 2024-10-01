@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +7,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
+import 'package:swipe_app/models/business_details_model.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/models/user_model.dart';
@@ -16,6 +19,7 @@ import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
+import 'package:http/http.dart' as http;
 
 class UserController extends GetxController {
   UserServices userServices;
@@ -150,6 +154,60 @@ class UserController extends GetxController {
     return userServices.getUserByStream(userId);
   }
 
+  Future<BusniessDetailsModel?> fetchBusinessDetails(String apiUrl) async {
+    try {
+      // Make the API request
+      final response = await http.get(Uri.parse(apiUrl));
+
+      // Check if the response status is OK
+      if (response.statusCode == 200) {
+        print("API call successful.");
+
+        // Parse the response body
+        final jsonResponse = json.decode(response.body);
+        print("Response JSON: $jsonResponse");
+
+        // Create the BusinessDetailsModel from the response
+        BusniessDetailsModel businessDetails = BusniessDetailsModel(
+          htmlAttributions: jsonResponse['html_attributions'],
+          result: jsonResponse['result'] != null
+              ? Result(
+                  name: jsonResponse['result']['name'],
+                  rating: jsonResponse['result']['rating'],
+                  reviews: (jsonResponse['result']['reviews'] as List)
+                      .map((reviewJson) => Review(
+                            authorName: reviewJson['author_name'],
+                            authorUrl: reviewJson['author_url'],
+                            language: reviewJson['language'],
+                            originalLanguage: reviewJson['original_language'],
+                            profilePhotoUrl: reviewJson['profile_photo_url'],
+                            rating: reviewJson['rating'],
+                            relativeTimeDescription:
+                                reviewJson['relative_time_description'],
+                            text: reviewJson['text'],
+                            time: reviewJson['time'],
+                            translated: reviewJson['translated'],
+                          ))
+                      .toList())
+              : null,
+          status: jsonResponse['status'],
+        );
+
+        print(
+            "Business Details: ${businessDetails.result?.name}, Rating: ${businessDetails.result?.rating}");
+        return businessDetails;
+      } else {
+        // Handle non-200 responses
+        print("API call failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      // Handle any exceptions
+      print("Error occurred while fetching business details: $e");
+      return null;
+    }
+  }
+
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
   Future<void> signUp(UserModel userModel, Function onError) async {
     loading.value = true;
@@ -254,6 +312,35 @@ class UserController extends GetxController {
   Future<List<DealModel>> getDeals() async {
     var res = await userServices.getDeals();
     return res;
+  }
+
+  Future<void> incrementDealViews(String dealId) async {
+    await userServices.updateDealViews(dealId);
+  }
+
+  Future<void> incrementDealLikes(String dealId) async {
+    await userServices.updateDealLikes(dealId);
+  }
+
+  Future<void> decreaseDealLikes(String dealId) async {
+    await userServices.updateDealUnLikes(dealId);
+  }
+
+  // This method will be called on a button click or other event
+  Future<void> handleBusinessBalanceUpdate(String businessId) async {
+    if (businessId.isNotEmpty) {
+      try {
+        print(
+            'Initiating balance check and update for businessId: $businessId');
+        await userServices.checkAndUpdateBalance(businessId);
+        print('Balance check and update process completed');
+      } catch (e) {
+        print('Error occurred: $e');
+        // Show error to the user
+      }
+    } else {
+      print('BusinessId is empty');
+    }
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All REWARDS

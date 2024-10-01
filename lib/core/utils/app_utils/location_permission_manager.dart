@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationPermissionManager {
-  static Future<bool> checkStatus()async{
+  static Future<bool> checkStatus() async {
     return await Geolocator.isLocationServiceEnabled();
   }
-  Future<bool> requestLocationPermission(BuildContext context) async {
 
+  Future<bool> requestLocationPermission(BuildContext context) async {
     final status = await Permission.location.request();
 
     if (status.isGranted) {
@@ -34,7 +34,8 @@ class LocationPermissionManager {
       builder: (context) {
         return AlertDialog(
           title: const Text('Location Permission Required'),
-          content: const Text("Location access is required to use this feature. Please enable it in Settings."),
+          content: const Text(
+              "Location access is required to use this feature. Please enable it in Settings."),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
@@ -54,77 +55,86 @@ class LocationPermissionManager {
       },
     );
   }
-  static bool isDisplayed = false;
 
+  static bool isDisplayed = false;
 
   static Future<void> requestLocationPermissionWithConsentDialog(
       {BuildContext? scaffoldContext,
-        required Function onGranted,
-        required Function onDenied}) async {
+      required Function onGranted,
+      required Function onDenied}) async {
     if (isDisplayed) {
       return;
     }
     isDisplayed = true;
     bool isGranted = await Permission.location.isGranted;
     if (!isGranted) {
-      await aboutLocationDialog(scaffoldContext!, () async {
-        await requestLocationPermissions(scaffoldContext).then((isGrantedNow) => {
-          isDisplayed = false,
-          if (isGrantedNow)
-            {
-              onGranted(),
-            }
-          else
-            {
-              print("On Denied"),
-              showDialog(context: scaffoldContext, builder: (context)=>PermissionDeniedDialog())
-            },
-          Get.back()
-        });
-      },);
+      await aboutLocationDialog(
+        scaffoldContext!,
+        () async {
+          await requestLocationPermissions(scaffoldContext)
+              .then((isGrantedNow) => {
+                    isDisplayed = false,
+                    if (isGrantedNow)
+                      {
+                        onGranted(),
+                      }
+                    else
+                      {
+                        print("On Denied"),
+                        showDialog(
+                            context: scaffoldContext,
+                            builder: (context) => PermissionDeniedDialog())
+                      },
+                    Get.back()
+                  });
+        },
+      );
     }
   }
 
-  static Future<void> aboutLocationDialog(BuildContext scaffoldContext, Function()? onPressed)=> showDialog(
-    context: scaffoldContext,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Location Usage Disclosure',
-          style:
-          TextStyle(color: Colors.black,fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        content: const SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'Swipe App uses location permissions in the background to provide accurate business and user address information. This allows the app to offer precise location-based services and ensure users and businesses receive timely updates relevant to their location.',
-                style: TextStyle(fontSize: 16.0, color: Colors.black),
+  static Future<void> aboutLocationDialog(
+          BuildContext scaffoldContext, Function()? onPressed) =>
+      showDialog(
+        context: scaffoldContext,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: const Text(
+              'Location Usage Disclosure',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+            content: const SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Swipe App uses location permissions in the background to provide accurate business and user address information. This allows the app to offer precise location-based services and ensure users and businesses receive timely updates relevant to their location.',
+                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'By continuing, you agree to use of your location in the background',
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        // fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                ],
               ),
-              SizedBox(height: 15,),
-              Text(
-                'By continuing, you agree to use of your location in the background',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    // fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
+            ),
+            actions: <Widget>[
+              ElevatedButton(child: Text('Next'), onPressed: onPressed)
             ],
-          ),
-        ),
-        actions: <Widget>[
-          ElevatedButton(
-              child: Text('Next'),
-              onPressed: onPressed
-          )
-        ],
+          );
+        },
       );
-    },
-  );
-
 
   static Future<bool> requestLocationPermissions(context) async {
     bool serviceEnabled;
@@ -157,9 +167,6 @@ class LocationPermissionManager {
 
     return true;
   }
-
-
-
 }
 
 class PermissionDeniedDialog extends StatelessWidget {
@@ -169,7 +176,8 @@ class PermissionDeniedDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Permission Denied"),
-      content: const Text("You have permanently denied the required permission. Please go to the app settings to enable the permission."),
+      content: const Text(
+          "You have permanently denied the required permission. Please go to the app settings to enable the permission."),
       actions: [
         TextButton(
           child: const Text("Cancel"),

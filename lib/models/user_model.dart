@@ -18,25 +18,27 @@ class UserModel {
   bool? isPromotionStart;
   String? isVerified;
   String? address; // Add this line
+  int? views; // Add this line for optional views
 
-  UserModel(
-      {this.userId,
-      this.userName,
-      this.email,
-      this.phoneNo,
-      this.image,
-      this.latLong,
-      this.website,
-      this.logo,
-      this.role,
-      this.businessId,
-      this.password,
-      this.balance,
-      this.isPromotionStart,
-      this.isVerified,
-      this.stripeCustomerId,
-      this.address // Add this line
-      });
+  UserModel({
+    this.userId,
+    this.userName,
+    this.email,
+    this.phoneNo,
+    this.image,
+    this.latLong,
+    this.website,
+    this.logo,
+    this.role,
+    this.businessId,
+    this.password,
+    this.balance,
+    this.isPromotionStart,
+    this.isVerified,
+    this.stripeCustomerId,
+    this.address, // Add this line
+    this.views, // Add this line for optional views
+  });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
@@ -56,6 +58,7 @@ class UserModel {
       isVerified: data[UserKey.ISVERIFIED] ?? StatusKey.pending,
       stripeCustomerId: data[UserKey.STRIPECUSTOMERID] ?? '',
       address: data[UserKey.ADDRESS],
+      views: data[UserKey.VIEWS] ?? 0, // Initialize views from data
     );
   }
 
@@ -76,6 +79,7 @@ class UserModel {
       isVerified: map[UserKey.ISVERIFIED] ?? StatusKey.pending,
       stripeCustomerId: map[UserKey.STRIPECUSTOMERID] ?? '',
       address: map[UserKey.ADDRESS], // Add this line
+      views: map[UserKey.VIEWS] ?? 0, // Add this line for optional views
     );
   }
 
@@ -96,6 +100,7 @@ class UserModel {
       UserKey.ISVERIFIED: isVerified ?? StatusKey.pending,
       UserKey.STRIPECUSTOMERID: stripeCustomerId ?? '',
       UserKey.ADDRESS: address, // Add this line
+      UserKey.VIEWS: views ?? 0, // Add this line for optional views
     };
   }
 
@@ -122,6 +127,7 @@ class UserModel {
       UserKey.ISPROMOTIONSTART: isPromotionStart,
       UserKey.ISVERIFIED: isVerified,
       UserKey.ADDRESS: address, // Use the constant for address
+      UserKey.VIEWS: views, // Add this line for optional views
     };
   }
 }

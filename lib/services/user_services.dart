@@ -48,6 +48,44 @@ class UserServices {
     }
   }
 
+  //update the view of deal
+  Future<void> updateDealViews(String dealId) async {
+    try {
+      DocumentReference dealRef = _dealCollection.doc(dealId);
+      await dealRef.update({
+        'views': FieldValue.increment(1),
+      });
+    } catch (e) {
+      print('Error updating views: $e');
+      // Handle error appropriately
+    }
+  }
+
+  Future<void> updateDealLikes(String dealId) async {
+    try {
+      DocumentReference dealRef = _dealCollection.doc(dealId);
+      await dealRef.update({
+        'likes': FieldValue.increment(1),
+      });
+    } catch (e) {
+      print('Error updating views: $e');
+      // Handle error appropriately
+    }
+  }
+
+  Future<void> updateDealUnLikes(String dealId) async {
+    try {
+      DocumentReference dealRef = _dealCollection.doc(dealId);
+      // Decrement the likes field by 1
+      await dealRef.update({
+        'likes': FieldValue.increment(-1),
+      });
+    } catch (e) {
+      print('Error updating likes: $e');
+      // Handle error appropriately
+    }
+  }
+
   // get user stream data
   Stream<UserModel?> getUserByStream(String userId) {
     return _userCollection.doc(userId).snapshots().map((snapshot) {
@@ -168,5 +206,55 @@ class UserServices {
       print('Error fetching business details: $e');
     }
     return null;
+  }
+
+  //deduct points from user
+  Future<void> checkAndUpdateBalance(String businessId) async {
+    try {
+      // Accessing 'users' collection and getting document by its ID
+      final userDocRef = _userCollection.doc(businessId);
+
+      final docSnapshot = await userDocRef.get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data() as Map<String, dynamic>;
+        final balance = data['balance'] ?? 0;
+
+        print(
+            'Found user with businessId (docId): $businessId, balance: $balance');
+
+        if (balance > 0) {
+          // Deduct 2 from the balance
+          await userDocRef.update({'balance': balance - 2});
+          print('Balance updated, new balance: ${balance - 2}');
+        } else {
+          // If balance <= 0, go to 'deals' collection and update 'isPromotionStart'
+          await _updatePromotionStatus(businessId);
+        }
+      } else {
+        print('No user found with businessId (docId): $businessId');
+      }
+    } catch (e) {
+      print('Error in checkAndUpdateBalance: $e');
+      rethrow;
+    }
+  }
+
+  // Private helper method to update promotion status
+  Future<void> _updatePromotionStatus(String businessId) async {
+    try {
+      // Query to find all deals with the same businessId
+      final querySnapshot = await _dealCollection
+          .where('businessId', isEqualTo: businessId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.update({'isPromotionStart': false});
+        print('Updated isPromotionStart to false for deal: ${doc.id}');
+      }
+    } catch (e) {
+      print('Error in _updatePromotionStatus: $e');
+      rethrow;
+    }
   }
 }

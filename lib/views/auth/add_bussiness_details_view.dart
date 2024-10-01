@@ -18,6 +18,7 @@ import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/business/verification_pending_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
+import 'package:swipe_app/views/place_picker/apis.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
@@ -282,6 +283,15 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                         X.showSnackBar('Fields Required',
                             'Please upload the business image');
                       } else {
+                        const placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4';
+                        final url =
+                            "https://maps.googleapis.com/maps/api/place/details/json?placeid=$placeID&key=${Apis.apiKey}";
+
+                        userController.fetchBusinessDetails(url).then((value) {
+                          print("The Business Details are: $value");
+                          print(
+                              "The Business Details are: ${value?.result!.rating ?? 0}");
+                        });
                         context.loaderOverlay.show();
                         widget.userModel.latLong = GeoPoint(
                             getDoubleAsync(SharedPrefKey.latitude),
@@ -297,9 +307,9 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                           widget.userModel.logo =
                               homeController.pickedImage2?.path;
                         }
-                        await userController
-                            .signUp(widget.userModel, () {})
-                            .then((value) {
+                        await userController.signUp(widget.userModel, () {
+                          Get.back();
+                        }).then((value) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(

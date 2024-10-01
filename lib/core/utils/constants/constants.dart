@@ -15,6 +15,7 @@ class UserKey {
   static const String ISVERIFIED = 'isVerified';
   static const String STRIPECUSTOMERID = 'stripeCustomerId';
   static const String ADDRESS = 'address';
+  static const String VIEWS = 'views';
 }
 
 class CollectionsKey {

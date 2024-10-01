@@ -49,9 +49,20 @@ class _HomeUserState extends State<HomeUser> {
 
   Future<void> getDeals() async {
     deals = await controller.getDeals();
+
     double userLat = getDoubleAsync(SharedPrefKey.latitude);
     double userLon = getDoubleAsync(SharedPrefKey.longitude);
 
+    // Filter deals within 10km
+    deals = deals.where((deal) {
+      double distance = calculateDistance(
+          userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
+
+      // Only include deals within 10km
+      return distance <= 10.0;
+    }).toList();
+
+    // Sort deals by distance (optional)
     deals.sort((a, b) {
       double distanceA = calculateDistance(
           userLat, userLon, a.longLat!.latitude, a.longLat!.longitude);
@@ -61,6 +72,7 @@ class _HomeUserState extends State<HomeUser> {
       return distanceA.compareTo(distanceB);
     });
 
+    // Update the stream with the filtered and sorted deals
     _dealStreamController.add(deals);
   }
 
@@ -138,6 +150,9 @@ class _HomeUserState extends State<HomeUser> {
               }).map((deal) {
                 return GestureDetector(
                   onTap: () {
+                    print('passed business ID is:${deal.businessId!}');
+                    controller.handleBusinessBalanceUpdate(deal.businessId!);
+                    controller.incrementDealViews(deal.dealId!);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -181,6 +196,9 @@ class _HomeUserState extends State<HomeUser> {
                       final DealModel deal = featuredDeals[index];
                       return GestureDetector(
                         onTap: () {
+                          controller.incrementDealViews(deal.dealId!);
+                          controller
+                              .handleBusinessBalanceUpdate(deal.businessId!);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -224,6 +242,9 @@ class _HomeUserState extends State<HomeUser> {
               combinedList.addAll(availableDeals.map((deal) {
                 return GestureDetector(
                   onTap: () {
+                    print('passed business ID is:${deal.businessId!}');
+                    controller.handleBusinessBalanceUpdate(deal.businessId!);
+                    controller.incrementDealViews(deal.dealId!);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

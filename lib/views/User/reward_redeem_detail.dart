@@ -204,7 +204,6 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                                 );
                               },
                               message: 'reward',
-                              remainingUses: remainingUses,
                             );
                           },
                           text: TempLanguage.btnLblSwipeToRedeem,

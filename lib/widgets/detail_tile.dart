@@ -93,31 +93,32 @@ class DetailTile extends StatelessWidget {
                       user?.userName ?? TempLanguage.txtBusinessName,
                       style: poppinsMedium(fontSize: 14),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BusinessDetail(
-                              businessImage: user?.image,
-                              businessRating: '4.5k',
-                              businessName: user?.userName,
-                              businessLocation: user?.address,
-                              businessPhone: user?.phoneNo,
-                              businessWebsite: user?.website,
-                              businessId: businessId,
+                    if (!isRedeeming)
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BusinessDetail(
+                                businessImage: user?.image,
+                                businessRating: '4.5k',
+                                businessName: user?.userName,
+                                businessLocation: user?.address,
+                                businessPhone: user?.phoneNo,
+                                businessWebsite: user?.website,
+                                businessId: businessId,
+                              ),
                             ),
+                          );
+                        },
+                        child: Text(
+                          TempLanguage.txtViewDeals,
+                          style: poppinsMedium(
+                            fontSize: 8.sp,
+                            color: AppColors.yellowColor,
                           ),
-                        );
-                      },
-                      child: Text(
-                        TempLanguage.txtViewDeals,
-                        style: poppinsMedium(
-                          fontSize: 8.sp,
-                          color: AppColors.yellowColor,
                         ),
                       ),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 5),

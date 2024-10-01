@@ -183,7 +183,7 @@ class DealDetail extends StatelessWidget {
                       (route) => false,
                     );
                   },
-                  remainingUses: remainingUses + 1,
+                  
                   message: 'deal',
                 );
               },

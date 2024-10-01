@@ -7,7 +7,7 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 void showCongratulationDialog(
-    {Function? onDone, int remainingUses = 0, String message = ""}) {
+    {Function? onDone, String message = ""}) {
   Get.dialog(
     Dialog(
       shape: RoundedRectangleBorder(
@@ -23,20 +23,13 @@ void showCongratulationDialog(
               scale: 3,
             ),
             const SpacerBoxVertical(height: 20),
-            if (remainingUses == 0)
-              Text(
-                "Congratulations! You've successfully redeemed this $message. You have $remainingUses use(s) left. You can't enjoy this $message anymore!",
-                style: poppinsRegular(
-                    fontSize: 15, color: AppColors.secondaryText),
-                textAlign: TextAlign.center,
-              ),
-            if (remainingUses > 0)
-              Text(
-                "Congratulations! You've successfully redeemed this $message. You have $remainingUses use(s) left before the deal expires. Don't miss out on enjoying the benefits while they last!",
-                style: poppinsRegular(
-                    fontSize: 15, color: AppColors.secondaryText),
-                textAlign: TextAlign.center,
-              ),
+            // General message without remaining uses
+            Text(
+              "Congratulations! You've successfully redeemed this $message. Enjoy the benefits!",
+              style: poppinsRegular(
+                  fontSize: 15, color: AppColors.secondaryText),
+              textAlign: TextAlign.center,
+            ),
             const SpacerBoxVertical(height: 30),
             GestureDetector(
               onTap: onDone != null

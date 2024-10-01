@@ -110,6 +110,7 @@ class _HomeUserState extends State<HomeUser> {
 
             List<DealModel> featuredDeals =
                 deals.where((deal) => deal.isPromotionStar == true).toList();
+            featuredDeals.shuffle();
             List<DealModel> availableDeals = deals.toList();
 
             // Combine featured and available deals

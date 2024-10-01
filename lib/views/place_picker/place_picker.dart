@@ -56,8 +56,8 @@ class _PlacesPickState extends State<PlacesPick> {
   Future animateToPosition({double? lat, double? long}) async {
     await mapController?.animateCamera(CameraUpdate.newLatLngZoom(
         LatLng(
-          widget.currentLocation.latitude ?? lat!,
-          widget.currentLocation.longitude ?? long!,
+          widget.currentLocation.latitude,
+          widget.currentLocation.longitude,
         ),
         await mapController?.getZoomLevel() ?? 14));
   }
@@ -478,8 +478,8 @@ class _PlacesPickState extends State<PlacesPick> {
                                                   location.value;
 
                                               //let's navigate
-                                              controller
-                                                  .signUp(widget.userModel!);
+                                              controller.signUp(
+                                                  widget.userModel!, () {});
                                             } else {
                                               // For Navigator.pop, pass back the updated address with additional info
                                               Navigator.pop(context, address);

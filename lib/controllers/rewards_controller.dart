@@ -161,7 +161,7 @@ class RewardController extends GetxController {
 
   Future<void> pickImageAndUpload(
       RewardModel rewardModel, String userId) async {
-    isLoadingforscan.value = true;
+    isLoadingforscan.value = true; // Start loading
 
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
@@ -199,12 +199,12 @@ class RewardController extends GetxController {
       } catch (e) {
         print("Error uploading image: $e");
       } finally {
-        isLoadingforscan.value = false;
-        progress.value = 0.0;
+        isLoadingforscan.value = false; // Stop loading
+        progress.value = 0.0; // Reset progress
       }
     } else {
-      isLoadingforscan.value = false;
-      progress.value = 0.0;
+      isLoadingforscan.value = false; // Stop loading if no image was selected
+      progress.value = 0.0; // Reset progress
     }
   }
 }

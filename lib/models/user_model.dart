@@ -98,4 +98,30 @@ class UserModel {
       UserKey.ADDRESS: address, // Add this line
     };
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      UserKey.USERID: userId,
+      UserKey.USERNAME: userName,
+      UserKey.EMAIL: email,
+      UserKey.PHONENO: phoneNo,
+      UserKey.IMAGE: image,
+      UserKey.LOGO: logo,
+      UserKey.LATLONG: latLong != null
+          ? {
+              'latitude': latLong?.latitude,
+              'longitude': latLong?.longitude,
+            }
+          : null,
+      UserKey.WEBSITE: website,
+      UserKey.ROLE: role,
+      UserKey.BUSINESSID: businessId,
+      UserKey.STRIPECUSTOMERID: stripeCustomerId,
+      UserKey.PASSWORD: password,
+      UserKey.BALANCE: balance,
+      UserKey.ISPROMOTIONSTART: isPromotionStart,
+      UserKey.ISVERIFIED: isVerified,
+      UserKey.ADDRESS: address, // Use the constant for address
+    };
+  }
 }

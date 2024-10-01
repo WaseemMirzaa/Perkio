@@ -288,7 +288,8 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                             getDoubleAsync(SharedPrefKey.longitude));
                         widget.userModel.website = websiteController.text;
                         widget.userModel.businessId = businessIdController.text;
-                        widget.userModel.address = businessAddressController.text;
+                        widget.userModel.address =
+                            businessAddressController.text;
                         if (getStringAsync(SharedPrefKey.role) ==
                             SharedPrefKey.business) {
                           widget.userModel.image =
@@ -297,7 +298,7 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                               homeController.pickedImage2?.path;
                         }
                         await userController
-                            .signUp(widget.userModel)
+                            .signUp(widget.userModel, () {})
                             .then((value) {
                           Navigator.push(
                               context,

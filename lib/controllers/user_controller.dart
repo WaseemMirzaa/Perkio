@@ -151,14 +151,13 @@ class UserController extends GetxController {
   }
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
-  Future<void> signUp(UserModel userModel) async {
+  Future<void> signUp(UserModel userModel, Function onError) async {
     loading.value = true;
     try {
       String? result = await authServices.signUp(userModel);
 
       if (result != null) {
         userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-
         final stripeCustomerId =
             await StripePayment.createStripeCustomer(email: userModel.email!);
         print("STRIPE: $stripeCustomerId");
@@ -196,21 +195,36 @@ class UserController extends GetxController {
         }
       } else {
         loading.value = false;
-        Get.snackbar('Error', 'Account not created',
-            snackPosition: SnackPosition.TOP);
+        onError(); // Call the error callback
       }
     } on FirebaseAuthException catch (e) {
-      loading.value = false;
-
-      // Display the exact Firebase error message, including Recaptcha-related errors
+      Get.back();
+      // Display the exact Firebase error message
       Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
           snackPosition: SnackPosition.TOP);
-    } catch (e) {
       loading.value = false;
+      log('--------IN FIREBASE  EXCEPTIONNNNNNNNNNNN======');
 
+      // Log the error for debugging
+      log("FirebaseAuthException: ${e.message}");
+
+      // Display the exact Firebase error message
+      Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
+          snackPosition: SnackPosition.TOP);
+
+      onError(); // Call the error callback
+    } catch (e) {
+      Get.back();
       // Catch other unknown errors
       Get.snackbar('Error', 'An unknown error occurred',
           snackPosition: SnackPosition.TOP);
+
+      loading.value = false;
+
+      // Log the error for debugging
+      log("Unknown error: $e");
+
+      onError(); // Call the error callback
     }
   }
 

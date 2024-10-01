@@ -71,20 +71,6 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                     ],
                   ),
                   const SpacerBoxVertical(height: 10),
-                  // getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ?
-                  // Container(
-                  //   height: 70,
-                  //   width: 70,
-                  //   decoration: BoxDecoration(
-                  //     shape: BoxShape.circle,
-                  //     color: AppColors.whiteColor,
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //           color: Colors.black.withOpacity(0.2),
-                  //           blurRadius: 6,
-                  //           offset: const Offset(0, 3)
-                  //         )]),) : const SizedBox.shrink(),
-
                   const SpacerBoxVertical(height: 20),
                   getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
                       ? TextFieldWidget(
@@ -104,9 +90,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                           focusNode: nameFocusNode,
                           onEditComplete: () => focusChange(
                               context, nameFocusNode, emailFocusNode)),
-
                   const SpacerBoxVertical(height: 20),
-
                   TextFieldWidget(
                     text: TempLanguage.lblEmailId,
                     path: AppAssets.emailIcon,
@@ -116,9 +100,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                     onEditComplete: () =>
                         focusChange(context, emailFocusNode, passwordFocusNode),
                   ),
-
                   const SpacerBoxVertical(height: 20),
-
                   TextFieldWidget(
                     text: TempLanguage.lblPassword,
                     path: AppAssets.unlockImg,
@@ -129,9 +111,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                     onEditComplete: () =>
                         focusChange(context, passwordFocusNode, phoneFocusNode),
                   ),
-
                   const SpacerBoxVertical(height: 20),
-
                   TextFieldWidget(
                     text: TempLanguage.txtDummyPhoneNo,
                     path: 'assets/images/Pwd  Input.png',
@@ -140,9 +120,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                     keyboardType: TextInputType.phone,
                     onEditComplete: () => unFocusChange(context),
                   ),
-
                   const SpacerBoxVertical(height: 20),
-
                   Obx(() => controller.loading.value
                       ? circularProgressBar()
                       : ButtonWidget(

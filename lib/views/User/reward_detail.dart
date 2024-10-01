@@ -5,11 +5,12 @@ import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/reward_redeem_detail.dart';
-import 'package:swipe_app/views/user/scan_screen.dart';
+import 'package:swipe_app/controllers/rewards_controller.dart'; // Import RewardController
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:get/get.dart'; // Import Get package
+import 'package:image_picker/image_picker.dart'; // Import for camera functionality
 
 class RewardDetail extends StatefulWidget {
   final RewardModel? reward;
@@ -22,6 +23,8 @@ class RewardDetail extends StatefulWidget {
 }
 
 class _RewardDetailState extends State<RewardDetail> {
+  final RewardController rewardController = Get.put(RewardController());
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +42,26 @@ class _RewardDetailState extends State<RewardDetail> {
             ));
       }
     });
+  }
+
+  Future<void> _pickImageAndUpload() async {
+    // Show loading indicator on camera screen
+    rewardController.isLoadingforscan.value = true;
+
+    await rewardController.pickImageAndUpload(
+      widget.reward!,
+      widget.userId!,
+    );
+
+    // Hide loading indicator after processing
+    rewardController.isLoadingforscan.value = false;
+
+    // Navigate to the next screen (you can adjust this based on your navigation needs)
+    Get.offAll(() => RewardRedeemDetail(
+          rewardId: widget.reward?.rewardId,
+          businessId: widget.reward?.businessId,
+          userId: widget.userId,
+        ));
   }
 
   @override
@@ -157,17 +180,7 @@ class _RewardDetailState extends State<RewardDetail> {
               if (userUses < widget.reward!.uses!)
                 Center(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ScanScreen(
-                            rewardModel: widget.reward,
-                            userId: widget.userId,
-                          ),
-                        ),
-                      );
-                    },
+                    onTap: _pickImageAndUpload, // Trigger the camera
                     child: Container(
                       height: 100,
                       width: 100,
@@ -214,6 +227,24 @@ class _RewardDetailState extends State<RewardDetail> {
                       color: AppColors.hintText,
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                ),
+              if (rewardController
+                  .isLoadingforscan.value) // Show loading indicator
+                const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        color: AppColors.gradientEndColor,
+                        strokeWidth: 5.0,
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Processing...',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+                    ],
                   ),
                 ),
             ],

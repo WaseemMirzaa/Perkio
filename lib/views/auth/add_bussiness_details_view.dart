@@ -314,12 +314,13 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                       }
 
                       //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
+                      //tets placeID = 'ChIJrTLr-GyuEmsRBfy61i59si0'
 
                       // Await the signUp call and only navigate if it was successful
                       await userController.signUp(widget.userModel, () {
                         // Error callback, just hide the loader and stay on the current screen
                         context.loaderOverlay.hide();
-                      }, true, 'ChIJN1t_tDeuEmsRUsoyG83frY4').then((value) {
+                      }, true, businessIdController.text).then((value) {
                         // Navigate only if signup didn't fail
                         print(
                             'HERE IS THE PASS ID ${businessIdController.text}');

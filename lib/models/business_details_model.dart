@@ -21,7 +21,7 @@ class BusniessDetailsModel {
 
 class Result {
   String? name;
-  int? rating;
+  double? rating;
   List<Review>? reviews;
 
   Result({

@@ -308,15 +308,12 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                                           .latLong!.latitude,
                                                       businessProfile.latLong!
                                                           .longitude)))));
-                                  if (address != null) {
-                                    addressController.text = await address!
-                                        .subAdministrativeArea
-                                        .toString();
-                                    await setValue(SharedPrefKey.latitude,
-                                        address!.latitude);
-                                    await setValue(SharedPrefKey.longitude,
-                                        address!.longitude);
-                                  }
+                                  addressController.text =
+                                      address.subAdministrativeArea.toString();
+                                  await setValue(
+                                      SharedPrefKey.latitude, address.latitude);
+                                  await setValue(SharedPrefKey.longitude,
+                                      address.longitude);
                                 }
                               : null,
                         ),
@@ -340,11 +337,11 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           height: 20,
                         ),
                         !enabled.value
-                            ? SizedBox()
-                            : 
-                            ButtonWidget(
+                            ? const SizedBox()
+                            : ButtonWidget(
                                 onSwipe: () async {
                                   if (enabled.value) {
+                                    // Validate input fields
                                     if (userNameController.text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
                                           'Name is required');
@@ -369,32 +366,55 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                       X.showSnackBar('Fields Required',
                                           'Business ID is required');
                                     } else {
-                                      bool success = await homeController
-                                          .updateCollection(
-                                              getStringAsync(SharedPrefKey.uid),
-                                              CollectionsKey.USERS, {
-                                        UserKey.USERNAME:
-                                            userNameController.text,
-                                        UserKey.EMAIL: emailController.text,
-                                        UserKey.PHONENO: phoneNoController.text,
-                                        UserKey.LATLONG: GeoPoint(
-                                            getDoubleAsync(
-                                                SharedPrefKey.latitude),
-                                            getDoubleAsync(
-                                                SharedPrefKey.longitude)),
-                                        UserKey.WEBSITE: websiteController.text,
-                                        UserKey.BUSINESSID:
-                                            businessIdController.text
-                                      });
-                                      if (success) {
-                                        X.showSnackBar('Success',
-                                            'User data updated successfully!');
-                                        enabled.value = false;
+                                      // Check if business ID is valid
+                                      var businessDetails = await homeController
+                                          .fetchBusinessDetails(
+                                              businessIdController.text);
+
+                                      if (businessDetails != null &&
+                                          businessDetails.status == "OK") {
+                                        // Update user data if Place ID is valid
+                                        bool success = await homeController
+                                            .updateCollection(
+                                                getStringAsync(
+                                                    SharedPrefKey.uid),
+                                                CollectionsKey.USERS,
+                                                {
+                                              UserKey.USERNAME:
+                                                  userNameController.text,
+                                              UserKey.EMAIL:
+                                                  emailController.text,
+                                              UserKey.PHONENO:
+                                                  phoneNoController.text,
+                                              UserKey.LATLONG: GeoPoint(
+                                                  getDoubleAsync(
+                                                      SharedPrefKey.latitude),
+                                                  getDoubleAsync(
+                                                      SharedPrefKey.longitude)),
+                                              UserKey.WEBSITE:
+                                                  websiteController.text,
+                                              UserKey.BUSINESSID:
+                                                  businessIdController.text
+                                            });
+
+                                        // Update the business details in the subcollection
+                                        await homeController
+                                            .createBusinessDetailsSubcollection(
+                                                getStringAsync(
+                                                    SharedPrefKey.uid),
+                                                businessDetails);
+
+                                        if (success) {
+                                          X.showSnackBar('Success',
+                                              'User data updated successfully!');
+                                          enabled.value = false;
+                                        } else {
+                                          X.showSnackBar('Error',
+                                              'Failed to update user data.');
+                                        }
                                       } else {
                                         X.showSnackBar(
-                                          'Error',
-                                          'Failed to update user data.',
-                                        );
+                                            'Error', 'Invalid Business ID.');
                                       }
                                     }
                                   } else {

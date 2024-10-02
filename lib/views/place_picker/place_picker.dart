@@ -476,10 +476,6 @@ class _PlacesPickState extends State<PlacesPick> {
                                                   geoPoint;
                                               widget.userModel!.address =
                                                   location.value;
-
-                                              //let's navigate
-                                              controller.signUp(
-                                                  widget.userModel!, () {});
                                             } else {
                                               // For Navigator.pop, pass back the updated address with additional info
                                               Navigator.pop(context, address);

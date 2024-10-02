@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/reward_service.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:swipe_app/views/place_picker/apis.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 import 'package:http/http.dart' as http;
@@ -154,9 +156,152 @@ class UserController extends GetxController {
     return userServices.getUserByStream(userId);
   }
 
-  Future<BusniessDetailsModel?> fetchBusinessDetails(String apiUrl) async {
+  Future<bool> signUp(UserModel userModel, Function onError, bool isBusiness,
+      [String? placeID]) async {
+    loading.value = true;
+
+    try {
+      BusniessDetailsModel? businessDetails;
+
+      // Check if user is a business and validate the PlaceID
+      if (isBusiness) {
+        if (placeID == null || placeID.isEmpty) {
+          loading.value = false;
+          Get.snackbar('Error', 'Invalid Place ID',
+              snackPosition: SnackPosition.TOP);
+          onError();
+          return false;
+        }
+
+        // Fetch business details from API
+        businessDetails = await fetchBusinessDetails(placeID);
+
+        // Check if the API call returned INVALID_REQUEST or other errors
+        if (businessDetails == null ||
+            businessDetails.result == null ||
+            businessDetails.status != "OK") {
+          loading.value = false;
+          Get.snackbar(
+              'Error', 'Business details not found or invalid Place ID',
+              snackPosition: SnackPosition.TOP);
+          onError();
+          return false;
+        }
+      }
+
+      // Proceed with sign-up
+      String? result = await authServices.signUp(userModel);
+      if (result != null) {
+        userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+        final stripeCustomerId =
+            await StripePayment.createStripeCustomer(email: userModel.email!);
+        print("STRIPE: $stripeCustomerId");
+
+        if (!stripeCustomerId.isEmptyOrNull) {
+          userModel.stripeCustomerId = stripeCustomerId;
+        }
+
+        if (isBusiness) {
+          final logoLink =
+              await homeController.uploadImageToFirebaseWithCustomPath(
+                  userModel.logo!, 'business_logo/$result');
+          final image = await homeController.uploadImageToFirebaseOnID(
+              userModel.image!, result);
+
+          if (logoLink != null && image != null) {
+            userModel.logo = logoLink;
+            userModel.image = image;
+            await setValue(SharedPrefKey.photo, image);
+          }
+
+          // Create a subcollection for business details in Firestore
+          await createBusinessDetailsSubcollection(result, businessDetails);
+        }
+
+        await addUserData(userModel)
+            .then((value) async => await setUserInfo(userModel));
+
+        loading.value = false;
+        clearTextFields();
+
+        // Navigate based on user role
+        if (getStringAsync(SharedPrefKey.role) == SharedPrefKey.user) {
+          Get.off(() => LocationService(
+              child: BottomBarView(
+                  isUser: getStringAsync(SharedPrefKey.role) ==
+                      SharedPrefKey.user)));
+        }
+
+        return true; // Sign-up successful, return true
+      } else {
+        loading.value = false;
+        onError();
+        return false; // Sign-up failed, return false
+      }
+    } on FirebaseAuthException catch (e) {
+      Get.back();
+      Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
+          snackPosition: SnackPosition.TOP);
+      loading.value = false;
+      log('--------IN FIREBASE  EXCEPTIONNNNNNNNNNNN======');
+      log("FirebaseAuthException: ${e.message}");
+
+      onError();
+      return false; // Firebase error, return false
+    } catch (e) {
+      Get.back();
+      Get.snackbar('Error', 'An unknown error occurred',
+          snackPosition: SnackPosition.TOP);
+      loading.value = false;
+      log("Unknown error: $e");
+
+      onError();
+      return false; // Unknown error, return false
+    }
+  }
+
+// Function to create the business details subcollection
+  Future<void> createBusinessDetailsSubcollection(
+      String userId, BusniessDetailsModel? businessDetails) async {
+    if (businessDetails == null) {
+      print("No business details to save.");
+      return;
+    }
+
+    try {
+      // Create a new document ID for the business details
+      String businessDetailId = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('business_details')
+          .doc()
+          .id;
+
+      // Prepare the data to store in Firestore
+      Map<String, dynamic> businessData = {
+        'business_detail_firebase_id': businessDetailId,
+        ...businessDetails
+            .toMap(), // Assuming you have a toMap method in your BusniessDetailsModel
+      };
+
+      // Save the business details in the Firestore subcollection
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('business_details')
+          .doc(businessDetailId)
+          .set(businessData);
+    } catch (e) {
+      print("Error creating business details subcollection: $e");
+    }
+  }
+
+  Future<BusniessDetailsModel?> fetchBusinessDetails(String placeID) async {
     try {
       // Make the API request
+
+      final apiUrl =
+          "https://maps.googleapis.com/maps/api/place/details/json?placeid=$placeID&key=${Apis.apiKey}";
       final response = await http.get(Uri.parse(apiUrl));
 
       // Check if the response status is OK
@@ -193,8 +338,6 @@ class UserController extends GetxController {
           status: jsonResponse['status'],
         );
 
-        print(
-            "Business Details: ${businessDetails.result?.name}, Rating: ${businessDetails.result?.rating}");
         return businessDetails;
       } else {
         // Handle non-200 responses
@@ -205,84 +348,6 @@ class UserController extends GetxController {
       // Handle any exceptions
       print("Error occurred while fetching business details: $e");
       return null;
-    }
-  }
-
-  //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN UP
-  Future<void> signUp(UserModel userModel, Function onError) async {
-    loading.value = true;
-    try {
-      String? result = await authServices.signUp(userModel);
-
-      if (result != null) {
-        userModel.userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-        final stripeCustomerId =
-            await StripePayment.createStripeCustomer(email: userModel.email!);
-        print("STRIPE: $stripeCustomerId");
-
-        if (!stripeCustomerId.isEmptyOrNull) {
-          userModel.stripeCustomerId = stripeCustomerId;
-        }
-
-        if (getStringAsync(SharedPrefKey.role) == SharedPrefKey.business) {
-          final logoLink =
-              await homeController.uploadImageToFirebaseWithCustomPath(
-                  userModel.logo!, 'business_logo/$result');
-          final image = await homeController.uploadImageToFirebaseOnID(
-              userModel.image!, result);
-
-          if (logoLink != null && image != null) {
-            userModel.logo = logoLink;
-            userModel.image = image;
-            await setValue(SharedPrefKey.photo, image);
-          }
-        }
-
-        await addUserData(userModel)
-            .then((value) async => await setUserInfo(userModel));
-
-        loading.value = false;
-        clearTextFields();
-
-        // Navigate based on user role
-        if (getStringAsync(SharedPrefKey.role) == SharedPrefKey.user) {
-          Get.off(() => LocationService(
-              child: BottomBarView(
-                  isUser: getStringAsync(SharedPrefKey.role) ==
-                      SharedPrefKey.user)));
-        }
-      } else {
-        loading.value = false;
-        onError(); // Call the error callback
-      }
-    } on FirebaseAuthException catch (e) {
-      Get.back();
-      // Display the exact Firebase error message
-      Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
-          snackPosition: SnackPosition.TOP);
-      loading.value = false;
-      log('--------IN FIREBASE  EXCEPTIONNNNNNNNNNNN======');
-
-      // Log the error for debugging
-      log("FirebaseAuthException: ${e.message}");
-
-      // Display the exact Firebase error message
-      Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
-          snackPosition: SnackPosition.TOP);
-
-      onError(); // Call the error callback
-    } catch (e) {
-      Get.back();
-      // Catch other unknown errors
-      Get.snackbar('Error', 'An unknown error occurred',
-          snackPosition: SnackPosition.TOP);
-
-      loading.value = false;
-
-      // Log the error for debugging
-      log("Unknown error: $e");
-
-      onError(); // Call the error callback
     }
   }
 

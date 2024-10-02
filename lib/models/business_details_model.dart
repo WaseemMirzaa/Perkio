@@ -8,6 +8,15 @@ class BusniessDetailsModel {
     this.result,
     this.status,
   });
+
+  // Convert BusniessDetailsModel to Map
+  Map<String, dynamic> toMap() {
+    return {
+      'html_attributions': htmlAttributions,
+      'result': result?.toMap(), // Convert the Result object to Map
+      'status': status,
+    };
+  }
 }
 
 class Result {
@@ -20,6 +29,17 @@ class Result {
     this.rating,
     this.reviews,
   });
+
+  // Convert Result to Map
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'rating': rating,
+      'reviews': reviews
+          ?.map((review) => review.toMap())
+          .toList(), // Convert each Review to Map
+    };
+  }
 }
 
 class Review {
@@ -46,4 +66,20 @@ class Review {
     this.time,
     this.translated,
   });
+
+  // Convert Review to Map
+  Map<String, dynamic> toMap() {
+    return {
+      'author_name': authorName,
+      'author_url': authorUrl,
+      'language': language,
+      'original_language': originalLanguage,
+      'profile_photo_url': profilePhotoUrl,
+      'rating': rating,
+      'relative_time_description': relativeTimeDescription,
+      'text': text,
+      'time': time,
+      'translated': translated,
+    };
+  }
 }

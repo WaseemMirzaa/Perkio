@@ -112,7 +112,7 @@ class _SelectLocationState extends State<SelectLocation> {
       await controller.signUp(widget.userModel, () {
         // Navigate back in case of an error
         Get.back();
-      });
+      },false);
     } catch (e) {
       // Optionally show an error message to the user
       Get.snackbar('Error', 'Sign up failed: $e');

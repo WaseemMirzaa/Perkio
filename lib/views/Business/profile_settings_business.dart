@@ -341,7 +341,8 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         ),
                         !enabled.value
                             ? SizedBox()
-                            : ButtonWidget(
+                            : 
+                            ButtonWidget(
                                 onSwipe: () async {
                                   if (enabled.value) {
                                     if (userNameController.text.isEmptyOrNull) {

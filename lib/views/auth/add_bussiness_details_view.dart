@@ -42,6 +42,8 @@ class AddBusinessDetailsView extends StatefulWidget {
 class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
   final businessIdController = TextEditingController();
 
+  bool isLoading = false;
+
   final businessAddressController = TextEditingController();
 
   final websiteController = TextEditingController();
@@ -114,41 +116,53 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                   style: poppinsRegular(fontSize: 13),
                 ),
                 const SpacerBoxVertical(height: 10),
+                // Declare a loading state variable
+
                 TextFieldWidget(
                   text: 'Business Address',
                   textController: businessAddressController,
                   focusNode: businessAddressNode,
                   onEditComplete: () =>
                       focusChange(context, businessAddressNode, websiteNode),
-                  isReadOnly: true,
-                  onTap: () async {
-                    bool isPremitt = await LocationPermissionManager()
-                        .requestLocationPermission(context);
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationChangeScreen()));
-                    if (isPremitt) {
-                      address = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LocationService(
-                                  child: PlacesPick(
-                                      currentLocation: latLng ??
-                                          const LatLng(
-                                              -97.00000000, 38.00000000)))));
-                      if (address != null) {
-                        businessAddressController.text =
-                            address!.completeAddress.toString();
-                        log(businessAddressController.text);
-                        await setValue(
-                            SharedPrefKey.latitude, address!.latitude);
-                        await setValue(
-                            SharedPrefKey.longitude, address!.longitude);
-                      }
-                    } else {
-                      X.showSnackBar('Allow Location Permissions',
-                          'Please allow location permissions');
-                    }
-                  },
+                  onTap: isLoading
+                      ? null
+                      : () async {
+                          // Disable onTap if loading
+                          setState(() {
+                            isLoading = true; // Start loading
+                          });
+                          bool isPremitt = await LocationPermissionManager()
+                              .requestLocationPermission(context);
+
+                          if (isPremitt) {
+                            address = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LocationService(
+                                        child: PlacesPick(
+                                            currentLocation: latLng ??
+                                                const LatLng(-97.00000000,
+                                                    38.00000000)))));
+                            if (address != null) {
+                              businessAddressController.text =
+                                  address!.completeAddress.toString();
+                              log(businessAddressController.text);
+                              await setValue(
+                                  SharedPrefKey.latitude, address!.latitude);
+                              await setValue(
+                                  SharedPrefKey.longitude, address!.longitude);
+                            }
+                          } else {
+                            X.showSnackBar('Allow Location Permissions',
+                                'Please allow location permissions');
+                          }
+
+                          setState(() {
+                            isLoading = false; // Stop loading
+                          });
+                        },
                 ),
+
                 const SpacerBoxVertical(height: 20),
                 Text(
                   'Website',
@@ -264,52 +278,53 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                 ),
                 SpacerBoxVertical(height: 3.h),
                 ButtonWidget(
-                    onSwipe: () async {
-                      print(
-                          "The LOGO is: ${homeController.pickedImage2?.path} \n and \n The Business Image is ${homeController.pickedImage?.path}");
-                      if (businessAddressController.text.isEmptyOrNull) {
-                        X.showSnackBar('Fields Required',
-                            'Please enter the business address');
-                      } else if (websiteController.text.isEmptyOrNull) {
-                        X.showSnackBar(
-                            'Fields Required', 'Please enter the website');
-                      } else if (businessIdController.text.isEmptyOrNull) {
-                        X.showSnackBar('Fields Required',
-                            'Please enter the Google Business ID');
-                      } else if (homeController.pickedImage2 == null) {
-                        X.showSnackBar('Fields Required',
-                            'Please upload the business Logo');
-                      } else if (homeController.pickedImage == null) {
-                        X.showSnackBar('Fields Required',
-                            'Please upload the business image');
-                      } else {
-                        const placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4';
-                        final url =
-                            "https://maps.googleapis.com/maps/api/place/details/json?placeid=$placeID&key=${Apis.apiKey}";
+                  onSwipe: () async {
+                    print(
+                        "The LOGO is: ${homeController.pickedImage2?.path} \n and \n The Business Image is ${homeController.pickedImage?.path}");
+                    if (businessAddressController.text.isEmptyOrNull) {
+                      X.showSnackBar('Fields Required',
+                          'Please enter the business address');
+                    } else if (websiteController.text.isEmptyOrNull) {
+                      X.showSnackBar(
+                          'Fields Required', 'Please enter the website');
+                    } else if (businessIdController.text.isEmptyOrNull) {
+                      X.showSnackBar('Fields Required',
+                          'Please enter the Google Business ID');
+                    } else if (homeController.pickedImage2 == null) {
+                      X.showSnackBar(
+                          'Fields Required', 'Please upload the business Logo');
+                    } else if (homeController.pickedImage == null) {
+                      X.showSnackBar('Fields Required',
+                          'Please upload the business image');
+                    } else {
+                      context.loaderOverlay.show();
+                      widget.userModel.latLong = GeoPoint(
+                          getDoubleAsync(SharedPrefKey.latitude),
+                          getDoubleAsync(SharedPrefKey.longitude));
+                      widget.userModel.website = websiteController.text;
+                      widget.userModel.businessId = businessIdController.text;
+                      widget.userModel.address = businessAddressController.text;
 
-                        userController.fetchBusinessDetails(url).then((value) {
-                          print("The Business Details are: $value");
-                          print(
-                              "The Business Details are: ${value?.result!.rating ?? 0}");
-                        });
-                        context.loaderOverlay.show();
-                        widget.userModel.latLong = GeoPoint(
-                            getDoubleAsync(SharedPrefKey.latitude),
-                            getDoubleAsync(SharedPrefKey.longitude));
-                        widget.userModel.website = websiteController.text;
-                        widget.userModel.businessId = businessIdController.text;
-                        widget.userModel.address =
-                            businessAddressController.text;
-                        if (getStringAsync(SharedPrefKey.role) ==
-                            SharedPrefKey.business) {
-                          widget.userModel.image =
-                              homeController.pickedImage?.path;
-                          widget.userModel.logo =
-                              homeController.pickedImage2?.path;
-                        }
-                        await userController.signUp(widget.userModel, () {
-                          Get.back();
-                        }).then((value) {
+                      if (getStringAsync(SharedPrefKey.role) ==
+                          SharedPrefKey.business) {
+                        widget.userModel.image =
+                            homeController.pickedImage?.path;
+                        widget.userModel.logo =
+                            homeController.pickedImage2?.path;
+                      }
+
+                      //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
+
+                      // Await the signUp call and only navigate if it was successful
+                      await userController.signUp(widget.userModel, () {
+                        // Error callback, just hide the loader and stay on the current screen
+                        context.loaderOverlay.hide();
+                      }, true, 'ChIJN1t_tDeuEmsRUsoyG83frY4').then((value) {
+                        // Navigate only if signup didn't fail
+                        print(
+                            'HERE IS THE PASS ID ${businessIdController.text}');
+                        if (value != false) {
+                          // You might need to modify `signUp` to return a success indicator
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -317,12 +332,15 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                                       VerificationPendingView()));
                           homeController.setImageNull();
                           homeController.clearLogo();
-                          context.loaderOverlay.hide();
-                        });
-                      }
-                      // Navigator.pushNamedAndRemoveUntil(context,AppRoutes.bottomBarView,(route)=>false);
-                    },
-                    text: "SWIPE TO SIGNUP")
+                        }
+
+                        context.loaderOverlay
+                            .hide(); // Hide loader whether signup is successful or not
+                      });
+                    }
+                  },
+                  text: "SWIPE TO SIGNUP",
+                )
               ],
             ),
           ),

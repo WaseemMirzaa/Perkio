@@ -16,6 +16,7 @@ class UserKey {
   static const String STRIPECUSTOMERID = 'stripeCustomerId';
   static const String ADDRESS = 'address';
   static const String VIEWS = 'views';
+  static const String RATING = 'rating';
 }
 
 class CollectionsKey {

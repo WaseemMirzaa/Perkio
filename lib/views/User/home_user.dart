@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
@@ -8,12 +9,14 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:nb_utils/nb_utils.dart' as NBUtils;
 
 class HomeUser extends StatefulWidget {
   const HomeUser({super.key});
@@ -27,12 +30,15 @@ class _HomeUserState extends State<HomeUser> {
   late StreamController<List<DealModel>> _dealStreamController;
   late List<DealModel> deals;
   TextEditingController searchController = TextEditingController();
+  late StreamController<UserModel> _userProfileStreamController;
 
   @override
   void initState() {
     super.initState();
     _dealStreamController = StreamController<List<DealModel>>();
     getDeals();
+    _userProfileStreamController = StreamController<UserModel>();
+    getUser();
 
     // Listen to search field changes
     searchController.addListener(() {
@@ -44,6 +50,7 @@ class _HomeUserState extends State<HomeUser> {
   void dispose() {
     _dealStreamController.close();
     searchController.dispose();
+    _userProfileStreamController.close();
     super.dispose();
   }
 
@@ -89,16 +96,83 @@ class _HomeUserState extends State<HomeUser> {
     _dealStreamController.add(filteredDeals);
   }
 
+  //getting the user profile
+
+  late UserModel? userProfile;
+
+  LatLng? latLng;
+
+  void getUser() {
+    controller
+        .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
+        .listen((userModel) {
+      if (userModel != null) {
+        userProfile = userModel;
+
+        // Debug print to check the type of latLong
+        print('Type of latLong: ${userProfile?.latLong.runtimeType}');
+
+        // Add the user profile to the stream controller to notify listeners
+        _userProfileStreamController.add(userProfile!);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
-        child: customAppBar(
-          isSearchField: true,
-          onChanged: searchDeals,
-          isSearching: controller.isSearching,
+        child: StreamBuilder<UserModel>(
+          stream:
+              _userProfileStreamController.stream, // Listen to the user stream
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Show loading state while waiting for data
+              return customAppBar(
+                isSearchField: true,
+                onChanged: searchDeals,
+                isSearching: controller.isSearching,
+                userName: 'Loading...', // Placeholder text
+                userLocation: 'Loading...',
+              );
+            } else if (snapshot.hasError) {
+              // Handle error state
+              return customAppBar(
+                isSearchField: true,
+                onChanged: searchDeals,
+                isSearching: controller.isSearching,
+                userName: 'Error loading user',
+                userLocation: 'Error loading location',
+              );
+            } else if (snapshot.hasData) {
+              // Use the data from the stream
+              final user = snapshot.data;
+              final userName = user?.userName ?? 'Unknown';
+              final userLocation = user?.address ?? 'No Address';
+              final latLog = user?.latLong;
+
+              return customAppBar(
+                isSearchField: true,
+                onChanged: searchDeals,
+                isSearching: controller.isSearching,
+                userName: userName,
+                latitude: latLog?.latitude ?? 0.0,
+                longitude: latLog?.longitude ?? 0.0,
+                userLocation: userLocation,
+              );
+            } else {
+              // Handle the case where no data is available
+              return customAppBar(
+                isSearchField: true,
+                onChanged: searchDeals,
+                isSearching: controller.isSearching,
+                userName: 'No User',
+                userLocation: 'No Location',
+              );
+            }
+          },
         ),
       ),
       body: Obx(() {

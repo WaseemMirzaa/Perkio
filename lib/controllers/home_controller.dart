@@ -57,6 +57,11 @@ class HomeController extends GetxController {
     }
   }
 
+  // Method to refresh the UI
+  void refreshUI() {
+    update(); // This will refresh the UI
+  }
+
   // Picking image from gallery
   Future<void> pickImageFromGallery(
       {bool isCropActive = true, bool isLogo = false}) async {

@@ -88,27 +88,33 @@ class DealDetail extends StatelessWidget {
   }
 
   Widget _buildImage(String? imageUrl) {
-    return Image.network(
-      imageUrl ?? AppAssets.foodImg,
-      scale: 3,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child;
-        } else {
-          return Center(
-            child: CircularProgressIndicator(
-              color: AppColors.gradientStartColor,
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                      (loadingProgress.expectedTotalBytes ?? 1)
-                  : null,
-            ),
-          );
-        }
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return Image.asset(AppAssets.foodImg, scale: 3);
-      },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: SizedBox(
+        height: 200, // Set the desired fixed height here
+        child: Image.network(
+          imageUrl ?? AppAssets.foodImg,
+          scale: 3,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            } else {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.gradientStartColor,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          (loadingProgress.expectedTotalBytes ?? 1)
+                      : null,
+                ),
+              );
+            }
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Image.asset(AppAssets.foodImg, scale: 3);
+          },
+        ),
+      ),
     );
   }
 
@@ -183,7 +189,6 @@ class DealDetail extends StatelessWidget {
                       (route) => false,
                     );
                   },
-                  
                   message: 'deal',
                 );
               },

@@ -131,7 +131,7 @@ class DetailTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      "4.5k",
+                      user?.rating.toString() ?? '0.0',
                       style: poppinsRegular(
                           fontSize: 10, color: AppColors.yellowColor),
                     ),

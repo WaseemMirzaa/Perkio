@@ -10,6 +10,7 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/app_utils/GeoLocationHelper.dart';
 import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
@@ -43,6 +44,8 @@ class _UserProfileViewState extends State<UserProfileView> {
   TextEditingController phoneNoController = TextEditingController();
   //open map to fetch this points
   TextEditingController addressController = TextEditingController();
+
+  var add;
 
   RxBool enabled = false.obs;
 
@@ -138,7 +141,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                                 UserKey.USERNAME: userNameController.text,
                                 UserKey.EMAIL: emailController.text,
                                 UserKey.PHONENO: phoneNoController.text,
-                                UserKey.ADDRESS: addressController.text,
+                                UserKey.ADDRESS: add,
                                 UserKey.LATLONG: latLng != null
                                     ? GeoPoint(
                                         latLng!.latitude, latLng!.longitude)
@@ -243,14 +246,17 @@ class _UserProfileViewState extends State<UserProfileView> {
                                         address!.longitude!);
                                     log('**${latLng!.latitude}');
                                     log('**${latLng!.longitude}');
+                                    add = await GeoLocationHelper
+                                        .getCityFromGeoPoint(GeoPoint(
+                                            address!.latitude!,
+                                            address!.longitude!));
                                     addressController.text =
                                         address!.completeAddress.toString();
                                     await setValue(SharedPrefKey.latitude,
                                         address!.latitude);
                                     await setValue(SharedPrefKey.longitude,
                                         address!.longitude);
-                                    await setValue(SharedPrefKey.address,
-                                        addressController.text);
+                                    await setValue(SharedPrefKey.address, add);
                                   }
                                 } else {
                                   X.showSnackBar('Allow Location Permissions',

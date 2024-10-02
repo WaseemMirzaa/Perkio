@@ -48,6 +48,19 @@ class UserServices {
     }
   }
 
+  //.....Get User in stream
+
+    Stream<UserModel?> gettingUserById(String userId) {
+    return _userCollection.doc(userId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return UserModel.fromDocumentSnapshot(snapshot);
+      } else {
+        print("User Not Found");
+        return null; // Return null if user is not found
+      }
+    });
+  }
+
   //update the view of deal
   Future<void> updateDealViews(String dealId) async {
     try {
@@ -198,13 +211,73 @@ class UserServices {
 
   Future<UserModel?> fetchBusinessDetails(String businessId) async {
     try {
+      print(
+          'Fetching business document for ID: $businessId'); // Print business ID
+
+      // Fetch the main business document
       DocumentSnapshot snapshot = await _userCollection.doc(businessId).get();
+
+      // Check if the document exists
       if (snapshot.exists) {
-        return UserModel.fromDocumentSnapshot(snapshot);
+        print(
+            'Business document found. Creating UserModel...'); // Document found
+
+        // Create UserModel from the main document
+        UserModel userModel = UserModel.fromDocumentSnapshot(snapshot);
+        print(
+            'UserModel created: ${userModel.toJson()}'); // Print the created UserModel
+
+        // Fetch the subcollection 'business_details'
+        print('Fetching business_details subcollection...');
+        QuerySnapshot subCollectionSnapshot = await _userCollection
+            .doc(businessId)
+            .collection('business_details')
+            .get();
+
+        // Since we know there's only one document, we access it directly
+        if (subCollectionSnapshot.docs.isNotEmpty) {
+          print(
+              'Subcollection document found. Fetching rating...'); // Subcollection found
+
+          // Get the first document's data for rating
+          Map<String, dynamic> businessDetailsData =
+              subCollectionSnapshot.docs[0].data() as Map<String, dynamic>;
+          print(
+              'Business details data fetched: $businessDetailsData'); // Print the business details data
+
+          // Extract the rating from the 'result' map
+          if (businessDetailsData.containsKey('result')) {
+            Map<String, dynamic> resultData =
+                businessDetailsData['result'] as Map<String, dynamic>;
+            double rating = resultData['rating']?.toDouble() ??
+                0.0; // Safely get the rating
+
+            // Update the UserModel's rating field
+            userModel.updateRating(rating);
+            print(
+                'UserModel updated with rating: ${userModel.rating}'); // Print the updated rating
+          } else {
+            print(
+                'No result data found in business_details subcollection.'); // No 'result' data
+          }
+        } else {
+          print(
+              'No documents found in business_details subcollection.'); // No subcollection data
+        }
+
+        // Return the updated UserModel
+        return userModel;
+      } else {
+        print(
+            'No business document found for ID: $businessId'); // No main document found
       }
     } catch (e) {
-      print('Error fetching business details: $e');
+      print(
+          'Error fetching business details: $e'); // Print error if any exception occurs
     }
+
+    // Return null if there was an error or the document didn't exist
+    print('Returning null for business ID: $businessId');
     return null;
   }
 

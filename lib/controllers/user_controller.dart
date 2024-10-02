@@ -372,6 +372,15 @@ class UserController extends GetxController {
     return userModel;
   }
 
+  Stream<UserModel?> gettingUser(String uid) {
+    return userServices.gettingUserById(uid).asyncMap((userModel) async {
+      if (userModel != null) {
+        await setUserInfo(userModel); // Perform any additional logic here
+      }
+      return userModel;
+    });
+  }
+
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All DEALS
 
   Future<List<DealModel>> getDeals() async {

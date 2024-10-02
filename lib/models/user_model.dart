@@ -17,8 +17,9 @@ class UserModel {
   int? balance;
   bool? isPromotionStart;
   String? isVerified;
-  String? address; // Add this line
-  int? views; // Add this line for optional views
+  String? address;
+  int? views;
+  double? rating; // Add this line for optional rating
 
   UserModel({
     this.userId,
@@ -36,8 +37,9 @@ class UserModel {
     this.isPromotionStart,
     this.isVerified,
     this.stripeCustomerId,
-    this.address, // Add this line
-    this.views, // Add this line for optional views
+    this.address,
+    this.views,
+    this.rating, // Add this line for optional rating
   });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -58,7 +60,9 @@ class UserModel {
       isVerified: data[UserKey.ISVERIFIED] ?? StatusKey.pending,
       stripeCustomerId: data[UserKey.STRIPECUSTOMERID] ?? '',
       address: data[UserKey.ADDRESS],
-      views: data[UserKey.VIEWS] ?? 0, // Initialize views from data
+      views: data[UserKey.VIEWS] ?? 0,
+      rating: data[UserKey.RATING]?.toDouble() ??
+          0.0, // Initialize rating from data
     );
   }
 
@@ -78,8 +82,10 @@ class UserModel {
       isPromotionStart: map[UserKey.ISPROMOTIONSTART] ?? false,
       isVerified: map[UserKey.ISVERIFIED] ?? StatusKey.pending,
       stripeCustomerId: map[UserKey.STRIPECUSTOMERID] ?? '',
-      address: map[UserKey.ADDRESS], // Add this line
-      views: map[UserKey.VIEWS] ?? 0, // Add this line for optional views
+      address: map[UserKey.ADDRESS],
+      views: map[UserKey.VIEWS] ?? 0,
+      rating: map[UserKey.RATING]?.toDouble() ??
+          0.0, // Add this line for optional rating
     );
   }
 
@@ -99,8 +105,9 @@ class UserModel {
       UserKey.ISPROMOTIONSTART: isPromotionStart ?? false,
       UserKey.ISVERIFIED: isVerified ?? StatusKey.pending,
       UserKey.STRIPECUSTOMERID: stripeCustomerId ?? '',
-      UserKey.ADDRESS: address, // Add this line
-      UserKey.VIEWS: views ?? 0, // Add this line for optional views
+      UserKey.ADDRESS: address,
+      UserKey.VIEWS: views ?? 0,
+      UserKey.RATING: rating ?? 0.0, // Add this line for optional rating
     };
   }
 
@@ -126,8 +133,13 @@ class UserModel {
       UserKey.BALANCE: balance,
       UserKey.ISPROMOTIONSTART: isPromotionStart,
       UserKey.ISVERIFIED: isVerified,
-      UserKey.ADDRESS: address, // Use the constant for address
-      UserKey.VIEWS: views, // Add this line for optional views
+      UserKey.ADDRESS: address,
+      UserKey.VIEWS: views,
+      UserKey.RATING: rating, // Add this line for optional rating
     };
+  }
+
+  void updateRating(double? newRating) {
+    rating = newRating;
   }
 }

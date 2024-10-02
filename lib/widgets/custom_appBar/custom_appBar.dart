@@ -17,6 +17,7 @@ import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
+import 'package:swipe_app/views/place_picker/common.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
@@ -30,6 +31,8 @@ Widget customAppBar({
   String? userImage,
   String? userLocation,
   String hintText = 'Search',
+  double? latitude,
+  double? longitude,
   bool isLocation = true,
   bool isNotification = true,
   Function(String)? onChanged,
@@ -96,7 +99,7 @@ Widget customAppBar({
                                           );
                                         }
                                         return Text(
-                                          snapshot.data ?? 'Loading...',
+                                          userLocation ?? 'Loading...',
                                           style: poppinsRegular(
                                               fontSize: 10.sp,
                                               color: AppColors.hintText),
@@ -111,10 +114,7 @@ Widget customAppBar({
                                           await Get.to(() => LocationService(
                                                   child: PlacesPick(
                                                 currentLocation: LatLng(
-                                                    getDoubleAsync(
-                                                        SharedPrefKey.latitude),
-                                                    getDoubleAsync(SharedPrefKey
-                                                        .longitude)),
+                                                    latitude!, longitude!),
                                               )));
                                       final add = await GeoLocationHelper
                                           .getCityFromGeoPoint(GeoPoint(
@@ -126,14 +126,16 @@ Widget customAppBar({
                                           address.latitude);
                                       await setValue(SharedPrefKey.longitude,
                                           address.longitude);
+
                                       await homeController.updateCollection(
                                           getStringAsync(SharedPrefKey.uid),
                                           CollectionsKey.USERS, {
+                                        UserKey.ADDRESS: add,
                                         UserKey.LATLONG: GeoPoint(
                                             getDoubleAsync(
                                                 SharedPrefKey.latitude),
                                             getDoubleAsync(
-                                                SharedPrefKey.longitude))
+                                                SharedPrefKey.longitude)),
                                       });
                                     },
                                     child: Text(
@@ -145,7 +147,7 @@ Widget customAppBar({
                                   )
                                 ],
                               )
-                            : SizedBox.shrink(),
+                            : const SizedBox.shrink(),
                       ],
                     ),
                   ),
@@ -158,7 +160,7 @@ Widget customAppBar({
                             AppAssets.notificationImg,
                             scale: 3.5,
                           ))
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ],
               ),
               isSearchField

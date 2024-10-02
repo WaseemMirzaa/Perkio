@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
+import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/reward_model.dart';
@@ -11,6 +12,7 @@ import 'package:swipe_app/widgets/rewards_list_items.dart';
 
 class RewardsView extends StatelessWidget {
   final RewardController _controller = Get.put(RewardController());
+  var controller = Get.find<UserController>();
   final TextEditingController searchController = TextEditingController();
 
   RewardsView({super.key});
@@ -19,18 +21,59 @@ class RewardsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
+
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
-        child: customAppBar(
-          isSearchField: true,
-          onChanged: (value) {
-            _controller.isSearching.value = value.isNotEmpty;
-            _controller.searchRewards(
-                value); // Filter rewards based on the search input
-          },
-          isSearching: _controller.isSearching,
-        ),
+        child: Obx(() {
+          // Use Obx to react to changes in userProfile
+          if (controller.userProfile.value == null) {
+            return customAppBar(
+              isSearchField: true,
+              onChanged: (value) {
+                _controller.isSearching.value = value.isNotEmpty;
+                _controller.searchRewards(
+                    value); // Filter rewards based on the search input
+              },
+              isSearching: _controller.isSearching,
+
+              userName: 'Loading...', // Placeholder text
+              userLocation: 'Loading...',
+            );
+          }
+
+          // Use the data from the observable
+          final user = controller.userProfile.value!;
+          final userName = user.userName ?? 'Unknown';
+          final userLocation = user.address ?? 'No Address';
+          final latLog = user.latLong;
+
+          return customAppBar(
+            isSearchField: true,
+            onChanged: (value) {
+              _controller.isSearching.value = value.isNotEmpty;
+              _controller.searchRewards(
+                  value); // Filter rewards based on the search input
+            },
+            isSearching: _controller.isSearching,
+            userName: userName,
+            latitude: latLog?.latitude ?? 0.0,
+            longitude: latLog?.longitude ?? 0.0,
+            userLocation: userLocation,
+          );
+        }),
       ),
+      // appBar: PreferredSize(
+      //   preferredSize: Size.fromHeight(22.h),
+      //   child: customAppBar(
+      //     isSearchField: true,
+      //     onChanged: (value) {
+      //       _controller.isSearching.value = value.isNotEmpty;
+      //       _controller.searchRewards(
+      //           value); // Filter rewards based on the search input
+      //     },
+      //     isSearching: _controller.isSearching,
+      //   ),
+      // ),
       body: Obx(() {
         if (_controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());

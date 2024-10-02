@@ -472,4 +472,7 @@ class UserController extends GetxController {
 
     return favouriteRewards;
   }
+
+  //updating the user details
+  Rx<UserModel?> userProfile = Rx<UserModel?>(null);
 }

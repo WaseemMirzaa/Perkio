@@ -9,7 +9,7 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/models/user_model.dart';
+
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';
@@ -30,14 +30,13 @@ class _HomeUserState extends State<HomeUser> {
   late StreamController<List<DealModel>> _dealStreamController;
   late List<DealModel> deals;
   TextEditingController searchController = TextEditingController();
-  late StreamController<UserModel> _userProfileStreamController;
 
   @override
   void initState() {
     super.initState();
     _dealStreamController = StreamController<List<DealModel>>();
     getDeals();
-    _userProfileStreamController = StreamController<UserModel>();
+
     getUser();
 
     // Listen to search field changes
@@ -50,7 +49,7 @@ class _HomeUserState extends State<HomeUser> {
   void dispose() {
     _dealStreamController.close();
     searchController.dispose();
-    _userProfileStreamController.close();
+
     super.dispose();
   }
 
@@ -66,7 +65,7 @@ class _HomeUserState extends State<HomeUser> {
           userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
 
       // Only include deals within 10km
-      return distance <= 10.0;
+      return distance <= 50.0;
     }).toList();
 
     // Sort deals by distance (optional)
@@ -98,8 +97,6 @@ class _HomeUserState extends State<HomeUser> {
 
   //getting the user profile
 
-  late UserModel? userProfile;
-
   LatLng? latLng;
 
   void getUser() {
@@ -107,13 +104,8 @@ class _HomeUserState extends State<HomeUser> {
         .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
         .listen((userModel) {
       if (userModel != null) {
-        userProfile = userModel;
-
-        // Debug print to check the type of latLong
-        print('Type of latLong: ${userProfile?.latLong.runtimeType}');
-
-        // Add the user profile to the stream controller to notify listeners
-        _userProfileStreamController.add(userProfile!);
+        controller.userProfile.value = userModel; // Update the user profile
+        getDeals();
       }
     });
   }
@@ -124,60 +116,37 @@ class _HomeUserState extends State<HomeUser> {
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
-        child: StreamBuilder<UserModel>(
-          stream:
-              _userProfileStreamController.stream, // Listen to the user stream
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // Show loading state while waiting for data
-              return customAppBar(
-                isSearchField: true,
-                onChanged: searchDeals,
-                isSearching: controller.isSearching,
-                userName: 'Loading...', // Placeholder text
-                userLocation: 'Loading...',
-              );
-            } else if (snapshot.hasError) {
-              // Handle error state
-              return customAppBar(
-                isSearchField: true,
-                onChanged: searchDeals,
-                isSearching: controller.isSearching,
-                userName: 'Error loading user',
-                userLocation: 'Error loading location',
-              );
-            } else if (snapshot.hasData) {
-              // Use the data from the stream
-              final user = snapshot.data;
-              final userName = user?.userName ?? 'Unknown';
-              final userLocation = user?.address ?? 'No Address';
-              final latLog = user?.latLong;
+        child: Obx(() {
+          // Use Obx to react to changes in userProfile
+          if (controller.userProfile.value == null) {
+            return customAppBar(
+              isSearchField: true,
+              onChanged: searchDeals,
+              isSearching: controller.isSearching,
+              userName: 'Loading...', // Placeholder text
+              userLocation: 'Loading...',
+            );
+          }
 
-              return customAppBar(
-                isSearchField: true,
-                onChanged: searchDeals,
-                isSearching: controller.isSearching,
-                userName: userName,
-                latitude: latLog?.latitude ?? 0.0,
-                longitude: latLog?.longitude ?? 0.0,
-                userLocation: userLocation,
-              );
-            } else {
-              // Handle the case where no data is available
-              return customAppBar(
-                isSearchField: true,
-                onChanged: searchDeals,
-                isSearching: controller.isSearching,
-                userName: 'No User',
-                userLocation: 'No Location',
-              );
-            }
-          },
-        ),
+          // Use the data from the observable
+          final user = controller.userProfile.value!;
+          final userName = user.userName ?? 'Unknown';
+          final userLocation = user.address ?? 'No Address';
+          final latLog = user.latLong;
+
+          return customAppBar(
+            isSearchField: true,
+            onChanged: searchDeals,
+            isSearching: controller.isSearching,
+            userName: userName,
+            latitude: latLog?.latitude ?? 0.0,
+            longitude: latLog?.longitude ?? 0.0,
+            userLocation: userLocation,
+          );
+        }),
       ),
       body: Obx(() {
         bool isSearching = controller.isSearching.value;
-
         return StreamBuilder<List<DealModel>>(
           stream: _dealStreamController.stream,
           builder: (context, snapshot) {

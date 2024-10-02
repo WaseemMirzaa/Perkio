@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/ui_controllers/favourites_screen_controller.dart';
@@ -27,6 +28,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   final FavouritesScreenController myController =
       Get.find<FavouritesScreenController>();
 
+  var controller = Get.find<UserController>();
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +48,28 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(12.h),
-        child: customAppBar(),
+        child: Obx(() {
+          // Use Obx to react to changes in userProfile
+          if (controller.userProfile.value == null) {
+            return customAppBar(
+              userName: 'Loading...', // Placeholder text
+              userLocation: 'Loading...',
+            );
+          }
+
+          // Use the data from the observable
+          final user = controller.userProfile.value!;
+          final userName = user.userName ?? 'Unknown';
+          final userLocation = user.address ?? 'No Address';
+          final latLog = user.latLong;
+
+          return customAppBar(
+            userName: userName,
+            latitude: latLog?.latitude ?? 0.0,
+            longitude: latLog?.longitude ?? 0.0,
+            userLocation: userLocation,
+          );
+        }),
       ),
       body: Obx(
         () => Column(

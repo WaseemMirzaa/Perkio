@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/services/push_notification_service.dart';
 
 class BusinessServices {
   final auth = FirebaseAuth.instance;
@@ -13,6 +15,8 @@ class BusinessServices {
       FirebaseFirestore.instance.collection(CollectionsKey.DEALS);
   final CollectionReference _rewardCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.REWARDS);
+  final CollectionReference _usersCollection =
+      FirebaseFirestore.instance.collection(CollectionsKey.USERS);
 
   final db = FirebaseFirestore.instance;
 
@@ -29,11 +33,63 @@ class BusinessServices {
       final dealId = docRef.id;
       dealModel.dealId = dealId;
       await docRef.set(dealModel.toMap());
+
+      // Send notification to all users after the deal is added
+      await sendNotificationToAllUsers(dealModel);
+
       return true;
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Firebase Error', e.toString());
       if (e.message != null) print(e.message!);
       return false;
+    }
+  }
+
+  Future<void> sendNotificationToAllUsers(DealModel dealModel) async {
+    log('Fetching user documents to collect FCM tokens...');
+
+    // Fetch all user documents
+    final snapshot = await _usersCollection.get();
+    List<String> allTokens = [];
+
+    // Loop through each user document and collect their FCM tokens
+    for (var doc in snapshot.docs) {
+      List<dynamic> tokens =
+          (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+
+      // Log the collected tokens for each user
+      log('User: ${doc.id}, FCM Tokens: $tokens');
+
+      allTokens.addAll(tokens.map((token) => token.toString()).toList());
+    }
+
+    log('Collected FCM tokens: $allTokens');
+
+    // Now send notification to all collected tokens
+    if (allTokens.isNotEmpty) {
+      log('Sending notification for new deal: ${dealModel.dealName} to ${allTokens.length} users.');
+
+      try {
+        await sendNotification(
+          token: allTokens,
+          notificationType: 'newDeal',
+          title: 'New Deal Added!',
+          msg: 'Check out our latest deal: ${dealModel.dealName}',
+          docId: dealModel.dealId!,
+          isGroup: false,
+          name: 'Deal Notification',
+          image: dealModel.image ??
+              '', // Use the deal model's image URL if available
+          memberIds: [], // Adjust this if you need to specify member IDs
+          uid:
+              '', // You can provide the UID of the user sending the deal if applicable
+        );
+        log('Notification sent successfully.');
+      } catch (e) {
+        log('Error sending notification: $e');
+      }
+    } else {
+      log('No FCM tokens found to send notifications.');
     }
   }
 
@@ -52,11 +108,11 @@ class BusinessServices {
   Future<List<DealModel>> searchDealsByName(String dealName) async {
     try {
       // Reference to the Firestore collection
-      final _dealCollection = FirebaseFirestore.instance.collection('deals');
+      final dealCollection = FirebaseFirestore.instance.collection('deals');
 
       // Query the collection where dealName matches the provided parameter
       final querySnapshot =
-          await _dealCollection.where('dealName', isEqualTo: dealName).get();
+          await dealCollection.where('dealName', isEqualTo: dealName).get();
 
       // Convert the query results to a list of DealModel
       List<DealModel> deals = querySnapshot.docs.map((doc) {

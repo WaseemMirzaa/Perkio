@@ -1,21 +1,29 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/models/deal_model.dart';
+import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/services/deals_service.dart';
+import 'package:swipe_app/services/reward_service.dart';
 import 'package:swipe_app/views/business/home_business.dart';
 import 'package:swipe_app/views/business/home_business_extended.dart';
 import 'package:swipe_app/views/business/rewards_business.dart';
+import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/views/user/favourites.dart';
 import 'package:swipe_app/views/user/home_user.dart';
 import 'package:swipe_app/views/user/my_deals.dart';
+import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/views/user/settings_view.dart';
 import 'package:swipe_app/views/user/rewards_view.dart';
 import 'package:swipe_app/widgets/custom_bottom_bar/custom_bottom_bar_items.dart';
 
 class BottomBarView extends StatefulWidget {
-  const BottomBarView({required this.isUser});
+  const BottomBarView({super.key, required this.isUser});
   final bool isUser;
 
   @override
@@ -24,6 +32,9 @@ class BottomBarView extends StatefulWidget {
 
 class _BottomBarViewState extends State<BottomBarView> {
   int _selectedIndex = 0;
+
+  RewardService rewardService = Get.put(RewardService());
+  DealService dealService = Get.put(DealService());
 
   final userList = [
     const HomeUser(),
@@ -44,6 +55,47 @@ class _BottomBarViewState extends State<BottomBarView> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _navigatetoScreen();
+  }
+
+  _navigatetoScreen() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+  }
+
+  void _handleMessage(RemoteMessage message) async {
+    final String docId = message.data['docId'];
+    RewardModel? rewardModel =
+        await rewardService.fetchRewardDataFromNotification(docId);
+    DealModel? dealModel =
+        await dealService.fetchDealDataFromNotification(docId);
+
+    if (message.data['notificationType'] == 'newDeal') {
+      if (dealModel != null) {
+        Get.to(() => DealDetail(deal: dealModel));
+      } else {
+        print('Failed to fetch deal model for docId: $docId');
+      }
+    }
+    if (message.data['notificationType'] == 'newReward') {
+      if (rewardModel != null) {
+        Get.to(() => RewardDetail(reward: rewardModel));
+      } else {
+        print('Failed to fetch reward model for docId: $docId');
+      }
+    }
   }
 
   @override

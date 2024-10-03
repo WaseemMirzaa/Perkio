@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,12 +13,18 @@ import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/models/deal_model.dart';
+import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/services/deals_service.dart';
+import 'package:swipe_app/services/reward_service.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/business/verification_pending_view.dart';
 import 'package:swipe_app/views/auth/login_view.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/role_selection/role_selection_view.dart';
+import 'package:swipe_app/views/user/deal_detail.dart';
+import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
@@ -30,10 +37,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final userController = Get.put(UserController(UserServices()));
+ 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+
     Future.microtask(() async {
       final currentUser = FirebaseAuth.instance.currentUser;
       print("ID is ${currentUser?.uid}");
@@ -81,6 +91,9 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {}
     });
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {

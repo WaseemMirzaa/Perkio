@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swipe_app/models/deal_model.dart';
+import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/services/deals_service.dart';
+import 'package:swipe_app/services/reward_service.dart';
+import 'package:swipe_app/views/user/deal_detail.dart';
+import 'package:swipe_app/views/user/reward_detail.dart';
 
 class FCMManager {
   static String? fcmToken;
@@ -15,6 +22,9 @@ class FCMManager {
     return await FirebaseMessaging.instance.getToken() ?? '';
   }
 }
+
+RewardService rewardService = Get.put(RewardService());
+DealService dealService = Get.put(DealService());
 
 FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -32,11 +42,9 @@ final InitializationSettings initializationSettings = InitializationSettings(
 );
 
 class PushNotificationServices {
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  // static NotificationModel notificationModel = NotificationModel();
 
   Future<void> init() async {
-    print('🟢🟢🟢🟢🟢 init');
-
     await notificationsPlugin
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
@@ -46,7 +54,8 @@ class PushNotificationServices {
           sound: true,
         );
 
-    print('🟢🟢🟢🟢🟢 plugin resolved');
+    /// Update the iOS foreground notification presentation options to allow
+    /// heads up ui.screens.Tabs.notifications.
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: true,
@@ -54,105 +63,144 @@ class PushNotificationServices {
       sound: true,
     );
 
-    print('🟢🟢🟢🟢🟢 setForegroundNotificationPresentationOptions');
-
     channel = const AndroidNotificationChannel(
       'high_importance_channel', // id
       'High Importance Notifications', // title
       description:
           'This channel is used for important notifications.', // description
-      importance: Importance.max,
+      importance: Importance.high,
     );
 
-    print('🟢🟢🟢🟢🟢 AndroidNotificationChannel');
-
-    // request permission to receive push notifications
-    NotificationSettings settings = await _fcm.requestPermission();
-    print('🟢🟢🟢🟢🟢 NotificationSettings');
-
-    // print('Step 1');
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('🟢🟢🟢🟢🟢 authorized');
-      print('🟢🟢🟢🟢🟢 adding listener');
-
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-        print('🟢🟢🟢🟢🟢 onMessageListened');
-
-        // NotificationModel notificationModel = NotificationModel();
-        // int notificationBadge = 0;
-        if (message.data.isNotEmpty) {
-          //RemoteNotification? notification = message.notification;
-          String notificationType = message.data['notificationType'];
-          // notificationModel.type = notificationType;
-          // notificationModel.docId = message.data['docId'];
-          // notificationModel.name = message.data['name'];
-          // notificationModel.image = message.data['image'];
-          // notificationModel.isGroup = bool.parse(message.data['isGroup']);
-          // notificationModel.memberIds = json.decode(message.data['memberIds']);
-        }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      if (message.data.isNotEmpty) {
+        String notificationType = message.data['notificationType'];
+        String docId = message.data['docId'];
 
         notificationsPlugin.show(
-            1,
-            message.notification?.title,
-            message.notification?.body,
-            NotificationDetails(
-                android: AndroidNotificationDetails(
-                  channel.id,
-                  channel.name,
-                  importance: Importance.high,
-                  color: Colors.blue,
-                  playSound: true,
-                  icon: 'appicon',
-                  channelShowBadge: true,
-                ),
-                iOS: const DarwinNotificationDetails(
-                  presentSound: true,
-                  presentAlert: true,
-                  presentBadge: true,
-                  // badgeNumber: notificationBadge
-                )));
-      });
+          1,
+          message.notification?.title,
+          message.notification?.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              importance: Importance.high,
+              color: Colors.blue,
+              playSound: true,
+              icon: 'appicon',
+              channelShowBadge: true,
+            ),
+            iOS: const DarwinNotificationDetails(
+              presentSound: true,
+              presentAlert: true,
+              presentBadge: true,
+            ),
+          ),
+          payload:
+              '$notificationType:$docId', // Pass notificationType and docId in payload
+        );
+      }
+    });
 
-      // handle notification messages when the app is in the background or terminated
-      FirebaseMessaging.onMessageOpenedApp
-          .listen((RemoteMessage message) async {
-        print('🟢🟢🟢🟢🟢 onMessageOpenedApp');
+    // handle notification messages when the app is in the background or terminated
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+      String? notificationType = message.data['notificationType'];
+      String? docId = message.data['docId'];
 
-        // chatcontroller.docId.value = message.data['docId'];
-        // chatcontroller.name.value = message.data['name'];
-        // chatcontroller.isgroup = bool.parse(message.data['isGroup']);
-        // chatcontroller.image.value = message.data['image'];
-        // List<dynamic> memberIdsList = jsonDecode(message.data['memberIds']);
-        // chatcontroller.memberId.value = memberIdsList;
+      print('🟢🟢🟢Notification Type: $notificationType');
+      print('🟢🟢🟢Doc ID: $docId');
 
-        // message.data['notificationType'] == 'newsFeed'
-        //     ? Get.to(() => OpenPost(
-        //           postId: message.data['docId'],
-        //         ))
-        //     : Get.to(() => ChatScreen());
+      if (notificationType == 'newDeal' && docId!.isNotEmpty) {
+        if (docId.isNotEmpty) {
+          // Result? resultModel = await fetchPostByDocId(id);
+          DealModel? dealModel =
+              await dealService.fetchDealDataFromNotification(docId);
 
-        // String notificationType = message.data['notificationType'];
-        // NotificationModel notificationModel = NotificationModel();
-        // notificationModel.type = notificationType;
-      });
+          // Get.to(() =>
+          //     SingleView(isOtherUserPost: true, resultModel: resultModel));
+          Get.to(
+            () => DealDetail(
+              deal: dealModel,
+            ),
+          );
+        }
+      }
 
-      await notificationsPlugin.initialize(initializationSettings,
-          onDidReceiveNotificationResponse: (payload) async {
-        print('🟢🟢🟢🟢🟢 onDidReceiveNotificationResponse');
-        // NotificationModel notificationModel = NotificationModel();
-        // chatcontroller.docId.value = notificationModel.docId;
-        // chatcontroller.name.value = notificationModel.name;
-        // chatcontroller.isgroup = notificationModel.isGroup;
-        // chatcontroller.image.value = notificationModel.image;
-        // chatcontroller.memberId.value = notificationModel.memberIds;
+      if (notificationType == 'newReward' && docId!.isNotEmpty) {
+        if (docId.isNotEmpty) {
+          // Result? resultModel = await fetchPostByDocId(id);
+          RewardModel? rewardModel =
+              await rewardService.fetchRewardDataFromNotification(docId);
 
-        // notificationModel.type == 'newsFeed'
-        //     ? Get.to(() => OpenPost(
-        //           postId: notificationModel.docId,
-        //         ))
-        //     : Get.to(() => ChatScreen());
-      });
-    }
+          // Get.to(() =>
+          //     SingleView(isOtherUserPost: true, resultModel: resultModel));
+          Get.to(
+            () => RewardDetail(
+              reward: rewardModel,
+            ),
+          );
+        }
+      }
+
+      // if (notificationType == 'info' && docId != null) {
+      //   int? id = int.tryParse(docId);
+      //   Result? resultModel = await fetchPostByDocId(id!);
+
+      //   if (resultModel != null) {
+      //     Get.to(() => SingleView(
+      //           isOtherUserPost: true,
+      //           resultModel: resultModel,
+      //         ));
+      //   }
+      // } else {
+      //   if (docId != null) {
+      //     goToChatScreen(docId);
+      //   }
+      // }
+    });
+
+    await notificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse:
+            (NotificationResponse response) async {
+      String? payload = response.payload;
+      if (payload != null) {
+        List<String> payloadData = payload.split(':');
+        String notificationType = payloadData[0];
+        String docId = payloadData[1];
+
+        if (notificationType == 'newDeal' && docId.isNotEmpty) {
+          if (docId.isNotEmpty) {
+            // Result? resultModel = await fetchPostByDocId(id);
+            DealModel? dealModel =
+                await dealService.fetchDealDataFromNotification(docId);
+
+            // Get.to(() =>
+            //     SingleView(isOtherUserPost: true, resultModel: resultModel));
+            Get.to(
+              () => DealDetail(
+                deal: dealModel,
+              ),
+            );
+          }
+        }
+
+        if (notificationType == 'newReward' && docId.isNotEmpty) {
+          if (docId.isNotEmpty) {
+            // Result? resultModel = await fetchPostByDocId(id);
+            RewardModel? rewardModel =
+                await rewardService.fetchRewardDataFromNotification(docId);
+
+            // Get.to(() =>
+            //     SingleView(isOtherUserPost: true, resultModel: resultModel));
+            Get.to(
+              () => RewardDetail(
+                reward: rewardModel,
+              ),
+            );
+          }
+        }
+      }
+    });
   }
 }
 

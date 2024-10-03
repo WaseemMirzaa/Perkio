@@ -35,6 +35,25 @@ class DealService {
     }
   }
 
+  // Call this to get deal data from notification
+  Future<DealModel?> fetchDealDataFromNotification(String dealId) async {
+    try {
+      DocumentReference dealRef = _firestore.collection('deals').doc(dealId);
+      DocumentSnapshot dealSnapshot = await dealRef.get();
+
+      // Check if the document exists
+      if (dealSnapshot.exists) {
+        return DealModel.fromDocumentSnapshot(dealSnapshot);
+      } else {
+        print('Deal not found for ID: $dealId');
+        return null; // Return null if the deal doesn't exist
+      }
+    } catch (e) {
+      print('Error fetching deal data: $e');
+      return null; // Return null on error
+    }
+  }
+
   Future<void> updateUsedBy(String dealId, String userId) async {
     try {
       DocumentReference dealRef = _firestore.collection('deals').doc(dealId);

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -35,7 +34,7 @@ class BusinessServices {
       await docRef.set(dealModel.toMap());
 
       // Send notification to all users after the deal is added
-      await sendNotificationToAllUsers(dealModel);
+      await sendNotificationToAllUsersForDeals(dealModel);
 
       return true;
     } on FirebaseAuthException catch (e) {
@@ -45,7 +44,7 @@ class BusinessServices {
     }
   }
 
-  Future<void> sendNotificationToAllUsers(DealModel dealModel) async {
+  Future<void> sendNotificationToAllUsersForDeals(DealModel dealModel) async {
     log('Fetching user documents to collect FCM tokens...');
 
     // Fetch all user documents
@@ -54,13 +53,22 @@ class BusinessServices {
 
     // Loop through each user document and collect their FCM tokens
     for (var doc in snapshot.docs) {
-      List<dynamic> tokens =
-          (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+      // Check the role of the user
+      String role = (doc.data() as Map<String, dynamic>)['role'] ?? '';
 
-      // Log the collected tokens for each user
-      log('User: ${doc.id}, FCM Tokens: $tokens');
+      // Log the user role
+      log('User: ${doc.id}, Role: $role');
 
-      allTokens.addAll(tokens.map((token) => token.toString()).toList());
+      // Collect FCM tokens only if the role is 'user'
+      if (role == 'user') {
+        List<dynamic> tokens =
+            (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+
+        // Log the collected tokens for each user
+        log('User: ${doc.id}, FCM Tokens: $tokens');
+
+        allTokens.addAll(tokens.map((token) => token.toString()).toList());
+      }
     }
 
     log('Collected FCM tokens: $allTokens');
@@ -73,7 +81,7 @@ class BusinessServices {
         await sendNotification(
           token: allTokens,
           notificationType: 'newDeal',
-          title: 'New Deal Added!',
+          title: 'New Deal Added by ${dealModel.companyName}!',
           msg: 'Check out our latest deal: ${dealModel.dealName}',
           docId: dealModel.dealId!,
           isGroup: false,
@@ -315,11 +323,70 @@ class BusinessServices {
       final rewardId = docRef.id;
       rewardModel.rewardId = rewardId;
       await docRef.set(rewardModel.toMap());
+      // Send notification to all users after the deal is added
+      await sendNotificationToAllUsersForRewards(rewardModel);
       return true;
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Firebase Error', e.toString());
       if (e.message != null) print(e.message!);
       return false;
+    }
+  }
+
+  Future<void> sendNotificationToAllUsersForRewards(
+      RewardModel rewardModel) async {
+    log('Fetching user documents to collect FCM tokens...');
+
+    // Fetch all user documents
+    final snapshot = await _usersCollection.get();
+    List<String> allTokens = [];
+
+    // Loop through each user document and collect their FCM tokens
+    for (var doc in snapshot.docs) {
+      // Check the role of the user
+      String role = (doc.data() as Map<String, dynamic>)['role'] ?? '';
+
+      // Log the user role
+      log('User: ${doc.id}, Role: $role');
+
+      // Collect FCM tokens only if the role is 'user'
+      if (role == 'user') {
+        List<dynamic> tokens =
+            (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+
+        // Log the collected tokens for each user
+        log('User: ${doc.id}, FCM Tokens: $tokens');
+
+        allTokens.addAll(tokens.map((token) => token.toString()).toList());
+      }
+    }
+
+    log('Collected FCM tokens: $allTokens');
+
+    // Now send notification to all collected tokens
+    if (allTokens.isNotEmpty) {
+      log('Sending notification for new deal: ${rewardModel.rewardName} to ${allTokens.length} users.');
+
+      try {
+        await sendNotification(
+          token: allTokens,
+          notificationType: 'newReward',
+          title: 'New Reward added by ${rewardModel.companyName}!',
+          msg: 'Check out our latest reward: ${rewardModel.rewardName}',
+          docId: rewardModel.rewardId!,
+          isGroup: false,
+          name: 'Deal Notification',
+          image: '', // Use the deal model's image URL if available
+          memberIds: [], // Adjust this if you need to specify member IDs
+          uid:
+              '', // You can provide the UID of the user sending the deal if applicable
+        );
+        log('Notification sent successfully.');
+      } catch (e) {
+        log('Error sending notification: $e');
+      }
+    } else {
+      log('No FCM tokens found to send notifications.');
     }
   }
 }

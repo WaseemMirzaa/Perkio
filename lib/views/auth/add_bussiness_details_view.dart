@@ -15,10 +15,10 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/services/push_notification_service.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/business/verification_pending_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
-import 'package:swipe_app/views/place_picker/apis.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
@@ -315,6 +315,9 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
 
                       //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
                       //tets placeID = 'ChIJrTLr-GyuEmsRBfy61i59si0'
+
+                      String token = await FCMManager.getFCMToken();
+                      widget.userModel.fcmTokens = [token];
 
                       // Await the signUp call and only navigate if it was successful
                       await userController.signUp(widget.userModel, () {

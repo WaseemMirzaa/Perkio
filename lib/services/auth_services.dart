@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/user_model.dart';
+import 'package:swipe_app/services/push_notification_service.dart';
 
 class AuthServices {
   final auth = FirebaseAuth.instance;
@@ -13,8 +14,26 @@ class AuthServices {
   //............ SignIn
   Future<String?> signIn(String email, String password) async {
     try {
+      // Sign in the user
       await auth.signInWithEmailAndPassword(email: email, password: password);
       User? user = auth.currentUser;
+
+      if (user != null) {
+        // Get the FCM token
+        String fcmToken = await FCMManager.getFCMToken();
+
+        // Update the user's FCM token list in Firestore
+        DocumentReference userDocRef =
+            firestore.collection('users').doc(user.uid);
+
+        // Add the token to the list (using arrayUnion to avoid duplicates)
+        await userDocRef.update({
+          'fcmTokens': FieldValue.arrayUnion([fcmToken])
+        });
+
+        print('FCM token added to user document');
+      }
+
       return null; // Sign-in success, return null
     } on FirebaseAuthException catch (e) {
       return e.message ?? 'An error occurred during sign-in';
@@ -40,11 +59,42 @@ class AuthServices {
     }
   }
 
-  //............ LogOut
+  //logout
   Future<void> logOut() async {
-    await auth.signOut();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(UserKey.USERID);
-    await prefs.remove(UserKey.ROLE);
+    try {
+      User? currentUser = auth.currentUser;
+      if (currentUser != null) {
+        String userId = currentUser.uid;
+
+        DocumentReference userDocRef =
+            firestore.collection('users').doc(userId);
+
+        // Directly using the stored FCM token
+        String? fcmToken = FCMManager.fcmToken;
+
+        print('Current FCM Token: $fcmToken');
+
+        // Check if the fcmToken is available
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          await userDocRef.update({
+            'fcmTokens': FieldValue.arrayRemove([fcmToken])
+          });
+          print('FCM token removed from user document');
+        } else {
+          print('FCM token is null or empty, cannot remove.');
+        }
+      }
+
+      // Sign out the user
+      await auth.signOut();
+
+      // Clear shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove(UserKey.USERID);
+      await prefs.remove(UserKey.ROLE);
+      print('User signed out successfully');
+    } catch (e) {
+      print('Error during logout: $e');
+    }
   }
 }

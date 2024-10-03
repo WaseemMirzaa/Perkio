@@ -10,7 +10,7 @@ const stripe = require("stripe")("sk_test_51PQ2iD00So438Qdez2W3OxQsgvliHgcev9d6C
 
 exports.initPaymentSheet = functions.https.onRequest(async (data, res) => {
   try {
-    const {amount, customerId} = data.body;
+    const { amount, customerId } = data.body;
 
     console.log(amount);
     console.log(customerId);
@@ -40,7 +40,7 @@ exports.initPaymentSheet = functions.https.onRequest(async (data, res) => {
     });
   } catch (error) {
     console.error("Error:", error.message);
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -51,11 +51,56 @@ exports.createStripeCustomer = functions.https.onRequest(async (data, res) => {
       email: email,
     });
 
-    res.json({customerId: customer.id});
+    res.json({ customerId: customer.id });
   } catch (err) {
     console.log(err);
-    res.json({error: err});
+    res.json({ error: err });
 
-    res.status(500).json({error: err.message});
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// Cloud Function for push notification
+exports.sendNotification = functions.https.onRequest(async (req, res) => {
+  const {token, notificationType, title, body, docId, name, isGroup, image,
+    memberIds} = req.body;
+
+
+  const message = {
+    notification: {
+      title: title,
+      body: body,
+    },
+    data: {
+      notificationType: notificationType,
+      docId: docId,
+      name: name,
+      isGroup: isGroup.toString(),
+      image: image,
+      memberIds: JSON.stringify(memberIds),
+    },
+    apns: {
+      payload: {
+        aps: {
+          sound: "default",
+        },
+      },
+      headers: {
+        "apns-priority": "10",
+      },
+    },
+
+    token: token,
+  };
+
+  try {
+    const response = await admin.messaging().send(message);
+    console.log("Successfully sent message:", response);
+    res.status(200).send("Notification sent");
+  } catch (error) {
+    console.log("Successfully sent message:", req);
+    console.error("Error sending message:", error);
+    res.status(500).send("Error sending notification");
   }
 });

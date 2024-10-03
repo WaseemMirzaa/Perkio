@@ -20,6 +20,7 @@ class UserModel {
   String? address;
   int? views;
   double? rating; // Add this line for optional rating
+  List<String>? fcmTokens; // Add this line for optional FCM tokens
 
   UserModel({
     this.userId,
@@ -40,6 +41,7 @@ class UserModel {
     this.address,
     this.views,
     this.rating, // Add this line for optional rating
+    this.fcmTokens, // Add this line for optional FCM tokens
   });
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -63,6 +65,8 @@ class UserModel {
       views: data[UserKey.VIEWS] ?? 0,
       rating: data[UserKey.RATING]?.toDouble() ??
           0.0, // Initialize rating from data
+      fcmTokens:
+          List<String>.from(data[UserKey.FCM_TOKENS] ?? []), // Add this line
     );
   }
 
@@ -84,8 +88,10 @@ class UserModel {
       stripeCustomerId: map[UserKey.STRIPECUSTOMERID] ?? '',
       address: map[UserKey.ADDRESS],
       views: map[UserKey.VIEWS] ?? 0,
-      rating: map[UserKey.RATING]?.toDouble() ??
-          0.0, // Add this line for optional rating
+      rating:
+          map[UserKey.RATING]?.toDouble() ?? 0.0, // Initialize rating from data
+      fcmTokens:
+          List<String>.from(map[UserKey.FCM_TOKENS] ?? []), // Add this line
     );
   }
 
@@ -108,6 +114,8 @@ class UserModel {
       UserKey.ADDRESS: address,
       UserKey.VIEWS: views ?? 0,
       UserKey.RATING: rating ?? 0.0, // Add this line for optional rating
+      UserKey.FCM_TOKENS:
+          fcmTokens ?? [], // Add this line for optional FCM tokens
     };
   }
 
@@ -136,6 +144,8 @@ class UserModel {
       UserKey.ADDRESS: address,
       UserKey.VIEWS: views,
       UserKey.RATING: rating, // Add this line for optional rating
+      UserKey.FCM_TOKENS:
+          fcmTokens ?? [], // Add this line for optional FCM tokens
     };
   }
 

@@ -10,7 +10,7 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:get/get.dart'; // Import Get package
-import 'package:image_picker/image_picker.dart'; // Import for camera functionality
+// Import for camera functionality
 
 class RewardDetail extends StatefulWidget {
   final RewardModel? reward;

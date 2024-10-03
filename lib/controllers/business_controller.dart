@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
@@ -20,14 +21,26 @@ class BusinessController extends GetxController {
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ ADD DEAL
   Future<bool> addDeal(DealModel dealModel) async {
     loading.value = true;
+
+    // Get current user's UID
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      showSnackBar('Error', 'User is not logged in');
+      loading.value = false;
+      return false;
+    }
+
+    // Pass the dealModel and currentUserUid to the businessServices method
     final response = await businessServices.addDeal(dealModel);
+
     if (response) {
       showSnackBar('Success', 'Deal Added Successfully');
       loading.value = false;
     } else {
       showSnackBar('Error', 'Could Not Add Deal');
-      loading.value = true;
+      loading.value = false;
     }
+
     return response;
   }
 

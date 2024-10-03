@@ -7,6 +7,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/bindings/bindings.dart';
+import 'package:swipe_app/services/push_notification_service.dart';
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 
 void main() async {
@@ -14,6 +15,11 @@ void main() async {
 
   await initialize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Push Notification Services
+  PushNotificationServices pushNotificationServices =
+      PushNotificationServices();
+  await pushNotificationServices.init();
 
   // UserServices userServices = UserServices();
   // String? userId = await userServices.getCurrentUserIdFromPreferences();

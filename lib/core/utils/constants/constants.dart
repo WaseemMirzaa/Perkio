@@ -17,6 +17,7 @@ class UserKey {
   static const String ADDRESS = 'address';
   static const String VIEWS = 'views';
   static const String RATING = 'rating';
+  static const String FCM_TOKENS = 'fcmTokens';
 }
 
 class CollectionsKey {

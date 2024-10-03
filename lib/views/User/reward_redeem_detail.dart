@@ -8,6 +8,7 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
+import 'package:swipe_app/views/user/reward_list_confirmation.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
@@ -29,7 +30,6 @@ class RewardRedeemDetail extends StatefulWidget {
 
 class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
   final RewardController _rewardController = Get.put(RewardController());
-  bool isRedeeming = false; // New state variable
 
   @override
   void initState() {
@@ -70,7 +70,6 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                     const SpacerBoxVertical(height: 20),
                     DetailTile(
                       businessId: widget.businessId,
-                      isRedeeming: isRedeeming,
                     ),
                     const SpacerBoxVertical(height: 10),
                     Padding(
@@ -154,57 +153,52 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                       ),
                     ),
                     const SpacerBoxVertical(height: 80),
-                    if (userPoints >= pointsToRedeem && !isRedeeming)
+                    if (userPoints >= pointsToRedeem)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: ButtonWidget(
                           onSwipe: () async {
-                            setState(() {
-                              isRedeeming = true;
-                            });
-
-                            await _rewardController.updateRewardUsage(
-                              widget.rewardId!,
-                              widget.userId!,
+                            await _rewardController.fetchReceipts(
+                              rewardModel.rewardId!,
                             );
 
-                            int remainingUses = 0;
+                            // Extract images from the fetched receipts
+                            List<dynamic> images = _rewardController
+                                .userReceipts
+                                .expand((receipt) => receipt.imageUrls ?? [])
+                                .toList();
 
-                            if (rewardModel.usedBy
-                                    ?.containsKey(widget.userId) ??
-                                false) {
-                              remainingUses =
-                                  (rewardModel.usedBy![widget.userId] ?? 0) + 1;
-                            }
+                            Get.to(() => ConfirmRewardRedeemList(
+                                  rewardId: rewardModel.rewardId!,
+                                  businessName: rewardModel.companyName!,
+                                  rewardName: rewardModel.rewardName!,
+                                  rewardImages: [...images],
+                                ));
 
-                            if (remainingUses == rewardModel.uses) {
-                              remainingUses = 0;
-                            } else {
-                              remainingUses = rewardModel.uses! - remainingUses;
-                            }
+                            // await _rewardController.updateRewardUsage(
+                            //   widget.rewardId!,
+                            //   widget.userId!,
+                            // );
 
-                            // Show the congratulation dialog
-                            showCongratulationDialog(
-                              onDone: () {
-                                setState(() {
-                                  isRedeeming = false;
-                                });
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LocationService(
-                                      child: BottomBarView(
-                                        isUser: getStringAsync(
-                                                SharedPrefKey.role) ==
-                                            SharedPrefKey.user,
-                                      ),
-                                    ),
-                                  ),
-                                  (route) => false,
-                                );
-                              },
-                              message: 'reward',
-                            );
+                            // // Show the congratulation dialog
+                            // showCongratulationDialog(
+                            //   onDone: () {
+                            //     Navigator.pushAndRemoveUntil(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //         builder: (context) => LocationService(
+                            //           child: BottomBarView(
+                            //             isUser: getStringAsync(
+                            //                     SharedPrefKey.role) ==
+                            //                 SharedPrefKey.user,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       (route) => false,
+                            //     );
+                            //   },
+                            //   message: 'reward',
+                            // );
                           },
                           text: TempLanguage.btnLblSwipeToRedeem,
                         ),
@@ -213,10 +207,6 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                 ),
               ],
             ),
-            if (isRedeeming)
-              Center(
-                child: circularProgressBar(),
-              ),
           ],
         );
       }),

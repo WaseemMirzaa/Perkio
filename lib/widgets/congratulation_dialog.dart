@@ -7,7 +7,7 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 void showCongratulationDialog(
-    {Function? onDone, String message = ""}) {
+    {Function? onDone, String message = "", isPendingforVerification = false}) {
   Get.dialog(
     Dialog(
       shape: RoundedRectangleBorder(
@@ -24,12 +24,20 @@ void showCongratulationDialog(
             ),
             const SpacerBoxVertical(height: 20),
             // General message without remaining uses
-            Text(
-              "Congratulations! You've successfully redeemed this $message. Enjoy the benefits!",
-              style: poppinsRegular(
-                  fontSize: 15, color: AppColors.secondaryText),
-              textAlign: TextAlign.center,
-            ),
+            if (isPendingforVerification)
+              Text(
+                "Your reward has been redeemed successfully. It is pending for verification. We'll notify you once it's verified.",
+                style: poppinsRegular(
+                    fontSize: 15, color: AppColors.secondaryText),
+                textAlign: TextAlign.center,
+              ),
+            if (!isPendingforVerification)
+              Text(
+                "Congratulations! You've successfully redeemed this $message. Enjoy the benefits!",
+                style: poppinsRegular(
+                    fontSize: 15, color: AppColors.secondaryText),
+                textAlign: TextAlign.center,
+              ),
             const SpacerBoxVertical(height: 30),
             GestureDetector(
               onTap: onDone != null

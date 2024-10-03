@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:swipe_app/models/receipt_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:uuid/uuid.dart';
@@ -157,4 +158,87 @@ class RewardService {
       throw Exception("Error saving receipt: $e");
     }
   }
+
+  Future<List<ReceiptModel>> fetchUserReceipts(String rewardId) async {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      throw Exception("User not authenticated");
+    }
+
+    List<ReceiptModel> userReceipts = [];
+
+    try {
+      // Access the 'rewards' collection and find the document matching the passed rewardId
+      DocumentSnapshot rewardDoc =
+          await _firestore.collection('reward').doc(rewardId).get();
+
+      // Check if the reward document exists
+      if (rewardDoc.exists) {
+        // Access the 'receipts' subcollection
+        QuerySnapshot receiptsSnapshot =
+            await rewardDoc.reference.collection('receipts').get();
+        debugPrint(
+            "Fetched receipts for reward $rewardId: ${receiptsSnapshot.docs.length}"); // Log the number of receipts per reward
+
+        for (var receiptDoc in receiptsSnapshot.docs) {
+          // Check if the document ID matches the current user UID
+          if (receiptDoc.id == userId) {
+            // Fetch the entire document and create ReceiptModel
+            ReceiptModel receipt =
+                ReceiptModel.fromMap(receiptDoc.data() as Map<String, dynamic>);
+            userReceipts.add(receipt); // Add to the list of user receipts
+            debugPrint(
+                "Fetched receipt: ${receipt.receiptId} for user: $userId"); // Log each fetched receipt
+          }
+        }
+      } else {
+        debugPrint("No reward found with ID: $rewardId");
+      }
+    } catch (e) {
+      debugPrint("Error fetching receipts: $e"); // Use debugPrint for errors
+    }
+
+    debugPrint(
+        "Total receipts fetched for user $userId: ${userReceipts.length}"); // Log the total number of receipts
+    return userReceipts; // Return the list of ReceiptModel
+  }
+
+
+  Future<void> updateReceiptStatus(String rewardId) async {
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+  if (userId == null) {
+    throw Exception("User not authenticated");
+  }
+
+  try {
+    // Access the 'rewards' collection and find the document matching the passed rewardId
+    DocumentSnapshot rewardDoc =
+        await _firestore.collection('reward').doc(rewardId).get();
+
+    // Check if the reward document exists
+    if (rewardDoc.exists) {
+      // Access the 'receipts' subcollection
+      QuerySnapshot receiptsSnapshot =
+          await rewardDoc.reference.collection('receipts').get();
+      debugPrint(
+          "Fetched receipts for reward $rewardId: ${receiptsSnapshot.docs.length}"); // Log the number of receipts per reward
+
+      for (var receiptDoc in receiptsSnapshot.docs) {
+        // Check if the document ID matches the current user UID
+        if (receiptDoc.id == userId) {
+          // Update the isVerified field to false
+          await receiptDoc.reference.update({'isVerified': false});
+          debugPrint("Updated receipt: ${receiptDoc.id} to isVerified: false for user: $userId"); // Log the update
+          return; // Exit after updating the first matched receipt
+        }
+      }
+      debugPrint("No receipt found for user $userId under reward $rewardId");
+    } else {
+      debugPrint("No reward found with ID: $rewardId");
+    }
+  } catch (e) {
+    debugPrint("Error updating receipt status: $e"); // Use debugPrint for errors
+  }
+}
+
 }

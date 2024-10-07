@@ -112,12 +112,17 @@ class DealService {
     for (var doc in snapshot.docs) {
       // Check the role of the user
       String role = (doc.data() as Map<String, dynamic>)['role'] ?? '';
+      String userId = doc.id;
+
+      if (userId == dealModel.businessId) {
+        log('💥💥💥💥💥💥💥 MATCHED ');
+      }
 
       // Log the user role
       log('User: ${doc.id}, Role: $role');
 
       // Collect FCM tokens only if the role is 'user'
-      if (role == 'business') {
+      if (role == 'business' && userId == dealModel.businessId) {
         List<dynamic> tokens =
             (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
 

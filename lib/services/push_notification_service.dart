@@ -155,22 +155,6 @@ class PushNotificationServices {
           Get.to(() => const NotificationsView());
         }
       }
-
-      // if (notificationType == 'info' && docId != null) {
-      //   int? id = int.tryParse(docId);
-      //   Result? resultModel = await fetchPostByDocId(id!);
-
-      //   if (resultModel != null) {
-      //     Get.to(() => SingleView(
-      //           isOtherUserPost: true,
-      //           resultModel: resultModel,
-      //         ));
-      //   }
-      // } else {
-      //   if (docId != null) {
-      //     goToChatScreen(docId);
-      //   }
-      // }
     });
 
     await notificationsPlugin.initialize(initializationSettings,

@@ -267,7 +267,8 @@ class RewardService {
             debugPrint('UserName for userId $userId is $userName');
 
             // Send a notification using the user's name and reward data
-            await sendNotificationToAllUsersForDeals(rewardData, userName);
+            await sendNotificationToAllBusinessUsersForRewards(
+                rewardData, userName);
 
             // Update the 'isVerified' field to false for the matched receipt
             await receiptDoc.reference.update({'isVerified': false});
@@ -288,7 +289,7 @@ class RewardService {
     }
   }
 
-  Future<void> sendNotificationToAllUsersForDeals(
+  Future<void> sendNotificationToAllBusinessUsersForRewards(
       RewardModel rewardModel, String userName) async {
     log('Fetching user documents to collect FCM tokens...');
 
@@ -300,12 +301,17 @@ class RewardService {
     for (var doc in snapshot.docs) {
       // Check the role of the user
       String role = (doc.data() as Map<String, dynamic>)['role'] ?? '';
+      String userId = doc.id;
+
+      if (userId == rewardModel.businessId) {
+        log('💥💥💥💥💥💥💥 MATCHED ');
+      }
 
       // Log the user role
       log('User: ${doc.id}, Role: $role');
 
       // Collect FCM tokens only if the role is 'user'
-      if (role == 'business') {
+      if (role == 'business' && userId == rewardModel.businessId) {
         List<dynamic> tokens =
             (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
 

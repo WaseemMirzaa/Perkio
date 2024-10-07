@@ -62,6 +62,7 @@ class RewardKey {
   static const String ISFAVOURITE = 'isFavourite';
   static const String POINTSPERSCAN = 'pointsPerScan';
   static const String USEDBY = 'usedBy';
+  static const String LATLONG = "latLong";
 }
 
 class NotificationKey {

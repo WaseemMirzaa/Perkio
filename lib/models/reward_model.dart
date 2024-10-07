@@ -16,6 +16,7 @@ class RewardModel {
   Timestamp? createdAt;
   List<String>? isFavourite; // Added field
   Map<String, int>? usedBy; // Added optional usedBy field
+  GeoPoint? latLong; // Added optional latLong field
 
   RewardModel({
     this.businessId,
@@ -32,6 +33,7 @@ class RewardModel {
     this.createdAt,
     this.isFavourite, // Initialize the new field
     this.usedBy, // Initialize usedBy as optional
+    this.latLong, // Initialize latLong as optional
   });
 
   factory RewardModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -50,7 +52,8 @@ class RewardModel {
       pointsPerScan: data[RewardKey.POINTSPERSCAN] ?? 0, // Added field
       createdAt: data[RewardKey.CREATEDAT] ?? Timestamp.now(),
       isFavourite: List<String>.from(data[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
-      usedBy: Map<String, int>.from(data[RewardKey.USEDBY] ?? {}), // Initialize the usedBy field
+      usedBy: Map<String, int>.from(data[RewardKey.USEDBY] ?? {}), // Initialize usedBy field
+      latLong: data[RewardKey.LATLONG], // Initialize latLong field
     );
   }
 
@@ -70,6 +73,7 @@ class RewardModel {
       createdAt: map[RewardKey.CREATEDAT] ?? Timestamp.now(),
       isFavourite: List<String>.from(map[RewardKey.ISFAVOURITE] ?? []), // Initialize the new field
       usedBy: Map<String, int>.from(map[RewardKey.USEDBY] ?? {}), // Initialize usedBy field
+      latLong: map[RewardKey.LATLONG], // Initialize latLong field
     );
   }
 
@@ -89,6 +93,7 @@ class RewardModel {
       RewardKey.CREATEDAT: createdAt ?? Timestamp.now(),
       RewardKey.ISFAVOURITE: isFavourite ?? [], // Include the new field
       RewardKey.USEDBY: usedBy ?? {}, // Include usedBy field
+      RewardKey.LATLONG: latLong, // Include latLong field
     };
   }
 }

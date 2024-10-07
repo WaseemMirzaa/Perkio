@@ -270,6 +270,12 @@ class _AddRewardsState extends State<AddRewards> {
                                 .toInt(),
                             uses: myController.counter.value,
                             pointsEarned: {},
+                            latLong:
+                                getDoubleAsync(SharedPrefKey.latitude) != null
+                                    ? GeoPoint(
+                                        getDoubleAsync(SharedPrefKey.latitude),
+                                        getDoubleAsync(SharedPrefKey.longitude))
+                                    : null,
                             usedBy: {},
                             pointsPerScan:
                                 controller.pps.value!, //passed the pps value

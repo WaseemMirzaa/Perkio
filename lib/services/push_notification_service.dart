@@ -1,11 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
@@ -17,7 +14,6 @@ import 'package:swipe_app/views/user/reward_detail.dart';
 
 class FCMManager {
   static String? fcmToken;
-
   static Future<String> getFCMToken() async {
     await FirebaseMessaging.instance.requestPermission();
     return await FirebaseMessaging.instance.getToken() ?? '';
@@ -76,7 +72,6 @@ class PushNotificationServices {
       if (message.data.isNotEmpty) {
         String notificationType = message.data['notificationType'];
         String docId = message.data['docId'];
-
         notificationsPlugin.show(
           1,
           message.notification?.title,
@@ -117,8 +112,6 @@ class PushNotificationServices {
           DealModel? dealModel =
               await dealService.fetchDealDataFromNotification(docId);
 
-          // Get.to(() =>
-          //     SingleView(isOtherUserPost: true, resultModel: resultModel));
           Get.to(
             () => DealDetail(
               deal: dealModel,
@@ -188,8 +181,6 @@ class PushNotificationServices {
             RewardModel? rewardModel =
                 await rewardService.fetchRewardDataFromNotification(docId);
 
-            // Get.to(() =>
-            //     SingleView(isOtherUserPost: true, resultModel: resultModel));
             Get.to(
               () => RewardDetail(
                 reward: rewardModel,

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:swipe_app/core/utils/app_utils/distance_calculations.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
@@ -47,27 +48,36 @@ class BusinessServices {
   Future<void> sendNotificationToAllUsersForDeals(DealModel dealModel) async {
     log('Fetching user documents to collect FCM tokens...');
 
+    GeoPoint? dealLocation = dealModel.longLat;
+
     // Fetch all user documents
     final snapshot = await _usersCollection.get();
     List<String> allTokens = [];
 
     // Loop through each user document and collect their FCM tokens
     for (var doc in snapshot.docs) {
-      // Check the role of the user
       String role = (doc.data() as Map<String, dynamic>)['role'] ?? '';
+      GeoPoint? userLocation = (doc.data() as Map<String, dynamic>)['latLong'];
 
-      // Log the user role
       log('User: ${doc.id}, Role: $role');
 
-      // Collect FCM tokens only if the role is 'user'
-      if (role == 'user') {
-        List<dynamic> tokens =
-            (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+      // Check if user role is 'user' and userLocation is not null
+      if (role == 'user' && userLocation != null && dealLocation != null) {
+        // Calculate the distance between user and deal location
+        double distance =
+            calculateDistancefordealandreward(dealLocation, userLocation);
 
-        // Log the collected tokens for each user
-        log('User: ${doc.id}, FCM Tokens: $tokens');
+        log('User: ${doc.id}, Distance from deal: ${distance.toStringAsFixed(2)} km');
 
-        allTokens.addAll(tokens.map((token) => token.toString()).toList());
+        // If distance is within 50km, collect FCM tokens
+        if (distance <= 50) {
+          List<dynamic> tokens =
+              (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+
+          log('User: ${doc.id}, FCM Tokens: $tokens');
+
+          allTokens.addAll(tokens.map((token) => token.toString()).toList());
+        }
       }
     }
 
@@ -341,6 +351,8 @@ class BusinessServices {
     final snapshot = await _usersCollection.get();
     List<String> allTokens = [];
 
+    GeoPoint? dealLocation = rewardModel.latLong;
+
     // Loop through each user document and collect their FCM tokens
     for (var doc in snapshot.docs) {
       // Check the role of the user
@@ -351,13 +363,27 @@ class BusinessServices {
 
       // Collect FCM tokens only if the role is 'user'
       if (role == 'user') {
-        List<dynamic> tokens =
-            (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+        GeoPoint? userLocation =
+            (doc.data() as Map<String, dynamic>)['latLong'];
 
-        // Log the collected tokens for each user
-        log('User: ${doc.id}, FCM Tokens: $tokens');
+        if (role == 'user' && userLocation != null && dealLocation != null) {
+          // Calculate the distance between user and deal location
+          double distance =
+              calculateDistancefordealandreward(dealLocation, userLocation);
 
-        allTokens.addAll(tokens.map((token) => token.toString()).toList());
+          log('User: ${doc.id}, Distance from deal: ${distance.toStringAsFixed(2)} km');
+
+          // If distance is within 50km, collect FCM tokens
+          if (distance <= 50) {
+            List<dynamic> tokens =
+                (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+
+            // Log the collected tokens for each user
+            log('User: ${doc.id}, FCM Tokens: $tokens');
+
+            allTokens.addAll(tokens.map((token) => token.toString()).toList());
+          }
+        }
       }
     }
 
@@ -389,5 +415,4 @@ class BusinessServices {
       log('No FCM tokens found to send notifications.');
     }
   }
-
 }

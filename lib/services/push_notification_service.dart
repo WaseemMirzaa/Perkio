@@ -11,6 +11,7 @@ import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/deals_service.dart';
 import 'package:swipe_app/services/reward_service.dart';
+import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/views/user/reward_detail.dart';
 
@@ -142,6 +143,19 @@ class PushNotificationServices {
         }
       }
 
+      //business side notifications
+      if (notificationType == 'dealUsed' && docId!.isNotEmpty) {
+        if (docId.isNotEmpty) {
+          Get.to(() => const NotificationsView());
+        }
+      }
+
+      if (notificationType == 'rewardUsed' && docId!.isNotEmpty) {
+        if (docId.isNotEmpty) {
+          Get.to(() => const NotificationsView());
+        }
+      }
+
       // if (notificationType == 'info' && docId != null) {
       //   int? id = int.tryParse(docId);
       //   Result? resultModel = await fetchPostByDocId(id!);
@@ -199,6 +213,19 @@ class PushNotificationServices {
             );
           }
         }
+
+        //business side notifications
+        if (notificationType == 'dealUsed' && docId.isNotEmpty) {
+          if (docId.isNotEmpty) {
+            Get.to(() => const NotificationsView());
+          }
+        }
+
+        if (notificationType == 'rewardUsed' && docId.isNotEmpty) {
+          if (docId.isNotEmpty) {
+            Get.to(() => const NotificationsView());
+          }
+        }
       }
     });
   }
@@ -238,7 +265,8 @@ Future<void> sendNotification(
       if (response.statusCode == 200) {
         print('🟡🟡🟡Notification sent');
       } else {
-        print('🔴🔴🔴Error sending notification: ${response.statusCode}');
+        print(
+            '🔴🔴🔴Error sending notification: ${response.statusCode}, body: ${response.body}');
         // MessageService.removeDeviceToken(uid, userToken);
       }
     } catch (e) {

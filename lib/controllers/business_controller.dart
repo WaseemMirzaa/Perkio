@@ -11,6 +11,9 @@ class BusinessController extends GetxController {
 
   RxBool loading = false.obs;
 
+
+  
+
   @override
   void onInit() {
     super.onInit();

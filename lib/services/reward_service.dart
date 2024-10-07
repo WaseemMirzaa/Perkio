@@ -5,13 +5,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/receipt_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/services/push_notification_service.dart';
 import 'package:uuid/uuid.dart';
 
 class RewardService {
   final CollectionReference _rewardCollection =
-      FirebaseFirestore.instance.collection('reward');
+      FirebaseFirestore.instance.collection(CollectionsKey.REWARDS);
+
+  final CollectionReference _usersCollection =
+      FirebaseFirestore.instance.collection(CollectionsKey.USERS);
 
   Stream<List<RewardModel>> getRewardStream() {
     return _rewardCollection.snapshots().map((snapshot) {
@@ -223,41 +228,121 @@ class RewardService {
   }
 
   Future<void> updateReceiptStatus(String rewardId) async {
+    // Get the current user ID
     String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) {
       throw Exception("User not authenticated");
     }
 
+    // Reference to the reward document
+    DocumentReference rewardRef = _firestore.collection('reward').doc(rewardId);
+    DocumentSnapshot rewardSnapshot = await rewardRef.get();
+    RewardModel rewardData;
+
+    if (rewardSnapshot.exists) {
+      rewardData = RewardModel.fromDocumentSnapshot(rewardSnapshot);
+    } else {
+      debugPrint("No reward found with ID: $rewardId");
+      return; // Exit if the reward doesn't exist
+    }
+
     try {
-      // Access the 'rewards' collection and find the document matching the passed rewardId
-      DocumentSnapshot rewardDoc =
-          await _firestore.collection('reward').doc(rewardId).get();
+      // Access the 'receipts' subcollection under the reward document
+      QuerySnapshot receiptsSnapshot =
+          await rewardRef.collection('receipts').get();
+      debugPrint(
+          "Fetched receipts for reward $rewardId: ${receiptsSnapshot.docs.length}"); // Log the number of receipts
 
-      // Check if the reward document exists
-      if (rewardDoc.exists) {
-        // Access the 'receipts' subcollection
-        QuerySnapshot receiptsSnapshot =
-            await rewardDoc.reference.collection('receipts').get();
-        debugPrint(
-            "Fetched receipts for reward $rewardId: ${receiptsSnapshot.docs.length}"); // Log the number of receipts per reward
+      for (var receiptDoc in receiptsSnapshot.docs) {
+        // Check if the document ID matches the current user UID
+        if (receiptDoc.id == userId) {
+          // Fetch the user's 'userName' from the 'users' collection
+          DocumentReference userRef =
+              _firestore.collection('users').doc(userId);
+          DocumentSnapshot userSnapshot = await userRef.get();
 
-        for (var receiptDoc in receiptsSnapshot.docs) {
-          // Check if the document ID matches the current user UID
-          if (receiptDoc.id == userId) {
-            // Update the isVerified field to false
+          if (userSnapshot.exists) {
+            String userName =
+                userSnapshot['userName']; // Fetch the 'userName' field
+            debugPrint('UserName for userId $userId is $userName');
+
+            // Send a notification using the user's name and reward data
+            await sendNotificationToAllUsersForDeals(rewardData, userName);
+
+            // Update the 'isVerified' field to false for the matched receipt
             await receiptDoc.reference.update({'isVerified': false});
             debugPrint(
-                "Updated receipt: ${receiptDoc.id} to isVerified: false for user: $userId"); // Log the update
+                "Receipt for user $userId under reward $rewardId updated");
+
             return; // Exit after updating the first matched receipt
+          } else {
+            debugPrint('No user found for userId: $userId');
           }
         }
-        debugPrint("No receipt found for user $userId under reward $rewardId");
-      } else {
-        debugPrint("No reward found with ID: $rewardId");
       }
+
+      // If no matching receipt is found
+      debugPrint("No receipt found for user $userId under reward $rewardId");
     } catch (e) {
-      debugPrint(
-          "Error updating receipt status: $e"); // Use debugPrint for errors
+      debugPrint("Error updating receipt status: $e");
+    }
+  }
+
+  Future<void> sendNotificationToAllUsersForDeals(
+      RewardModel rewardModel, String userName) async {
+    log('Fetching user documents to collect FCM tokens...');
+
+    // Fetch all user documents
+    final snapshot = await _usersCollection.get();
+    List<String> allTokens = [];
+
+    // Loop through each user document and collect their FCM tokens
+    for (var doc in snapshot.docs) {
+      // Check the role of the user
+      String role = (doc.data() as Map<String, dynamic>)['role'] ?? '';
+
+      // Log the user role
+      log('User: ${doc.id}, Role: $role');
+
+      // Collect FCM tokens only if the role is 'user'
+      if (role == 'business') {
+        List<dynamic> tokens =
+            (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
+
+        // Log the collected tokens for each user
+        log('User: ${doc.id}, FCM Tokens: $tokens');
+
+        allTokens.addAll(tokens.map((token) => token.toString()).toList());
+      }
+    }
+
+    log('💥💥💥💥💥Collected FCM tokens: $allTokens');
+
+    // Now send notification to all collected tokens
+    if (allTokens.isNotEmpty) {
+      log('💥💥💥💥💥Sending notification for new deal: ${rewardModel.rewardName} $userName users.');
+
+      try {
+        await sendNotification(
+          token: allTokens,
+          notificationType: 'rewardUsed',
+          title: '${rewardModel.rewardName} reward used by $userName',
+          msg: 'Please verify the reward redeemed by: $userName',
+          docId: rewardModel.rewardId!,
+          isGroup: false,
+          name: 'Deal Notification',
+          image: rewardModel.rewardLogo ??
+              '', // Use the deal model's image URL if available
+          memberIds: [], // Adjust this if you need to specify member IDs
+          uid:
+              '', // You can provide the UID of the user sending the deal if applicable
+        );
+        log('Notification sent successfully.');
+      } catch (e) {
+        log('Error sending notification: $e');
+      }
+    } else {
+      log('No FCM tokens found to send notifications.');
     }
   }
 }

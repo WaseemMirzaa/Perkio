@@ -70,6 +70,7 @@ class ConfirmRewardRedeemList extends StatelessWidget {
               child: ButtonWidget(
                 onSwipe: () async {
                   await rewardController.updateReceiptStatus(
+                    
                     rewardId,
                   );
                   // Logic to swipe to redeem

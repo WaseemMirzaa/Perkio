@@ -166,14 +166,6 @@ class DealDetail extends StatelessWidget {
               onSwipe: () async {
                 await controller.updateUsedBy(deal.dealId!);
 
-                Map<String, dynamic> dealData =
-                    await controller.fetchDealData(deal.dealId!);
-                Map<String, int> usedBy =
-                    Map<String, int>.from(dealData['usedBy'] ?? {});
-                int userCurrentUsage =
-                    usedBy[controller.currentUserId ?? ''] ?? 0;
-                int remainingUses = deal.uses! - userCurrentUsage - 1;
-
                 showCongratulationDialog(
                   onDone: () {
                     Navigator.pushAndRemoveUntil(

@@ -389,4 +389,5 @@ class BusinessServices {
       log('No FCM tokens found to send notifications.');
     }
   }
+
 }

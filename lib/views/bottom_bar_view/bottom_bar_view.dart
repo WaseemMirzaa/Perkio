@@ -13,6 +13,7 @@ import 'package:swipe_app/services/reward_service.dart';
 import 'package:swipe_app/views/business/home_business.dart';
 import 'package:swipe_app/views/business/home_business_extended.dart';
 import 'package:swipe_app/views/business/rewards_business.dart';
+import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/views/user/favourites.dart';
 import 'package:swipe_app/views/user/home_user.dart';
@@ -59,7 +60,6 @@ class _BottomBarViewState extends State<BottomBarView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _navigatetoScreen();
@@ -82,18 +82,32 @@ class _BottomBarViewState extends State<BottomBarView> {
     DealModel? dealModel =
         await dealService.fetchDealDataFromNotification(docId);
 
-    if (message.data['notificationType'] == 'newDeal') {
-      if (dealModel != null) {
-        Get.to(() => DealDetail(deal: dealModel));
-      } else {
-        print('Failed to fetch deal model for docId: $docId');
+    // Check if the user is a regular user or a business user
+    if (widget.isUser) {
+      // Logic for regular user (when isUser is true)
+      if (message.data['notificationType'] == 'newDeal') {
+        if (dealModel != null) {
+          Get.to(() => DealDetail(deal: dealModel));
+        } else {
+          print('Failed to fetch deal model for docId: $docId');
+        }
       }
-    }
-    if (message.data['notificationType'] == 'newReward') {
-      if (rewardModel != null) {
-        Get.to(() => RewardDetail(reward: rewardModel));
-      } else {
-        print('Failed to fetch reward model for docId: $docId');
+
+      if (message.data['notificationType'] == 'newReward') {
+        if (rewardModel != null) {
+          Get.to(() => RewardDetail(reward: rewardModel));
+        } else {
+          print('Failed to fetch reward model for docId: $docId');
+        }
+      }
+    } else {
+      // Logic for business user (when isUser is false)
+      if (message.data['notificationType'] == 'dealUsed') {
+        Get.to(() => const NotificationsView());
+      }
+
+      if (message.data['notificationType'] == 'rewardUsed') {
+        Get.to(() => const NotificationsView());
       }
     }
   }

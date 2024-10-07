@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
+import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/app_utils/GeoLocationHelper.dart';
@@ -24,6 +25,7 @@ import '../../core/utils/constants/app_assets.dart';
 
 final homeController = Get.put(HomeController(HomeServices()));
 final userController = Get.put(UserController(UserServices()));
+final notificationController = Get.put(NotificationController());
 
 Widget customAppBar({
   String? userName,
@@ -155,10 +157,36 @@ Widget customAppBar({
                           onTap: () {
                             Get.to(() => const NotificationsView());
                           },
-                          child: Image.asset(
-                            AppAssets.notificationImg,
-                            scale: 3.5,
-                          ))
+                          child: Obx(() {
+                            return Stack(
+                              children: [
+                                Image.asset(
+                                  AppAssets.notificationImg,
+                                  scale: 3.5,
+                                ),
+                                // Display unread count badge if greater than 0
+                                if (notificationController
+                                        .unreadUserNotificationCount.value >
+                                    0)
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: CircleAvatar(
+                                      radius: 8,
+                                      backgroundColor: Colors.red,
+                                      child: Text(
+                                        '${notificationController.unreadUserNotificationCount.value}',
+                                        style: const TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }),
+                        )
                       : const SizedBox.shrink(),
                 ],
               ),

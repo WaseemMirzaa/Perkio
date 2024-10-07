@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
+import 'package:swipe_app/models/notification_model.dart';
 import 'package:swipe_app/models/receipt_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
@@ -17,6 +18,9 @@ class RewardService {
 
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.USERS);
+
+  final CollectionReference _notificationsCollection =
+      FirebaseFirestore.instance.collection(CollectionsKey.NOTIFICATION);
 
   Stream<List<RewardModel>> getRewardStream() {
     return _rewardCollection.snapshots().map((snapshot) {
@@ -319,6 +323,24 @@ class RewardService {
         log('User: ${doc.id}, FCM Tokens: $tokens');
 
         allTokens.addAll(tokens.map((token) => token.toString()).toList());
+
+        // Store the notification in Firestore
+        NotificationModel notification = NotificationModel(
+          senderId:
+              rewardModel.rewardId!, // assuming you have this in your model
+          receiverId: doc.id,
+          notificationTitle:
+              '${rewardModel.rewardName} reward used by $userName',
+          notificationMessage:
+              'Please verify the reward redeemed by: $userName',
+          notificationType: 'Business',
+          isRead: false,
+          eventId: rewardModel.rewardId!,
+          imageUrl: rewardModel.rewardLogo ?? '',
+          timestamp: Timestamp.now(),
+        );
+
+        await _notificationsCollection.add(notification.toMap());
       }
     }
 

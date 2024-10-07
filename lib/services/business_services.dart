@@ -6,6 +6,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/app_utils/distance_calculations.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/deal_model.dart';
+import 'package:swipe_app/models/notification_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
 
@@ -17,6 +18,8 @@ class BusinessServices {
       FirebaseFirestore.instance.collection(CollectionsKey.REWARDS);
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.USERS);
+  final CollectionReference _notificationsCollection =
+      FirebaseFirestore.instance.collection(CollectionsKey.NOTIFICATION);
 
   final db = FirebaseFirestore.instance;
 
@@ -73,10 +76,25 @@ class BusinessServices {
         if (distance <= 50) {
           List<dynamic> tokens =
               (doc.data() as Map<String, dynamic>)['fcmTokens'] ?? [];
-
           log('User: ${doc.id}, FCM Tokens: $tokens');
-
           allTokens.addAll(tokens.map((token) => token.toString()).toList());
+
+          // Store the notification in Firestore
+          NotificationModel notification = NotificationModel(
+            senderId:
+                dealModel.businessId, // assuming you have this in your model
+            receiverId: doc.id,
+            notificationTitle: 'New Deal Added by ${dealModel.companyName}!',
+            notificationMessage:
+                'Check out our latest deal: ${dealModel.dealName}',
+            notificationType: 'User',
+            eventId: dealModel.dealId,
+            isRead: false,
+            imageUrl: dealModel.image ?? '',
+            timestamp: Timestamp.now(),
+          );
+
+          await _notificationsCollection.add(notification.toMap());
         }
       }
     }
@@ -96,11 +114,9 @@ class BusinessServices {
           docId: dealModel.dealId!,
           isGroup: false,
           name: 'Deal Notification',
-          image: dealModel.image ??
-              '', // Use the deal model's image URL if available
-          memberIds: [], // Adjust this if you need to specify member IDs
-          uid:
-              '', // You can provide the UID of the user sending the deal if applicable
+          image: dealModel.image ?? '',
+          memberIds: [],
+          uid: '',
         );
         log('Notification sent successfully.');
       } catch (e) {
@@ -382,6 +398,24 @@ class BusinessServices {
             log('User: ${doc.id}, FCM Tokens: $tokens');
 
             allTokens.addAll(tokens.map((token) => token.toString()).toList());
+
+            // Store the notification in Firestore
+            NotificationModel notification = NotificationModel(
+              senderId: rewardModel
+                  .businessId, // assuming you have this in your model
+              receiverId: doc.id,
+              notificationTitle:
+                  'New Reward Added by ${rewardModel.companyName}!',
+              notificationMessage:
+                  'Check out our latest Reward: ${rewardModel.rewardName}',
+              notificationType: 'User',
+              isRead: false,
+              eventId: rewardModel.rewardId,
+              imageUrl: rewardModel.rewardLogo ?? '',
+              timestamp: Timestamp.now(),
+            );
+
+            await _notificationsCollection.add(notification.toMap());
           }
         }
       }

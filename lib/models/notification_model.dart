@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 
-class NotificationModel{
+class NotificationModel {
   final String? notificationId;
   final String? senderId;
   final String? receiverId;
@@ -10,10 +10,23 @@ class NotificationModel{
   final String? notificationType;
   final String? eventId;
   final Timestamp? timestamp;
+  final String? imageUrl; // Optional image parameter
+  final bool isRead; // Optional isRead parameter
 
-  NotificationModel({this.notificationId, this.senderId, this.receiverId, this.notificationTitle, this.notificationMessage, this.notificationType, this.eventId, this.timestamp});
+  NotificationModel({
+    this.notificationId,
+    this.senderId,
+    this.receiverId,
+    this.notificationTitle,
+    this.notificationMessage,
+    this.notificationType,
+    this.eventId,
+    this.timestamp,
+    this.imageUrl, // Include image parameter in constructor
+    this.isRead = false, // Default isRead to false
+  });
 
-  factory NotificationModel.fromDocumentSnapshot(DocumentSnapshot snapshot){
+  factory NotificationModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return NotificationModel(
       notificationId: snapshot.id,
@@ -24,9 +37,13 @@ class NotificationModel{
       notificationType: data[NotificationKey.NOTIFICATIONTYPE] ?? '',
       eventId: data[NotificationKey.EVENTID] ?? '',
       timestamp: data[NotificationKey.TIMESTAMP] ?? Timestamp.now(),
+      imageUrl: data[NotificationKey.IMAGE], // Retrieve image URL from data
+      isRead: data[NotificationKey.ISREAD] ??
+          false, // Retrieve isRead status, default to false
     );
   }
-  factory NotificationModel.fromMap(Map<String, dynamic> map){
+
+  factory NotificationModel.fromMap(Map<String, dynamic> map) {
     return NotificationModel(
       notificationId: map[NotificationKey.NOTIFICATIONID] ?? '',
       senderId: map[NotificationKey.SENDERID] ?? '',
@@ -36,6 +53,9 @@ class NotificationModel{
       notificationType: map[NotificationKey.NOTIFICATIONTYPE] ?? '',
       eventId: map[NotificationKey.EVENTID] ?? '',
       timestamp: map[NotificationKey.TIMESTAMP] ?? Timestamp.now(),
+      imageUrl: map[NotificationKey.IMAGE], // Retrieve image URL from map
+      isRead: map[NotificationKey.ISREAD] ??
+          false, // Retrieve isRead status, default to false
     );
   }
 
@@ -49,7 +69,8 @@ class NotificationModel{
       NotificationKey.NOTIFICATIONTYPE: notificationType ?? '',
       NotificationKey.EVENTID: eventId ?? '',
       NotificationKey.TIMESTAMP: timestamp ?? Timestamp.now(),
+      NotificationKey.IMAGE: imageUrl, // Add image URL to map
+      NotificationKey.ISREAD: isRead, // Add isRead status to map
     };
   }
-
 }

@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/business_controller.dart';
+import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/app_utils/GeoLocationHelper.dart';
@@ -32,7 +33,7 @@ import 'package:swipe_app/widgets/primary_layout_widget/primary_layout.dart';
 import '../../widgets/custom_appBar/custom_appBar.dart';
 
 class HomeBusiness extends StatefulWidget {
-  HomeBusiness({super.key});
+  const HomeBusiness({super.key});
 
   @override
   State<HomeBusiness> createState() => _HomeBusinessState();
@@ -41,6 +42,8 @@ class HomeBusiness extends StatefulWidget {
 class _HomeBusinessState extends State<HomeBusiness> {
   final businessController = Get.put(BusinessController(BusinessServices()));
   final userController = Get.put(UserController(UserServices()));
+  final notificationController =
+      Get.put(NotificationController()); // Initialize NotificationController
 
   String searchQuery = '';
   final searchController = TextEditingController();
@@ -48,7 +51,6 @@ class _HomeBusinessState extends State<HomeBusiness> {
   @override
   Widget build(BuildContext context) {
     return PrimaryLayoutWidget(
-
       header: SizedBox(
         height: 25.h,
         child: Padding(
@@ -56,78 +58,171 @@ class _HomeBusinessState extends State<HomeBusiness> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Image.asset(AppAssets.header,width: 100.w,height: 100.h,fit: BoxFit.fill,),
+              Image.asset(
+                AppAssets.header,
+                width: 100.w,
+                height: 100.h,
+                fit: BoxFit.fill,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(children: [
-                      CircleAvatar(radius: 20.sp,
-                        backgroundImage: !getStringAsync(SharedPrefKey.photo).isEmptyOrNull ? NetworkImage(getStringAsync(SharedPrefKey.photo)) : AssetImage( AppAssets.profileImg),
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(child:  Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children: [
-                        Text(getStringAsync(SharedPrefKey.userName), style: poppinsRegular(fontSize: 13.sp),),
-                        GestureDetector(onTap: ()async {
-                          AddressModel address = await Navigator.push(context, MaterialPageRoute(builder: (context)=> PlacesPick(currentLocation: LatLng(getDoubleAsync(SharedPrefKey.latitude),
-                                  getDoubleAsync(SharedPrefKey.longitude)),)));
-
-                          print("Address is \n\n\n ${address.latitude}");
-                          if (address != null) {
-                            final add = await GeoLocationHelper.getCityFromGeoPoint(
-                                GeoPoint(address.latitude!, address.longitude!));
-                            await setValue(SharedPrefKey.address, add);
-                            await setValue(SharedPrefKey.latitude, address.latitude);
-                            await setValue(SharedPrefKey.longitude, address.longitude);
-                            await homeController.updateCollection(
-                                getStringAsync(SharedPrefKey.uid), CollectionsKey.USERS,
-                                {
-                                  UserKey.LATLONG: GeoPoint(getDoubleAsync(SharedPrefKey.latitude),
-                                      getDoubleAsync(SharedPrefKey.longitude))
-                                }).then((value){
-                                  setState(() {
-                                    print("Rebuild");
-
-                                  });
-                            });
-                          }else{
-                            toast("Not updated");
-                          }
-                        }
-                          ,
-                          child: Row(
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20.sp,
+                          backgroundImage:
+                              !getStringAsync(SharedPrefKey.photo).isEmptyOrNull
+                                  ? NetworkImage(
+                                      getStringAsync(SharedPrefKey.photo))
+                                  : const AssetImage(AppAssets.profileImg),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              FutureBuilder(future: GeoLocationHelper.getCityFromGeoPoint(AppStatics.geoPoint ?? GeoPoint(getDoubleAsync(SharedPrefKey.latitude), getDoubleAsync(SharedPrefKey.longitude))),
-                                  builder: (context, snapshot) {
-                                    if(snapshot.connectionState == ConnectionState.waiting){
-                                      return Text("Loading...",style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),);
-                                    }
-                                    return Text(snapshot.data ?? 'Loading...',
-                                      style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),);
-                                  }
+                              Text(
+                                getStringAsync(SharedPrefKey.userName),
+                                style: poppinsRegular(fontSize: 13.sp),
                               ),
-                              const SizedBox(width: 12,),
-                              Text('Change Location',style: poppinsRegular(fontSize: 8,color: AppColors.blueColor),)
+                              GestureDetector(
+                                onTap: () async {
+                                  AddressModel address = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PlacesPick(
+                                                currentLocation: LatLng(
+                                                    getDoubleAsync(
+                                                        SharedPrefKey.latitude),
+                                                    getDoubleAsync(SharedPrefKey
+                                                        .longitude)),
+                                              )));
+
+                                  print(
+                                      "Address is \n\n\n ${address.latitude}");
+                                  final add = await GeoLocationHelper
+                                      .getCityFromGeoPoint(GeoPoint(
+                                          address.latitude!,
+                                          address.longitude!));
+                                  await setValue(SharedPrefKey.address, add);
+                                  await setValue(
+                                      SharedPrefKey.latitude, address.latitude);
+                                  await setValue(SharedPrefKey.longitude,
+                                      address.longitude);
+                                  await homeController.updateCollection(
+                                      getStringAsync(SharedPrefKey.uid),
+                                      CollectionsKey.USERS, {
+                                    UserKey.LATLONG: GeoPoint(
+                                        getDoubleAsync(SharedPrefKey.latitude),
+                                        getDoubleAsync(SharedPrefKey.longitude))
+                                  }).then((value) {
+                                    setState(() {
+                                      print("Rebuild");
+                                    });
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    FutureBuilder(
+                                        future: GeoLocationHelper
+                                            .getCityFromGeoPoint(AppStatics
+                                                    .geoPoint ??
+                                                GeoPoint(
+                                                    getDoubleAsync(
+                                                        SharedPrefKey.latitude),
+                                                    getDoubleAsync(SharedPrefKey
+                                                        .longitude))),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Text(
+                                              "Loading...",
+                                              style: poppinsRegular(
+                                                  fontSize: 10.sp,
+                                                  color: AppColors.hintText),
+                                            );
+                                          }
+                                          return Text(
+                                            snapshot.data ?? 'Loading...',
+                                            style: poppinsRegular(
+                                                fontSize: 10.sp,
+                                                color: AppColors.hintText),
+                                          );
+                                        }),
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Text(
+                                      'Change Location',
+                                      style: poppinsRegular(
+                                          fontSize: 8,
+                                          color: AppColors.blueColor),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ],),),
-
-                      GestureDetector(
-                          onTap: (){
-                            Get.to(()=> const NotificationsView());
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => const NotificationsView());
                           },
-                          child: Image.asset(AppAssets.notificationImg, scale: 3.5,)),
-                    ],
+                          child: Obx(() {
+                            return Stack(
+                              children: [
+                                Image.asset(
+                                  AppAssets.notificationImg,
+                                  scale: 3.5,
+                                ),
+                                // Display unread count badge if greater than 0
+                                if (notificationController
+                                        .unreadBusinessNotificationCount.value >
+                                    0)
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: CircleAvatar(
+                                      radius: 8,
+                                      backgroundColor: Colors.red,
+                                      child: Text(
+                                        '${notificationController.unreadBusinessNotificationCount.value}',
+                                        style: const TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }),
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: TextFieldWidget(text: 'Search', textController: searchController,prefixIcon: const Icon(Icons.search,color: AppColors.hintText,),onChanged: (value){
+                      child: TextFieldWidget(
+                        text: 'Search',
+                        textController: searchController,
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: AppColors.hintText,
+                        ),
+                        onChanged: (value) {
                           setState(() {
                             searchQuery = value;
                           });
-                        },onTap: (){}, isReadOnly: false, ),
+                        },
+                        onTap: () {},
+                        isReadOnly: false,
+                      ),
                     ),
                   ],
                 ),
@@ -136,78 +231,93 @@ class _HomeBusinessState extends State<HomeBusiness> {
           ),
         ),
       ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(height: 25.h,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(TempLanguage.lblMyDeals, style: poppinsMedium(fontSize: 18),),
-                    StreamBuilder<UserModel?>(
-                      stream: userController.getUserByStream(getStringAsync(SharedPrefKey.uid)),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 25.h,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    TempLanguage.lblMyDeals,
+                    style: poppinsMedium(fontSize: 18),
+                  ),
+                  StreamBuilder<UserModel?>(
+                      stream: userController
+                          .getUserByStream(getStringAsync(SharedPrefKey.uid)),
                       builder: (context, snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const SizedBox.shrink();
-                        }else if(!snapshot.hasData){
+                        } else if (!snapshot.hasData) {
                           return const SizedBox.shrink();
-                        }else{
-                        return Text("${snapshot.data!.balance}\$ Remaining");}
-                      }
-                    )
-                  ],
-                ),
+                        } else {
+                          return Text("${snapshot.data!.balance}\$ Remaining");
+                        }
+                      })
+                ],
               ),
-              SizedBox(height: 1.h,),
-              StreamBuilder<List<DealModel>>(
-                stream: businessController.getMyDeals(getStringAsync(SharedPrefKey.uid),searchQuery: searchQuery),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: circularProgressBar());
-                  }
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            StreamBuilder<List<DealModel>>(
+              stream: businessController.getMyDeals(
+                  getStringAsync(SharedPrefKey.uid),
+                  searchQuery: searchQuery),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: circularProgressBar());
+                }
 
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
 
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No deals available'));
-                  }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No deals available'));
+                }
 
-                  final deals = snapshot.data!;
+                final deals = snapshot.data!;
 
-                  return ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: deals.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final deal = deals[index];
-                      return BusinessHomeListItems(dealModel: deal,);
-                    },
-                  );
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: deals.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final deal = deals[index];
+                    return BusinessHomeListItems(
+                      dealModel: deal,
+                    );
+                  },
+                );
+              },
+            ),
+            SpacerBoxVertical(height: 10.h),
+          ],
+        ),
+      ),
+      footer: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ButtonWidget(
+                onSwipe: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddDeals()));
                 },
-              ),
-              SpacerBoxVertical(height: 10.h),
-            ],
-          ),
+                text: TempLanguage.btnLblSwipeToAddDeal),
+          ],
         ),
-        footer: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ButtonWidget(onSwipe: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> AddDeals()));
-              }, text: TempLanguage.btnLblSwipeToAddDeal),
-            ],
-          ),
-        ),
+      ),
     );
-
   }
 }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/deal_model.dart';
+import 'package:swipe_app/models/notification_model.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
 
 class DealService {
@@ -10,6 +11,9 @@ class DealService {
 
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.USERS);
+
+  final CollectionReference _notificationsCollection =
+      FirebaseFirestore.instance.collection(CollectionsKey.NOTIFICATION);
 
   // Fetch deals based on the businessId
   Future<List<DealModel>> fetchDeals(String businessId) async {
@@ -130,6 +134,21 @@ class DealService {
         log('User: ${doc.id}, FCM Tokens: $tokens');
 
         allTokens.addAll(tokens.map((token) => token.toString()).toList());
+
+        // Store the notification in Firestore
+        NotificationModel notification = NotificationModel(
+          senderId: dealModel.dealId!, // assuming you have this in your model
+          receiverId: doc.id,
+          notificationTitle: '${dealModel.dealName} deal used by $userName',
+          notificationMessage: 'Check out the redeemed deal by: $userName',
+          notificationType: 'Business',
+          eventId: dealModel.dealId!,
+          imageUrl: dealModel.image ?? '',
+          isRead: false,
+          timestamp: Timestamp.now(),
+        );
+
+        await _notificationsCollection.add(notification.toMap());
       }
     }
 

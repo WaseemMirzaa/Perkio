@@ -22,6 +22,6 @@ class MyBinding implements Bindings {
     Get.lazyPut(() => UserController(UserServices()), fenix: true);
     Get.lazyPut(() => BusinessController(BusinessServices()), fenix: true);
     Get.lazyPut(() => HomeController(HomeServices()), fenix: true);
-    Get.lazyPut(() => NotificationController(NotificationServices()), fenix: true);
+    Get.lazyPut(() => NotificationController(), fenix: true);
   }
 }

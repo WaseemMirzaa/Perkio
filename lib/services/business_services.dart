@@ -8,6 +8,7 @@ import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/notification_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
+import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
 
 class BusinessServices {
@@ -27,14 +28,23 @@ class BusinessServices {
 
   //............ Add Deal
   Future<bool> addDeal(DealModel dealModel) async {
+    double? rating = await fetchBusinessRating(dealModel.businessId!);
+    if (rating != null) {
+      print('Business Rating: $rating');
+    } else {
+      print('Rating not found.');
+    }
+
     List<String> nameSearchParams =
         setSearchParam(dealModel.dealName!.toLowerCase());
     dealModel.dealParams = nameSearchParams;
     print("MODEL DATA IS: ${dealModel.dealParams}");
+    print("💥💥💥💥💥💥 rating is : $rating");
     try {
       final docRef = _dealCollection.doc();
       final dealId = docRef.id;
       dealModel.dealId = dealId;
+      dealModel.businessRating = rating;
       await docRef.set(dealModel.toMap());
 
       // Send notification to all users after the deal is added
@@ -46,6 +56,61 @@ class BusinessServices {
       if (e.message != null) print(e.message!);
       return false;
     }
+  }
+
+  Future<double?> fetchBusinessRating(String businessId) async {
+    log('💨💨💨Fetching business rating for businessId: $businessId');
+
+    try {
+      // Get the document for the specified businessId
+      DocumentSnapshot snapshot = await _usersCollection.doc(businessId).get();
+
+      if (snapshot.exists) {
+        print('Business document found. Creating UserModel...');
+
+        // Create UserModel from the main document
+        UserModel userModel = UserModel.fromDocumentSnapshot(snapshot);
+        print('UserModel created: ${userModel.toJson()}');
+
+        // Fetch the subcollection 'business_details'
+        print('Fetching business_details subcollection...');
+        QuerySnapshot subCollectionSnapshot = await _usersCollection
+            .doc(businessId)
+            .collection('business_details')
+            .get();
+
+        // Check if subcollection has documents
+        if (subCollectionSnapshot.docs.isNotEmpty) {
+          print('Subcollection document found. Fetching rating...');
+
+          // Get the first document's data for rating
+          Map<String, dynamic> businessDetailsData =
+              subCollectionSnapshot.docs[0].data() as Map<String, dynamic>;
+          print('Business details data fetched: $businessDetailsData');
+
+          // Extract the rating from the 'result' map
+          if (businessDetailsData.containsKey('result')) {
+            Map<String, dynamic> resultData =
+                businessDetailsData['result'] as Map<String, dynamic>;
+            double rating = resultData['rating']?.toDouble() ?? 0.0;
+
+            // Update the UserModel's rating field
+            userModel.updateRating(rating);
+            print('UserModel updated with rating: ${userModel.rating}');
+            return rating; // Return the fetched rating
+          } else {
+            print('No result data found in business_details subcollection.');
+          }
+        } else {
+          print('No documents found in business_details subcollection.');
+        }
+      } else {
+        print('No user document found for businessId: $businessId');
+      }
+    } catch (e) {
+      print('Error fetching business rating: $e');
+    }
+    return null; // Return null if the rating couldn't be fetched
   }
 
   Future<void> sendNotificationToAllUsersForDeals(DealModel dealModel) async {

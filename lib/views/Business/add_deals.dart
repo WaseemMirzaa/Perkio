@@ -235,6 +235,7 @@ class AddDeals extends StatelessWidget {
                               isPromotionStar: false);
                           print(dealModel.longLat);
                           print(dealModel.uses.toString());
+                          log(dealModel.businessId!);
                           await controller.addDeal(dealModel).then((value) {
                             myController.clearTextFields();
                             homeController.setImageNull();

@@ -59,12 +59,12 @@ class _HomeUserState extends State<HomeUser> {
     double userLat = getDoubleAsync(SharedPrefKey.latitude);
     double userLon = getDoubleAsync(SharedPrefKey.longitude);
 
-    // Filter deals within 10km
+    // Filter deals within 50km
     deals = deals.where((deal) {
       double distance = calculateDistance(
           userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
 
-      // Only include deals within 10km
+      // Only include deals within 50km
       return distance <= 50.0;
     }).toList();
 
@@ -212,6 +212,7 @@ class _HomeUserState extends State<HomeUser> {
                     uses: deal.uses.toString(),
                     isFeatured: deal.isPromotionStar!,
                     image: deal.image ?? '',
+                    businessRating: deal.businessRating ?? 0.0,
                     location: deal.location ?? '',
                   ),
                 );
@@ -258,6 +259,7 @@ class _HomeUserState extends State<HomeUser> {
                             dealName: deal.dealName ?? '',
                             restaurantName: deal.companyName ?? '',
                             uses: deal.uses.toString(),
+                            businessRating: deal.businessRating ?? 0.0,
                             isFeatured: deal.isPromotionStar!,
                             image: deal.image ?? '',
                             location: deal.location ?? '',
@@ -300,6 +302,7 @@ class _HomeUserState extends State<HomeUser> {
                   child: AvailableListItems(
                     dealId: deal.dealId ?? '',
                     dealName: deal.dealName ?? '',
+                    businessRating: deal.businessRating ?? 0.0,
                     restaurantName: deal.companyName ?? '',
                     uses: deal.uses.toString(),
                     isFeatured: deal.isPromotionStar!,

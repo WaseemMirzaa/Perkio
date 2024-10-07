@@ -17,7 +17,8 @@ class DealModel {
   List<String>? favourites;
   List<String>? dealParams;
   Timestamp? createdAt;
-  Map<String, int>? usedBy; // Add this line
+  Map<String, int>? usedBy;
+  double? businessRating; // Add this line
 
   DealModel({
     this.businessId,
@@ -35,7 +36,8 @@ class DealModel {
     this.favourites,
     this.createdAt,
     this.dealParams,
-    this.usedBy, // Add this
+    this.usedBy,
+    this.businessRating, // Add this
   });
 
   factory DealModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -56,7 +58,8 @@ class DealModel {
       favourites: data[DealKey.FAVOURITES] != null ? List<String>.from(data[DealKey.FAVOURITES]) : [],
       dealParams: data[DealKey.DEALPARAMS] != null ? List<String>.from(data[DealKey.DEALPARAMS]) : [],
       createdAt: data[DealKey.CREATEDAT] ?? Timestamp.now(),
-      usedBy: data['usedBy'] != null ? Map<String, int>.from(data['usedBy']) : {}, // Add this
+      usedBy: data['usedBy'] != null ? Map<String, int>.from(data['usedBy']) : {},
+      businessRating: data['businessRating']?.toDouble(), // Handle businessRating
     );
   }
 
@@ -77,7 +80,8 @@ class DealModel {
       favourites: map[DealKey.FAVOURITES] != null ? List<String>.from(map[DealKey.FAVOURITES]) : [],
       dealParams: map[DealKey.DEALPARAMS] != null ? List<String>.from(map[DealKey.DEALPARAMS]) : [],
       createdAt: map[DealKey.CREATEDAT] ?? Timestamp.now(),
-      usedBy: map['usedBy'] != null ? Map<String, int>.from(map['usedBy']) : {}, // Add this
+      usedBy: map['usedBy'] != null ? Map<String, int>.from(map['usedBy']) : {},
+      businessRating: map['businessRating']?.toDouble(), // Handle businessRating
     );
   }
 
@@ -97,7 +101,8 @@ class DealModel {
       DealKey.FAVOURITES: favourites ?? [],
       DealKey.DEALPARAMS: dealParams ?? [],
       DealKey.CREATEDAT: createdAt ?? Timestamp.now(),
-      'usedBy': usedBy ?? {}, // Add this
+      'usedBy': usedBy ?? {},
+      'businessRating': businessRating ?? null, // Include businessRating
     };
 
     if (longLat != null) map[DealKey.LATLONG] = longLat!;

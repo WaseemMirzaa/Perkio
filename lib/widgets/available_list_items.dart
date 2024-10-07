@@ -17,6 +17,7 @@ class AvailableListItems extends StatelessWidget {
   final String location;
   final bool isFeatured;
   final String image;
+  final double businessRating;
 
   const AvailableListItems({
     super.key,
@@ -28,6 +29,7 @@ class AvailableListItems extends StatelessWidget {
     this.image = '',
     this.location = '4773 Waldeck Street, US',
     this.isFeatured = true,
+    required this.businessRating,
   });
 
   @override
@@ -139,15 +141,11 @@ class AvailableListItems extends StatelessWidget {
                         size: 15,
                       ),
                       Text(
-                        '4.4',
+                        businessRating.toString(),
                         style: poppinsRegular(
                             fontSize: 10.sp, color: AppColors.yellowColor),
                       ),
-                      Text(
-                        '15K',
-                        style: poppinsRegular(
-                            fontSize: 10.sp, color: AppColors.yellowColor),
-                      )
+                     
                     ],
                   ),
                   const SpacerBoxVertical(height: 5),

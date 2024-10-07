@@ -72,5 +72,6 @@ void showCongratulationDialog(
         ),
       ),
     ),
+    barrierDismissible: false, // Prevent dismissing by tapping outside
   );
 }

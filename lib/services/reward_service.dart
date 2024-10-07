@@ -293,6 +293,49 @@ class RewardService {
     }
   }
 
+
+  Future<bool?> checkReceiptIsVerified(String rewardId) async {
+  // Get the current user ID
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+  if (userId == null) {
+    throw Exception("User not authenticated");
+  }
+
+  // Reference to the reward document
+  DocumentReference rewardRef = _firestore.collection('reward').doc(rewardId);
+  
+  try {
+    // Access the 'receipts' subcollection under the reward document
+    QuerySnapshot receiptsSnapshot = await rewardRef.collection('receipts').get();
+
+    // Check if there are any receipts
+    if (receiptsSnapshot.docs.isEmpty) {
+      debugPrint("No receipts found for reward $rewardId");
+      return null; // No receipts found
+    }
+
+    for (var receiptDoc in receiptsSnapshot.docs) {
+      // Check if the document ID matches the current user UID
+      if (receiptDoc.id == userId) {
+        // Fetch the 'isVerified' field
+        bool? isVerified = receiptDoc['isVerified'];
+        
+        // Log and return the verification status
+        debugPrint("Receipt for user $userId under reward $rewardId has isVerified: $isVerified");
+        return isVerified; // Return the verification status
+      }
+    }
+
+    // If no matching receipt is found
+    debugPrint("No receipt found for user $userId under reward $rewardId");
+    return null; // Return null if no matching receipt is found
+  } catch (e) {
+    debugPrint("Error checking receipt verification status: $e");
+    return null; // Return null in case of error
+  }
+}
+
+
   Future<void> sendNotificationToAllBusinessUsersForRewards(
       RewardModel rewardModel, String userName) async {
     log('Fetching user documents to collect FCM tokens...');

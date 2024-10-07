@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/user/reward_list_confirmation.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
@@ -157,43 +161,50 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                               rewardModel.rewardId!,
                             );
 
-                            // Extract images from the fetched receipts
+                            // Check if the receipt is verified
+                            final isVerified =
+                                await _rewardController.checkIfReceiptVerified(
+                              rewardModel.rewardId!,
+                            );
+
+                            // If isVerified is false, don't go further
+                            if (isVerified == false) {
+                              Get.snackbar(
+                                "Verification Pending",
+                                "Your receipt is pending verification, please wait until it is verified.",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.redAccent,
+                                colorText: Colors.white,
+                              );
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LocationService(
+                                    child: BottomBarView(
+                                      isUser:
+                                          getStringAsync(SharedPrefKey.role) ==
+                                              SharedPrefKey.user,
+                                    ),
+                                  ),
+                                ),
+                                (route) => false,
+                              );
+                              return; // Exit the function
+                            }
+
+                            // If isVerified is null, proceed with reward redemption
                             List<dynamic> images = _rewardController
                                 .userReceipts
                                 .expand((receipt) => receipt.imageUrls ?? [])
                                 .toList();
 
+                            // Navigate to ConfirmRewardRedeemList
                             Get.to(() => ConfirmRewardRedeemList(
                                   rewardId: rewardModel.rewardId!,
                                   businessName: rewardModel.companyName!,
                                   rewardName: rewardModel.rewardName!,
                                   rewardImages: [...images],
                                 ));
-
-                            // await _rewardController.updateRewardUsage(
-                            //   widget.rewardId!,
-                            //   widget.userId!,
-                            // );
-
-                            // // Show the congratulation dialog
-                            // showCongratulationDialog(
-                            //   onDone: () {
-                            //     Navigator.pushAndRemoveUntil(
-                            //       context,
-                            //       MaterialPageRoute(
-                            //         builder: (context) => LocationService(
-                            //           child: BottomBarView(
-                            //             isUser: getStringAsync(
-                            //                     SharedPrefKey.role) ==
-                            //                 SharedPrefKey.user,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       (route) => false,
-                            //     );
-                            //   },
-                            //   message: 'reward',
-                            // );
                           },
                           text: TempLanguage.btnLblSwipeToRedeem,
                         ),

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -286,6 +287,29 @@ class RewardController extends GetxController {
       await _rewardService.updateReceiptStatus(rewardId);
     } catch (e) {
       Get.snackbar("Error", e.toString());
+    }
+  }
+
+  Future<bool?> checkIfReceiptVerified(String rewardId) async {
+    try {
+      bool? isVerified = await _rewardService.checkReceiptIsVerified(rewardId);
+
+      if (isVerified == true) {
+        // Receipt is verified
+        debugPrint('Receipt is verified.');
+        return true;
+      } else if (isVerified == false) {
+        // Receipt is not verified
+        debugPrint('Receipt is not verified.');
+        return false;
+      } else {
+        // No receipt found or some other issue
+        debugPrint('No receipt found for this user.');
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Error checking receipt verification status: $e");
+      return null; // Return null in case of an error
     }
   }
 }

@@ -9,10 +9,11 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
+import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/congratulation_dialog.dart';
 
-class ConfirmRewardRedeemList extends StatelessWidget {
+class ConfirmRewardRedeemList extends StatefulWidget {
   final String businessName;
   final String rewardId;
   final String rewardName;
@@ -26,78 +27,108 @@ class ConfirmRewardRedeemList extends StatelessWidget {
       required this.rewardId});
 
   @override
+  _ConfirmRewardRedeemListState createState() =>
+      _ConfirmRewardRedeemListState();
+}
+
+class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
+  bool isLoading = false; // Flag to track loading state
+
+  @override
   Widget build(BuildContext context) {
     final RewardController rewardController = Get.find<RewardController>();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Confirm Redeem", style: poppinsBold(fontSize: 14.sp)),
-        backgroundColor: AppColors.whiteColor,
-      ),
+          title: Text("Confirm Redeem", style: poppinsBold(fontSize: 14.sp)),
+          backgroundColor: AppColors.whiteColor,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: isLoading
+                ? null
+                : () {
+                    Get.back();
+                  },
+          )),
       backgroundColor: AppColors.whiteColor,
       body: Stack(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ListView.builder(
-              itemCount: rewardImages.length,
+              itemCount: widget.rewardImages.length,
               padding: const EdgeInsets.only(bottom: 80), // Adds bottom padding
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
                     // Navigate to the full-screen image view with Hero transition
                     Get.to(() => FullScreenImageView(
-                          imagePath: rewardImages[index],
+                          imagePath: widget.rewardImages[index],
                           tag: 'imageHero-$index',
                         ));
                   },
                   child: RewardItemCard(
-                    imagePath: rewardImages[index],
-                    businessName: businessName,
-                    rewardName: rewardName,
+                    imagePath: widget.rewardImages[index],
+                    businessName: widget.businessName,
+                    rewardName: widget.rewardName,
                     heroTag: 'imageHero-$index',
                   ),
                 );
               },
             ),
           ),
-          Positioned(
-            bottom: 0, // Fixed at the bottom of the screen
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              width: double.infinity,
-              child: ButtonWidget(
-                onSwipe: () async {
-                  await rewardController.updateReceiptStatus(
-                    
-                    rewardId,
-                  );
-                  // Logic to swipe to redeem
-                  // Show the congratulation dialog
-                  showCongratulationDialog(
-                    isPendingforVerification: true,
-                    onDone: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LocationService(
-                            child: BottomBarView(
-                              isUser: getStringAsync(SharedPrefKey.role) ==
-                                  SharedPrefKey.user,
-                            ),
-                          ),
-                        ),
-                        (route) => false,
-                      );
-                    },
-                    message: 'reward',
-                  );
-                },
-                text: "Swipe to Redeem",
-              ),
+          isLoading
+              ? const SizedBox.shrink()
+              : Positioned(
+                  bottom: 0, // Fixed at the bottom of the screen
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    width: double.infinity,
+                    child: ButtonWidget(
+                      onSwipe: () async {
+                        setState(() {
+                          isLoading = true; // Start loading
+                        });
+
+                        await rewardController
+                            .updateReceiptStatus(widget.rewardId);
+
+                        // Show the congratulation dialog
+                        showCongratulationDialog(
+                          isPendingforVerification: true,
+                          onDone: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LocationService(
+                                  child: BottomBarView(
+                                    isUser:
+                                        getStringAsync(SharedPrefKey.role) ==
+                                            SharedPrefKey.user,
+                                  ),
+                                ),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                          message: 'reward',
+                        );
+
+                        setState(() {
+                          isLoading = false; // End loading
+                        });
+                      },
+                      text: "Swipe to Redeem",
+                    ),
+                  ),
+                ),
+          if (isLoading) // Show the progress indicator if loading
+            Center(
+              child: circularProgressBar(),
             ),
-          ),
         ],
       ),
     );

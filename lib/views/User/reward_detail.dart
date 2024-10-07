@@ -5,12 +5,11 @@ import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/reward_redeem_detail.dart';
-import 'package:swipe_app/controllers/rewards_controller.dart'; // Import RewardController
+import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/models/reward_model.dart';
-import 'package:get/get.dart'; // Import Get package
-// Import for camera functionality
+import 'package:get/get.dart';
 
 class RewardDetail extends StatefulWidget {
   final RewardModel? reward;
@@ -24,12 +23,12 @@ class RewardDetail extends StatefulWidget {
 
 class _RewardDetailState extends State<RewardDetail> {
   final RewardController rewardController = Get.put(RewardController());
+  bool isProcessing = false; // Track whether the processing is ongoing
 
   @override
   void initState() {
     super.initState();
 
-    // Check if the user's points equal the total points to redeem
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pointsEarned = widget.reward?.pointsEarned?[widget.userId] ?? 0;
       final pointsToRedeem = widget.reward?.pointsToRedeem ?? 0;
@@ -44,8 +43,20 @@ class _RewardDetailState extends State<RewardDetail> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reset isProcessing when the widget rebuilds
+    setState(() {
+      isProcessing = false;
+    });
+  }
+
   Future<void> _pickImageAndUpload() async {
-    // Show loading indicator on camera screen
+    setState(() {
+      isProcessing = true; // Set processing to true
+    });
+
     rewardController.isLoadingforscan.value = true;
 
     await rewardController.pickImageAndUpload(
@@ -53,15 +64,11 @@ class _RewardDetailState extends State<RewardDetail> {
       widget.userId!,
     );
 
-    // Hide loading indicator after processing
     rewardController.isLoadingforscan.value = false;
 
-    // Navigate to the next screen (you can adjust this based on your navigation needs)
-    Get.offAll(() => RewardRedeemDetail(
-          rewardId: widget.reward?.rewardId,
-          businessId: widget.reward?.businessId,
-          userId: widget.userId,
-        ));
+    setState(() {
+      isProcessing = false; // Set processing to false
+    });
   }
 
   @override
@@ -73,10 +80,9 @@ class _RewardDetailState extends State<RewardDetail> {
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      body: Column(
+      body: Stack(
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SpacerBoxVertical(height: 20),
               DetailTile(
@@ -180,7 +186,9 @@ class _RewardDetailState extends State<RewardDetail> {
               if (userUses < widget.reward!.uses!)
                 Center(
                   child: GestureDetector(
-                    onTap: _pickImageAndUpload, // Trigger the camera
+                    onTap: isProcessing
+                        ? null
+                        : _pickImageAndUpload, // Prevent tapping during processing
                     child: Container(
                       height: 100,
                       width: 100,
@@ -223,32 +231,27 @@ class _RewardDetailState extends State<RewardDetail> {
                   child: Text(
                     "You have used this reward the maximum allowed times.",
                     style: poppinsRegular(
-                      fontSize: 12.sp,
-                      color: AppColors.hintText,
-                    ),
+                        fontSize: 12.sp, color: AppColors.hintText),
                     textAlign: TextAlign.center,
-                  ),
-                ),
-              if (rewardController
-                  .isLoadingforscan.value) // Show loading indicator
-                const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        color: AppColors.gradientEndColor,
-                        strokeWidth: 5.0,
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Processing...',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ],
                   ),
                 ),
             ],
           ),
+          if (isProcessing) // Show loading indicator overlay
+            Container(
+              color: Colors.black54, // Dark overlay
+              child: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: AppColors.gradientEndColor,
+                      strokeWidth: 5.0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

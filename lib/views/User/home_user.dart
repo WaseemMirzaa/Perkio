@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
@@ -36,9 +37,8 @@ class _HomeUserState extends State<HomeUser> {
     super.initState();
     _dealStreamController = StreamController<List<DealModel>>();
     getDeals();
-
+    Get.put(NotificationController());
     getUser();
-
     // Listen to search field changes
     searchController.addListener(() {
       searchDeals(searchController.text);

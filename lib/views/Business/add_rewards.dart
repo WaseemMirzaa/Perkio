@@ -49,7 +49,8 @@ class _AddRewardsState extends State<AddRewards> {
     return LoaderOverlay(
       child: Scaffold(
         backgroundColor: AppColors.whiteColor,
-        appBar: PreferredSize(
+        appBar: 
+        PreferredSize(
           preferredSize:
               Size.fromHeight(14.95.h), // Adjust height to match first bar
           child: SizedBox(

@@ -99,8 +99,11 @@ class _NotificationsViewState extends State<NotificationsView> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      notification
-                                          .notificationTitle!, // Title of notification
+                                      notification.notificationTitle!.length >
+                                              25
+                                          ? '${notification.notificationTitle!.substring(0, 25)}...' // Limit to 50 characters and add ellipsis
+                                          : notification
+                                              .notificationTitle!, // Show full text if less than 50 characters
                                       style: poppinsBold(fontSize: 11.sp),
                                     ),
                                     Text(

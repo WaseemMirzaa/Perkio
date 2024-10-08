@@ -22,9 +22,13 @@ class NotificationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchInitialNotifications(); // Fetch initial notifications
-    countUnreadBusinessNotifications(); // Count unread Business notifications
-    countUnreadUserNotifications(); // Count unread User notifications
+    if (currentUserUid != null) {
+      fetchInitialNotifications(); // Fetch initial notifications
+      countUnreadBusinessNotifications(); // Count unread Business notifications
+      countUnreadUserNotifications(); // Count unread User notifications
+    } else {
+      Get.snackbar('Error', 'User not logged in.');
+    }
   }
 
   // Fetch initial notifications
@@ -67,6 +71,8 @@ class NotificationController extends GetxController {
   Future<List<NotificationModel>> fetchNotifications(
       {DocumentSnapshot? lastDoc}) async {
     Query query = _notificationsCollection
+        .where('receiverId',
+            isEqualTo: currentUserUid) // Only fetch for the current user
         .orderBy(NotificationKey.TIMESTAMP, descending: true)
         .limit(10);
 
@@ -89,6 +95,9 @@ class NotificationController extends GetxController {
   // Listen to real-time notifications
   Stream<List<NotificationModel>> listenToNotifications() {
     return _notificationsCollection
+        .where('receiverId',
+            isEqualTo:
+                currentUserUid) // Only listen for current user's notifications
         .orderBy(NotificationKey.TIMESTAMP, descending: true)
         .snapshots()
         .map((snapshot) {
@@ -101,9 +110,11 @@ class NotificationController extends GetxController {
   // Count unread "Business" notifications for the current user
   void countUnreadBusinessNotifications() {
     _notificationsCollection
-        .where('receiverId', isEqualTo: currentUserUid)
+        .where('receiverId',
+            isEqualTo: currentUserUid) // Only count for current user
         .where('isRead', isEqualTo: false)
-        .where('notificationType', isEqualTo: 'Business') // Only "Business" notifications
+        .where('notificationType',
+            isEqualTo: 'Business') // Only "Business" notifications
         .snapshots()
         .listen((snapshot) {
       unreadBusinessNotificationCount.value = snapshot.docs.length;
@@ -113,9 +124,11 @@ class NotificationController extends GetxController {
   // Count unread "User" notifications for the current user
   void countUnreadUserNotifications() {
     _notificationsCollection
-        .where('receiverId', isEqualTo: currentUserUid)
+        .where('receiverId',
+            isEqualTo: currentUserUid) // Only count for current user
         .where('isRead', isEqualTo: false)
-        .where('notificationType', isEqualTo: 'User') // Only "User" notifications
+        .where('notificationType',
+            isEqualTo: 'User') // Only "User" notifications
         .snapshots()
         .listen((snapshot) {
       unreadUserNotificationCount.value = snapshot.docs.length;

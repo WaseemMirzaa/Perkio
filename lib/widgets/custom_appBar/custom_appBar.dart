@@ -25,7 +25,7 @@ import '../../core/utils/constants/app_assets.dart';
 
 final homeController = Get.put(HomeController(HomeServices()));
 final userController = Get.put(UserController(UserServices()));
-final notificationController = Get.put(NotificationController());
+final notificationController = Get.find<NotificationController>();
 
 Widget customAppBar({
   String? userName,

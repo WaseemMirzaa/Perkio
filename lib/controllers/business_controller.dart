@@ -10,6 +10,7 @@ class BusinessController extends GetxController {
   BusinessController(this.businessServices);
 
   RxBool loading = false.obs;
+  
 
 
   

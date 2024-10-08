@@ -50,7 +50,7 @@ class UserServices {
 
   //.....Get User in stream
 
-    Stream<UserModel?> gettingUserById(String userId) {
+  Stream<UserModel?> gettingUserById(String userId) {
     return _userCollection.doc(userId).snapshots().map((snapshot) {
       if (snapshot.exists) {
         return UserModel.fromDocumentSnapshot(snapshot);
@@ -112,12 +112,13 @@ class UserServices {
   }
 
   //............ Get Deals
-  Future<List<DealModel>> getDeals() async {
-    final querySnapshot = await _dealCollection.get();
-    return querySnapshot.docs.map<DealModel>((doc) {
-      return DealModel.fromDocumentSnapshot(
-          doc as DocumentSnapshot<Map<String, dynamic>>);
-    }).toList();
+  Stream<List<DealModel>> getDeals() {
+    return _dealCollection.snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map<DealModel>((doc) {
+        return DealModel.fromDocumentSnapshot(
+            doc as DocumentSnapshot<Map<String, dynamic>>);
+      }).toList();
+    });
   }
 
   //............ Get Rewards
@@ -165,7 +166,6 @@ class UserServices {
     }).toList();
   }
 
-  // Fetch rewards based on earnedPoints map
 // Fetch rewards based on earnedPoints map
   Future<List<RewardModel>> getRewardsForCurrentUser() async {
     final userId = authServices.auth.currentUser!.uid;
@@ -297,9 +297,18 @@ class UserServices {
             'Found user with businessId (docId): $businessId, balance: $balance');
 
         if (balance > 0) {
-          // Deduct 2 from the balance
-          await userDocRef.update({'balance': balance - 2});
-          print('Balance updated, new balance: ${balance - 2}');
+          if (balance == 2) {
+            // If the balance is exactly 2, deduct 2 and turn off promotion
+            await userDocRef.update({'balance': 0});
+            print('Balance updated to 0, turning off promotion.');
+
+            // Turn off promotion
+            await _updatePromotionStatus(businessId);
+          } else {
+            // If the balance is greater than 2, deduct 2
+            await userDocRef.update({'balance': balance - 2});
+            print('Balance updated, new balance: ${balance - 2}');
+          }
         } else {
           // If balance <= 0, go to 'deals' collection and update 'isPromotionStart'
           await _updatePromotionStatus(businessId);

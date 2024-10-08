@@ -47,6 +47,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
 
   String searchQuery = '';
   final searchController = TextEditingController();
+  late int balance;
 
   @override
   Widget build(BuildContext context) {
@@ -258,9 +259,11 @@ class _HomeBusinessState extends State<HomeBusiness> {
                         } else if (!snapshot.hasData) {
                           return const SizedBox.shrink();
                         } else {
-                          return Text("${snapshot.data!.balance}\$ Remaining");
+                          balance = snapshot
+                              .data!.balance!; // Get the balance from UserModel
+                          return Text("$balance\$ Remaining");
                         }
-                      })
+                      }),
                 ],
               ),
             ),
@@ -286,6 +289,21 @@ class _HomeBusinessState extends State<HomeBusiness> {
 
                 final deals = snapshot.data!;
 
+                // Use a variable to store the balance from the first StreamBuilder
+                int userBalance = 0;
+
+                // Fetch the user balance from the first StreamBuilder if it's not set
+                final balanceStream = userController
+                    .getUserByStream(getStringAsync(SharedPrefKey.uid));
+
+                // Listen to the balance stream
+                balanceStream.listen((user) {
+                  if (user != null) {
+                    userBalance =
+                        user.balance ?? 0; // Get balance from UserModel
+                  }
+                });
+
                 return ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: deals.length,
@@ -295,6 +313,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                     final deal = deals[index];
                     return BusinessHomeListItems(
                       dealModel: deal,
+                      balance: balance, // Pass the balance here
                     );
                   },
                 );
@@ -311,8 +330,10 @@ class _HomeBusinessState extends State<HomeBusiness> {
           children: [
             ButtonWidget(
                 onSwipe: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddDeals()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddDeals()));
                 },
                 text: TempLanguage.btnLblSwipeToAddDeal),
           ],

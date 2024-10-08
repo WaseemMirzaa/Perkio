@@ -18,8 +18,9 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class BusinessHomeListItems extends StatefulWidget {
-  BusinessHomeListItems({super.key, required this.dealModel});
+  BusinessHomeListItems({super.key, required this.dealModel, this.balance});
   DealModel dealModel;
+  int? balance = 0;
 
   @override
   State<BusinessHomeListItems> createState() => _BusinessHomeListItemsState();
@@ -100,13 +101,17 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                             child: Row(
                               children: [
                                 Expanded(
-                                    child: Text(
-                                  widget.dealModel.location ?? "",
-                                  style: poppinsRegular(
+                                  child: Text(
+                                    widget.dealModel.location ?? "",
+                                    style: poppinsRegular(
                                       fontSize: 10.sp,
-                                      color: AppColors.hintText),
-                                  maxLines: 2,
-                                )),
+                                      color: AppColors.hintText,
+                                    ),
+                                    maxLines: 1, // Set the max lines you want
+                                    overflow: TextOverflow
+                                        .ellipsis, // Add ellipsis if the text overflows
+                                  ),
+                                ),
                                 const SpacerBoxHorizontal(width: 4),
                               ],
                             ),
@@ -193,7 +198,8 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                     ? const SizedBox()
                     : GestureDetector(
                         onTap: () {
-                          if (getIntAsync(UserKey.BALANCE) > 0) {
+                          log('💥💥💥💥💥Balance: ${widget.balance}');
+                          if (widget.balance! > 0) {
                             showAdaptiveDialog(
                               context: context,
                               builder: (context) => AlertDialog(

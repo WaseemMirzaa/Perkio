@@ -15,9 +15,11 @@ class FavouritesWidget extends StatelessWidget {
   final String uses;
   final String location;
   final String image;
+  final double rating;
 
   const FavouritesWidget({
     super.key,
+    this.rating = 4.4,
     this.dealId = '',
     this.dealName = 'Deal Name',
     this.restaurantName = 'Restaurant Name',
@@ -134,12 +136,7 @@ class FavouritesWidget extends StatelessWidget {
                       size: 15,
                     ),
                     Text(
-                      '4.4',
-                      style: poppinsRegular(
-                          fontSize: 10.sp, color: AppColors.yellowColor),
-                    ),
-                    Text(
-                      '15K',
+                      rating.toString(),
                       style: poppinsRegular(
                           fontSize: 10.sp, color: AppColors.yellowColor),
                     ),

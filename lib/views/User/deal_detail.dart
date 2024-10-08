@@ -21,16 +21,23 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import '../../core/utils/constants/app_const.dart';
 import '../bottom_bar_view/bottom_bar_view.dart';
 
-class DealDetail extends StatelessWidget {
+class DealDetail extends StatefulWidget {
   final DealModel? deal;
 
   const DealDetail({super.key, this.deal});
 
   @override
+  State<DealDetail> createState() => _DealDetailState();
+}
+
+class _DealDetailState extends State<DealDetail> {
+  bool isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
     double userLat = getDoubleAsync(SharedPrefKey.latitude);
     double userLon = getDoubleAsync(SharedPrefKey.longitude);
-    final deal = this.deal;
+    final deal = widget.deal;
     final controller = Get.find<BusinessDetailController>();
 
     if (deal == null) {
@@ -56,9 +63,9 @@ class DealDetail extends StatelessWidget {
       body: FutureBuilder<bool>(
         future: controller.canSwipe(deal.dealId!),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildLoadingIndicator();
-          }
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return _buildLoadingIndicator();
+          // }
 
           if (snapshot.hasError) {
             return _buildError('Error fetching deal data');
@@ -66,7 +73,13 @@ class DealDetail extends StatelessWidget {
 
           bool canSwipe = snapshot.data ?? true;
 
-          return _buildDealInfo(context, deal, canSwipe, distance);
+          return Stack(
+            children: [
+              _buildDealInfo(context, deal, canSwipe, distance),
+              if (isLoading)
+                _buildLoadingOverlay(), // Overlay with loading spinner
+            ],
+          );
         },
       ),
     );
@@ -164,7 +177,14 @@ class DealDetail extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: ButtonWidget(
               onSwipe: () async {
+                setState(() {
+                  isLoading = true; // Start loading
+                });
                 await controller.updateUsedBy(deal.dealId!);
+
+                setState(() {
+                  isLoading = false; // Stop loading
+                });
 
                 showCongratulationDialog(
                   onDone: () {
@@ -199,6 +219,26 @@ class DealDetail extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
+      ],
+    );
+  }
+
+  Widget _buildLoadingOverlay() {
+    return Stack(
+      children: [
+        // This prevents interaction with the screen behind and adds a transparent barrier.
+        AbsorbPointer(
+          absorbing: true, // Prevent interactions behind the loading indicator
+          child: ModalBarrier(
+            color: Colors.black.withOpacity(0.5), // Dimming effect
+          ),
+        ),
+        // Show the loading spinner at the center
+        const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.gradientStartColor,
+          ),
+        ),
       ],
     );
   }

@@ -14,6 +14,7 @@ import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart'
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/user_model.dart';
+import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
 import 'package:swipe_app/services/user_services.dart';
@@ -316,8 +317,8 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                       //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
                       //tets placeID = 'ChIJrTLr-GyuEmsRBfy61i59si0'
 
-                      String token = await FCMManager.getFCMToken();
-                      widget.userModel.fcmTokens = [token];
+                      String? token = await FCMManager.getFCMToken();
+                      widget.userModel.fcmTokens = [token!];
 
                       // Await the signUp call and only navigate if it was successful
                       await userController.signUp(widget.userModel, () {

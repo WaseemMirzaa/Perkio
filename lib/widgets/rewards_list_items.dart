@@ -11,7 +11,7 @@ import 'package:swipe_app/models/reward_model.dart'; // Assuming this is where y
 
 class RewardsListItems extends StatefulWidget {
   final RewardModel? reward;
-  final String? userId; // Make userId optional
+  final String? userId;
 
   const RewardsListItems({
     super.key,
@@ -24,29 +24,17 @@ class RewardsListItems extends StatefulWidget {
 }
 
 class _RewardsListItemsState extends State<RewardsListItems> {
-  late bool isLiked;
-  late int pointsEarnedByUser;
-
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    final RewardController rewardController = Get.find<RewardController>();
 
-    // Handle the case where userId and reward might be null
-    isLiked = widget.userId != null &&
-        widget.reward != null &&
-        widget.reward!.isFavourite != null &&
-        widget.reward!.isFavourite!.contains(widget.userId!);
-
-    // Fetch pointsEarned from the Map<String, int> using the userId
-    pointsEarnedByUser = (widget.userId != null &&
+    // Ensure pointsEarned from the Map<String, int> using the userId is updated dynamically
+    int pointsEarnedByUser = (widget.userId != null &&
             widget.reward != null &&
             widget.reward!.pointsEarned != null)
         ? (widget.reward!.pointsEarned![widget.userId!] ?? 0)
         : 0;
-  }
 
-  @override
-  Widget build(BuildContext context) {
     // Ensure pointsToRedeem and pointsEarned are not null and prevent divide by 0
     double progress = widget.reward != null &&
             widget.reward!.pointsToRedeem != null &&
@@ -169,19 +157,21 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                 right: 5,
                 child: IconButton(
                   icon: Image.asset(
-                    isLiked ? AppAssets.likeFilledImg : AppAssets.likeImg,
+                    widget.reward!.isFavourite!.contains(widget.userId!)
+                        ? AppAssets.likeFilledImg
+                        : AppAssets.likeImg,
                     width: 12.sp,
                     height: 12.sp,
                   ),
                   iconSize: 12.sp, // Set the icon size here
                   onPressed: () async {
                     if (widget.userId != null && widget.reward != null) {
-                      await Get.find<RewardController>().toggleLike(
+                      await rewardController.toggleLike(
                         widget.reward!,
                         widget.userId!,
                       );
                       setState(() {
-                        isLiked = !isLiked;
+                        // Rebuild the widget to reflect the change
                       });
                     }
                   },

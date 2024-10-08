@@ -53,33 +53,32 @@ class _HomeUserState extends State<HomeUser> {
     super.dispose();
   }
 
-  Future<void> getDeals() async {
-    deals = await controller.getDeals();
+  void getDeals() {
+    controller.getDeals().listen((newDeals) {
+      double userLat = getDoubleAsync(SharedPrefKey.latitude);
+      double userLon = getDoubleAsync(SharedPrefKey.longitude);
 
-    double userLat = getDoubleAsync(SharedPrefKey.latitude);
-    double userLon = getDoubleAsync(SharedPrefKey.longitude);
+      // Filter deals within 50km
+      deals = newDeals.where((deal) {
+        double distance = calculateDistance(
+            userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
 
-    // Filter deals within 50km
-    deals = deals.where((deal) {
-      double distance = calculateDistance(
-          userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
+        // Only include deals within 50km
+        return distance <= 50.0;
+      }).toList();
 
-      // Only include deals within 50km
-      return distance <= 50.0;
-    }).toList();
+      // Sort deals by distance (optional)
+      deals.sort((a, b) {
+        double distanceA = calculateDistance(
+            userLat, userLon, a.longLat!.latitude, a.longLat!.longitude);
+        double distanceB = calculateDistance(
+            userLat, userLon, b.longLat!.latitude, b.longLat!.longitude);
 
-    // Sort deals by distance (optional)
-    deals.sort((a, b) {
-      double distanceA = calculateDistance(
-          userLat, userLon, a.longLat!.latitude, a.longLat!.longitude);
-      double distanceB = calculateDistance(
-          userLat, userLon, b.longLat!.latitude, b.longLat!.longitude);
-
-      return distanceA.compareTo(distanceB);
+        return distanceA.compareTo(distanceB);
+      });
+      // Update the stream with the filtered and sorted deals
+      _dealStreamController.add(deals);
     });
-
-    // Update the stream with the filtered and sorted deals
-    _dealStreamController.add(deals);
   }
 
   void searchDeals(String query) {
@@ -218,61 +217,64 @@ class _HomeUserState extends State<HomeUser> {
                 );
               }).toList());
             } else {
-              combinedList.add(
-                Padding(
-                  padding: const EdgeInsets.only(left: 12),
-                  child: Text(
-                    TempLanguage.txtFeaturedCategoryDeals,
-                    style: poppinsMedium(fontSize: 18),
+              if (featuredDeals.isNotEmpty) {
+                combinedList.add(
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: Text(
+                      TempLanguage.txtFeaturedCategoryDeals,
+                      style: poppinsMedium(fontSize: 18),
+                    ),
                   ),
-                ),
-              );
-              combinedList.add(const SizedBox(height: 10));
+                );
+                combinedList.add(const SizedBox(height: 10));
 
-              combinedList.add(
-                SizedBox(
-                  height: 150,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: featuredDeals.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
-                    itemBuilder: (BuildContext context, int index) {
-                      final DealModel deal = featuredDeals[index];
-                      return GestureDetector(
-                        onTap: () {
-                          controller.incrementDealViews(deal.dealId!);
-                          controller
-                              .handleBusinessBalanceUpdate(deal.businessId!);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DealDetail(
-                                deal: deal,
+                combinedList.add(
+                  SizedBox(
+                    height: 150,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: featuredDeals.length,
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                      itemBuilder: (BuildContext context, int index) {
+                        final DealModel deal = featuredDeals[index];
+                        return GestureDetector(
+                          onTap: () {
+                            controller.incrementDealViews(deal.dealId!);
+                            controller
+                                .handleBusinessBalanceUpdate(deal.businessId!);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DealDetail(
+                                  deal: deal,
+                                ),
                               ),
+                            );
+                          },
+                          child: SizedBox(
+                            width: 350,
+                            child: AvailableListItems(
+                              dealId: deal.dealId ?? '',
+                              dealName: deal.dealName ?? '',
+                              restaurantName: deal.companyName ?? '',
+                              uses: deal.uses.toString(),
+                              businessRating: deal.businessRating ?? 0.0,
+                              isFeatured: deal.isPromotionStar!,
+                              image: deal.image ?? '',
+                              location: deal.location ?? '',
                             ),
-                          );
-                        },
-                        child: SizedBox(
-                          width: 350,
-                          child: AvailableListItems(
-                            dealId: deal.dealId ?? '',
-                            dealName: deal.dealName ?? '',
-                            restaurantName: deal.companyName ?? '',
-                            uses: deal.uses.toString(),
-                            businessRating: deal.businessRating ?? 0.0,
-                            isFeatured: deal.isPromotionStar!,
-                            image: deal.image ?? '',
-                            location: deal.location ?? '',
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              );
+                );
 
-              combinedList.add(const SizedBox(height: 20));
+                combinedList.add(const SizedBox(height: 20));
+              }
 
+              // Continue with the available deals section
               combinedList.add(
                 Padding(
                   padding: const EdgeInsets.only(left: 12),

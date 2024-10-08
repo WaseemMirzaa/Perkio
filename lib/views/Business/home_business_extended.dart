@@ -257,6 +257,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
                         itemBuilder: (context, index) {
                           final promotedDeals = deals[index];
                           return BusinessHomeListItems(
+                            
                               dealModel: promotedDeals);
                         });
                   }),

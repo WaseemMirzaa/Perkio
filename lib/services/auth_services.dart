@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/user_model.dart';
+import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
 
 class AuthServices {
@@ -20,7 +21,7 @@ class AuthServices {
 
       if (user != null) {
         // Get the FCM token
-        String fcmToken = await FCMManager.getFCMToken();
+        String? fcmToken = await FCMManager.getFCMToken();
 
         // Update the user's FCM token list in Firestore
         DocumentReference userDocRef =

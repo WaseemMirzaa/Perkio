@@ -359,7 +359,8 @@ class UserController extends GetxController {
   /// ♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️
 
   Future<void> logout() async {
-    authServices.logOut().then((value) => Get.off(const SplashScreen()));
+    authServices.logOut()
+    .then((value) => Get.off(const SplashScreen()));
   }
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 ADD TO FIREBASE
@@ -383,10 +384,10 @@ class UserController extends GetxController {
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All DEALS
 
-  Future<List<DealModel>> getDeals() async {
-    var res = await userServices.getDeals();
-    return res;
-  }
+ Stream<List<DealModel>> getDeals() {
+  return userServices.getDeals();
+}
+
 
   Future<void> incrementDealViews(String dealId) async {
     await userServices.updateDealViews(dealId);

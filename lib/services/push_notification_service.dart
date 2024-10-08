@@ -12,13 +12,7 @@ import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/views/user/reward_detail.dart';
 
-class FCMManager {
-  static String? fcmToken;
-  static Future<String> getFCMToken() async {
-    await FirebaseMessaging.instance.requestPermission();
-    return await FirebaseMessaging.instance.getToken() ?? '';
-  }
-}
+
 
 RewardService rewardService = Get.put(RewardService());
 DealService dealService = Get.put(DealService());

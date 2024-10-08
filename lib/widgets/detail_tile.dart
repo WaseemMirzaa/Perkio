@@ -138,7 +138,7 @@ class DetailTile extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5),
-                if (user?.phoneNo != null)
+                if (user?.phoneNo == null)
                   Row(
                     children: [
                       const Icon(Icons.phone,
@@ -151,7 +151,7 @@ class DetailTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                if (user?.website != null) const SizedBox(height: 5),
+                if (user?.website == null) const SizedBox(height: 5),
                 Row(
                   children: [
                     Image.asset(AppAssets.globeImg, scale: 3),

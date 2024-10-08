@@ -21,7 +21,6 @@ class RewardsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
         child: Obx(() {
@@ -62,18 +61,6 @@ class RewardsView extends StatelessWidget {
           );
         }),
       ),
-      // appBar: PreferredSize(
-      //   preferredSize: Size.fromHeight(22.h),
-      //   child: customAppBar(
-      //     isSearchField: true,
-      //     onChanged: (value) {
-      //       _controller.isSearching.value = value.isNotEmpty;
-      //       _controller.searchRewards(
-      //           value); // Filter rewards based on the search input
-      //     },
-      //     isSearching: _controller.isSearching,
-      //   ),
-      // ),
       body: Obx(() {
         if (_controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());

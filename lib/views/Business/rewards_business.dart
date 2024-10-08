@@ -41,7 +41,8 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
   Widget build(BuildContext context) {
     return PrimaryLayoutWidget(
       // header: SizedBox(height: 16.h,child: customAppBar(),),
-      header: SizedBox(
+      header: 
+      SizedBox(
         height: 14.95.h,
         child: Padding(
           padding: EdgeInsets.only(top: 2.h),
@@ -203,6 +204,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
           ),
         ),
       ),
+     
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

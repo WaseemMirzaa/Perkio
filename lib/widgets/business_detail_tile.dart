@@ -87,7 +87,7 @@ class BusinessDetailTile extends StatelessWidget {
                   ],
                 ),
               const SpacerBoxVertical(height: 5),
-              if (phone != null)
+              if (phone == null)
                 Row(
                   children: [
                     const Icon(

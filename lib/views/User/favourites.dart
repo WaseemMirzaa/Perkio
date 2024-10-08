@@ -187,6 +187,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                 dealName: favourite.dealName ?? '',
                                 restaurantName: favourite.companyName ?? '',
                                 dealId: favourite.dealId ?? '',
+                                rating: favourite.businessRating ?? 4.4,
                                 uses: favourite.uses.toString(),
                                 location: favourite.location ?? '',
                                 image: favourite.image ?? '',

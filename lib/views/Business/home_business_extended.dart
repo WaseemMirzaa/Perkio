@@ -147,10 +147,14 @@ class _PromotedDealViewState extends State<PromotedDealView> {
                                               );
                                             }
                                             return Text(
-                                              snapshot.data ?? 'Loading...',
+                                              (snapshot.data?.length ?? 0) > 20
+                                                  ? '${snapshot.data!.substring(0, 20)}...'
+                                                  : snapshot.data ??
+                                                      'Loading...',
                                               style: poppinsRegular(
-                                                  fontSize: 10.sp,
-                                                  color: AppColors.hintText),
+                                                fontSize: 10.sp,
+                                                color: AppColors.hintText,
+                                              ),
                                             );
                                           }),
                                       const SizedBox(
@@ -257,7 +261,6 @@ class _PromotedDealViewState extends State<PromotedDealView> {
                         itemBuilder: (context, index) {
                           final promotedDeals = deals[index];
                           return BusinessHomeListItems(
-                            
                               dealModel: promotedDeals);
                         });
                   }),
@@ -270,7 +273,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
           child: ButtonWidget(
               onSwipe: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddDeals()));
+                    MaterialPageRoute(builder: (context) => const AddDeals()));
               },
               text: TempLanguage.btnLblSwipeToAddDeal),
         ));

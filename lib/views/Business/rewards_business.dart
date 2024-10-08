@@ -41,8 +41,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
   Widget build(BuildContext context) {
     return PrimaryLayoutWidget(
       // header: SizedBox(height: 16.h,child: customAppBar(),),
-      header: 
-      SizedBox(
+      header: SizedBox(
         height: 14.95.h,
         child: Padding(
           padding: EdgeInsets.only(top: 2.h),
@@ -140,10 +139,13 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
                                             );
                                           }
                                           return Text(
-                                            snapshot.data ?? 'Loading...',
+                                            (snapshot.data?.length ?? 0) > 20
+                                                ? '${snapshot.data!.substring(0, 20)}...'
+                                                : snapshot.data ?? 'Loading...',
                                             style: poppinsRegular(
-                                                fontSize: 10.sp,
-                                                color: AppColors.hintText),
+                                              fontSize: 10.sp,
+                                              color: AppColors.hintText,
+                                            ),
                                           );
                                         }),
                                     const SizedBox(
@@ -204,7 +206,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
           ),
         ),
       ),
-     
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

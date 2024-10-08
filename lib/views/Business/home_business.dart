@@ -150,10 +150,13 @@ class _HomeBusinessState extends State<HomeBusiness> {
                                             );
                                           }
                                           return Text(
-                                            snapshot.data ?? 'Loading...',
+                                            (snapshot.data?.length ?? 0) > 20
+                                                ? '${snapshot.data!.substring(0, 20)}...'
+                                                : snapshot.data ?? 'Loading...',
                                             style: poppinsRegular(
-                                                fontSize: 10.sp,
-                                                color: AppColors.hintText),
+                                              fontSize: 10.sp,
+                                              color: AppColors.hintText,
+                                            ),
                                           );
                                         }),
                                     const SizedBox(

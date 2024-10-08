@@ -100,10 +100,13 @@ Widget customAppBar({
                                           );
                                         }
                                         return Text(
-                                          userLocation ?? 'Loading...',
+                                          (userLocation?.length ?? 0) > 20
+                                              ? '${userLocation!.substring(0, 20)}...'
+                                              : userLocation ?? 'Loading...',
                                           style: poppinsRegular(
-                                              fontSize: 10.sp,
-                                              color: AppColors.hintText),
+                                            fontSize: 10.sp,
+                                            color: AppColors.hintText,
+                                          ),
                                         );
                                       }),
                                   const SizedBox(

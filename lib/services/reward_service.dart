@@ -22,7 +22,11 @@ class RewardService {
   final CollectionReference _notificationsCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.NOTIFICATION);
 
-  final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+  // Check if there is a current user before accessing uid
+  String? get currentUserUid {
+    final user = FirebaseAuth.instance.currentUser;
+    return user?.uid; // Return uid if user is not null, otherwise return null
+  }
 
   Stream<List<RewardModel>> getRewardStream() {
     return _rewardCollection.snapshots().map((snapshot) {

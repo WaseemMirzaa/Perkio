@@ -5,7 +5,6 @@ import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/user/business_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
@@ -72,9 +71,10 @@ class DetailTile extends StatelessWidget {
                   left: 0,
                   child: BackButtonWidget(
                     onBack: () {
-                      Get.offAll(() => const BottomBarView(
-                            isUser: true,
-                          ));
+                      // Get.offAll(() => const BottomBarView(
+                      //       isUser: true,
+                      //     ));
+                      Get.back();
                     },
                   ),
                 ),

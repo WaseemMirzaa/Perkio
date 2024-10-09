@@ -12,8 +12,6 @@ import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/views/user/reward_detail.dart';
 
-
-
 RewardService rewardService = Get.put(RewardService());
 DealService dealService = Get.put(DealService());
 
@@ -125,6 +123,7 @@ class PushNotificationServices {
           Get.to(
             () => RewardDetail(
               reward: rewardModel,
+              userId: rewardService.currentUserUid,
             ),
           );
         }
@@ -178,6 +177,7 @@ class PushNotificationServices {
             Get.to(
               () => RewardDetail(
                 reward: rewardModel,
+                userId: rewardService.currentUserUid,
               ),
             );
           }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/notification_model.dart';
@@ -8,6 +9,7 @@ import 'package:swipe_app/services/push_notification_service.dart';
 
 class DealService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
 
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.USERS);

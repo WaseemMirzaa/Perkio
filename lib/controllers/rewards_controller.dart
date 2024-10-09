@@ -204,7 +204,6 @@ class RewardController extends GetxController {
   Future<void> pickImageAndUpload(
       RewardModel rewardModel, String userId) async {
     isLoadingforscan.value = true; // Start loading
-
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
     if (image != null) {

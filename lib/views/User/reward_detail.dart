@@ -24,7 +24,6 @@ class RewardDetail extends StatefulWidget {
 
 class _RewardDetailState extends State<RewardDetail> {
   final RewardController rewardController = Get.put(RewardController());
-  bool isProcessing = false; // Track whether the processing is ongoing
 
   @override
   void initState() {
@@ -44,43 +43,20 @@ class _RewardDetailState extends State<RewardDetail> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Reset isProcessing when the widget rebuilds
-    setState(() {
-      isProcessing = false;
-    });
-  }
-
   Future<void> _pickImageAndUpload() async {
-    // Check camera permission
+    await Future.delayed(
+        const Duration(milliseconds: 200)); // Give the UI time to update
     final status = await Permission.camera.request();
 
     if (status.isGranted) {
-      setState(() {
-        isProcessing = true; // Set processing to true
-      });
-
       rewardController.isLoadingforscan.value = true;
 
       await rewardController.pickImageAndUpload(
         widget.reward!,
         widget.userId!,
       );
-      rewardController.isLoadingforscan.value = false;
-
-      setState(() {
-        isProcessing = false; // Set processing to false
-      });
-    } else if (status.isDenied) {
+    } else if (status.isDenied || status.isPermanentlyDenied) {
       _showPermissionDialog(context);
-
-      // Handle the case when the permission is denied
-    } else if (status.isPermanentlyDenied) {
-      // If permission is permanently denied, prompt the user to open app settings
-      _showPermissionDialog(context);
-      // openAppSettings();
     }
   }
 
@@ -234,7 +210,7 @@ class _RewardDetailState extends State<RewardDetail> {
               if (userUses < widget.reward!.uses!)
                 Center(
                   child: GestureDetector(
-                    onTap: isProcessing
+                    onTap: rewardController.isLoadingforscan.value
                         ? null
                         : _pickImageAndUpload, // Prevent tapping during processing
                     child: Container(
@@ -285,21 +261,17 @@ class _RewardDetailState extends State<RewardDetail> {
                 ),
             ],
           ),
-          if (isProcessing) // Show loading indicator overlay
-            Container(
-              color: Colors.black54, // Dark overlay
-              child: const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
+          Obx(() => rewardController.isLoadingforscan.value
+              ? Container(
+                  color: Colors.black54, // Dark overlay
+                  child: const Center(
+                    child: CircularProgressIndicator(
                       color: AppColors.gradientEndColor,
                       strokeWidth: 5.0,
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                )
+              : const SizedBox()), // Placeholder when not loading
         ],
       ),
     );

@@ -47,9 +47,9 @@ class _BottomBarViewState extends State<BottomBarView> {
   ];
 
   final businessList = [
-    HomeBusiness(),
-    RewardsBusiness(),
-    PromotedDealView(),
+    const HomeBusiness(),
+    const RewardsBusiness(),
+    const PromotedDealView(),
     const SettingsView(),
   ];
 
@@ -97,7 +97,10 @@ class _BottomBarViewState extends State<BottomBarView> {
 
       if (message.data['notificationType'] == 'newReward') {
         if (rewardModel != null) {
-          Get.to(() => RewardDetail(reward: rewardModel));
+          Get.to(() => RewardDetail(
+                reward: rewardModel,
+                userId: rewardService.currentUserUid,
+              ));
         } else {
           print('Failed to fetch reward model for docId: $docId');
         }

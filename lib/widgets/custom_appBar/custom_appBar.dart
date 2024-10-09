@@ -166,9 +166,8 @@ Widget customAppBar({
                   ),
                   isNotification
                       ? GestureDetector(
-                          onTap: () async {
-                            await notificationController
-                                .markNotificationAsRead();
+                          onTap: () {
+                            notificationController.markNotificationAsRead();
                             Get.to(() => const NotificationsView());
                           },
                           child: Obx(() {
@@ -202,9 +201,8 @@ Widget customAppBar({
                           }),
                         )
                       : GestureDetector(
-                          onTap: () async {
-                            await notificationController
-                                .markNotificationAsRead();
+                          onTap: () {
+                            notificationController.markNotificationAsRead();
                             Get.to(() => const NotificationsView());
                           },
                           child: Obx(() {

@@ -13,6 +13,7 @@ import 'package:swipe_app/core/utils/mixins/validate_textfield.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
 import 'package:swipe_app/views/location/select_location_view.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -164,9 +165,11 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                AddBusinessDetailsView(
+                                                LocationService(
+                                                    child:
+                                                        AddBusinessDetailsView(
                                                   userModel: userModel,
-                                                )));
+                                                ))));
                               } else {
                                 Get.snackbar('Error',
                                     'Please Accept Terms & Conditions To Continue');

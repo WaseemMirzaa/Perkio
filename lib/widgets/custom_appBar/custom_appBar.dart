@@ -26,6 +26,7 @@ import '../../core/utils/constants/app_assets.dart';
 final homeController = Get.put(HomeController(HomeServices()));
 final userController = Get.put(UserController(UserServices()));
 final notificationController = Get.find<NotificationController>();
+final homeServices = Get.put(HomeServices());
 
 Widget customAppBar({
   String? userName,
@@ -114,9 +115,16 @@ Widget customAppBar({
                                   ),
                                   GestureDetector(
                                     onTap: () async {
+                                      final currentPosition = await homeServices
+                                          .getCurrentLocation();
+
+                                      log('💥💥💥💥💥Current Position: ${currentPosition!.latitude} ${currentPosition.longitude}');
+
                                       AddressModel address =
                                           await Get.to(() => LocationService(
                                                   child: PlacesPick(
+                                                changeCurrentLocation:
+                                                    currentPosition,
                                                 currentLocation: LatLng(
                                                     latitude!, longitude!),
                                               )));

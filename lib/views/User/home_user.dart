@@ -37,7 +37,7 @@ class _HomeUserState extends State<HomeUser> {
     super.initState();
     _dealStreamController = StreamController<List<DealModel>>();
     getDeals();
-    Get.put(NotificationController());
+
     getUser();
     // Listen to search field changes
     searchController.addListener(() {
@@ -113,7 +113,8 @@ class _HomeUserState extends State<HomeUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: PreferredSize(
+      appBar: 
+      PreferredSize(
         preferredSize: Size.fromHeight(22.h),
         child: Obx(() {
           // Use Obx to react to changes in userProfile

@@ -26,6 +26,7 @@ typedef AddressCallback = void Function(AddressModel val);
 
 class PlacesPick extends StatefulWidget {
   LatLng currentLocation;
+  LatLng changeCurrentLocation;
   bool isUserLocation;
   final UserModel?
       userModel; // Make userModel optional by using a nullable type
@@ -33,6 +34,7 @@ class PlacesPick extends StatefulWidget {
   PlacesPick({
     super.key,
     this.currentLocation = const LatLng(38.00000000, -97.00000000),
+    this.changeCurrentLocation = const LatLng(38.00000000, -97.00000000),
     this.isUserLocation = false,
     this.userModel, // No need for `required` as it's now optional
   });
@@ -43,6 +45,7 @@ class PlacesPick extends StatefulWidget {
 
 class _PlacesPickState extends State<PlacesPick> {
   GoogleMapController? mapController; //contrller for Google map
+
   CameraPosition? cameraPosition;
   // RxString location = "".obs;
   bool isGotLocation = false;
@@ -58,6 +61,15 @@ class _PlacesPickState extends State<PlacesPick> {
         LatLng(
           widget.currentLocation.latitude,
           widget.currentLocation.longitude,
+        ),
+        await mapController?.getZoomLevel() ?? 14));
+  }
+
+  Future animateToPositionforchange({double? lat, double? long}) async {
+    await mapController?.animateCamera(CameraUpdate.newLatLngZoom(
+        LatLng(
+          widget.changeCurrentLocation.latitude,
+          widget.changeCurrentLocation.longitude,
         ),
         await mapController?.getZoomLevel() ?? 14));
   }
@@ -325,7 +337,7 @@ class _PlacesPickState extends State<PlacesPick> {
                                 alignment: Alignment.centerRight,
                                 child: GestureDetector(
                                     onTap: () async {
-                                      await animateToPosition();
+                                      await animateToPositionforchange();
                                       if (!isGotLocation) {
                                         isGotLocation = true;
 
@@ -343,7 +355,7 @@ class _PlacesPickState extends State<PlacesPick> {
                                             speedAccuracy: 0.0,
                                             altitudeAccuracy: 100,
                                             headingAccuracy: 100);
-                                        await animateToPosition(
+                                        await animateToPositionforchange(
                                             lat: position.latitude,
                                             long: position.longitude);
                                         isFirstTime = false;

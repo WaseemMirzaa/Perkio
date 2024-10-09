@@ -43,7 +43,7 @@ class AddBusinessDetailsView extends StatefulWidget {
 class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
   final businessIdController = TextEditingController();
 
-  bool isLoading = false;
+  bool isLoading = true;
 
   final businessAddressController = TextEditingController();
 
@@ -74,6 +74,9 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
           getAndFill();
         });
       }
+      setState(() {
+        isLoading = false; // Enable onTap after microtask is complete
+      });
     });
   }
 
@@ -128,10 +131,6 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                   onTap: isLoading
                       ? null
                       : () async {
-                          // Disable onTap if loading
-                          setState(() {
-                            isLoading = true; // Start loading
-                          });
                           bool isPremitt = await LocationPermissionManager()
                               .requestLocationPermission(context);
 
@@ -157,10 +156,6 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                             X.showSnackBar('Allow Location Permissions',
                                 'Please allow location permissions');
                           }
-
-                          setState(() {
-                            isLoading = false; // Stop loading
-                          });
                         },
                 ),
 

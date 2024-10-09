@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
@@ -61,6 +62,7 @@ class _BottomBarViewState extends State<BottomBarView> {
   @override
   void initState() {
     super.initState();
+    Get.put(NotificationController()); // Initialize NotificationController
 
     _navigatetoScreen();
   }

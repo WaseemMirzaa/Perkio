@@ -46,9 +46,11 @@ class _MyDealsViewState extends State<MyDealsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: PreferredSize(
+      appBar:
+       PreferredSize(
         preferredSize: Size.fromHeight(12.h),
-        child: Obx(() {
+        child:
+         Obx(() {
           // Use Obx to react to changes in userProfile
           if (controller.userProfile.value == null) {
             return customAppBar(

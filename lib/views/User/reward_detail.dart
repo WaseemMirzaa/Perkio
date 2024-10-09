@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
@@ -53,22 +54,69 @@ class _RewardDetailState extends State<RewardDetail> {
   }
 
   Future<void> _pickImageAndUpload() async {
-    setState(() {
-      isProcessing = true; // Set processing to true
-    });
+    // Check camera permission
+    final status = await Permission.camera.request();
 
-    rewardController.isLoadingforscan.value = true;
+    if (status.isGranted) {
+      setState(() {
+        isProcessing = true; // Set processing to true
+      });
 
-    await rewardController.pickImageAndUpload(
-      widget.reward!,
-      widget.userId!,
+      rewardController.isLoadingforscan.value = true;
+
+      await rewardController.pickImageAndUpload(
+        widget.reward!,
+        widget.userId!,
+      );
+      rewardController.isLoadingforscan.value = false;
+
+      setState(() {
+        isProcessing = false; // Set processing to false
+      });
+    } else if (status.isDenied) {
+      _showPermissionDialog(context);
+
+      // Handle the case when the permission is denied
+    } else if (status.isPermanentlyDenied) {
+      // If permission is permanently denied, prompt the user to open app settings
+      _showPermissionDialog(context);
+      // openAppSettings();
+    }
+  }
+
+  void _showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Camera Permission'),
+          content:
+              const Text('Please allow camera permission to scan the receipt.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                final status = await Permission.camera
+                    .request(); // Request permission again
+
+                if (status.isGranted) {
+                  _pickImageAndUpload(); // Try picking the image again
+                } else if (status.isPermanentlyDenied) {
+                  openAppSettings(); // If permanently denied, redirect to settings
+                }
+              },
+              child: const Text('Allow'),
+            ),
+          ],
+        );
+      },
     );
-
-    rewardController.isLoadingforscan.value = false;
-
-    setState(() {
-      isProcessing = false; // Set processing to false
-    });
   }
 
   @override

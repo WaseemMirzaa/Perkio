@@ -9,7 +9,6 @@ import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/services/business_services.dart';
 import 'package:swipe_app/services/home_services.dart';
-import 'package:swipe_app/services/notification_services.dart';
 import 'package:swipe_app/services/user_services.dart';
 
 class MyBinding implements Bindings {

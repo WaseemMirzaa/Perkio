@@ -6,7 +6,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
-import 'package:swipe_app/services/push_notification_service.dart';
 
 class AuthServices {
   final auth = FirebaseAuth.instance;

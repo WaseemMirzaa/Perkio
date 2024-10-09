@@ -8,7 +8,6 @@ import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart'
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/home_services.dart';
-import 'package:swipe_app/services/push_notification_service.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 

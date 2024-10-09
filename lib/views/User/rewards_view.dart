@@ -34,6 +34,7 @@ class RewardsView extends StatelessWidget {
                     value); // Filter rewards based on the search input
               },
               isSearching: _controller.isSearching,
+              textController: searchController,
 
               userName: 'Loading...', // Placeholder text
               userLocation: 'Loading...',
@@ -58,6 +59,7 @@ class RewardsView extends StatelessWidget {
             latitude: latLog?.latitude ?? 0.0,
             longitude: latLog?.longitude ?? 0.0,
             userLocation: userLocation,
+            textController: searchController,
           );
         }),
       ),

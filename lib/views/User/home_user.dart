@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
@@ -103,7 +102,8 @@ class _HomeUserState extends State<HomeUser> {
         .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
         .listen((userModel) {
       if (userModel != null) {
-        controller.userProfile.value = userModel; // Update the user profile
+        controller.userProfile.value = userModel;
+        // Update the user profile
         getDeals();
       }
     });
@@ -113,8 +113,7 @@ class _HomeUserState extends State<HomeUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: 
-      PreferredSize(
+      appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
         child: Obx(() {
           // Use Obx to react to changes in userProfile
@@ -125,6 +124,7 @@ class _HomeUserState extends State<HomeUser> {
               isSearching: controller.isSearching,
               userName: 'Loading...', // Placeholder text
               userLocation: 'Loading...',
+              textController: searchController,
             );
           }
 
@@ -142,6 +142,7 @@ class _HomeUserState extends State<HomeUser> {
             latitude: latLog?.latitude ?? 0.0,
             longitude: latLog?.longitude ?? 0.0,
             userLocation: userLocation,
+            textController: searchController,
           );
         }),
       ),

@@ -37,6 +37,7 @@ Widget customAppBar({
   double? longitude,
   bool isLocation = true,
   bool isNotification = true,
+  TextEditingController? textController, // Add this parameter
   Function(String)? onChanged,
   bool isSearchField = false,
   Color appBarBackColor = AppColors.appBarBackColor,
@@ -165,7 +166,9 @@ Widget customAppBar({
                   ),
                   isNotification
                       ? GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            await notificationController
+                                .markNotificationAsRead();
                             Get.to(() => const NotificationsView());
                           },
                           child: Obx(() {
@@ -198,7 +201,42 @@ Widget customAppBar({
                             );
                           }),
                         )
-                      : const SizedBox.shrink(),
+                      : GestureDetector(
+                          onTap: () async {
+                            await notificationController
+                                .markNotificationAsRead();
+                            Get.to(() => const NotificationsView());
+                          },
+                          child: Obx(() {
+                            return Stack(
+                              children: [
+                                Image.asset(
+                                  AppAssets.notificationImg,
+                                  scale: 3.5,
+                                ),
+                                // Display unread count badge if greater than 0
+                                if (notificationController
+                                        .unreadBusinessNotificationCount.value >
+                                    0)
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: CircleAvatar(
+                                      radius: 8,
+                                      backgroundColor: Colors.red,
+                                      child: Text(
+                                        '${notificationController.unreadBusinessNotificationCount.value}',
+                                        style: const TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }),
+                        ),
                 ],
               ),
               isSearchField
@@ -206,7 +244,7 @@ Widget customAppBar({
                       padding: const EdgeInsets.all(12.0),
                       child: TextFieldWidget(
                         text: hintText,
-                        textController: TextEditingController(),
+                        textController: textController!,
                         prefixIcon: const Icon(
                           Icons.search,
                           color: AppColors.hintText,

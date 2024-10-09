@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/notification_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -133,5 +134,26 @@ class NotificationController extends GetxController {
         .listen((snapshot) {
       unreadUserNotificationCount.value = snapshot.docs.length;
     });
+  }
+
+  // Method to mark a notification as read
+  Future<void> markNotificationAsRead() async {
+    try {
+      // Fetch all unread notifications for the current user
+      QuerySnapshot snapshot = await _notificationsCollection
+          .where('receiverId',
+              isEqualTo: currentUserUid) // Only for current user
+          .where('isRead', isEqualTo: false) // Only unread notifications
+          .get();
+
+      // Update each unread notification to mark as read
+      for (var doc in snapshot.docs) {
+        await _notificationsCollection
+            .doc(doc.id) // Access the specific document by its ID
+            .update({'isRead': true}); // Update the 'isRead' field to true
+      }
+    } catch (e) {
+      log('Error marking notification as read: $e');
+    }
   }
 }

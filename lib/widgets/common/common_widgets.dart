@@ -23,155 +23,157 @@ Future showBalanceDialog({
 }) {
   final homeController = Get.put(HomeController(HomeServices()));
   final controller = Get.put(BusinessController(BusinessServices()));
+
+  // This variable will hold the calculated number of clicks
+  ValueNotifier<int> totalClicksNotifier = ValueNotifier(0);
+
   return showAdaptiveDialog(
       context: context,
-      builder: (context) => StatefulBuilder(builder: (context, function) {
-            String input = promotionAmountController.text;
-            int budget = input.isEmptyOrNull ? 0 : int.parse(input);
-            int totalClicks =
-                budget == null ? 0 : budget ~/ controller.apc.value!;
-            return SimpleDialog(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, top: 10),
-                    child: Text(
-                      'Promotional Balance',
-                      style: poppinsBold(fontSize: 15.sp),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.cancel,
-                          color: AppColors.blackColor,
-                          size: 40,
-                        )),
-                  ),
-                ],
+      builder: (context) {
+        // Add a listener to update the total clicks based on the input
+        promotionAmountController.addListener(() {
+          // Convert input to budget
+          String input = promotionAmountController.text;
+          int budget = input.isEmptyOrNull ? 0 : int.parse(input);
+
+          // Safely access apc.value with a fallback value if null
+          num apcValue = controller.apc.value ?? 0;
+
+          // Calculate total clicks
+          totalClicksNotifier.value = apcValue > 0 ? budget ~/ apcValue : 0;
+        });
+
+        return SimpleDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 10),
+                child: Text(
+                  'Promotional Balance',
+                  style: poppinsBold(fontSize: 15.sp),
+                ),
               ),
-              titlePadding: EdgeInsets.zero,
-              contentPadding: EdgeInsets.all(10.sp),
-              insetPadding: EdgeInsets.all(12.sp),
-              children: [
-                SizedBox(
-                  height: 1.h,
-                ),
-                Text(
-                  'Amount Per Click / APC : ${controller.apc}\$',
-                  style: poppinsMedium(fontSize: 12.sp),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Text(
-                  'Enter your budget for promotion',
-                  style: poppinsMedium(fontSize: 12.sp),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                TextFieldWidget(
-                  text: 'Enter your budget for promotion',
-                  textController: promotionAmountController,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  onEditComplete: () {
-                    FocusScope.of(context).unfocus();
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
-                  keyboardType: TextInputType.number,
+                  icon: const Icon(
+                    Icons.cancel,
+                    color: AppColors.blackColor,
+                    size: 40,
+                  ),
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: (promotionAmountController.text.toDouble() %
-                              controller.apc.value! ==
-                          0)
-                      ? Text('You will get $totalClicks clicks')
-                      : Text(
-                          'Budget is not multiple to the Number of clicks',
-                          style: poppinsRegular(
-                              fontSize: 10.sp,
-                              color: AppColors.gradientStartColor),
-                        ),
-                ),
-                SizedBox(
-                  height: 3.h,
-                ),
-                ButtonWidget(
-                    onSwipe: () async {
-                      if (promotionAmountController.text.isEmptyOrNull) {
-                        toast('Please enter your budget');
-                      } else if (promotionAmountController.text == '0') {
-                        toast('Budget should greater than zero');
-                      } else if (controller.apc.value! > 0 && budget >= 0) {
-                        input = promotionAmountController.text;
-                        budget = input.isEmptyOrNull ? 0 : int.parse(input);
-                        totalClicks = budget == null
-                            ? 0
-                            : budget ~/ controller.apc.value!;
-                        final double budgetInt = budget.toDouble();
-                        if (budgetInt % controller.apc.value! == 0 &&
-                            !fromSettings) {
-                          await StripePayment.initPaymentSheet(
-                                  amount: budget * 100,
-                                  customerId:
-                                      getStringAsync(UserKey.STRIPECUSTOMERID))
-                              .then((value) async {
-                            await homeController.updateCollection(
-                                getStringAsync(getStringAsync(UserKey.USERID)),
-                                CollectionsKey.USERS, {
-                              UserKey.ISPROMOTIONSTART: true,
-                            }).then((value) async {
-                              await homeController.updateCollection(
-                                  docId, CollectionsKey.DEALS, {
-                                DealKey.ISPROMOTIONSTART: true,
-                              });
-                              await setValue(UserKey.ISPROMOTIONSTART, true);
-                              promotionAmountController.clear();
-
-                              toast('You have added amount in your wallet');
-                            });
-                          });
-                        } else if (budgetInt % controller.apc.value! == 0 &&
-                            fromSettings) {
-                          FocusScope.of(context).unfocus();
-                          input = promotionAmountController.text;
-                          budget = input.isEmptyOrNull ? 0 : int.parse(input);
-                          totalClicks = budget == null
-                              ? 0
-                              : budget ~/ controller.apc.value!;
-
-                          print("Total Clicks are: $totalClicks");
-                          final double budgetInt = budget.toDouble();
-                          if (budgetInt % controller.apc.value! == 0) {
-                            await StripePayment.initPaymentSheet(
-                                    amount: budget * 100,
-                                    customerId: getStringAsync(
-                                        UserKey.STRIPECUSTOMERID))
-                                .then((value) async {});
-                          }
-                        } else {
-                          toast(
-                              'Budget must be a multiple of the cost per click.');
-                        }
-                      } else {
-                        toast(
-                            'Please enter a valid budget and ensure cost per click is greater than zero.');
-                      }
-                    },
-                    text: 'ADD BALANCE')
+              ),
+            ],
+          ),
+          titlePadding: EdgeInsets.zero,
+          contentPadding: EdgeInsets.all(10.sp),
+          insetPadding: EdgeInsets.all(12.sp),
+          children: [
+            SizedBox(height: 1.h),
+            ValueListenableBuilder<int>(
+              valueListenable: totalClicksNotifier,
+              builder: (context, totalClicks, child) {
+                // Ensure controller.apc.value is not null before using it
+                return Text(
+                  'Amount Per Click / APC : ${controller.apc.value != null && controller.apc.value! > 0 ? controller.apc.value : 'Unavailable'} \$',
+                  style: poppinsMedium(fontSize: 12.sp),
+                );
+              },
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              'Enter your budget for promotion',
+              style: poppinsMedium(fontSize: 12.sp),
+            ),
+            SizedBox(height: 1.h),
+            TextFieldWidget(
+              text: 'Enter your budget for promotion',
+              textController: promotionAmountController,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
               ],
-            );
-          }));
+              onEditComplete: () {
+                FocusScope.of(context).unfocus();
+              },
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 2.h),
+            ValueListenableBuilder<int>(
+              valueListenable: totalClicksNotifier,
+              builder: (context, totalClicks, child) {
+                // Ensure controller.apc.value is not null before using it
+                return Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    promotionAmountController.text.isNotEmpty &&
+                            (controller.apc.value != null &&
+                                controller.apc.value! > 0) &&
+                            (promotionAmountController.text.toDouble() %
+                                    (controller.apc.value ?? 1) ==
+                                0) // Use a default value to avoid division by zero
+                        ? 'You will get $totalClicks clicks'
+                        : 'Enter your budget to calculate clicks',
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 3.h),
+            ButtonWidget(
+              onSwipe: () async {
+                String input = promotionAmountController.text;
+                int budget = input.isEmptyOrNull ? 0 : int.parse(input);
+                num apcValue = controller.apc.value ?? 0;
+
+                if (promotionAmountController.text.isEmptyOrNull) {
+                  toast('Please enter your budget');
+                } else if (promotionAmountController.text == '0') {
+                  toast('Budget should be greater than zero');
+                } else if (apcValue > 0 && budget >= 0) {
+                  final double budgetInt = budget.toDouble();
+                  if (budgetInt % apcValue == 0 && !fromSettings) {
+                    await StripePayment.initPaymentSheet(
+                            amount: budget * 100,
+                            customerId:
+                                getStringAsync(UserKey.STRIPECUSTOMERID))
+                        .then((value) async {
+                      await homeController.updateCollection(
+                          getStringAsync(getStringAsync(UserKey.USERID)),
+                          CollectionsKey.USERS, {
+                        UserKey.ISPROMOTIONSTART: true,
+                      }).then((value) async {
+                        await homeController
+                            .updateCollection(docId, CollectionsKey.DEALS, {
+                          DealKey.ISPROMOTIONSTART: true,
+                        });
+                        await setValue(UserKey.ISPROMOTIONSTART, true);
+                        promotionAmountController.clear();
+
+                        toast('You have added an amount to your wallet');
+                      });
+                    });
+                  } else if (budgetInt % apcValue == 0 && fromSettings) {
+                    FocusScope.of(context).unfocus();
+                    await StripePayment.initPaymentSheet(
+                        amount: budget * 100,
+                        customerId: getStringAsync(UserKey.STRIPECUSTOMERID));
+                    promotionAmountController.clear();
+                  } else {
+                    toast('Budget must be a multiple of the cost per click.');
+                  }
+                } else {
+                  toast(
+                      'Please enter a valid budget and ensure cost per click is greater than zero.');
+                }
+              },
+              text: 'ADD BALANCE',
+            ),
+          ],
+        );
+      });
 }
 
 double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

@@ -37,12 +37,58 @@ class UserController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     emailController = TextEditingController();
+    resetEmailController = TextEditingController();
     passwordController = TextEditingController();
     userNameController = TextEditingController();
     phoneController = TextEditingController();
 
     // Fetch favorite deals on controller initialization
     fetchAndCacheFavouriteDeals();
+  }
+
+  // Method to reset password by sending an email
+  Future<bool> sendPasswordReset(String email) async {
+    loading.value = true;
+
+    // Validate that email is not empty and in correct format
+    if (email.isEmpty) {
+      loading.value = false;
+      Get.snackbar('Error', 'Email is required');
+      resetEmailController.clear();
+      return false;
+    } else if (!isValidEmail(email)) {
+      loading.value = false;
+      Get.snackbar('Error', 'Please enter a valid email address');
+      return false;
+    }
+
+    try {
+      // Call UserService to check if email exists and send password reset email
+      bool isSuccess = await userServices.resetPasswordIfEmailExists(email);
+
+      if (isSuccess) {
+        loading.value = false;
+        Get.snackbar('Success', 'Password reset email sent');
+        resetEmailController.clear();
+
+        return true;
+      } else {
+        loading.value = false;
+        Get.snackbar('Error', 'No user found with this email');
+        return false;
+      }
+    } catch (e) {
+      loading.value = false;
+      Get.snackbar('Error', 'Something went wrong. Please try again.');
+      return false;
+    }
+  }
+
+  bool isValidEmail(String email) {
+    // Corrected regular expression to validate email
+    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    RegExp regExp = RegExp(emailPattern);
+    return regExp.hasMatch(email);
   }
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET FAVOURITE DEALS
@@ -97,6 +143,7 @@ class UserController extends GetxController {
     phoneController.dispose();
     passwordController.dispose();
     userNameController.dispose();
+    resetEmailController.dispose();
   }
 
   void clearTextFields() {
@@ -104,6 +151,7 @@ class UserController extends GetxController {
     passwordController.clear();
     userNameController.clear();
     phoneController.clear();
+    resetEmailController.clear();
   }
 
   AuthServices authServices = AuthServices();
@@ -118,6 +166,7 @@ class UserController extends GetxController {
 
   RxList<UserModel> list = <UserModel>[].obs;
   late TextEditingController emailController;
+  late TextEditingController resetEmailController;
   late TextEditingController passwordController;
   late TextEditingController phoneController;
   late TextEditingController userNameController;
@@ -359,8 +408,7 @@ class UserController extends GetxController {
   /// ♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️
 
   Future<void> logout() async {
-    authServices.logOut()
-    .then((value) => Get.off(const SplashScreen()));
+    authServices.logOut().then((value) => Get.off(const SplashScreen()));
   }
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 ADD TO FIREBASE
@@ -384,10 +432,9 @@ class UserController extends GetxController {
 
   //♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️ GET All DEALS
 
- Stream<List<DealModel>> getDeals() {
-  return userServices.getDeals();
-}
-
+  Stream<List<DealModel>> getDeals() {
+    return userServices.getDeals();
+  }
 
   Future<void> incrementDealViews(String dealId) async {
     await userServices.updateDealViews(dealId);

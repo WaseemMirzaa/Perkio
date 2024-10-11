@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/user_model.dart';
@@ -37,6 +38,14 @@ class AuthServices {
       return null; // Sign-in success, return null
     } on FirebaseAuthException catch (e) {
       return e.message ?? 'An error occurred during sign-in';
+    }
+  }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      rethrow; // Throw the error so it can be handled in the controller
     }
   }
 

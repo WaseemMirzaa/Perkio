@@ -63,6 +63,7 @@ class _SettingsViewState extends State<SettingsView> {
         child: Column(
           children: [
             Image.asset(AppAssets.profileHeader),
+            
             ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 5),
               shrinkWrap: true,

@@ -15,6 +15,17 @@ class TempLanguage {
   static const String lblAllDeals = 'ALL DEALS';
   static const String lblPromotedDeal = 'PROMOTED DEAL';
 
+  //-----------------Newly Added-----------------
+
+  static const String lblForgotPassword = 'Forget password?';
+
+  static const String txtEnterEmailToResetPassword =
+      'Enter your email to reset your password';
+
+  static const String btnLblResetPassword = 'RESET PASSWORD';
+
+  static const String txtBackToLogin = 'Back to login';
+
   static const String lblMyRewards = 'MY REWARDS';
   static const String lblOffers = 'OFFERS';
   static const String lblEmailId = 'Email ID';

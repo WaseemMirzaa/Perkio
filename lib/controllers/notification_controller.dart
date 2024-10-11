@@ -146,14 +146,18 @@ class NotificationController extends GetxController {
           .where('isRead', isEqualTo: false) // Only unread notifications
           .get();
 
-      // Update each unread notification to mark as read
+      // Create a batch to perform updates atomically
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      // Add each notification update to the batch
       for (var doc in snapshot.docs) {
-        await _notificationsCollection
-            .doc(doc.id) // Access the specific document by its ID
-            .update({'isRead': true}); // Update the 'isRead' field to true
+        batch.update(_notificationsCollection.doc(doc.id), {'isRead': true});
       }
+
+      // Commit the batch (this executes all the updates in one go)
+      await batch.commit();
     } catch (e) {
-      log('Error marking notification as read: $e');
+      log('Error marking notifications as read: $e');
     }
   }
 }

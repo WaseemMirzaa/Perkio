@@ -36,6 +36,26 @@ class UserServices {
     }
   }
 
+  // Method to check if email exists and send a password reset email
+  Future<bool> resetPasswordIfEmailExists(String email) async {
+    try {
+      // Query Firestore to check if any document has this email
+      QuerySnapshot querySnapshot =
+          await _userCollection.where('email', isEqualTo: email).limit(1).get();
+
+      // If the email exists in the users collection
+      if (querySnapshot.docs.isNotEmpty) {
+        // Send a password reset email
+        await authServices.sendPasswordResetEmail(email);
+        return true; // Indicate success
+      } else {
+        return false; // Indicate email not found
+      }
+    } catch (e) {
+      return false; // General failure
+    }
+  }
+
   //............ Get User
   Future<UserModel?> getUserById(String userId) async {
     final querySnapshot = await _userCollection.doc(userId).get();

@@ -5,6 +5,7 @@ import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/user/business_detail.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
@@ -14,8 +15,13 @@ import 'package:swipe_app/widgets/custom_clipper.dart';
 class DetailTile extends StatelessWidget {
   final String? businessId;
   final bool isRedeeming;
+  final bool isNavigationFromNotifications;
 
-  const DetailTile({super.key, this.businessId, this.isRedeeming = false});
+  const DetailTile(
+      {super.key,
+      this.businessId,
+      this.isRedeeming = false,
+      this.isNavigationFromNotifications = false});
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +77,14 @@ class DetailTile extends StatelessWidget {
                   left: 0,
                   child: BackButtonWidget(
                     onBack: () {
-                      // Get.offAll(() => const BottomBarView(
-                      //       isUser: true,
-                      //     ));
-                      Get.back();
+                      if (isNavigationFromNotifications == false) {
+                        Get.offAll(() => const BottomBarView(
+                              isNotificationRoute: true,
+                              isUser: true,
+                            ));
+                      } else {
+                        Get.back();
+                      }
                     },
                   ),
                 ),

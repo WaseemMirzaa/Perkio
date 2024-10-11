@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
@@ -5,8 +7,8 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/views/user/reward_redeem_detail.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
+import 'package:swipe_app/views/user/reward_redeem_detail.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/models/reward_model.dart';
@@ -15,8 +17,13 @@ import 'package:get/get.dart';
 class RewardDetail extends StatefulWidget {
   final RewardModel? reward;
   final String? userId;
+  final bool isNavigationFromNotifications;
 
-  const RewardDetail({super.key, this.reward, this.userId});
+  const RewardDetail(
+      {super.key,
+      this.reward,
+      this.userId,
+      this.isNavigationFromNotifications = false});
 
   @override
   State<RewardDetail> createState() => _RewardDetailState();
@@ -29,18 +36,23 @@ class _RewardDetailState extends State<RewardDetail> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final pointsEarned = widget.reward?.pointsEarned?[widget.userId] ?? 0;
-      final pointsToRedeem = widget.reward?.pointsToRedeem ?? 0;
+    log('💥💥💥💥💥💥💥💥${widget.isNavigationFromNotifications}');
 
-      if (pointsEarned >= pointsToRedeem) {
-        Get.offAll(() => RewardRedeemDetail(
-              rewardId: widget.reward?.rewardId,
-              businessId: widget.reward?.businessId,
-              userId: widget.userId,
-            ));
-      }
-    });
+    if (!widget.isNavigationFromNotifications) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final pointsEarned = widget.reward?.pointsEarned?[widget.userId] ?? 0;
+        final pointsToRedeem = widget.reward?.pointsToRedeem ?? 0;
+
+        if (pointsEarned >= pointsToRedeem) {
+          Get.offAll(() => RewardRedeemDetail(
+                rewardId: widget.reward?.rewardId,
+                businessId: widget.reward?.businessId,
+                userId: widget.userId,
+                
+              ));
+        }
+      });
+    }
   }
 
   Future<void> _pickImageAndUpload() async {
@@ -111,6 +123,7 @@ class _RewardDetailState extends State<RewardDetail> {
               const SpacerBoxVertical(height: 20),
               DetailTile(
                 businessId: widget.reward?.businessId,
+
               ),
               const SpacerBoxVertical(height: 10),
               Padding(

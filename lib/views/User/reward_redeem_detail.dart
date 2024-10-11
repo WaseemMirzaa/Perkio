@@ -19,9 +19,14 @@ class RewardRedeemDetail extends StatefulWidget {
   final String? rewardId;
   final String? businessId;
   final String? userId;
+  final bool isNavigationFromNotifications;
 
   const RewardRedeemDetail(
-      {super.key, this.rewardId, this.userId, this.businessId});
+      {super.key,
+      this.rewardId,
+      this.userId,
+      this.businessId,
+      this.isNavigationFromNotifications = false});
 
   @override
   State<RewardRedeemDetail> createState() => _RewardRedeemDetailState();
@@ -69,6 +74,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                     const SpacerBoxVertical(height: 20),
                     DetailTile(
                       businessId: widget.businessId,
+                      isNavigationFromNotifications: false,
                     ),
                     const SpacerBoxVertical(height: 10),
                     Padding(

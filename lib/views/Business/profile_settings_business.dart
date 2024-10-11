@@ -124,6 +124,8 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                       top: 6.h,
                       child: GestureDetector(
                         onTap: () {
+                          
+
                           showAdaptiveDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -186,6 +188,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                               Icons.camera_alt_outlined)),
                                     ],
                                   ));
+                       
                         },
                         child: Container(
                             padding: const EdgeInsets.all(7),

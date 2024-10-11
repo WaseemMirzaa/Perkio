@@ -149,9 +149,10 @@ class BusinessServices {
             senderId:
                 dealModel.businessId, // assuming you have this in your model
             receiverId: doc.id,
-            notificationTitle: 'New Deal Added by ${dealModel.companyName}!',
+            notificationTitle:
+                'Exciting New Deal from ${dealModel.companyName} Just for You!',
             notificationMessage:
-                'Check out our latest deal: ${dealModel.dealName}',
+                '🎉 Don\'t miss out! Check out our latest deal: ${dealModel.dealName}. It\'s waiting for you just around the corner. Click to grab it now!',
             notificationType: 'User',
             eventId: dealModel.dealId,
             isRead: false,
@@ -174,8 +175,10 @@ class BusinessServices {
         await sendNotification(
           token: allTokens,
           notificationType: 'newDeal',
-          title: 'New Deal Added by ${dealModel.companyName}!',
-          msg: 'Check out our latest deal: ${dealModel.dealName}',
+          title:
+              'Exciting New Deal from ${dealModel.companyName} Just for You!',
+          msg:
+              '🎉 Don\'t miss out! Check out our latest deal: ${dealModel.dealName}. It\'s waiting for you just around the corner. Click to grab it now!',
           docId: dealModel.dealId!,
           isGroup: false,
           name: 'Deal Notification',
@@ -470,9 +473,9 @@ class BusinessServices {
                   .businessId, // assuming you have this in your model
               receiverId: doc.id,
               notificationTitle:
-                  'New Reward Added by ${rewardModel.companyName}!',
+                  'Exclusive Reward from ${rewardModel.companyName} Just for You!',
               notificationMessage:
-                  'Check out our latest Reward: ${rewardModel.rewardName}',
+                  '🎉 A special reward is waiting! Unlock your latest reward: ${rewardModel.rewardName}. Claim it before it’s gone!',
               notificationType: 'User',
               isRead: false,
               eventId: rewardModel.rewardId,
@@ -496,8 +499,10 @@ class BusinessServices {
         await sendNotification(
           token: allTokens,
           notificationType: 'newReward',
-          title: 'New Reward added by ${rewardModel.companyName}!',
-          msg: 'Check out our latest reward: ${rewardModel.rewardName}',
+          title:
+              'Exclusive Reward from ${rewardModel.companyName} Just for You!',
+          msg:
+              '🎉 A special reward is waiting! Unlock your latest reward: ${rewardModel.rewardName}. Claim it before it’s gone!',
           docId: rewardModel.rewardId!,
           isGroup: false,
           name: 'Deal Notification',

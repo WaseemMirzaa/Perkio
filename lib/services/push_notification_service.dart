@@ -124,6 +124,7 @@ class PushNotificationServices {
             () => RewardDetail(
               reward: rewardModel,
               userId: rewardService.currentUserUid,
+              isNavigationFromNotifications: true,
             ),
           );
         }
@@ -178,6 +179,7 @@ class PushNotificationServices {
               () => RewardDetail(
                 reward: rewardModel,
                 userId: rewardService.currentUserUid,
+                isNavigationFromNotifications: true,
               ),
             );
           }

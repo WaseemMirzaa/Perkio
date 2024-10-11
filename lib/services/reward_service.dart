@@ -379,9 +379,9 @@ class RewardService {
               rewardModel.rewardId!, // assuming you have this in your model
           receiverId: doc.id,
           notificationTitle:
-              '${rewardModel.rewardName} reward used by $userName',
+              '${rewardModel.rewardName} Reward Redeemed by $userName',
           notificationMessage:
-              'Please verify the reward redeemed by: $userName',
+              '$userName has redeemed the reward: ${rewardModel.rewardName}. Please review and verify the receipts.',
           notificationType: 'Business',
           isRead: false,
           eventId: rewardModel.rewardId!,
@@ -403,8 +403,9 @@ class RewardService {
         await sendNotification(
           token: allTokens,
           notificationType: 'rewardUsed',
-          title: '${rewardModel.rewardName} reward used by $userName',
-          msg: 'Please verify the reward redeemed by: $userName',
+          title: '${rewardModel.rewardName} Reward Redeemed by $userName!',
+          msg:
+              'Please verify the reward claimed by $userName for ${rewardModel.rewardName}. Make sure everything checks out!',
           docId: rewardModel.rewardId!,
           isGroup: false,
           name: 'Deal Notification',

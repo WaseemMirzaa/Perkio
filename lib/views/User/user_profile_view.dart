@@ -23,6 +23,7 @@ import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
+import 'package:swipe_app/widgets/custom_clipper.dart';
 import 'package:swipe_app/widgets/profile_list_items.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart';
@@ -69,9 +70,7 @@ class _UserProfileViewState extends State<UserProfileView> {
     userProfile =
         await controller.getUser(NBUtils.getStringAsync(SharedPrefKey.uid));
 
-    // Debug print to check the type of latLong
-    print('Type of latLong: ${userProfile?.latLong.runtimeType}');
-
+    // Store original values
     final address = userProfile!.address ?? 'No Address';
     userNameController.text = userProfile?.userName ?? '';
     emailController.text = userProfile?.email ?? '';
@@ -106,20 +105,115 @@ class _UserProfileViewState extends State<UserProfileView> {
               children: [
                 Stack(
                   children: [
-                    Image.asset(AppAssets.profileHeader),
+                    ClipPath(
+                      clipper: CustomMessageClipper(),
+                      child: SizedBox(
+                        height: 210,
+                        width: double.infinity,
+                        child: Image.network(
+                          userProfile.image ??
+                              '', // Replace with your image URL
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          (loadingProgress.expectedTotalBytes ??
+                                              1)
+                                      : null,
+                                ),
+                              );
+                            }
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Icon(Icons.error, color: Colors.red),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                     BackButtonWidget(),
                     Positioned(
                       right: 3.w,
                       top: 6.h,
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          showAdaptiveDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text(
+                                      'Pick Image',
+                                      style: poppinsBold(fontSize: 15),
+                                    ),
+                                    content: const Text(
+                                        'Upload profile from gallery or catch with Camera'),
+                                    actions: [
+                                      IconButton(
+                                          onPressed: () async {
+                                            Get.back();
+                                            await homeController
+                                                .pickImageFromGallery()
+                                                .then((value) async {
+                                              String? path = await homeController
+                                                  .uploadImageToFirebaseOnID(
+                                                      homeController.pickedImage
+                                                              ?.path ??
+                                                          '',
+                                                      getStringAsync(
+                                                          SharedPrefKey.uid));
+                                              if (!path.isEmptyOrNull) {
+                                                homeController.updateCollection(
+                                                    getStringAsync(
+                                                        SharedPrefKey.uid),
+                                                    'users',
+                                                    {UserKey.IMAGE: path});
+                                              }
+                                            });
+                                          },
+                                          icon: const Icon(
+                                              Icons.drive_file_move_outline)),
+                                      IconButton(
+                                          onPressed: () async {
+                                            Get.back();
+                                            await homeController
+                                                .pickImageFromCamera()
+                                                .then((value) async {
+                                              String? path = await homeController
+                                                  .uploadImageToFirebaseOnID(
+                                                      homeController.pickedImage
+                                                              ?.path ??
+                                                          '',
+                                                      getStringAsync(
+                                                          SharedPrefKey.uid));
+                                              print("The path is: === $path");
+                                              if (!path.isEmptyOrNull) {
+                                                print("DB called");
+                                                homeController.updateCollection(
+                                                    getStringAsync(
+                                                        SharedPrefKey.uid),
+                                                    'users',
+                                                    {UserKey.IMAGE: path});
+                                              }
+                                            });
+                                          },
+                                          icon: const Icon(
+                                              Icons.camera_alt_outlined)),
+                                    ],
+                                  ));
+                        },
                         child: Container(
                             padding: const EdgeInsets.all(7),
                             decoration: const BoxDecoration(
                                 color: AppColors.whiteColor,
                                 shape: BoxShape.circle),
                             child: Icon(
-                              Icons.edit,
+                              Icons.camera_enhance_rounded,
                               size: 20.sp,
                             )),
                       ),
@@ -134,37 +228,61 @@ class _UserProfileViewState extends State<UserProfileView> {
                       child: GestureDetector(
                           onTap: () async {
                             if (enabled.value) {
-                              bool success = await homeController
-                                  .updateCollection(
-                                      NBUtils.getStringAsync(SharedPrefKey.uid),
-                                      CollectionsKey.USERS, {
-                                UserKey.USERNAME: userNameController.text,
-                                UserKey.EMAIL: emailController.text,
-                                UserKey.PHONENO: phoneNoController.text,
-                                UserKey.ADDRESS: add,
-                                UserKey.LATLONG: latLng != null
-                                    ? GeoPoint(
-                                        latLng!.latitude, latLng!.longitude)
-                                    : userProfile.latLong,
-                              });
-                              if (success) {
-                                // Update successful
-                                showSnackBar(
-                                  'Success',
-                                  'User data updated successfully!',
-                                );
-                                // Get.snackbar(
-                                //     'Success', 'User data updated successfully!',
-                                //     snackPosition: SnackPosition.TOP);
-                                enabled.value = false;
+                              // Check if any of the fields have changed
+                              bool isChanged = false;
+                              if (userNameController.text !=
+                                  userProfile.userName) isChanged = true;
+                              if (emailController.text != userProfile.email) {
+                                isChanged = true;
+                              }
+                              if (phoneNoController.text !=
+                                  userProfile.phoneNo) {
+                                isChanged = true;
+                              }
+                              if (addressController.text !=
+                                  userProfile.address) {
+                                isChanged = true;
+                              }
+
+                              if (latLng != null) {
+                                GeoPoint updatedLatLng = GeoPoint(
+                                    latLng!.latitude, latLng!.longitude);
+                                if (updatedLatLng != userProfile.latLong) {
+                                  isChanged = true;
+                                }
+                              }
+
+                              if (isChanged) {
+                                // Proceed with update if any change is detected
+                                bool success = await homeController
+                                    .updateCollection(
+                                        NBUtils.getStringAsync(
+                                            SharedPrefKey.uid),
+                                        CollectionsKey.USERS,
+                                        {
+                                      UserKey.USERNAME: userNameController.text,
+                                      UserKey.EMAIL: emailController.text,
+                                      UserKey.PHONENO: phoneNoController.text,
+                                      if (latLng != null) UserKey.ADDRESS: add,
+                                      if (latLng !=
+                                          null) // Only add LATLONG if latLng is not null
+                                        UserKey.LATLONG: GeoPoint(
+                                            latLng!.latitude,
+                                            latLng!.longitude),
+                                    });
+
+                                if (success) {
+                                  showSnackBar('Success',
+                                      'User data updated successfully!');
+                                  enabled.value = false;
+                                } else {
+                                  showSnackBar(
+                                      'Error', 'Failed to update user data.');
+                                }
                               } else {
-                                // Update failed
+                                // If no fields have changed, don't save
                                 showSnackBar(
-                                  'Error',
-                                  'Failed to update user data.',
-                                );
-                                // Get.snackbar('Error', 'Failed to update user data.',
-                                //     snackPosition: SnackPosition.TOP);
+                                    'Info', 'No changes made to update.');
                               }
                             } else {
                               enabled.value = true;

@@ -138,7 +138,11 @@ class _DealDetailState extends State<DealDetail> {
     return Column(
       children: [
         const SpacerBoxVertical(height: 36),
-        DetailTile(businessId: deal.businessId),
+        DetailTile(
+          businessId: deal.businessId,
+          
+
+        ),
         const SpacerBoxVertical(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),

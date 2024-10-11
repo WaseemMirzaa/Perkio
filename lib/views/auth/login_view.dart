@@ -9,6 +9,7 @@ import 'package:swipe_app/core/utils/mixins/validate_textfield.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/views/auth/forget_password_view.dart';
 import 'package:swipe_app/views/auth/signup_view.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
@@ -155,7 +156,9 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                             text: TempLanguage.btnLblSwipeToLogin)),
                     SpacerBoxVertical(height: 1.5.h),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.to(() => const ForgotPasswordView());
+                        },
                         child: Text(
                           TempLanguage.txtForgotPassword,
                           style: poppinsMedium(

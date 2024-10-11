@@ -25,8 +25,10 @@ import 'package:swipe_app/views/user/rewards_view.dart';
 import 'package:swipe_app/widgets/custom_bottom_bar/custom_bottom_bar_items.dart';
 
 class BottomBarView extends StatefulWidget {
-  const BottomBarView({super.key, required this.isUser});
+  const BottomBarView(
+      {super.key, required this.isUser, this.isNotificationRoute = false});
   final bool isUser;
+  final bool isNotificationRoute;
 
   @override
   State<BottomBarView> createState() => _BottomBarViewState();
@@ -64,7 +66,9 @@ class _BottomBarViewState extends State<BottomBarView> {
     super.initState();
     Get.put(NotificationController()); // Initialize NotificationController
 
-    _navigatetoScreen();
+    if (widget.isNotificationRoute == false) {
+      _navigatetoScreen();
+    }
   }
 
   _navigatetoScreen() async {
@@ -100,6 +104,7 @@ class _BottomBarViewState extends State<BottomBarView> {
           Get.to(() => RewardDetail(
                 reward: rewardModel,
                 userId: rewardService.currentUserUid,
+                isNavigationFromNotifications: true,
               ));
         } else {
           print('Failed to fetch reward model for docId: $docId');

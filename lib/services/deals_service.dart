@@ -9,7 +9,6 @@ import 'package:swipe_app/services/push_notification_service.dart';
 
 class DealService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
 
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection(CollectionsKey.USERS);
@@ -141,8 +140,10 @@ class DealService {
         NotificationModel notification = NotificationModel(
           senderId: dealModel.dealId!, // assuming you have this in your model
           receiverId: doc.id,
-          notificationTitle: '${dealModel.dealName} deal used by $userName',
-          notificationMessage: 'Check out the redeemed deal by: $userName',
+          notificationTitle:
+              '${dealModel.dealName} Deal Redeemed by $userName!',
+          notificationMessage:
+              '$userName has just redeemed your deal: ${dealModel.dealName}. Check the details and stay connected with your customers!',
           notificationType: 'Business',
           eventId: dealModel.dealId!,
           imageUrl: dealModel.image ?? '',
@@ -164,8 +165,9 @@ class DealService {
         await sendNotification(
           token: allTokens,
           notificationType: 'dealUsed',
-          title: '${dealModel.dealName} deal used by $userName',
-          msg: 'Check out the redeemed deal by: $userName',
+          title: '${dealModel.dealName} Deal Redeemed by $userName!',
+          msg:
+              '$userName has just redeemed your deal: ${dealModel.dealName}. Check the details and stay connected with your customers!',
           docId: dealModel.dealId!,
           isGroup: false,
           name: 'Deal Notification',

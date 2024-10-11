@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:swipe_app/core/utils/constants/app_common.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/receipt_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/reward_service.dart';
@@ -60,7 +62,22 @@ class RewardController extends GetxController {
 
   void listenToRewards() {
     _rewardService.getRewardStream().listen((data) {
-      rewards.value = data;
+      double userLat = getDoubleAsync(SharedPrefKey.latitude);
+      double userLon = getDoubleAsync(SharedPrefKey.longitude);
+
+      // Filter rewards within 50 km
+      rewards.value = data.where((reward) {
+        double distance = calculateDistance(
+          userLat,
+          userLon,
+          reward.latLong!
+              .latitude, // Assuming your RewardModel has a longLat property with latitude
+          reward.latLong!
+              .longitude, // Assuming your RewardModel has a longLat property with longitude
+        );
+        return distance <= 50.0; // Only include rewards within 50 km
+      }).toList();
+
       isLoading(false);
     }).onError((error) {
       log('Failed to listen to rewards: $error');

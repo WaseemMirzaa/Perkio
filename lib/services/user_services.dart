@@ -351,7 +351,7 @@ class UserServices {
           .get();
 
       for (var doc in querySnapshot.docs) {
-        await doc.reference.update({'isPromotionStart': false});
+        await doc.reference.update({'isPromotionStart': false, 'views': 0});
         print('Updated isPromotionStart to false for deal: ${doc.id}');
       }
     } catch (e) {

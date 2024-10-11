@@ -5,6 +5,7 @@ class TempLanguage {
   static const String btnLblSwipeToAddRewards = 'SWIPE TO ADD NEW REWARDS';
   static const String btnLblSwipeToSignup = 'SWIPE TO SIGNUP';
   static const String btnLblSwipeToRedeem = 'SWIPE TO REDEEM';
+  static const String btnLblSwipeToClaim = 'SWIPE TO CLAIM REWARD';
   static const String btnLblSwipeToSelect = 'SWIPE TO SELECT';
   static const String btnLblSwipeToStart = 'SWIPE TO GET STARTED';
   static const String btnLblDone = 'DONE';

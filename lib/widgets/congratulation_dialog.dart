@@ -26,7 +26,7 @@ void showCongratulationDialog(
             // General message without remaining uses
             if (isPendingforVerification)
               Text(
-                "Your reward has been redeemed successfully. It is pending for verification. We'll notify you once it's verified.",
+                "Your reward has been redeemed successfully.",
                 style: poppinsRegular(
                     fontSize: 15, color: AppColors.secondaryText),
                 textAlign: TextAlign.center,

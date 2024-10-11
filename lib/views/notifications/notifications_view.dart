@@ -82,6 +82,8 @@ class _NotificationsViewState extends State<NotificationsView> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment
+                            .start, // Align the avatar to the top
                         children: [
                           CircleAvatar(
                             radius: 25.sp,
@@ -98,14 +100,15 @@ class _NotificationsViewState extends State<NotificationsView> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      notification.notificationTitle!.length >
-                                              25
-                                          ? '${notification.notificationTitle!.substring(0, 25)}...' // Limit to 50 characters and add ellipsis
-                                          : notification
-                                              .notificationTitle!, // Show full text if less than 50 characters
-                                      style: poppinsBold(fontSize: 11.sp),
+                                    Expanded(
+                                      child: Text(
+                                        notification.notificationTitle!,
+                                        style: poppinsBold(fontSize: 11.sp),
+                                      ),
                                     ),
+                                    const SizedBox(
+                                        width:
+                                            10), // Add space between title and time
                                     Text(
                                       DateFormat('h:mm a').format(notification
                                           .timestamp!
@@ -118,11 +121,12 @@ class _NotificationsViewState extends State<NotificationsView> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(
+                                    height:
+                                        4), // Add space between title and message
                                 Text(
                                   notification
                                       .notificationMessage!, // Message body of notification
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
                                   style: poppinsRegular(fontSize: 10.sp),
                                 ),
                               ],

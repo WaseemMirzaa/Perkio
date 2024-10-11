@@ -168,35 +168,10 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                             );
 
                             // Check if the receipt is verified
-                            final isVerified =
-                                await _rewardController.checkIfReceiptVerified(
-                              rewardModel.rewardId!,
-                            );
-
-                            // If isVerified is false, don't go further
-                            if (isVerified == false) {
-                              Get.snackbar(
-                                "Verification Pending",
-                                "Your receipt is pending verification, please wait until it is verified.",
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.redAccent,
-                                colorText: Colors.white,
-                              );
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LocationService(
-                                    child: BottomBarView(
-                                      isUser:
-                                          getStringAsync(SharedPrefKey.role) ==
-                                              SharedPrefKey.user,
-                                    ),
-                                  ),
-                                ),
-                                (route) => false,
-                              );
-                              return; // Exit the function
-                            }
+                            // final isVerified =
+                            //     await _rewardController.checkIfReceiptVerified(
+                            //   rewardModel.rewardId!,
+                            // );
 
                             // If isVerified is null, proceed with reward redemption
                             List<dynamic> images = _rewardController
@@ -212,7 +187,7 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                                   rewardImages: [...images],
                                 ));
                           },
-                          text: TempLanguage.btnLblSwipeToRedeem,
+                          text: TempLanguage.btnLblSwipeToClaim,
                         ),
                       ),
                   ],

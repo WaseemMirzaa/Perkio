@@ -306,26 +306,26 @@ class RewardController extends GetxController {
     }
   }
 
-  Future<bool?> checkIfReceiptVerified(String rewardId) async {
-    try {
-      bool? isVerified = await _rewardService.checkReceiptIsVerified(rewardId);
+  // Future<bool?> checkIfReceiptVerified(String rewardId) async {
+  //   try {
+  //     bool? isVerified = await _rewardService.checkReceiptIsVerified(rewardId);
 
-      if (isVerified == true) {
-        // Receipt is verified
-        debugPrint('Receipt is verified.');
-        return true;
-      } else if (isVerified == false) {
-        // Receipt is not verified
-        debugPrint('Receipt is not verified.');
-        return false;
-      } else {
-        // No receipt found or some other issue
-        debugPrint('No receipt found for this user.');
-        return null;
-      }
-    } catch (e) {
-      debugPrint("Error checking receipt verification status: $e");
-      return null; // Return null in case of an error
-    }
-  }
+  //     if (isVerified == true) {
+  //       // Receipt is verified
+  //       debugPrint('Receipt is verified.');
+  //       return true;
+  //     } else if (isVerified == false) {
+  //       // Receipt is not verified
+  //       debugPrint('Receipt is not verified.');
+  //       return false;
+  //     } else {
+  //       // No receipt found or some other issue
+  //       debugPrint('No receipt found for this user.');
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error checking receipt verification status: $e");
+  //     return null; // Return null in case of an error
+  //   }
+  // }
 }

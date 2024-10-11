@@ -40,7 +40,6 @@ class DetailTile extends StatelessWidget {
         children: [
           Stack(
             children: [
-              const SpacerBoxVertical(height: 36),
               ClipPath(
                 clipper: CustomMessageClipper(),
                 child: SizedBox(
@@ -148,7 +147,7 @@ class DetailTile extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5),
-                if (user?.phoneNo == null)
+                if (user?.phoneNo != null)
                   Row(
                     children: [
                       const Icon(Icons.phone,
@@ -161,18 +160,19 @@ class DetailTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                if (user?.website == null) const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Image.asset(AppAssets.globeImg, scale: 3),
-                    const SizedBox(width: 4),
-                    Text(
-                      user?.website ?? TempLanguage.txtDummyWebsite,
-                      style: poppinsRegular(
-                          fontSize: 10, color: AppColors.hintText),
-                    ),
-                  ],
-                ),
+                const SizedBox(height: 5),
+                if (user?.website != null)
+                  Row(
+                    children: [
+                      Image.asset(AppAssets.globeImg, scale: 3),
+                      const SizedBox(width: 4),
+                      Text(
+                        user?.website ?? TempLanguage.txtDummyWebsite,
+                        style: poppinsRegular(
+                            fontSize: 10, color: AppColors.hintText),
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 5),
                 Row(
                   children: [
@@ -194,12 +194,15 @@ class DetailTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 5),
-                Container(
-                  width: double.infinity,
-                  height: 1,
-                  color: AppColors.blackColor,
-                ),
+                const SpacerBoxVertical(height: 5),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 1,
+                    color: AppColors.blackColor,
+                  ),
+                )
               ],
             ),
           ),

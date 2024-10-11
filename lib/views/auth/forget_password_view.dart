@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
@@ -14,7 +12,6 @@ import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
-import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});

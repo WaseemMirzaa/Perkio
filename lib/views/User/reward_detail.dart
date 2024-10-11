@@ -48,7 +48,6 @@ class _RewardDetailState extends State<RewardDetail> {
                 rewardId: widget.reward?.rewardId,
                 businessId: widget.reward?.businessId,
                 userId: widget.userId,
-                
               ));
         }
       });
@@ -120,10 +119,8 @@ class _RewardDetailState extends State<RewardDetail> {
         children: [
           Column(
             children: [
-              const SpacerBoxVertical(height: 20),
               DetailTile(
                 businessId: widget.reward?.businessId,
-
               ),
               const SpacerBoxVertical(height: 10),
               Padding(

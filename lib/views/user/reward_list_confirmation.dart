@@ -17,11 +17,13 @@ class ConfirmRewardRedeemList extends StatefulWidget {
   final String businessName;
   final String rewardId;
   final String rewardName;
+  final String? userId;
   final List<String> rewardImages; // Declare the images variable
 
   const ConfirmRewardRedeemList(
       {super.key,
       required this.businessName,
+      required this.userId,
       required this.rewardName,
       required this.rewardImages,
       required this.rewardId});
@@ -39,43 +41,90 @@ class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
     final RewardController rewardController = Get.find<RewardController>();
 
     return Scaffold(
-      appBar: AppBar(
-          title: Text("Confirm Redeem", style: poppinsBold(fontSize: 14.sp)),
-          backgroundColor: AppColors.whiteColor,
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: isLoading
-                ? null
-                : () {
-                    Get.back();
-                  },
-          )),
-      backgroundColor: AppColors.whiteColor,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(
+            kToolbarHeight), // Set the preferred height of the AppBar
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.gradientStartColor,
+                AppColors.gradientEndColor,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: AppBar(
+            title: Text(
+              "Verify Receipts",
+              style: poppinsBold(
+                  fontSize: 14.sp, color: Colors.white), // White text color
+            ),
+            backgroundColor:
+                Colors.transparent, // Make AppBar background transparent
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back,
+                  color: Colors.white), // Change color to match gradient
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      Get.back();
+                    },
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListView.builder(
-              itemCount: widget.rewardImages.length,
-              padding: const EdgeInsets.only(bottom: 80), // Adds bottom padding
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the full-screen image view with Hero transition
-                    Get.to(() => FullScreenImageView(
-                          imagePath: widget.rewardImages[index],
-                          tag: 'imageHero-$index',
-                        ));
-                  },
-                  child: RewardItemCard(
-                    imagePath: widget.rewardImages[index],
-                    businessName: widget.businessName,
-                    rewardName: widget.rewardName,
-                    heroTag: 'imageHero-$index',
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              // Use Column to stack the Text and ListView vertically
+              children: [
+                // Headline Text
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 16.0,
+                      bottom: 8.0,
+                      left: 8,
+                      right: 8), // Adjust padding as needed
+                  child: Text(
+                    'Show these receipts to business in order to claim the reward. Business will verify and then redeem the reward.',
+                    style: poppinsRegular(
+                      color: AppColors.blackColor,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.left, // Center align the text
                   ),
-                );
-              },
+                ),
+                Expanded(
+                  // Wrap ListView with Expanded to fill remaining space
+                  child: ListView.builder(
+                    itemCount: widget.rewardImages.length,
+                    padding: const EdgeInsets.only(
+                        bottom: 80), // Adds bottom padding
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          // Navigate to the full-screen image view with Hero transition
+                          Get.to(() => FullScreenImageView(
+                                imagePath: widget.rewardImages[index],
+                                tag: 'imageHero-$index',
+                              ));
+                        },
+                        child: RewardItemCard(
+                          imagePath: widget.rewardImages[index],
+                          businessName: widget.businessName,
+                          rewardName: widget.rewardName,
+                          heroTag: 'imageHero-$index',
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
           isLoading
@@ -95,6 +144,11 @@ class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
 
                         await rewardController
                             .updateReceiptStatus(widget.rewardId);
+
+                        await rewardController.updateRewardUsage(
+                          widget.rewardId,
+                          widget.userId!,
+                        );
 
                         // Show the congratulation dialog
                         showCongratulationDialog(

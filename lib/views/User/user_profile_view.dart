@@ -105,39 +105,28 @@ class _UserProfileViewState extends State<UserProfileView> {
               children: [
                 Stack(
                   children: [
-                    ClipPath(
-                      clipper: CustomMessageClipper(),
-                      child: SizedBox(
-                        height: 210,
-                        width: double.infinity,
-                        child: Image.network(
-                          userProfile.image ??
-                              '', // Replace with your image URL
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          (loadingProgress.expectedTotalBytes ??
-                                              1)
-                                      : null,
-                                ),
-                              );
-                            }
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Center(
-                              child: Icon(Icons.error, color: Colors.red),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                    Obx(() {
+                      return (homeController.pickedImage != null)
+                          ? Image.file(
+                              homeController.pickedImage!,
+                              height: 30.h,
+                              width: 100.w,
+                              fit: BoxFit.cover,
+                            )
+                          : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull
+                              ? Image.network(
+                                  getStringAsync(SharedPrefKey.photo),
+                                  height: 30.h,
+                                  width: 100.w,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  AppAssets.imageHeader,
+                                  fit: BoxFit.fill,
+                                  height: 30.h,
+                                  width: 100.w,
+                                );
+                    }),
                     BackButtonWidget(),
                     Positioned(
                       right: 3.w,

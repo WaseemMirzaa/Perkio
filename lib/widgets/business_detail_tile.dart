@@ -28,7 +28,7 @@ class BusinessDetailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
         height: 125,
         decoration: BoxDecoration(
@@ -87,7 +87,7 @@ class BusinessDetailTile extends StatelessWidget {
                   ],
                 ),
               const SpacerBoxVertical(height: 5),
-              if (phone == null)
+              if (phone != null)
                 Row(
                   children: [
                     const Icon(

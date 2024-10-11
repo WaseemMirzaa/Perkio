@@ -30,12 +30,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final userController = Get.put(UserController(UserServices()));
- 
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
 
     Future.microtask(() async {
       final currentUser = FirebaseAuth.instance.currentUser;
@@ -84,9 +83,6 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {}
     });
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {

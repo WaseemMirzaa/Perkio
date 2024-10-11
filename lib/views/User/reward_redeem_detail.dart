@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
-import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
-import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/user/reward_list_confirmation.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
@@ -68,130 +64,132 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
           children: [
             Column(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SpacerBoxVertical(height: 20),
-                    DetailTile(
-                      businessId: widget.businessId,
-                      isNavigationFromNotifications: false,
-                    ),
-                    const SpacerBoxVertical(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            TempLanguage.txtRewardInfo,
-                            style: poppinsMedium(fontSize: 13.sp),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DetailTile(
+                          businessId: widget.businessId,
+                          isNavigationFromNotifications: false,
+                        ),
+                        const SpacerBoxVertical(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                TempLanguage.txtRewardInfo,
+                                style: poppinsMedium(fontSize: 13.sp),
+                              ),
+                              const SpacerBoxVertical(height: 10),
+                              Text(
+                                rewardModel.rewardName ??
+                                    TempLanguage.txtLoremIpsumShort,
+                                style: poppinsRegular(
+                                    fontSize: 10.sp, color: AppColors.hintText),
+                              ),
+                            ],
                           ),
-                          const SpacerBoxVertical(height: 10),
-                          Text(
-                            rewardModel.rewardName ??
-                                TempLanguage.txtLoremIpsumShort,
-                            style: poppinsRegular(
-                                fontSize: 10.sp, color: AppColors.hintText),
+                        ),
+                        const SpacerBoxVertical(height: 20),
+                        Center(
+                          child: Text(
+                            TempLanguage.txtPoints,
+                            style: poppinsBold(
+                                fontSize: 13.sp,
+                                color: AppColors.secondaryText),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SpacerBoxVertical(height: 20),
-                    Center(
-                      child: Text(
-                        TempLanguage.txtPoints,
-                        style: poppinsBold(
-                            fontSize: 13.sp, color: AppColors.secondaryText),
-                      ),
-                    ),
-                    const SpacerBoxVertical(height: 10),
-                    Center(
-                      child: Text(
-                        '$userPoints/$pointsToRedeem',
-                        style: poppinsBold(
-                            fontSize: 13.sp, color: AppColors.secondaryText),
-                      ),
-                    ),
-                    const SpacerBoxVertical(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: SizedBox(
-                        height: 45,
-                        child: Stack(
-                          alignment: Alignment.bottomLeft,
-                          children: [
-                            Container(
-                              height: 20,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: Colors.grey[200],
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 3),
+                        ),
+                        const SpacerBoxVertical(height: 10),
+                        Center(
+                          child: Text(
+                            '$userPoints/$pointsToRedeem',
+                            style: poppinsBold(
+                                fontSize: 13.sp,
+                                color: AppColors.secondaryText),
+                          ),
+                        ),
+                        const SpacerBoxVertical(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: SizedBox(
+                            height: 45,
+                            child: Stack(
+                              alignment: Alignment.bottomLeft,
+                              children: [
+                                Container(
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.grey[200],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 20,
-                              width: (userPoints /
-                                      (pointsToRedeem > 0
-                                          ? pointsToRedeem
-                                          : 1)) *
-                                  (MediaQuery.of(context).size.width - 60),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    AppColors.gradientStartColor,
-                                    AppColors.gradientEndColor
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
                                 ),
-                              ),
+                                Container(
+                                  height: 20,
+                                  width: (userPoints /
+                                          (pointsToRedeem > 0
+                                              ? pointsToRedeem
+                                              : 1)) *
+                                      (MediaQuery.of(context).size.width - 60),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        AppColors.gradientStartColor,
+                                        AppColors.gradientEndColor
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 20), // Space before the button
+                      ],
                     ),
-                    const SpacerBoxVertical(height: 80),
-                    if (userPoints >= pointsToRedeem)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: ButtonWidget(
-                          onSwipe: () async {
-                            await _rewardController.fetchReceipts(
-                              rewardModel.rewardId!,
-                            );
-
-                            // Check if the receipt is verified
-                            // final isVerified =
-                            //     await _rewardController.checkIfReceiptVerified(
-                            //   rewardModel.rewardId!,
-                            // );
-
-                            // If isVerified is null, proceed with reward redemption
-                            List<dynamic> images = _rewardController
-                                .userReceipts
-                                .expand((receipt) => receipt.imageUrls ?? [])
-                                .toList();
-
-                            // Navigate to ConfirmRewardRedeemList
-                            Get.to(() => ConfirmRewardRedeemList(
-                                  rewardId: rewardModel.rewardId!,
-                                  businessName: rewardModel.companyName!,
-                                  rewardName: rewardModel.rewardName!,
-                                  rewardImages: [...images],
-                                ));
-                          },
-                          text: TempLanguage.btnLblSwipeToClaim,
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
+                // Button will always be at the bottom
+                if (userPoints >= pointsToRedeem)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical:
+                            20), // Add vertical padding for better spacing
+                    child: ButtonWidget(
+                      onSwipe: () async {
+                        await _rewardController.fetchReceipts(
+                          rewardModel.rewardId!,
+                        );
+
+                        // Navigate to ConfirmRewardRedeemList
+                        List<dynamic> images = _rewardController.userReceipts
+                            .expand((receipt) => receipt.imageUrls ?? [])
+                            .toList();
+
+                        Get.to(() => ConfirmRewardRedeemList(
+                              rewardId: rewardModel.rewardId!,
+                              userId: widget.userId!,
+                              businessName: rewardModel.companyName!,
+                              rewardName: rewardModel.rewardName!,
+                              rewardImages: [...images],
+                            ));
+                      },
+                      text: TempLanguage.btnLblSwipeToClaim,
+                    ),
+                  ),
               ],
             ),
           ],

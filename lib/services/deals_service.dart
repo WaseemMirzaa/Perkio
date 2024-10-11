@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/notification_model.dart';
@@ -98,6 +97,7 @@ class DealService {
         // Update the 'usedBy' field in the 'deals' collection
         await dealRef.update({
           'usedBy': usedBy,
+          'noOfUsedTellNow': FieldValue.increment(1),
         });
       }
     } catch (e) {

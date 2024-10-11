@@ -117,4 +117,5 @@ class TempLanguage {
   static const String txtSearch = 'Search';
   static const String txtRedeemDeals = 'Redeem Unlimited Deals';
   static const String txtGetRewards = 'Get Unlimited Rewards';
+  static const String txtAllowLocation = 'Please enable GPS on your phone to use the app';
 }

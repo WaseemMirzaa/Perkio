@@ -137,48 +137,71 @@ class _DealDetailState extends State<DealDetail> {
 
     return Column(
       children: [
-        const SpacerBoxVertical(height: 36),
-        DetailTile(
-          businessId: deal.businessId,
-          
-
-        ),
-        const SpacerBoxVertical(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    deal.dealName ?? TempLanguage.txtDealName,
-                    style: poppinsMedium(fontSize: 13.sp),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                DetailTile(
+                  businessId: deal.businessId,
+                ),
+                const SpacerBoxVertical(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            deal.dealName ?? TempLanguage.txtDealName,
+                            style: poppinsMedium(fontSize: 13.sp),
+                          ),
+                          Text(
+                            '${distance.toStringAsFixed(2)} miles', // Display distance
+                            style: poppinsRegular(
+                              fontSize: 10.sp,
+                              color: AppColors.hintText,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        'USES ${deal.uses}',
+                        style: poppinsMedium(fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  Text(
-                    '${distance.toStringAsFixed(2)} miles', // Display distance
-                    style: poppinsRegular(
-                      fontSize: 10.sp,
-                      color: AppColors.hintText,
+                ),
+                const SpacerBoxVertical(height: 20),
+                _buildImage(deal.image),
+                const SizedBox(
+                    height: 20), // Space before the message or button
+
+                // Display message if canSwipe is false
+                if (!canSwipe)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      "You have reached the maximum limit for redeeming this deal.",
+                      style: poppinsRegular(
+                        fontSize: 12.sp,
+                        color: AppColors.hintText,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                ],
-              ),
-              Text(
-                'USES ${deal.uses}',
-                style: poppinsMedium(fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        const SpacerBoxVertical(height: 20),
-        _buildImage(deal.image),
-        const SpacerBoxVertical(height: 20),
+        // Button will always be at the bottom
         if (canSwipe)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 20), // Add vertical padding for better spacing
             child: ButtonWidget(
               onSwipe: () async {
                 setState(() {
@@ -209,18 +232,6 @@ class _DealDetailState extends State<DealDetail> {
                 );
               },
               text: TempLanguage.btnLblSwipeToRedeem,
-            ),
-          ),
-        if (!canSwipe)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              "You have used this deal the maximum allowed times.",
-              style: poppinsRegular(
-                fontSize: 12.sp,
-                color: AppColors.hintText,
-              ),
-              textAlign: TextAlign.center,
             ),
           ),
       ],

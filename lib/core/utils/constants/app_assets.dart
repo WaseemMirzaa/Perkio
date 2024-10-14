@@ -23,6 +23,8 @@ class AppAssets{
   static const pauseImg = 'assets/images/icn_pause.png';
   static const emailIcon = 'assets/images/Icon feather-mail.png';
   static const unlockImg = 'assets/images/Icon feather-unlock.png';
+  static const lockImg = 'assets/images/lock.png';
+
   static const imageHeader = 'assets/images/imageheader.png';
   static const likeImg = 'assets/images/like.png';
   static const likeFilledImg = 'assets/images/likefilled.png';

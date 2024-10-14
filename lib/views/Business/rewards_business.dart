@@ -35,7 +35,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
     return PrimaryLayoutWidget(
       // header: SizedBox(height: 16.h,child: customAppBar(),),
       header: SizedBox(
-        height: 15.40.h,
+        height: 16.40.h,
         child: PreferredSize(
           preferredSize: Size.fromHeight(12.h),
           child: Obx(() {
@@ -65,49 +65,51 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
         ),
       ),
 
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 17.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Text(
-                TempLanguage.lblMyRewards,
-                style: poppinsMedium(fontSize: 18),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 12.h,
               ),
-            ),
-            SpacerBoxVertical(height: 1.h),
-            StreamBuilder<List<RewardModel>>(
-                stream: businessController
-                    .getMyRewardsDeal(getStringAsync(SharedPrefKey.uid)),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: circularProgressBar());
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No Rewards available'));
-                  }
-                  final rewardsDeal = snapshot.data!;
-                  return ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: rewardsDeal.length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final rewards = rewardsDeal[index];
-                        return BusinessRewardsTiles(
-                          rewardModel: rewards,
-                        );
-                      });
-                }),
-            SpacerBoxVertical(height: 10.h),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: Text(
+                  TempLanguage.lblMyRewards,
+                  style: poppinsMedium(fontSize: 18),
+                ),
+              ),
+              SpacerBoxVertical(height: 1.h),
+              StreamBuilder<List<RewardModel>>(
+                  stream: businessController
+                      .getMyRewardsDeal(getStringAsync(SharedPrefKey.uid)),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: circularProgressBar());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No Rewards available'));
+                    }
+                    final rewardsDeal = snapshot.data!;
+                    return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: rewardsDeal.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final rewards = rewardsDeal[index];
+                          return BusinessRewardsTiles(
+                            rewardModel: rewards,
+                          );
+                        });
+                  }),
+              SpacerBoxVertical(height: 10.h),
+            ],
+          ),
         ),
       ),
       footer: Align(

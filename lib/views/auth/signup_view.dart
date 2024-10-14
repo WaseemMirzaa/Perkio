@@ -107,6 +107,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                     path: AppAssets.unlockImg,
                     textController: controller.passwordController,
                     isPassword: true,
+                    onChangepath: AppAssets.lockImg,
                     keyboardType: TextInputType.visiblePassword,
                     focusNode: passwordFocusNode,
                     onEditComplete: () =>
@@ -158,8 +159,10 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                SelectLocation(
-                                                  userModel: userModel,
+                                                LocationService(
+                                                  child: SelectLocation(
+                                                    userModel: userModel,
+                                                  ),
                                                 ))) //controller.signUp(userModel)
                                     : Navigator.push(
                                         context,

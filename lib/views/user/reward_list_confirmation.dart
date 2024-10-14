@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
@@ -35,6 +36,22 @@ class ConfirmRewardRedeemList extends StatefulWidget {
 
 class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
   bool isLoading = false; // Flag to track loading state
+
+  @override
+  void dispose() {
+    // Reset the status bar style back to default when leaving this screen
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor:
+            Color(0x40000000), // Even lighter black with 25% opacity
+        statusBarIconBrightness:
+            Brightness.light, // White icons for dark background
+        statusBarBrightness: Brightness.dark, // Required for iOS
+      ),
+    );
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

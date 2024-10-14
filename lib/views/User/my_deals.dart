@@ -13,6 +13,7 @@ import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/widgets/favourites_widget.dart';
+import 'package:swipe_app/widgets/my_rewards_list_items.dart';
 import 'package:swipe_app/widgets/rewards_list_items.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
@@ -46,11 +47,9 @@ class _MyDealsViewState extends State<MyDealsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar:
-       PreferredSize(
+      appBar: PreferredSize(
         preferredSize: Size.fromHeight(12.h),
-        child:
-         Obx(() {
+        child: Obx(() {
           // Use Obx to react to changes in userProfile
           if (controller.userProfile.value == null) {
             return customAppBar(
@@ -218,7 +217,7 @@ class _MyDealsViewState extends State<MyDealsView> {
                                 ),
                               );
                             },
-                            child: RewardsListItems(
+                            child: MyRewardsListItems(
                               reward: reward,
                               userId: myController.currentUserId.value,
                             ),

@@ -130,6 +130,7 @@ class UserServices {
       }
     });
   }
+  
 
   //............ Get Deals
   Stream<List<DealModel>> getDeals() {

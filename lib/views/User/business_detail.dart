@@ -102,6 +102,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                   children: [
                     const SpacerBoxVertical(height: 20),
                     BusinessDetailTile(
+                      businessId: widget.businessId,
                       businessName: widget.businessName,
                       rating: widget.businessRating,
                       website: widget.businessWebsite,

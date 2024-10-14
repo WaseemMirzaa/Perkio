@@ -41,7 +41,7 @@ class AvailableListItems extends StatelessWidget {
       final isFavorite = controller.favoriteCache[dealId] ?? false;
 
       return Container(
-        height: 140,
+        height: 18.h,
         margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
@@ -69,31 +69,43 @@ class AvailableListItems extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    SpacerBoxVertical(height: 1.3.h),
                     if (image.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, top: 20),
-                        child: SizedBox(
-                          height: 80,
-                          width: 70,
-                          child: Image.network(image, fit: BoxFit.cover),
+                      Container(
+                        height: 14.h,
+                        width: 14.h,
+                        margin: EdgeInsets.only(top: 5.sp, left: 2.sp),
+                        decoration: BoxDecoration(
+                          color: AppColors.whiteColor,
+                          borderRadius: BorderRadius.circular(14.sp),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.blackColor.withOpacity(0.16),
+                              offset: const Offset(0, 3),
+                              blurRadius: 6.5,
+                            ),
+                          ],
+                          image: DecorationImage(
+                            image: NetworkImage(image),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       )
                     else
                       Expanded(
-                        child: Image.asset(AppAssets.restaurantImg1,
-                            fit: BoxFit.cover),
+                        child: Image.asset(
+                          AppAssets.restaurantImg1,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                   ],
                 ),
                 Positioned(
-                  left: -0.5.h,
-                  top: -1.h,
+                  left: 0.sp, // Adjust the left position as needed
+                  top: 0.sp, // Adjust the top position as needed
                   child: IconButton(
                     onPressed: () {
                       if (isFavorite) {
                         controller.decreaseDealLikes(dealId);
-
                         controller.unLikeDeal(dealId);
                       } else {
                         controller.incrementDealLikes(dealId);
@@ -145,7 +157,6 @@ class AvailableListItems extends StatelessWidget {
                         style: poppinsRegular(
                             fontSize: 10.sp, color: AppColors.yellowColor),
                       ),
-                     
                     ],
                   ),
                   const SpacerBoxVertical(height: 5),

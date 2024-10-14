@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,7 +10,6 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
-
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';
@@ -29,15 +29,20 @@ class _HomeUserState extends State<HomeUser> {
   var controller = Get.find<UserController>();
   late StreamController<List<DealModel>> _dealStreamController;
   late List<DealModel> deals;
+  List<DealModel> featuredDeals = [];
+  List<DealModel> availableDeals = [];
   TextEditingController searchController = TextEditingController();
+
+  // Add a flag to track if featured deals have been shuffled
+  bool _hasShuffledFeaturedDeals = false;
 
   @override
   void initState() {
     super.initState();
     _dealStreamController = StreamController<List<DealModel>>();
     getDeals();
-
     getUser();
+
     // Listen to search field changes
     searchController.addListener(() {
       searchDeals(searchController.text);
@@ -48,7 +53,6 @@ class _HomeUserState extends State<HomeUser> {
   void dispose() {
     _dealStreamController.close();
     searchController.dispose();
-
     super.dispose();
   }
 
@@ -61,20 +65,30 @@ class _HomeUserState extends State<HomeUser> {
       deals = newDeals.where((deal) {
         double distance = calculateDistance(
             userLat, userLon, deal.longLat!.latitude, deal.longLat!.longitude);
-
-        // Only include deals within 50km
-        return distance <= 50.0;
+        return distance <= 50.0; // Only include deals within 50km
       }).toList();
 
-      // Sort deals by distance (optional)
+      // Sort deals by distance
       deals.sort((a, b) {
         double distanceA = calculateDistance(
             userLat, userLon, a.longLat!.latitude, a.longLat!.longitude);
         double distanceB = calculateDistance(
             userLat, userLon, b.longLat!.latitude, b.longLat!.longitude);
-
         return distanceA.compareTo(distanceB);
       });
+
+      // Update featured deals
+      featuredDeals =
+          deals.where((deal) => deal.isPromotionStar ?? false).toList();
+
+      // Shuffle featured deals only if not shuffled yet
+      if (!_hasShuffledFeaturedDeals) {
+        featuredDeals.shuffle(Random());
+        _hasShuffledFeaturedDeals = true; // Mark as shuffled
+      }
+
+      availableDeals = deals;
+
       // Update the stream with the filtered and sorted deals
       _dealStreamController.add(deals);
     });
@@ -85,15 +99,12 @@ class _HomeUserState extends State<HomeUser> {
     final filteredDeals = deals.where((deal) {
       final dealName = deal.dealName?.toLowerCase() ?? '';
       final companyName = deal.companyName?.toLowerCase() ?? '';
-      final isMatch = dealName.contains(lowerCaseQuery) ||
+      return dealName.contains(lowerCaseQuery) ||
           companyName.contains(lowerCaseQuery);
-      return isMatch;
     }).toList();
 
     _dealStreamController.add(filteredDeals);
   }
-
-  //getting the user profile
 
   LatLng? latLng;
 
@@ -152,8 +163,7 @@ class _HomeUserState extends State<HomeUser> {
           stream: _dealStreamController.stream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: circularProgressBar()); // Centered loading indicator
+              return Center(child: circularProgressBar());
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
@@ -163,11 +173,9 @@ class _HomeUserState extends State<HomeUser> {
             }
 
             final List<DealModel> deals = snapshot.data!;
-
+            // Use the state variable for featured deals
             List<DealModel> featuredDeals =
                 deals.where((deal) => deal.isPromotionStar == true).toList();
-            featuredDeals.shuffle();
-            List<DealModel> availableDeals = deals.toList();
 
             // Combine featured and available deals
             List<Widget> combinedList = [];
@@ -291,9 +299,8 @@ class _HomeUserState extends State<HomeUser> {
               combinedList.addAll(availableDeals.map((deal) {
                 return GestureDetector(
                   onTap: () {
-                    print('passed business ID is:${deal.businessId!}');
-                    controller.handleBusinessBalanceUpdate(deal.businessId!);
                     controller.incrementDealViews(deal.dealId!);
+                    controller.handleBusinessBalanceUpdate(deal.businessId!);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -306,19 +313,18 @@ class _HomeUserState extends State<HomeUser> {
                   child: AvailableListItems(
                     dealId: deal.dealId ?? '',
                     dealName: deal.dealName ?? '',
-                    businessRating: deal.businessRating ?? 0.0,
                     restaurantName: deal.companyName ?? '',
                     uses: deal.uses.toString(),
                     isFeatured: deal.isPromotionStar!,
                     image: deal.image ?? '',
+                    businessRating: deal.businessRating ?? 0.0,
                     location: deal.location ?? '',
                   ),
                 );
               }).toList());
             }
-            return ListView(
-              children: combinedList,
-            );
+
+            return ListView(children: combinedList);
           },
         );
       }),

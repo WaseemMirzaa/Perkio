@@ -66,9 +66,9 @@ class _HomeBusinessState extends State<HomeBusiness> {
   Widget build(BuildContext context) {
     return PrimaryLayoutWidget(
       header: Padding(
-        padding: const EdgeInsets.only(top: 30),
+        padding: const EdgeInsets.only(top: 25),
         child: SizedBox(
-          height: 18.h,
+          height: 20.h,
           child: Obx(() {
             // Use Obx to react to changes in userProfile
             if (userController.userProfile.value == null) {
@@ -113,95 +113,97 @@ class _HomeBusinessState extends State<HomeBusiness> {
           }),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 25.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    TempLanguage.lblMyDeals,
-                    style: poppinsMedium(fontSize: 18),
-                  ),
-                  StreamBuilder<UserModel?>(
-                      stream: userController
-                          .getUserByStream(getStringAsync(SharedPrefKey.uid)),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const SizedBox.shrink();
-                        } else if (!snapshot.hasData) {
-                          return const SizedBox.shrink();
-                        } else {
-                          balance = snapshot
-                              .data!.balance!; // Get the balance from UserModel
-                          return Text("$balance\$ Remaining");
-                        }
-                      }),
-                ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 20.h,
               ),
-            ),
-            SizedBox(
-              height: 1.h,
-            ),
-            StreamBuilder<List<DealModel>>(
-              stream: businessController.getMyDeals(
-                  getStringAsync(SharedPrefKey.uid),
-                  searchQuery: searchQuery),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: circularProgressBar());
-                }
-
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No deals available'));
-                }
-
-                final deals = snapshot.data!;
-
-                // Use a variable to store the balance from the first StreamBuilder
-                int userBalance = 0;
-
-                // Fetch the user balance from the first StreamBuilder if it's not set
-                final balanceStream = userController
-                    .getUserByStream(getStringAsync(SharedPrefKey.uid));
-
-                // Listen to the balance stream
-                balanceStream.listen((user) {
-                  if (user != null) {
-                    userBalance =
-                        user.balance ?? 0; // Get balance from UserModel
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      TempLanguage.lblMyDeals,
+                      style: poppinsMedium(fontSize: 18),
+                    ),
+                    StreamBuilder<UserModel?>(
+                        stream: userController
+                            .getUserByStream(getStringAsync(SharedPrefKey.uid)),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const SizedBox.shrink();
+                          } else if (!snapshot.hasData) {
+                            return const SizedBox.shrink();
+                          } else {
+                            balance = snapshot.data!
+                                .balance!; // Get the balance from UserModel
+                            return Text("$balance\$ Remaining");
+                          }
+                        }),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              StreamBuilder<List<DealModel>>(
+                stream: businessController.getMyDeals(
+                    getStringAsync(SharedPrefKey.uid),
+                    searchQuery: searchQuery),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: circularProgressBar());
                   }
-                });
 
-                return ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: deals.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    final deal = deals[index];
-                    return BusinessHomeListItems(
-                      dealModel: deal,
-                      balance: balance, // Pass the balance here
-                    );
-                  },
-                );
-              },
-            ),
-            SpacerBoxVertical(height: 10.h),
-          ],
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No deals available'));
+                  }
+
+                  final deals = snapshot.data!;
+
+                  // Use a variable to store the balance from the first StreamBuilder
+                  int userBalance = 0;
+
+                  // Fetch the user balance from the first StreamBuilder if it's not set
+                  final balanceStream = userController
+                      .getUserByStream(getStringAsync(SharedPrefKey.uid));
+
+                  // Listen to the balance stream
+                  balanceStream.listen((user) {
+                    if (user != null) {
+                      userBalance =
+                          user.balance ?? 0; // Get balance from UserModel
+                    }
+                  });
+
+                  return ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: deals.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final deal = deals[index];
+                      return BusinessHomeListItems(
+                        dealModel: deal,
+                        balance: balance, // Pass the balance here
+                      );
+                    },
+                  );
+                },
+              ),
+              SpacerBoxVertical(height: 10.h),
+            ],
+          ),
         ),
       ),
       footer: Padding(

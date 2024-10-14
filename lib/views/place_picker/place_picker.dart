@@ -7,16 +7,20 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/app_statics.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/user_model.dart';
+import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/apis.dart';
 import 'package:swipe_app/views/place_picker/common.dart';
 import 'package:swipe_app/views/place_picker/get_current_location.dart';
+import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/location_utils.dart';
 import 'package:swipe_app/views/place_picker/suggestion.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -28,11 +32,13 @@ class PlacesPick extends StatefulWidget {
   LatLng currentLocation;
   LatLng changeCurrentLocation;
   bool isUserLocation;
+  bool? isReward;
   final UserModel?
       userModel; // Make userModel optional by using a nullable type
 
   PlacesPick({
     super.key,
+    this.isReward,
     this.currentLocation = const LatLng(38.00000000, -97.00000000),
     this.changeCurrentLocation = const LatLng(38.00000000, -97.00000000),
     this.isUserLocation = false,
@@ -490,6 +496,25 @@ class _PlacesPickState extends State<PlacesPick> {
                                                   location.value;
                                             } else {
                                               // For Navigator.pop, pass back the updated address with additional info
+                                              // if (widget.isReward == true) {
+                                              //   print('-------IN IFFFFF');
+
+                                              //   await setValue(
+                                              //       SharedPrefKey.latitude,
+                                              //       address.latitude);
+                                              //   await setValue(
+                                              //       SharedPrefKey.longitude,
+                                              //       address.longitude);
+                                              //   Get.offAll(() =>
+                                              //       const LocationService(
+                                              //           child: BottomBarView(
+                                              //               isUser: true)));
+                                              // } else {
+                                              //   print('-------IN ELSEEEEEEEE');
+
+                                              // Navigator.pop(context, address);
+                                              // }
+
                                               Navigator.pop(context, address);
                                             }
                                           }
@@ -513,7 +538,7 @@ class _PlacesPickState extends State<PlacesPick> {
             Navigator.pop(context);
             return Container();
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: circularProgressBar());
           }
         },
       ),

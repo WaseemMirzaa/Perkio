@@ -16,6 +16,7 @@ class FavouritesWidget extends StatelessWidget {
   final String location;
   final String image;
   final double rating;
+  final bool isFavScreen;
 
   const FavouritesWidget({
     super.key,
@@ -27,165 +28,370 @@ class FavouritesWidget extends StatelessWidget {
     this.image = '',
     this.uses = '3',
     this.location = '4773 Waldeck Street, US',
+    this.isFavScreen = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    RxBool isFav = true.obs;
     final UserController controller = Get.find<UserController>();
 
-    return Container(
-      height: 140,
-      margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(width: 1, color: AppColors.borderColor),
-        color: AppColors.whiteColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
-            alignment: Alignment.topLeft,
-            clipBehavior: Clip.none,
-            children: [
-              Column(
-                children: [
-                  SpacerBoxVertical(height: 1.3.h),
-                  if (image.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, top: 20),
-                      child: SizedBox(
-                        height: 85,
-                        width: 85,
-                        child: Image.network(image, fit: BoxFit.cover),
-                      ),
-                    )
-                  else
-                    Expanded(
-                      child: Image.asset(AppAssets.restaurantImg1,
-                          fit: BoxFit.cover),
+    return isFavScreen
+        ? Obx(() {
+            return isFav.value
+                ? Container(
+                    height: 140,
+                    margin:
+                        const EdgeInsets.only(bottom: 10, left: 12, right: 12),
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border:
+                          Border.all(width: 1, color: AppColors.borderColor),
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
                     ),
-                ],
-              ),
-              Positioned(
-                left: -0.5.h,
-                top: -1.h,
-                child: Obx(() {
-                  final isFavorite = controller.favoriteCache[dealId] ?? false;
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Stack(
+                          alignment: Alignment.topLeft,
+                          clipBehavior: Clip.none,
+                          children: [
+                            Column(
+                              children: [
+                                if (image.isNotEmpty)
+                                  Container(
+                                    height: 14.h,
+                                    width: 14.h,
+                                    margin:
+                                        EdgeInsets.only(top: 5.sp, left: 2.sp),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.whiteColor,
+                                      borderRadius:
+                                          BorderRadius.circular(14.sp),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors.blackColor
+                                              .withOpacity(0.16),
+                                          offset: const Offset(0, 3),
+                                          blurRadius: 6.5,
+                                        ),
+                                      ],
+                                      image: DecorationImage(
+                                        image: NetworkImage(image),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  Expanded(
+                                    child: Image.asset(
+                                      AppAssets.restaurantImg1,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            Positioned(
+                              left: 0
+                                  .sp, // Positioning for the like/unlike button
+                              top: 0
+                                  .sp, // Positioning for the like/unlike button
+                              child: Obx(() {
+                                final isFavorite =
+                                    controller.favoriteCache[dealId] ?? false;
 
-                  return IconButton(
-                    onPressed: () async {
-                      if (isFavorite) {
-                        await controller.unLikeDeal(dealId);
-                        controller.favoriteCache[dealId] =
-                            false; // Update cache
-                      } else {
-                        await controller.likeDeal(dealId);
-                        controller.favoriteCache[dealId] = true; // Update cache
-                      }
-                      // Update UI after operation
-                    },
-                    padding: EdgeInsets.zero,
-                    icon: ImageIcon(
-                      AssetImage(
-                        isFavorite
-                            ? AppAssets.likeFilledImg
-                            : AppAssets.likeImg,
-                      ),
-                      size: 12.sp,
-                      color:
-                          isFavorite ? AppColors.redColor : AppColors.hintText,
+                                return IconButton(
+                                  onPressed: () async {
+                                    if (isFavorite) {
+                                      await controller.unLikeDeal(dealId);
+                                      isFav.value = false;
+                                      controller.favoriteCache[dealId] =
+                                          false; // Update cache
+                                    } else {
+                                      await controller.likeDeal(dealId);
+                                      controller.favoriteCache[dealId] =
+                                          true; // Update cache
+                                    }
+                                    // Update UI after operation
+                                  },
+                                  padding: EdgeInsets.zero,
+                                  icon: ImageIcon(
+                                    AssetImage(
+                                      isFavorite
+                                          ? AppAssets.likeFilledImg
+                                          : AppAssets.likeImg,
+                                    ),
+                                    size: 12.sp,
+                                    color: isFavorite
+                                        ? AppColors.redColor
+                                        : AppColors.hintText,
+                                  ),
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                        const SpacerBoxHorizontal(width: 10),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SpacerBoxVertical(height: 10),
+                              Text(
+                                dealName,
+                                style: poppinsMedium(fontSize: 13.sp),
+                              ),
+                              const SpacerBoxVertical(height: 5),
+                              Text(
+                                restaurantName,
+                                style: poppinsRegular(
+                                    fontSize: 10.sp, color: AppColors.hintText),
+                              ),
+                              const SpacerBoxVertical(height: 5),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star_half,
+                                    color: AppColors.yellowColor,
+                                    size: 15,
+                                  ),
+                                  Text(
+                                    rating.toString(),
+                                    style: poppinsRegular(
+                                        fontSize: 10.sp,
+                                        color: AppColors.yellowColor),
+                                  ),
+                                ],
+                              ),
+                              const SpacerBoxVertical(height: 5),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: AppColors.hintText,
+                                    size: 11.sp,
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            location,
+                                            style: poppinsRegular(
+                                                fontSize: 10.sp,
+                                                color: AppColors.hintText),
+                                            maxLines: 2,
+                                          ),
+                                        ),
+                                        const SpacerBoxHorizontal(width: 4),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              SizedBox(height: 1.5.h),
+                              const SpacerBoxVertical(height: 10),
+                              Text(
+                                'USES $uses',
+                                style: poppinsMedium(fontSize: 13.sp),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                }),
-              ),
-            ],
-          ),
-          const SpacerBoxHorizontal(width: 10),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+                  )
+                : const SizedBox.shrink();
+          })
+        : Container(
+            height: 140,
+            margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 1, color: AppColors.borderColor),
+              color: AppColors.whiteColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SpacerBoxVertical(height: 10),
-                Text(
-                  dealName,
-                  style: poppinsMedium(fontSize: 13.sp),
-                ),
-                const SpacerBoxVertical(height: 5),
-                Text(
-                  restaurantName,
-                  style: poppinsRegular(
-                      fontSize: 10.sp, color: AppColors.hintText),
-                ),
-                const SpacerBoxVertical(height: 5),
-                Row(
+                Stack(
+                  alignment: Alignment.topLeft,
+                  clipBehavior: Clip.none,
                   children: [
-                    const Icon(
-                      Icons.star_half,
-                      color: AppColors.yellowColor,
-                      size: 15,
-                    ),
-                    Text(
-                      rating.toString(),
-                      style: poppinsRegular(
-                          fontSize: 10.sp, color: AppColors.yellowColor),
-                    ),
-                  ],
-                ),
-                const SpacerBoxVertical(height: 5),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      color: AppColors.hintText,
-                      size: 11.sp,
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: [
+                    Column(
+                      children: [
+                        if (image.isNotEmpty)
+                          Container(
+                            height: 14.h,
+                            width: 14.h,
+                            margin: EdgeInsets.only(top: 5.sp, left: 2.sp),
+                            decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(14.sp),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.blackColor.withOpacity(0.16),
+                                  offset: const Offset(0, 3),
+                                  blurRadius: 6.5,
+                                ),
+                              ],
+                              image: DecorationImage(
+                                image: NetworkImage(image),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        else
                           Expanded(
-                            child: Text(
-                              location,
-                              style: poppinsRegular(
-                                  fontSize: 10.sp, color: AppColors.hintText),
-                              maxLines: 2,
+                            child: Image.asset(
+                              AppAssets.restaurantImg1,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          const SpacerBoxHorizontal(width: 4),
-                        ],
-                      ),
+                      ],
+                    ),
+                    Positioned(
+                      left: 0.sp, // Positioning for the like/unlike button
+                      top: 0.sp, // Positioning for the like/unlike button
+                      child: Obx(() {
+                        final isFavorite =
+                            controller.favoriteCache[dealId] ?? false;
+
+                        return IconButton(
+                          onPressed: () async {
+                            if (isFavorite) {
+                              await controller.unLikeDeal(dealId);
+
+                              controller.favoriteCache[dealId] =
+                                  false; // Update cache
+                            } else {
+                              await controller.likeDeal(dealId);
+                              controller.favoriteCache[dealId] =
+                                  true; // Update cache
+                            }
+                            // Update UI after operation
+                          },
+                          padding: EdgeInsets.zero,
+                          icon: ImageIcon(
+                            AssetImage(
+                              isFavorite
+                                  ? AppAssets.likeFilledImg
+                                  : AppAssets.likeImg,
+                            ),
+                            size: 12.sp,
+                            color: isFavorite
+                                ? AppColors.redColor
+                                : AppColors.hintText,
+                          ),
+                        );
+                      }),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                SizedBox(height: 1.5.h),
-                const SpacerBoxVertical(height: 10),
-                Text(
-                  'USES $uses',
-                  style: poppinsMedium(fontSize: 13.sp),
+                const SpacerBoxHorizontal(width: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SpacerBoxVertical(height: 10),
+                      Text(
+                        dealName,
+                        style: poppinsMedium(fontSize: 13.sp),
+                      ),
+                      const SpacerBoxVertical(height: 5),
+                      Text(
+                        restaurantName,
+                        style: poppinsRegular(
+                            fontSize: 10.sp, color: AppColors.hintText),
+                      ),
+                      const SpacerBoxVertical(height: 5),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star_half,
+                            color: AppColors.yellowColor,
+                            size: 15,
+                          ),
+                          Text(
+                            rating.toString(),
+                            style: poppinsRegular(
+                                fontSize: 10.sp, color: AppColors.yellowColor),
+                          ),
+                        ],
+                      ),
+                      const SpacerBoxVertical(height: 5),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: AppColors.hintText,
+                            size: 11.sp,
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    location,
+                                    style: poppinsRegular(
+                                        fontSize: 10.sp,
+                                        color: AppColors.hintText),
+                                    maxLines: 2,
+                                  ),
+                                ),
+                                const SpacerBoxHorizontal(width: 4),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(height: 1.5.h),
+                      const SpacerBoxVertical(height: 10),
+                      Text(
+                        'USES $uses',
+                        style: poppinsMedium(fontSize: 13.sp),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

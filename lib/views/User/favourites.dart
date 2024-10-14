@@ -190,6 +190,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                 rating: favourite.businessRating ?? 4.4,
                                 uses: favourite.uses.toString(),
                                 location: favourite.location ?? '',
+                                isFavScreen: true,
                                 image: favourite.image ?? '',
                               ));
                         },
@@ -219,6 +220,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                             child: RewardsListItems(
                               reward: reward,
                               userId: myController.currentUserId.value,
+                              isFavFromFavScreen: true,
                             ),
                           );
                         },

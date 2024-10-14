@@ -30,7 +30,12 @@ class RewardController extends GetxController {
     super.onInit();
     currentUserId.value =
         getCurrentUserId(); // Initialize with the current user UID
-    listenToRewards();
+    //  listenToRewards();
+  }
+
+  // Method to refresh rewards, can be called from anywhere
+  void refreshRewards() {
+    getRewards(); // Re-fetch the rewards based on the current location
   }
 
   String getCurrentUserId() {
@@ -59,29 +64,41 @@ class RewardController extends GetxController {
     });
   }
 
-  void listenToRewards() {
-    _rewardService.getRewardStream().listen((data) {
-      double userLat = getDoubleAsync(SharedPrefKey.latitude);
-      double userLon = getDoubleAsync(SharedPrefKey.longitude);
 
-      // Filter rewards within 50 km
-      rewards.value = data.where((reward) {
-        double distance = calculateDistance(
-          userLat,
-          userLon,
-          reward.latLong!
-              .latitude, // Assuming your RewardModel has a longLat property with latitude
-          reward.latLong!
-              .longitude, // Assuming your RewardModel has a longLat property with longitude
-        );
-        return distance <= 50.0; // Only include rewards within 50 km
-      }).toList();
-
-      isLoading(false);
-    }).onError((error) {
-      log('Failed to listen to rewards: $error');
-    });
+    Stream<List<RewardModel>> getRewards() {
+    return _rewardService.getRewardStream();
   }
+
+  // void listenToRewards() {
+  //   log('FIRST LISTEN FROM RWWard');
+  //   try {
+  //     _rewardService.getRewardStream().listen((data) {
+  //       double userLat = getDoubleAsync(SharedPrefKey.latitude);
+  //       double userLon = getDoubleAsync(SharedPrefKey.longitude);
+
+  //       log('HERE IS THE LOCATION 💥💥💥💥💥💥💥💥User location: $userLat, $userLon');
+
+  //       // Filter rewards within 50 km
+  //       rewards.value = data.where((reward) {
+  //         double distance = calculateDistance(
+  //           userLat,
+  //           userLon,
+  //           reward.latLong!
+  //               .latitude, // Assuming your RewardModel has a longLat property with latitude
+  //           reward.latLong!
+  //               .longitude, // Assuming your RewardModel has a longLat property with longitude
+  //         );
+  //         return distance <= 50.0; // Only include rewards within 50 km
+  //       }).toList();
+
+  //       isLoading(false);
+  //     }).onError((error) {
+  //       log('Failed to listen to rewards: $error');
+  //     });
+  //   } catch (e) {
+  //     log('Error in listenToRewards: $e');
+  //   }
+  // }
 
   // Search method to filter rewards based on search input
   void searchRewards(String query) {
@@ -103,7 +120,7 @@ class RewardController extends GetxController {
     bool isLiked = reward.isFavourite?.contains(userId) ?? false;
     await _rewardService.toggleLike(reward.rewardId!, userId, !isLiked);
     // Update the local state if needed
-    listenToRewards(); // This will refresh the reward list
+    getRewards(); // This will refresh the reward list
   }
 
   // Method to update the usedBy and pointsEarned fields in the reward collection

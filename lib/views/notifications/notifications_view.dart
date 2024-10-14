@@ -40,9 +40,8 @@ class _NotificationsViewState extends State<NotificationsView> {
               builder: (context, snapshot) {
                 // Check if the snapshot has data
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                      child:
-                          CircularProgressIndicator()); // Show loading indicator
+                  return Center(
+                      child: circularProgressBar()); // Show loading indicator
                 } else if (snapshot.hasError) {
                   return Center(
                       child: Text(

@@ -345,7 +345,6 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                                           DealKey.ISPROMOTIONSTART:
                                                               false,
                                                           DealKey.VIEWS: 0,
-                                                          DealKey.LIKES: 0,
                                                         }).then((value) =>
                                                             Get.back());
                                                   },

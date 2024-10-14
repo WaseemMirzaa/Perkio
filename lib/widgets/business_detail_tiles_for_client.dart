@@ -70,15 +70,19 @@ class BusinessDetailTilesforClientSide extends StatelessWidget {
                   SizedBox(
                     height: 100, // Set a fixed height
                     width: 100, // Set a fixed width
-                    child: image != null
-                        ? Image.network(
-                            image,
-                            fit: BoxFit.cover, // Ensure image covers the box
-                          )
-                        : Image.asset(
-                            AppAssets.restaurantImg1,
-                            fit: BoxFit.cover, // Ensure image covers the box
-                          ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                          14), // Set the radius to half the height/width for circular shape
+                      child: image != null
+                          ? Image.network(
+                              image,
+                              fit: BoxFit.cover, // Ensure image covers the box
+                            )
+                          : Image.asset(
+                              AppAssets.restaurantImg1,
+                              fit: BoxFit.cover, // Ensure image covers the box
+                            ),
+                    ),
                   ),
                 ],
               ),

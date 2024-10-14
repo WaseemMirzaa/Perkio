@@ -33,7 +33,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
         // header: SizedBox(height: 16.h,
         // child: customAppBar(),
         header: SizedBox(
-          height: 15.40.h,
+          height: 16.40.h,
           child: PreferredSize(
             preferredSize: Size.fromHeight(12.h),
             child: Obx(() {
@@ -62,56 +62,58 @@ class _PromotedDealViewState extends State<PromotedDealView> {
             }),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 16.h,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: Text(
-                  TempLanguage.lblPromotedDeal,
-                  style: poppinsMedium(fontSize: 18),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 12.h,
                 ),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              StreamBuilder<List<DealModel>>(
-                  stream: businessController
-                      .getMyPromotedDeal(getStringAsync(SharedPrefKey.uid)),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: circularProgressBar());
-                    }
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(
+                    TempLanguage.lblPromotedDeal,
+                    style: poppinsMedium(fontSize: 18),
+                  ),
+                ),
+                SizedBox(
+                  height: 1.h,
+                ),
+                StreamBuilder<List<DealModel>>(
+                    stream: businessController
+                        .getMyPromotedDeal(getStringAsync(SharedPrefKey.uid)),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: circularProgressBar());
+                      }
 
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }
 
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                          child: Text('No promoted deals available'));
-                    }
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                            child: Text('No promoted deals available'));
+                      }
 
-                    final deals = snapshot.data!;
-                    return ListView.builder(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: deals.length,
-                        itemBuilder: (context, index) {
-                          final promotedDeals = deals[index];
-                          return BusinessHomeListItems(
-                              dealModel: promotedDeals);
-                        });
-                  }),
-              SpacerBoxVertical(height: 10.h),
-            ],
+                      final deals = snapshot.data!;
+                      return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: deals.length,
+                          itemBuilder: (context, index) {
+                            final promotedDeals = deals[index];
+                            return BusinessHomeListItems(
+                                dealModel: promotedDeals);
+                          });
+                    }),
+                SpacerBoxVertical(height: 10.h),
+              ],
+            ),
           ),
         ),
         footer: Padding(

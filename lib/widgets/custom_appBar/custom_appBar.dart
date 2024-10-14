@@ -43,6 +43,7 @@ Widget customAppBar({
   Color appBarBackColor = AppColors.appBarBackColor,
   Widget? widget,
   RxBool? isSearching, // Add RxBool parameter
+  bool? isReward,
 }) {
   return Padding(
     padding: EdgeInsets.only(top: 1.h),
@@ -124,6 +125,7 @@ Widget customAppBar({
                                       AddressModel address =
                                           await Get.to(() => LocationService(
                                                   child: PlacesPick(
+                                                isReward: isReward,
                                                 changeCurrentLocation:
                                                     currentPosition,
                                                 currentLocation: LatLng(

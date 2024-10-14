@@ -14,8 +14,8 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/widgets/favourites_widget.dart';
 import 'package:swipe_app/widgets/my_rewards_list_items.dart';
-import 'package:swipe_app/widgets/rewards_list_items.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/rewards_list_items.dart';
 
 class MyDealsView extends StatefulWidget {
   MyDealsView({super.key, this.isReward = false});

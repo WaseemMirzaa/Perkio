@@ -23,7 +23,6 @@ import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
-import 'package:swipe_app/widgets/custom_clipper.dart';
 import 'package:swipe_app/widgets/profile_list_items.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart';

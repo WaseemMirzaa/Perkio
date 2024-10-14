@@ -26,9 +26,10 @@ class RewardsListItems extends StatefulWidget {
 }
 
 class _RewardsListItemsState extends State<RewardsListItems> {
+  RxBool isFav = true.obs;
+
   @override
   Widget build(BuildContext context) {
-    RxBool isFav = true.obs;
     final RewardController rewardController = Get.find<RewardController>();
 
     // Ensure pointsEarned from the Map<String, int> using the userId is updated dynamically
@@ -346,7 +347,7 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                               widget.reward!,
                               widget.userId!,
                             );
-                            isFav.value = false;
+                            isFav.value = !isFav.value;
                           }
                         },
                       ),

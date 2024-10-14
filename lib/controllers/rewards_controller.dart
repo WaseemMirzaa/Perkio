@@ -5,8 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:swipe_app/core/utils/constants/app_common.dart';
-import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/receipt_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/reward_service.dart';
@@ -64,8 +62,15 @@ class RewardController extends GetxController {
     });
   }
 
+  var likedRewardsCache = <String, bool>{}.obs;
 
-    Stream<List<RewardModel>> getRewards() {
+  // Check if a reward is liked based on the cache, otherwise fallback to the API response
+  bool isRewardLiked(RewardModel reward, String userId) {
+    return likedRewardsCache[reward.rewardId!] ??
+        reward.isFavourite!.contains(userId);
+  }
+
+  Stream<List<RewardModel>> getRewards() {
     return _rewardService.getRewardStream();
   }
 
@@ -116,12 +121,27 @@ class RewardController extends GetxController {
     }
   }
 
+  // Future<void> toggleLike(RewardModel reward, String userId) async {
+  //   bool isLiked = reward.isFavourite?.contains(userId) ?? false;
+  //   await _rewardService.toggleLike(reward.rewardId!, userId, !isLiked);
+  //   // Update the local state if needed
+  //   getRewards(); // This will refresh the reward list
+  // }
+
   Future<void> toggleLike(RewardModel reward, String userId) async {
-    bool isLiked = reward.isFavourite?.contains(userId) ?? false;
+    // Check if the reward is already liked by the user (from cache or reward data)
+    bool isLiked = likedRewardsCache[reward.rewardId!] ?? (reward.isFavourite?.contains(userId) ?? false);
+
+    // Toggle like status
     await _rewardService.toggleLike(reward.rewardId!, userId, !isLiked);
-    // Update the local state if needed
-    getRewards(); // This will refresh the reward list
-  }
+
+    // Update the cached like status immediately without waiting for getRewards()
+    likedRewardsCache[reward.rewardId!] = !isLiked;
+
+    // Optionally refresh the cache to notify observers/UI
+    likedRewardsCache.refresh();
+}
+
 
   // Method to update the usedBy and pointsEarned fields in the reward collection
   Future<void> updateRewardUsage(String rewardId, String userId) async {

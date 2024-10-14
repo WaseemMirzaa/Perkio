@@ -9,6 +9,7 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/reward_model.dart'; // Assuming this is where your RewardModel is located
 
+
 class MyRewardsListItems extends StatefulWidget {
   final RewardModel? reward;
   final String? userId;
@@ -25,15 +26,15 @@ class MyRewardsListItems extends StatefulWidget {
 
 class _MyRewardsListItemsState extends State<MyRewardsListItems> {
   RxBool isFav = true.obs;
-  final RewardController rewardController =
-      Get.put<RewardController>(RewardController());
+  final RewardController rewardController = Get.find<RewardController>();
 
   @override
   void initState() {
     super.initState();
-    // Initialize the isFav observable based on the reward's favorite status
+    // Initialize the isFav observable based on the reward's favorite status, using the cache
     if (widget.userId != null && widget.reward != null) {
-      isFav.value = widget.reward!.isFavourite!.contains(widget.userId!);
+      isFav.value =
+          rewardController.isRewardLiked(widget.reward!, widget.userId!);
     }
   }
 
@@ -82,9 +83,6 @@ class _MyRewardsListItemsState extends State<MyRewardsListItems> {
                     child: Container(
                       height: 100,
                       width: 100,
-                      decoration: const BoxDecoration(
-                          // Optionally, you can add a border here if needed
-                          ),
                       child: (widget.reward?.rewardLogo?.isNotEmpty ?? false)
                           ? Image.network(
                               widget.reward!.rewardLogo!,
@@ -172,26 +170,27 @@ class _MyRewardsListItemsState extends State<MyRewardsListItems> {
               Positioned(
                 top: 5,
                 right: 5,
-                child: Obx(() {
-                  return IconButton(
-                    icon: Image.asset(
-                      isFav.value ? AppAssets.likeFilledImg : AppAssets.likeImg,
-                      width: 12.sp,
-                      height: 12.sp,
-                    ),
-                    iconSize: 12.sp, // Set the icon size here
-                    onPressed: () async {
-                      if (widget.userId != null && widget.reward != null) {
-                        await rewardController.toggleLike(
-                          widget.reward!,
-                          widget.userId!,
-                        );
-                        // Toggle isFav value after the action completes
-                        isFav.value = !isFav.value;
-                      }
-                    },
-                  );
-                }),
+                child: Obx(() => IconButton(
+                      icon: Image.asset(
+                        isFav.value
+                            ? AppAssets.likeFilledImg
+                            : AppAssets.likeImg,
+                        width: 12.sp,
+                        height: 12.sp,
+                      ),
+                      iconSize: 12.sp, // Set the icon size here
+                      onPressed: () async {
+                        if (widget.userId != null && widget.reward != null) {
+                          await rewardController.toggleLike(
+                            widget.reward!,
+                            widget.userId!,
+                          );
+                          // Toggle isFav value after the action completes using the cache
+                          isFav.value = rewardController.isRewardLiked(
+                              widget.reward!, widget.userId!);
+                        }
+                      },
+                    )),
               ),
           ],
         ),

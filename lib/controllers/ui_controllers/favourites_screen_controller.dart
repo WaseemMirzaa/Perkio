@@ -21,7 +21,7 @@ class FavouritesScreenController extends GetxController {
     currentUserId.value =
         getCurrentUserId(); // Initialize with the current user UID
     loadFavourites();
-    Get.put(RewardController());
+    Get.find<RewardController>();
   }
 
   String getCurrentUserId() {

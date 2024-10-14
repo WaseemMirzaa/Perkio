@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:swipe_app/models/business_details_model.dart';
 
 class BusinessRatingController {
-
-
-  Future<BusniessDetailsModel?> fetchBusinessDetails(String businessDetailsId) async {
+  Future<BusniessDetailsModel?> fetchBusinessDetails(
+      String businessDetailsId) async {
     try {
       // Step 1: Get user document where the user ID matches the current user ID
       QuerySnapshot userSnapshot = await FirebaseFirestore.instance

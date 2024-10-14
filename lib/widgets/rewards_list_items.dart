@@ -27,11 +27,20 @@ class RewardsListItems extends StatefulWidget {
 
 class _RewardsListItemsState extends State<RewardsListItems> {
   RxBool isFav = true.obs;
+  final RewardController rewardController = Get.find<RewardController>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the isFav observable based on the reward's favorite status, using the cache
+    if (widget.userId != null && widget.reward != null) {
+      isFav.value =
+          rewardController.isRewardLiked(widget.reward!, widget.userId!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final RewardController rewardController = Get.find<RewardController>();
-
     // Ensure pointsEarned from the Map<String, int> using the userId is updated dynamically
     int pointsEarnedByUser = (widget.userId != null &&
             widget.reward != null &&
@@ -199,7 +208,10 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                                       widget.reward!,
                                       widget.userId!,
                                     );
-                                    isFav.value = false;
+                                    // isFav.value = false;
+                                    isFav.value =
+                                        rewardController.isRewardLiked(
+                                            widget.reward!, widget.userId!);
                                   }
                                 },
                               ),
@@ -347,7 +359,9 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                               widget.reward!,
                               widget.userId!,
                             );
-                            isFav.value = !isFav.value;
+                            // isFav.value = !isFav.value;
+                            isFav.value = rewardController.isRewardLiked(
+                                widget.reward!, widget.userId!);
                           }
                         },
                       ),

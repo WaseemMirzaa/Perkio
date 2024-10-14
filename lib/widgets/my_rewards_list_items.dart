@@ -9,7 +9,6 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/reward_model.dart'; // Assuming this is where your RewardModel is located
 
-
 class MyRewardsListItems extends StatefulWidget {
   final RewardModel? reward;
   final String? userId;

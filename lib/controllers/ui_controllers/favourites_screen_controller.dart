@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
@@ -8,6 +9,7 @@ class FavouritesScreenController extends GetxController {
   RxInt selectedIndex = 0.obs;
   RxList<DealModel> favouriteDeals = <DealModel>[].obs;
   RxList<RewardModel> favouriteRewards = <RewardModel>[].obs;
+
   final UserController userController = Get.find<UserController>();
   var currentUserId = ''.obs; // Observable variable for the current user UID
   RxMap<String, bool> favoriteCache =
@@ -19,6 +21,7 @@ class FavouritesScreenController extends GetxController {
     currentUserId.value =
         getCurrentUserId(); // Initialize with the current user UID
     loadFavourites();
+    Get.put(RewardController());
   }
 
   String getCurrentUserId() {

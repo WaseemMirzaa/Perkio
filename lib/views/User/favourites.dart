@@ -26,7 +26,7 @@ class FavouritesScreen extends StatefulWidget {
 
 class _FavouritesScreenState extends State<FavouritesScreen> {
   final FavouritesScreenController myController =
-      Get.find<FavouritesScreenController>();
+      Get.put<FavouritesScreenController>(FavouritesScreenController());
 
   var controller = Get.find<UserController>();
 

@@ -268,7 +268,10 @@ class _EditMyDealsState extends State<EditMyDeals> {
                               showSnackBar(
                                   'Deal Logo', 'Deal Logo is required');
                             } else {
-                              context.loaderOverlay.show();
+                              context.loaderOverlay.show(
+                                widgetBuilder: (context) =>
+                                    Center(child: circularProgressBar()),
+                              );
                               final imageLink = homeController.pickedImage ==
                                       null
                                   ? null

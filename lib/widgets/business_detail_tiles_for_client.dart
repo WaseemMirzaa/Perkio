@@ -40,6 +40,22 @@ class BusinessDetailTilesforClientSide extends StatelessWidget {
           '${distance.toStringAsFixed(1)} miles'; // Display distance in km
     }
 
+    // Calculate distance if it's a reward
+    String distanceTextforreward = '';
+    if (reward != null && reward!.rewardAddress != null) {
+      double userLat = getDoubleAsync(SharedPrefKey.latitude);
+      double userLon = getDoubleAsync(SharedPrefKey.longitude);
+
+      final distance = calculateDistance(
+        userLat,
+        userLon,
+        reward!.latLong!.latitude,
+        reward!.latLong!.longitude,
+      );
+      distanceTextforreward =
+          '${distance.toStringAsFixed(1)} miles'; // Display distance in km
+    }
+
     return Container(
       height: 130,
       margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
@@ -134,7 +150,7 @@ class BusinessDetailTilesforClientSide extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          reward!.rewardAddress!,
+                          distanceTextforreward,
                           style: poppinsRegular(
                               fontSize: 12, color: AppColors.hintText),
                           maxLines: 2,

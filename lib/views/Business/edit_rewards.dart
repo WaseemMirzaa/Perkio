@@ -475,7 +475,10 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                             } else {
                               int userInput = int.parse(
                                   myController.pointsToRedeemController.text);
-                              context.loaderOverlay.show();
+                                context.loaderOverlay.show(
+                            widgetBuilder: (context) =>
+                                Center(child: circularProgressBar()),
+                          );
                               final imageLink = homeController.pickedImage ==
                                       null
                                   ? null

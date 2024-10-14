@@ -248,7 +248,10 @@ class _AddDealsState extends State<AddDeals> {
                           showSnackBar(
                               'Empty Fields', 'Deal logo field is required');
                         } else {
-                          context.loaderOverlay.show();
+                          context.loaderOverlay.show(
+                            widgetBuilder: (context) =>
+                                Center(child: circularProgressBar()),
+                          );
                           final imageLink = await homeController
                               .uploadImageToFirebaseWithCustomPath(
                                   homeController.pickedImage!.path,

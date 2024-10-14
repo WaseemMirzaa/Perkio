@@ -282,7 +282,10 @@ class _AddRewardsState extends State<AddRewards> {
                         showSnackBar('Invalid Input',
                             'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
                       } else {
-                        context.loaderOverlay.show();
+                        context.loaderOverlay.show(
+                          widgetBuilder: (context) =>
+                              Center(child: circularProgressBar()),
+                        );
                         final imageLink = await homeController
                             .uploadImageToFirebaseWithCustomPath(
                                 homeController.pickedImage!.path,

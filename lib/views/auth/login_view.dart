@@ -22,7 +22,8 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+  final bool isUser;
+  const LoginView({super.key, required this.isUser});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -114,7 +115,8 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                                   controller.passErrorText.value == "") {
                                 final isAuthenticated = await controller.signIn(
                                     controller.emailController.text,
-                                    controller.passwordController.text);
+                                    controller.passwordController.text,
+                                    widget.isUser);
                                 controller.fetchAndCacheFavouriteDeals();
                                 if (isAuthenticated &&
                                     await LocationPermissionManager
@@ -158,7 +160,8 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                     SpacerBoxVertical(height: 1.5.h),
                     TextButton(
                         onPressed: () {
-                          Get.to(() => const ForgotPasswordView());
+                          Get.to(
+                              () => ForgotPasswordView(isUser: widget.isUser));
                         },
                         child: Text(
                           TempLanguage.txtForgotPassword,

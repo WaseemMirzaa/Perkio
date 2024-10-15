@@ -39,19 +39,6 @@ class _SelectLocationState extends State<SelectLocation> {
   void initState() {
     super.initState();
 
-    Future.microtask(() async {
-      if (address != null) {
-      } else {
-        await homeServices.getCurrentLocation(context: context).then((value) {
-          print("Then Called");
-          getAndFill();
-        });
-      }
-      setState(() {
-        isLoading = false; // Enable onTap after microtask is complete
-      });
-    });
-
     _initializeLocation();
   }
 

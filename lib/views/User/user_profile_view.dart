@@ -113,19 +113,45 @@ class _UserProfileViewState extends State<UserProfileView> {
                               width: 100.w,
                               fit: BoxFit.cover,
                             )
-                          : !getStringAsync(SharedPrefKey.photo).isEmptyOrNull
-                              ? Image.network(
-                                  getStringAsync(SharedPrefKey.photo),
-                                  height: 30.h,
-                                  width: 100.w,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  AppAssets.imageHeader,
-                                  fit: BoxFit.fill,
-                                  height: 30.h,
-                                  width: 100.w,
-                                );
+                          : SizedBox(
+                              height: 30.h,
+                              width: 100.w,
+                              child: Image.network(
+                                userProfile.image ?? '',
+                                fit: BoxFit.cover,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  } else {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.gradientEndColor,
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                (loadingProgress
+                                                        .expectedTotalBytes ??
+                                                    1)
+                                            : null,
+                                      ),
+                                    );
+                                  }
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(
+                                    child: Image.asset(
+                                      AppAssets.imageHeader,
+                                      fit: BoxFit.fill,
+                                      height: 30.h,
+                                      width: 100.w,
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
                     }),
                     BackButtonWidget(),
                     Positioned(
@@ -317,7 +343,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                         enabled: enabled.value,
                       ),
                       ProfileListItems(
-                        path: AppAssets.profile2,
+                        path: AppAssets.call,
                         textController: phoneNoController,
                         enabled: enabled.value,
                       ),

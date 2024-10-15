@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/user_model.dart';
+import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/views/business/profile_settings_business.dart';
 import 'package:swipe_app/views/user/user_profile_view.dart';
 import 'package:swipe_app/views/help/help_view.dart';
@@ -97,6 +100,8 @@ class _SettingsViewState extends State<SettingsView> {
     final List filteredSettingsItems =
         widget.isUser ? settingsItems.sublist(1) : settingsItems;
 
+    final homeController = Get.put(HomeController(HomeServices()));
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: StreamBuilder<UserModel>(
@@ -121,29 +126,54 @@ class _SettingsViewState extends State<SettingsView> {
                   child: SizedBox(
                     height: 210,
                     width: double.infinity,
-                    child: Image.network(
-                      userProfile.image ?? '',
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      (loadingProgress.expectedTotalBytes ?? 1)
-                                  : null,
-                            ),
-                          );
-                        }
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(
-                          child: Icon(Icons.error, color: Colors.red),
-                        );
-                      },
-                    ),
+                    child: Obx(() {
+                      return (homeController.pickedImage != null)
+                          ? Image.file(
+                              homeController.pickedImage!,
+                              height: 30.h,
+                              width: 100.w,
+                              fit: BoxFit.cover,
+                            )
+                          : SizedBox(
+                              height: 30.h,
+                              width: 100.w,
+                              child: Image.network(
+                                userProfile.image ?? '',
+                                fit: BoxFit.cover,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  } else {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.gradientEndColor,
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                (loadingProgress
+                                                        .expectedTotalBytes ??
+                                                    1)
+                                            : null,
+                                      ),
+                                    );
+                                  }
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(
+                                    child: Image.asset(
+                                      AppAssets.imageHeader,
+                                      fit: BoxFit.fill,
+                                      height: 30.h,
+                                      width: 100.w,
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                    }),
                   ),
                 ),
                 ListView.builder(
@@ -235,7 +265,7 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    controller.dispose();
+                    controller.clearTextFields();
                     controller.logout();
                   },
                   child: const SettingsListItems(

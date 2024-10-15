@@ -81,273 +81,288 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return LoaderOverlay(
-      child: SecondaryLayoutWidget(
-        header: Stack(children: [
-          CustomShapeContainer(
-            height: 22.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SpacerBoxVertical(height: 40),
-                BackButtonWidget(
-                  padding: EdgeInsets.zero,
-                ),
-                Center(
-                    child: Text(
-                  'Add Business Info',
-                  style: poppinsMedium(fontSize: 25),
-                ))
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        homeController.setImageNull();
+        homeController.clearLogo();
+        return true;
+      },
+      child: LoaderOverlay(
+        child: SecondaryLayoutWidget(
+          header: Stack(children: [
+            CustomShapeContainer(
+              height: 22.h,
             ),
-          ),
-        ]),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 21.h,
-                ),
-                Text(
-                  'Business Address',
-                  style: poppinsRegular(fontSize: 13),
-                ),
-                const SpacerBoxVertical(height: 10),
-                // Declare a loading state variable
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SpacerBoxVertical(height: 40),
+                  BackButtonWidget(
+                    padding: EdgeInsets.zero,
+                  ),
+                  Center(
+                      child: Text(
+                    'Add Business Info',
+                    style: poppinsMedium(fontSize: 25),
+                  ))
+                ],
+              ),
+            ),
+          ]),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 21.h,
+                  ),
+                  Text(
+                    'Business Address',
+                    style: poppinsRegular(fontSize: 13),
+                  ),
+                  const SpacerBoxVertical(height: 10),
+                  // Declare a loading state variable
 
-                TextFieldWidget(
-                  text: 'Business Address',
-                  textController: businessAddressController,
-                  focusNode: businessAddressNode,
-                  onEditComplete: () =>
-                      focusChange(context, businessAddressNode, websiteNode),
-                  onTap: isLoading
-                      ? null
-                      : () async {
-                          bool isPremitt = await LocationPermissionManager()
-                              .requestLocationPermission(context);
+                  TextFieldWidget(
+                    text: 'Business Address',
+                    textController: businessAddressController,
+                    focusNode: businessAddressNode,
+                    isReadOnly: true,
+                    onEditComplete: () =>
+                        focusChange(context, businessAddressNode, websiteNode),
+                    onTap: isLoading
+                        ? null
+                        : () async {
+                            bool isPremitt = await LocationPermissionManager()
+                                .requestLocationPermission(context);
 
-                          if (isPremitt) {
-                            address = await Navigator.push(
+                            if (isPremitt) {
+                              final currentPosition =
+                                  await homeServices.getCurrentLocation();
+                              address = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LocationService(
+                                          child: PlacesPick(
+                                              changeCurrentLocation:
+                                                  currentPosition!,
+                                              currentLocation: latLng ??
+                                                  const LatLng(-97.00000000,
+                                                      38.00000000)))));
+                              if (address != null) {
+                                businessAddressController.text =
+                                    address!.completeAddress.toString();
+                                log(businessAddressController.text);
+                                await setValue(
+                                    SharedPrefKey.latitude, address!.latitude);
+                                await setValue(SharedPrefKey.longitude,
+                                    address!.longitude);
+                              }
+                            } else {
+                              X.showSnackBar('Allow Location Permissions',
+                                  'Please allow location permissions');
+                            }
+                          },
+                  ),
+
+                  const SpacerBoxVertical(height: 20),
+                  Text(
+                    'Website',
+                    style: poppinsRegular(fontSize: 13),
+                  ),
+                  const SpacerBoxVertical(height: 10),
+                  TextFieldWidget(
+                    text: 'Website',
+                    textController: websiteController,
+                    focusNode: websiteNode,
+                    onEditComplete: () =>
+                        focusChange(context, websiteNode, businessIDNode),
+                  ),
+                  const SpacerBoxVertical(height: 20),
+                  Text(
+                    'Google Business ID',
+                    style: poppinsRegular(fontSize: 13),
+                  ),
+                  const SpacerBoxVertical(height: 10),
+                  TextFieldWidget(
+                    text: 'Google Business ID',
+                    textController: businessIdController,
+                    focusNode: businessIDNode,
+                    onEditComplete: () => unFocusChange(context),
+                  ),
+                  const SpacerBoxVertical(height: 20),
+                  Text(
+                    'Logo',
+                    style: poppinsRegular(fontSize: 13),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40),
+                    child: Obx(
+                      () => Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          uploadImageComp(homeController.pickedImage2, () {
+                            showAdaptiveDialog(
+                                context: context,
+                                builder: (context) =>
+                                    imageDialog(galleryTap: () {
+                                      Get.back();
+                                      homeController.pickImageFromGallery(
+                                          isCropActive: false, isLogo: true);
+                                    }, cameraTap: () {
+                                      Get.back();
+                                      homeController.pickImageFromCamera(
+                                          isCropActive: false, isLogo: true);
+                                    }));
+                          }),
+                          Positioned(
+                              top: -1.h,
+                              right: -0.8.h,
+                              child: IconButton(
+                                iconSize: 18.sp,
+                                onPressed: () {
+                                  homeController.clearLogo();
+                                },
+                                icon: const Icon(
+                                  Icons.close_rounded,
+                                ),
+                              ))
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Business Images',
+                    style: poppinsRegular(fontSize: 13),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40),
+                    child: Obx(
+                      () => Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          uploadImageComp(homeController.pickedImage, () {
+                            showAdaptiveDialog(
+                                context: context,
+                                builder: (context) =>
+                                    imageDialog(galleryTap: () {
+                                      Get.back();
+                                      homeController.pickImageFromGallery(
+                                          isCropActive: false);
+                                    }, cameraTap: () {
+                                      Get.back();
+                                      homeController.pickImageFromCamera(
+                                          isCropActive: false);
+                                    }));
+                          }),
+                          Positioned(
+                              top: -1.h,
+                              right: -0.8.h,
+                              child: IconButton(
+                                iconSize: 18.sp,
+                                onPressed: () {
+                                  homeController.setImageNull();
+                                },
+                                icon: const Icon(
+                                  Icons.close_rounded,
+                                ),
+                              ))
+                        ],
+                      ),
+                    ),
+                  ),
+                  SpacerBoxVertical(height: 3.h),
+                  ButtonWidget(
+                    onSwipe: () async {
+                      print(
+                          "The LOGO is: ${homeController.pickedImage2?.path} \n and \n The Business Image is ${homeController.pickedImage?.path}");
+                      if (businessAddressController.text.isEmptyOrNull) {
+                        X.showSnackBar('Fields Required',
+                            'Please enter the business address');
+                      } else if (websiteController.text.isEmptyOrNull) {
+                        X.showSnackBar(
+                            'Fields Required', 'Please enter the website');
+                      } else if (businessIdController.text.isEmptyOrNull) {
+                        X.showSnackBar('Fields Required',
+                            'Please enter the Google Business ID');
+                      } else if (homeController.pickedImage2 == null) {
+                        X.showSnackBar('Fields Required',
+                            'Please upload the business Logo');
+                      } else if (homeController.pickedImage == null) {
+                        X.showSnackBar('Fields Required',
+                            'Please upload the business image');
+                      } else {
+                        context.loaderOverlay.show(
+                          widgetBuilder: (context) =>
+                              Center(child: circularProgressBar()),
+                        );
+                        widget.userModel.latLong = GeoPoint(
+                            getDoubleAsync(SharedPrefKey.latitude),
+                            getDoubleAsync(SharedPrefKey.longitude));
+                        widget.userModel.website = websiteController.text;
+                        widget.userModel.businessId = businessIdController.text;
+                        widget.userModel.address =
+                            businessAddressController.text;
+
+                        if (getStringAsync(SharedPrefKey.role) ==
+                            SharedPrefKey.business) {
+                          widget.userModel.image =
+                              homeController.pickedImage?.path;
+                          widget.userModel.logo =
+                              homeController.pickedImage2?.path;
+                        }
+
+                        //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
+                        //tets placeID = 'ChIJrTLr-GyuEmsRBfy61i59si0'
+
+                        String? token = await FCMManager.getFCMToken();
+                        widget.userModel.fcmTokens = [token!];
+
+                        // Await the signUp call and only navigate if it was successful
+                        await userController.signUp(widget.userModel, (error) {
+                          // Error callback, just hide the loader and stay on the current screen
+                          if (error != null) {
+                            Get.snackbar('Error', error,
+                                snackPosition: SnackPosition.TOP);
+                          }
+                          context.loaderOverlay.hide();
+                        }, true, businessIdController.text).then((value) {
+                          // Navigate only if signup didn't fail
+                          print(
+                              'HERE IS THE PASS ID ${businessIdController.text}');
+                          if (value != false) {
+                            // You might need to modify `signUp` to return a success indicator
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LocationService(
-                                        child: PlacesPick(
-                                            currentLocation: latLng ??
-                                                const LatLng(-97.00000000,
-                                                    38.00000000)))));
-                            if (address != null) {
-                              businessAddressController.text =
-                                  address!.completeAddress.toString();
-                              log(businessAddressController.text);
-                              await setValue(
-                                  SharedPrefKey.latitude, address!.latitude);
-                              await setValue(
-                                  SharedPrefKey.longitude, address!.longitude);
-                            }
-                          } else {
-                            X.showSnackBar('Allow Location Permissions',
-                                'Please allow location permissions');
+                                    builder: (context) =>
+                                        VerificationPendingView()));
+                            homeController.setImageNull();
+                            homeController.clearLogo();
                           }
-                        },
-                ),
 
-                const SpacerBoxVertical(height: 20),
-                Text(
-                  'Website',
-                  style: poppinsRegular(fontSize: 13),
-                ),
-                const SpacerBoxVertical(height: 10),
-                TextFieldWidget(
-                  text: 'Website',
-                  textController: websiteController,
-                  focusNode: websiteNode,
-                  onEditComplete: () =>
-                      focusChange(context, websiteNode, businessIDNode),
-                ),
-                const SpacerBoxVertical(height: 20),
-                Text(
-                  'Google Business ID',
-                  style: poppinsRegular(fontSize: 13),
-                ),
-                const SpacerBoxVertical(height: 10),
-                TextFieldWidget(
-                  text: 'Google Business ID',
-                  textController: businessIdController,
-                  focusNode: businessIDNode,
-                  onEditComplete: () => unFocusChange(context),
-                ),
-                const SpacerBoxVertical(height: 20),
-                Text(
-                  'Logo',
-                  style: poppinsRegular(fontSize: 13),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: Obx(
-                    () => Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        uploadImageComp(homeController.pickedImage2, () {
-                          showAdaptiveDialog(
-                              context: context,
-                              builder: (context) => imageDialog(galleryTap: () {
-                                    Get.back();
-                                    homeController.pickImageFromGallery(
-                                        isCropActive: false, isLogo: true);
-                                  }, cameraTap: () {
-                                    Get.back();
-                                    homeController.pickImageFromCamera(
-                                        isCropActive: false, isLogo: true);
-                                  }));
-                        }),
-                        Positioned(
-                            top: -1.h,
-                            right: -0.8.h,
-                            child: IconButton(
-                              iconSize: 18.sp,
-                              onPressed: () {
-                                homeController.clearLogo();
-                              },
-                              icon: const Icon(
-                                Icons.close_rounded,
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Business Images',
-                  style: poppinsRegular(fontSize: 13),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: Obx(
-                    () => Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        uploadImageComp(homeController.pickedImage, () {
-                          showAdaptiveDialog(
-                              context: context,
-                              builder: (context) => imageDialog(galleryTap: () {
-                                    Get.back();
-                                    homeController.pickImageFromGallery(
-                                        isCropActive: false);
-                                  }, cameraTap: () {
-                                    Get.back();
-                                    homeController.pickImageFromCamera(
-                                        isCropActive: false);
-                                  }));
-                        }),
-                        Positioned(
-                            top: -1.h,
-                            right: -0.8.h,
-                            child: IconButton(
-                              iconSize: 18.sp,
-                              onPressed: () {
-                                homeController.setImageNull();
-                              },
-                              icon: const Icon(
-                                Icons.close_rounded,
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
-                ),
-                SpacerBoxVertical(height: 3.h),
-                ButtonWidget(
-                  onSwipe: () async {
-                    print(
-                        "The LOGO is: ${homeController.pickedImage2?.path} \n and \n The Business Image is ${homeController.pickedImage?.path}");
-                    if (businessAddressController.text.isEmptyOrNull) {
-                      X.showSnackBar('Fields Required',
-                          'Please enter the business address');
-                    } else if (websiteController.text.isEmptyOrNull) {
-                      X.showSnackBar(
-                          'Fields Required', 'Please enter the website');
-                    } else if (businessIdController.text.isEmptyOrNull) {
-                      X.showSnackBar('Fields Required',
-                          'Please enter the Google Business ID');
-                    } else if (homeController.pickedImage2 == null) {
-                      X.showSnackBar(
-                          'Fields Required', 'Please upload the business Logo');
-                    } else if (homeController.pickedImage == null) {
-                      X.showSnackBar('Fields Required',
-                          'Please upload the business image');
-                    } else {
-                      context.loaderOverlay.show(
-                        widgetBuilder: (context) =>
-                            Center(child: circularProgressBar()),
-                      );
-                      widget.userModel.latLong = GeoPoint(
-                          getDoubleAsync(SharedPrefKey.latitude),
-                          getDoubleAsync(SharedPrefKey.longitude));
-                      widget.userModel.website = websiteController.text;
-                      widget.userModel.businessId = businessIdController.text;
-                      widget.userModel.address = businessAddressController.text;
-
-                      if (getStringAsync(SharedPrefKey.role) ==
-                          SharedPrefKey.business) {
-                        widget.userModel.image =
-                            homeController.pickedImage?.path;
-                        widget.userModel.logo =
-                            homeController.pickedImage2?.path;
+                          context.loaderOverlay
+                              .hide(); // Hide loader whether signup is successful or not
+                        });
                       }
-
-                      //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
-                      //tets placeID = 'ChIJrTLr-GyuEmsRBfy61i59si0'
-
-                      String? token = await FCMManager.getFCMToken();
-                      widget.userModel.fcmTokens = [token!];
-
-                      // Await the signUp call and only navigate if it was successful
-                      await userController.signUp(widget.userModel, (error) {
-                        // Error callback, just hide the loader and stay on the current screen
-                        if (error != null) {
-                          Get.snackbar('Error', error,
-                              snackPosition: SnackPosition.TOP);
-                        }
-                        context.loaderOverlay.hide();
-                      }, true, businessIdController.text).then((value) {
-                        // Navigate only if signup didn't fail
-                        print(
-                            'HERE IS THE PASS ID ${businessIdController.text}');
-                        if (value != false) {
-                          // You might need to modify `signUp` to return a success indicator
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      VerificationPendingView()));
-                          homeController.setImageNull();
-                          homeController.clearLogo();
-                        }
-
-                        context.loaderOverlay
-                            .hide(); // Hide loader whether signup is successful or not
-                      });
-                    }
-                  },
-                  text: "SWIPE TO SIGNUP",
-                )
-              ],
+                    },
+                    text: "SWIPE TO SIGNUP",
+                  )
+                ],
+              ),
             ),
           ),
         ),

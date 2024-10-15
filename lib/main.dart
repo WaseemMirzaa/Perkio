@@ -5,7 +5,6 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
-import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/bindings/bindings.dart';
@@ -38,7 +37,6 @@ void main() async {
   await Stripe.instance.applySettings();
 
   Get.put(RewardController());
-
 
   runApp(const MyApp());
 }

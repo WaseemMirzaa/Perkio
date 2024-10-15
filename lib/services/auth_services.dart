@@ -12,29 +12,64 @@ class AuthServices {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   //............ SignIn
-  Future<String?> signIn(String email, String password) async {
+  Future<String?> signIn(String email, String password, bool isUser) async {
     try {
-      // Sign in the user
-      await auth.signInWithEmailAndPassword(email: email, password: password);
-      User? user = auth.currentUser;
+      // Attempt to sign in the user
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
 
       if (user != null) {
-        // Get the FCM token
-        String? fcmToken = await FCMManager.getFCMToken();
+        // Fetch the user document from Firestore to check the role
+        DocumentSnapshot userDoc =
+            await firestore.collection('users').doc(user.uid).get();
 
-        // Update the user's FCM token list in Firestore
-        DocumentReference userDocRef =
-            firestore.collection('users').doc(user.uid);
+        if (userDoc.exists) {
+          String userRole = (userDoc.data() as Map<String, dynamic>)['role'];
 
-        // Add the token to the list (using arrayUnion to avoid duplicates)
-        await userDocRef.update({
-          'fcmTokens': FieldValue.arrayUnion([fcmToken])
-        });
+          // Check the role based on isUser value
+          if (isUser) {
+            if (userRole == 'business') {
+              // isUser is true, role is business - do not authenticate
+              return 'User does not have permission to access as a regular user.';
+            } else if (userRole == 'user') {
+              // isUser is true, role is user - authenticate
+              String? fcmToken = await FCMManager.getFCMToken();
 
-        print('FCM token added to user document');
+              // Update the user's FCM token list in Firestore
+              await userDoc.reference.update({
+                'fcmTokens': FieldValue.arrayUnion([fcmToken])
+              });
+
+              print('FCM token added to user document');
+              return null; // Sign-in success, return null
+            }
+          } else {
+            // isUser is false
+            if (userRole == 'business') {
+              // isUser is false, role is business - authenticate
+              String? fcmToken = await FCMManager.getFCMToken();
+
+              // Update the user's FCM token list in Firestore
+              await userDoc.reference.update({
+                'fcmTokens': FieldValue.arrayUnion([fcmToken])
+              });
+
+              print('FCM token added to user document');
+              return null; // Sign-in success, return null
+            } else if (userRole == 'user') {
+              // isUser is false, role is user - do not authenticate
+              return 'User does not have permission to access as a business.';
+            }
+          }
+        } else {
+          return 'Sign-in failed: User not found.';
+        }
       }
-
-      return null; // Sign-in success, return null
+      return 'Sign-in failed: User not found.';
     } on FirebaseAuthException catch (e) {
       return e.message ?? 'An error occurred during sign-in';
     }

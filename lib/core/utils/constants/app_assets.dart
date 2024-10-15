@@ -1,5 +1,10 @@
-class AppAssets{
+class AppAssets {
   static const networkImg = 'assets/images/002-network.png';
+  static const mail = 'assets/images/mail.png';
+  static const world = 'assets/images/world.png';
+  static const google = 'assets/images/google1.png';
+
+  static const network = 'assets/images/network.png';
   static const insuranceImg = 'assets/images/003-insurance.png';
   static const helpImg = 'assets/images/004-help.png';
   static const privacyImg = 'assets/images/004-insurance.png';
@@ -42,6 +47,8 @@ class AppAssets{
   static const congratulationsImg = 'assets/images/pngegg (37).png';
   static const profile1 = 'assets/images/Profile (1).png';
   static const profile2 = 'assets/images/Profile (2).png';
+  static const call = 'assets/images/call.png';
+
   static const profile3 = 'assets/images/Profile (3).png';
   static const profile4 = 'assets/images/Profile (4).png';
   static const profile5 = 'assets/images/Profile (5).png';

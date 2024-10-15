@@ -280,7 +280,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           height: 10,
                         ),
                         ProfileListItems(
-                          path: AppAssets.profile2,
+                          path: AppAssets.call,
                           textController: phoneNoController,
                           enabled: enabled.value,
                         ),
@@ -329,7 +329,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           height: 10,
                         ),
                         ProfileListItems(
-                          path: AppAssets.profile5,
+                          path: AppAssets.world,
                           textController: websiteController,
                           enabled: enabled.value,
                         ),

@@ -47,7 +47,7 @@ class UserController extends GetxController {
   }
 
   // Method to reset password by sending an email
-  Future<bool> sendPasswordReset(String email) async {
+  Future<bool> sendPasswordReset(String email,bool isUser) async {
     loading.value = true;
 
     // Validate that email is not empty and in correct format
@@ -64,7 +64,7 @@ class UserController extends GetxController {
 
     try {
       // Call UserService to check if email exists and send password reset email
-      bool isSuccess = await userServices.resetPasswordIfEmailExists(email);
+      bool isSuccess = await userServices.resetPasswordIfEmailExists(email,isUser);
 
       if (isSuccess) {
         loading.value = false;
@@ -149,6 +149,7 @@ class UserController extends GetxController {
   void clearTextFields() {
     emailController.clear();
     passwordController.clear();
+    userProfile.value = null;
     userNameController.clear();
     phoneController.clear();
     resetEmailController.clear();
@@ -173,10 +174,10 @@ class UserController extends GetxController {
 
   ///💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 SIGN IN
 
-  Future<bool> signIn(String email, String password) async {
+  Future<bool> signIn(String email, String password, bool isUser) async {
     try {
       loading.value = true;
-      String? result = await authServices.signIn(email, password);
+      String? result = await authServices.signIn(email, password, isUser);
       if (result == null) {
         UserModel? userModel = await userServices
             .getUserById(FirebaseAuth.instance.currentUser!.uid);

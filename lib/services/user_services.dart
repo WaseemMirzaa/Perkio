@@ -36,8 +36,7 @@ class UserServices {
     }
   }
 
-  // Method to check if email exists and send a password reset email
-  Future<bool> resetPasswordIfEmailExists(String email) async {
+  Future<bool> resetPasswordIfEmailExists(String email, bool isUser) async {
     try {
       // Query Firestore to check if any document has this email
       QuerySnapshot querySnapshot =
@@ -45,9 +44,32 @@ class UserServices {
 
       // If the email exists in the users collection
       if (querySnapshot.docs.isNotEmpty) {
-        // Send a password reset email
-        await authServices.sendPasswordResetEmail(email);
-        return true; // Indicate success
+        // Get the user document
+        DocumentSnapshot userDoc = querySnapshot.docs.first;
+
+        // Check the user's role
+        String userRole = (userDoc.data() as Map<String, dynamic>)['role'];
+
+        // Determine if the password reset should be allowed based on role
+        if (isUser) {
+          // If isUser is true, allow reset for 'user' role only
+          if (userRole == 'user') {
+            await authServices.sendPasswordResetEmail(email);
+            return true; // Indicate success
+          } else {
+            // User does not have the required role
+            return false; // Indicate role mismatch
+          }
+        } else {
+          // If isUser is false, allow reset for 'business' role only
+          if (userRole == 'business') {
+            await authServices.sendPasswordResetEmail(email);
+            return true; // Indicate success
+          } else {
+            // User does not have the required role
+            return false; // Indicate role mismatch
+          }
+        }
       } else {
         return false; // Indicate email not found
       }
@@ -130,7 +152,6 @@ class UserServices {
       }
     });
   }
-  
 
   //............ Get Deals
   Stream<List<DealModel>> getDeals() {

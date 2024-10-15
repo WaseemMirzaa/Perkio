@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
@@ -14,7 +13,8 @@ import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 
 class ForgotPasswordView extends StatefulWidget {
-  const ForgotPasswordView({super.key});
+  final bool isUser;
+  const ForgotPasswordView({super.key, required this.isUser});
 
   @override
   State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
@@ -34,6 +34,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
         return true;
       },
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.whiteColor,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: AppColors.blackColor),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         backgroundColor: AppColors.whiteColor,
         body: SingleChildScrollView(
           child: Padding(
@@ -41,7 +51,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 60),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Text(
                     TempLanguage.lblSwipe,
                     style: altoysFont(fontSize: 45),
@@ -73,6 +83,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                             // Call controller's sendPasswordReset method
                             await controller.sendPasswordReset(
                               controller.resetEmailController.text,
+                              widget.isUser,
                             );
 
                             // No need to handle success or failure here, controller takes care of it
@@ -80,17 +91,6 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                           text: TempLanguage.btnLblResetPassword,
                         ),
                 ),
-                SpacerBoxVertical(height: 1.5.h),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Go back to login screen
-                  },
-                  child: Text(
-                    TempLanguage.txtBackToLogin,
-                    style: poppinsMedium(
-                        fontSize: 15.sp, color: AppColors.secondaryText),
-                  ),
-                )
               ],
             ),
           ),

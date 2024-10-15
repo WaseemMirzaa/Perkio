@@ -119,7 +119,8 @@ class BusinessDetailTile extends StatelessWidget {
                     ),
                   ],
                 ),
-              const SpacerBoxVertical(height: 5),
+              if (phone != null && phone!.isNotEmpty)
+                const SpacerBoxVertical(height: 5),
 
               // Website (optional)
               if (website != null && website!.isNotEmpty)

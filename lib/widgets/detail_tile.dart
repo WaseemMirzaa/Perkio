@@ -16,10 +16,12 @@ class DetailTile extends StatelessWidget {
   final String? businessId;
   final bool isRedeeming;
   final bool isNavigationFromNotifications;
+  final bool isNormalRouting;
 
   const DetailTile(
       {super.key,
       this.businessId,
+      this.isNormalRouting = false,
       this.isRedeeming = false,
       this.isNavigationFromNotifications = false});
 
@@ -76,9 +78,13 @@ class DetailTile extends StatelessWidget {
                   left: 0,
                   child: BackButtonWidget(
                     onBack: () {
-                      if (isNavigationFromNotifications == false) {
+                      if (isNavigationFromNotifications == true) {
                         Get.offAll(() => const BottomBarView(
                               isNotificationRoute: true,
+                              isUser: true,
+                            ));
+                      } else if (isNormalRouting == true) {
+                        Get.offAll(() => const BottomBarView(
                               isUser: true,
                             ));
                       } else {
@@ -110,7 +116,7 @@ class DetailTile extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => BusinessDetail(
                                 businessImage: user?.image,
-                                businessRating: '4.5k',
+                                businessRating: user?.rating.toString(),
                                 businessName: user?.userName,
                                 businessLocation: user?.address,
                                 businessPhone: user?.phoneNo,
@@ -146,8 +152,11 @@ class DetailTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 5),
-                if (user?.phoneNo != null)
+
+                if (user?.phoneNo?.isNotEmpty == true)
+                  const SizedBox(height: 5),
+
+                if (user?.phoneNo?.isNotEmpty == true)
                   Row(
                     children: [
                       const Icon(Icons.phone,

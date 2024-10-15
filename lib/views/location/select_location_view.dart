@@ -3,11 +3,17 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 
@@ -26,14 +32,58 @@ class _SelectLocationState extends State<SelectLocation> {
   AddressModel? address;
   bool isPermitted = false; // Track location permission state
   bool isLoading = false; // Track loading state for location fetching
-  TextEditingController businessAddressController = TextEditingController();
 
-  final UserController controller = Get.find<UserController>();
+  final UserController controller = Get.put(UserController(UserServices()));
 
   @override
   void initState() {
     super.initState();
+
+    Future.microtask(() async {
+      if (address != null) {
+      } else {
+        await homeServices.getCurrentLocation(context: context).then((value) {
+          print("Then Called");
+          getAndFill();
+        });
+      }
+      setState(() {
+        isLoading = false; // Enable onTap after microtask is complete
+      });
+    });
+
     _initializeLocation();
+  }
+
+  Future<void> getAndFill() async {
+    if (await LocationPermissionManager().requestLocationPermission(context)) {
+      latLng = await homeServices.getCurrentLocation(context: context);
+      final currentLocation =
+          await homeServices.getAddress(latLng ?? const LatLng(0, 0));
+      await addingAddress(currentLocation ?? const Placemark());
+    }
+  }
+
+  Future<void> addingAddress(Placemark currentAddress) async {
+    address = AddressModel(
+      administrativeArea: currentAddress.administrativeArea,
+      subAdministrativeArea: currentAddress.subAdministrativeArea,
+      completeAddress:
+          "${currentAddress.street}, ${currentAddress.administrativeArea}, ${currentAddress.country}",
+      country: currentAddress.country,
+      isoCountryCode: currentAddress.isoCountryCode,
+      locality: currentAddress.locality,
+      subLocality: currentAddress.subLocality,
+      name: currentAddress.name,
+      postalCode: currentAddress.postalCode,
+      street: currentAddress.street,
+      subThoroughfare: currentAddress.subThoroughfare,
+      thoroughfare: currentAddress.thoroughfare,
+      latitude: getDoubleAsync(SharedPrefKey.latitude),
+      longitude: getDoubleAsync(SharedPrefKey.longitude),
+    );
+    log(address!.completeAddress.toString());
+    log("CURRENT ADDRESS MODEL>>>>>>>>>>>>>>>>>>>>>>>>. ${address!.country}");
   }
 
   Future<void> _initializeLocation() async {
@@ -65,9 +115,6 @@ class _SelectLocationState extends State<SelectLocation> {
         print("Latitude: ${latLng?.latitude}");
         print("Longitude: ${latLng?.longitude}");
         print("Complete Address: ${address?.completeAddress}");
-
-        businessAddressController.text =
-            "${currentLocation?.street}, ${currentLocation?.locality}, ${currentLocation?.administrativeArea}, ${currentLocation?.country}";
 
         // Call signUp method after fetching location
         await _callSignUp();
@@ -109,16 +156,19 @@ class _SelectLocationState extends State<SelectLocation> {
       widget.userModel.latLong = geoPoint;
       widget.userModel.address = address?.completeAddress ?? "";
 
-       String? token = await FCMManager.getFCMToken();
-       widget.userModel.fcmTokens = [token!];
+      await setValue(SharedPrefKey.latitude, address!.latitude);
+      await setValue(SharedPrefKey.longitude, address!.longitude);
+
+      String? token = await FCMManager.getFCMToken();
+      widget.userModel.fcmTokens = [token!];
 
       // Call signup
-      await controller.signUp(widget.userModel, () {
-        // Navigate back in case of an error
-        Get.back();
-      },false);
+      await controller.signUp(widget.userModel, (error) {
+        if (error != null) {
+          Get.snackbar('Error', error, snackPosition: SnackPosition.TOP);
+        }
+      }, false);
     } catch (e) {
-      // Optionally show an error message to the user
       Get.snackbar('Error', 'Sign up failed: $e');
     }
   }
@@ -139,19 +189,69 @@ class _SelectLocationState extends State<SelectLocation> {
           return Center(child: circularProgressBar());
         }
 
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Location permission is required to proceed.'),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  await _initializeLocation(); // Retry permission and location initialization
-                },
-                child: const Text('Retry'),
+        return Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.gradientStartColor,
+                AppColors.gradientEndColor,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  // Title or main message
+                  Text(
+                    'Swipe',
+                    style:
+                        altoysFont(fontSize: 45, color: AppColors.whiteColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 2.h), // Space between title and text
+
+                  // Secondary message (Optional, add if needed)
+                  Text(
+                    'Please grant location permissions to continue.',
+                    style: poppinsRegular(
+                      color: AppColors.whiteColor,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 4.h), // Space between message and button
+
+                  // Button container
+                  GestureDetector(
+                    onTap: () async {
+                      await _initializeLocation(); // Retry permission and location initialization
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 12.sp, horizontal: 24.sp),
+                      decoration: BoxDecoration(
+                        color: Colors.white, // Button background color
+                        borderRadius:
+                            BorderRadius.circular(8), // Rounded corners
+                      ),
+                      child: Text(
+                        'Allow Permission',
+                        style: poppinsRegular(
+                          color: AppColors.blackColor,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       }),

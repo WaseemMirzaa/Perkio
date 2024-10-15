@@ -205,7 +205,8 @@ class UserController extends GetxController {
     return userServices.getUserByStream(userId);
   }
 
-  Future<bool> signUp(UserModel userModel, Function onError, bool isBusiness,
+  Future<bool> signUp(
+      UserModel userModel, Function(String? error) onError, bool isBusiness,
       [String? placeID]) async {
     loading.value = true;
 
@@ -218,7 +219,7 @@ class UserController extends GetxController {
           loading.value = false;
           Get.snackbar('Error', 'Invalid Place ID',
               snackPosition: SnackPosition.TOP);
-          onError();
+          onError('Invalid Place ID');
           return false;
         }
 
@@ -233,7 +234,7 @@ class UserController extends GetxController {
           Get.snackbar(
               'Error', 'Business details not found or invalid Place ID',
               snackPosition: SnackPosition.TOP);
-          onError();
+          onError('Business details not found or invalid Place ID');
           return false;
         }
       }
@@ -284,27 +285,27 @@ class UserController extends GetxController {
         return true; // Sign-up successful, return true
       } else {
         loading.value = false;
-        onError();
+        onError('Sign-up failed');
         return false; // Sign-up failed, return false
       }
     } on FirebaseAuthException catch (e) {
       Get.back();
-      Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
-          snackPosition: SnackPosition.TOP);
+      // Get.snackbar('Firebase Error', e.message ?? 'Account creation failed.',
+      //     snackPosition: SnackPosition.TOP);
       loading.value = false;
-      log('--------IN FIREBASE  EXCEPTIONNNNNNNNNNNN======');
       log("FirebaseAuthException: ${e.message}");
 
-      onError();
+      onError(e.message); // Pass the Firebase exception message to onError
       return false; // Firebase error, return false
     } catch (e) {
       Get.back();
-      Get.snackbar('Error', 'An unknown error occurred',
-          snackPosition: SnackPosition.TOP);
+      // Get.snackbar('Error', 'An unknown error occurred',
+      //     snackPosition: SnackPosition.TOP);
       loading.value = false;
       log("Unknown error: $e");
 
-      onError();
+      onError(
+          'An unknown error occurred'); // Pass a generic error message to onError
       return false; // Unknown error, return false
     }
   }
@@ -523,4 +524,67 @@ class UserController extends GetxController {
 
   //updating the user details
   Rx<UserModel?> userProfile = Rx<UserModel?>(null);
+
+  //UPDATING BUSINESS LOCATION, THEIR REWARDS AND DEALS
+  // Method to update both Rewards and Deals collections in a batch
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> updateBusinessLocation(String newRewardAddress,
+      String newDealAddress, GeoPoint newLatLong) async {
+    try {
+      // Step 1: Get the current user UID
+      User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception("User is not logged in");
+      }
+
+      String uid = currentUser.uid;
+      print("Current User UID: $uid");
+
+      // Step 2: Initialize Firestore batch
+      WriteBatch batch = _firestore.batch();
+
+      // Step 3: Get all Rewards where businessId matches
+      QuerySnapshot rewardsSnapshot = await _firestore
+          .collection('reward')
+          .where('businessId', isEqualTo: uid)
+          .get();
+
+      // Step 4: Loop through all Rewards documents and update fields
+      for (var doc in rewardsSnapshot.docs) {
+        DocumentReference rewardRef = doc.reference;
+        batch.update(rewardRef, {
+          'rewardAddress': newRewardAddress,
+          'latLong': newLatLong,
+        });
+        print("Reward Updated for Doc ID: ${doc.id}");
+      }
+
+      // Step 5: Get all Deals where businessId matches
+      QuerySnapshot dealsSnapshot = await _firestore
+          .collection('deals')
+          .where('businessId', isEqualTo: uid)
+          .get();
+
+      // Step 6: Loop through all Deals documents and update fields
+      for (var doc in dealsSnapshot.docs) {
+        DocumentReference dealRef = doc.reference;
+        batch.update(dealRef, {
+          'location': newDealAddress,
+          'latLong': newLatLong,
+        });
+        print("Deal Updated for Doc ID: ${doc.id}");
+      }
+
+      // Step 7: Commit the batch
+      await batch.commit();
+      print("Batch update successful");
+    } catch (e) {
+      // Handle errors gracefully
+      print("Error updating business location: $e");
+      Get.snackbar("Error", "Failed to update business location: $e");
+    }
+  }
 }

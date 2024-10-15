@@ -10,6 +10,7 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/user/deal_detail.dart';
 import 'package:swipe_app/widgets/available_list_items.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';
@@ -26,7 +27,7 @@ class HomeUser extends StatefulWidget {
 }
 
 class _HomeUserState extends State<HomeUser> {
-  var controller = Get.find<UserController>();
+  final controller = Get.put(UserController(UserServices()));
   late StreamController<List<DealModel>> _dealStreamController;
   late List<DealModel> deals;
   List<DealModel> featuredDeals = [];
@@ -241,7 +242,7 @@ class _HomeUserState extends State<HomeUser> {
 
                 combinedList.add(
                   SizedBox(
-                    height: 150,
+                    height: 160,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: featuredDeals.length,

@@ -31,6 +31,7 @@ class HomeBusiness extends StatefulWidget {
 class _HomeBusinessState extends State<HomeBusiness> {
   final businessController = Get.put(BusinessController(BusinessServices()));
   final userController = Get.put(UserController(UserServices()));
+
   final notificationController =
       Get.put(NotificationController()); // Initialize NotificationController
 
@@ -41,6 +42,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
   @override
   void initState() {
     super.initState();
+    Get.put(NotificationController());
     getUser();
   }
 
@@ -76,6 +78,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                 isSearchField: true,
                 textController: searchController,
                 isSearching: RxBool(searchQuery.isNotEmpty),
+                isChangeBusinessLocation: true,
 
                 onChanged: (value) {
                   setState(() {
@@ -102,6 +105,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                   searchQuery = value;
                 });
               },
+              isChangeBusinessLocation: true,
               isSearching: RxBool(searchQuery.isNotEmpty),
               isNotification: false,
               userName: userName,

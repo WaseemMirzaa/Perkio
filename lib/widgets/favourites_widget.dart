@@ -71,8 +71,8 @@ class FavouritesWidget extends StatelessWidget {
                                   Container(
                                     height: 14.h,
                                     width: 14.h,
-                                    margin:
-                                        EdgeInsets.only(top: 5.sp, left: 2.sp),
+                                    margin: EdgeInsets.only(
+                                        top: 7.sp, left: 6.sp, bottom: 7.sp),
                                     decoration: BoxDecoration(
                                       color: AppColors.whiteColor,
                                       borderRadius:
@@ -251,7 +251,8 @@ class FavouritesWidget extends StatelessWidget {
                           Container(
                             height: 14.h,
                             width: 14.h,
-                            margin: EdgeInsets.only(top: 5.sp, left: 2.sp),
+                            margin: EdgeInsets.only(
+                                top: 7.sp, left: 6.sp, bottom: 7.sp),
                             decoration: BoxDecoration(
                               color: AppColors.whiteColor,
                               borderRadius: BorderRadius.circular(14.sp),

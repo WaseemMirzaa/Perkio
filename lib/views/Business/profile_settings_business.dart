@@ -45,6 +45,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
   TextEditingController websiteController = TextEditingController();
   TextEditingController businessIdController = TextEditingController();
   RxBool enabled = false.obs;
+  final homeServices = Get.put(HomeServices());
 
   final HomeController homeController = Get.put(HomeController(HomeServices()));
 
@@ -124,8 +125,6 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                       top: 6.h,
                       child: GestureDetector(
                         onTap: () {
-                          
-
                           showAdaptiveDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -188,7 +187,6 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                               Icons.camera_alt_outlined)),
                                     ],
                                   ));
-                       
                         },
                         child: Container(
                             padding: const EdgeInsets.all(7),
@@ -301,11 +299,18 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           textController: addressController,
                           onTap: enabled.value
                               ? () async {
+                                  final currentPosition =
+                                      await homeServices.getCurrentLocation();
+
                                   AddressModel address = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => LocationService(
                                               child: PlacesPick(
+                                                  changeCurrentLocation: LatLng(
+                                                    currentPosition!.latitude,
+                                                    currentPosition.longitude,
+                                                  ),
                                                   currentLocation: LatLng(
                                                       businessProfile
                                                           .latLong!.latitude,

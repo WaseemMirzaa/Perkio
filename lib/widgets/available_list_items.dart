@@ -42,7 +42,7 @@ class AvailableListItems extends StatelessWidget {
 
       return Container(
         height: 18.h,
-        margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
+        margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -73,7 +73,7 @@ class AvailableListItems extends StatelessWidget {
                       Container(
                         height: 14.h,
                         width: 14.h,
-                        margin: EdgeInsets.only(top: 5.sp, left: 2.sp),
+                        margin: EdgeInsets.only(top: 10.sp, left: 6.sp),
                         decoration: BoxDecoration(
                           color: AppColors.whiteColor,
                           borderRadius: BorderRadius.circular(14.sp),
@@ -100,8 +100,8 @@ class AvailableListItems extends StatelessWidget {
                   ],
                 ),
                 Positioned(
-                  left: 0.sp, // Adjust the left position as needed
-                  top: 0.sp, // Adjust the top position as needed
+                  left: 2.sp, // Adjust the left position as needed
+                  top: 2.sp, // Adjust the top position as needed
                   child: IconButton(
                     onPressed: () {
                       if (isFavorite) {

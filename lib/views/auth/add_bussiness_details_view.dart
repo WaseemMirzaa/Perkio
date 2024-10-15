@@ -292,7 +292,10 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                       X.showSnackBar('Fields Required',
                           'Please upload the business image');
                     } else {
-                      context.loaderOverlay.show();
+                      context.loaderOverlay.show(
+                        widgetBuilder: (context) =>
+                            Center(child: circularProgressBar()),
+                      );
                       widget.userModel.latLong = GeoPoint(
                           getDoubleAsync(SharedPrefKey.latitude),
                           getDoubleAsync(SharedPrefKey.longitude));
@@ -315,8 +318,12 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                       widget.userModel.fcmTokens = [token!];
 
                       // Await the signUp call and only navigate if it was successful
-                      await userController.signUp(widget.userModel, () {
+                      await userController.signUp(widget.userModel, (error) {
                         // Error callback, just hide the loader and stay on the current screen
+                        if (error != null) {
+                          Get.snackbar('Error', error,
+                              snackPosition: SnackPosition.TOP);
+                        }
                         context.loaderOverlay.hide();
                       }, true, businessIdController.text).then((value) {
                         // Navigate only if signup didn't fail

@@ -130,7 +130,8 @@ class RewardController extends GetxController {
 
   Future<void> toggleLike(RewardModel reward, String userId) async {
     // Check if the reward is already liked by the user (from cache or reward data)
-    bool isLiked = likedRewardsCache[reward.rewardId!] ?? (reward.isFavourite?.contains(userId) ?? false);
+    bool isLiked = likedRewardsCache[reward.rewardId!] ??
+        (reward.isFavourite?.contains(userId) ?? false);
 
     // Toggle like status
     await _rewardService.toggleLike(reward.rewardId!, userId, !isLiked);
@@ -140,8 +141,7 @@ class RewardController extends GetxController {
 
     // Optionally refresh the cache to notify observers/UI
     likedRewardsCache.refresh();
-}
-
+  }
 
   // Method to update the usedBy and pointsEarned fields in the reward collection
   Future<void> updateRewardUsage(String rewardId, String userId) async {

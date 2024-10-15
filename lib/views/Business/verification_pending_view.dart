@@ -17,26 +17,42 @@ class VerificationPendingView extends StatelessWidget {
   final userController = UserController(UserServices());
   @override
   Widget build(BuildContext context) {
-    return SecondaryLayoutWidget(header: titleBarComp('Verification ${getStringAsync(UserKey.ISVERIFIED)}',
-        onBack: (){
-    }), body: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(height: 2.h,),
-      Text('Your account verification status is: ${getStringAsync(UserKey.ISVERIFIED)}'),
-        ButtonWidget(onSwipe: ()async {
-          await userController.getUser(getStringAsync(SharedPrefKey.uid));
-          getStringAsync(UserKey.ISVERIFIED) == 'verified' ? Navigator.pushAndRemoveUntil(
-              context, MaterialPageRoute(builder: (context) =>
-              LocationService(child: BottomBarView(
-                  isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                      ? true
-                      : false))), (route) => false) : showActivationDialog();
-        },
-            text: 'Verify'
-      )
-
-    ],));
+    return SecondaryLayoutWidget(
+        header: titleBarComp(
+            'Verification ${getStringAsync(UserKey.ISVERIFIED)}',
+            onBack: () {}),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              height: 2.h,
+            ),
+            Text(
+                'Your account verification status is: ${getStringAsync(UserKey.ISVERIFIED)}'),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, left: 8, right: 8),
+              child: ButtonWidget(
+                  onSwipe: () async {
+                    await userController
+                        .getUser(getStringAsync(SharedPrefKey.uid));
+                    getStringAsync(UserKey.ISVERIFIED) == 'verified'
+                        ? Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LocationService(
+                                    child: BottomBarView(
+                                        isUser: getStringAsync(
+                                                    SharedPrefKey.role) ==
+                                                SharedPrefKey.user
+                                            ? true
+                                            : false))),
+                            (route) => false)
+                        : showActivationDialog();
+                  },
+                  text: 'Verify'),
+            )
+          ],
+        ));
   }
 }

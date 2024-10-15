@@ -59,8 +59,8 @@ class _RewardsListItemsState extends State<RewardsListItems> {
         ? Obx(() {
             return isFav.value
                 ? Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: 10, left: 12, right: 12),
+                    padding: const EdgeInsets.only(
+                        bottom: 10, left: 12, right: 12, top: 10),
                     child: Container(
                       height: 125,
                       decoration: BoxDecoration(
@@ -245,7 +245,8 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                     children: [
                       const SpacerBoxHorizontal(width: 10),
                       Padding(
-                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        padding:
+                            const EdgeInsets.only(top: 10, bottom: 10, left: 4),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(14.sp),
                           child: Container(

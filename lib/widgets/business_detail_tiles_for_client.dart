@@ -83,23 +83,29 @@ class BusinessDetailTilesforClientSide extends StatelessWidget {
               Column(
                 children: [
                   SpacerBoxVertical(height: 1.3.h),
-                  SizedBox(
-                    height: 100, // Set a fixed height
-                    width: 100, // Set a fixed width
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                          14), // Set the radius to half the height/width for circular shape
-                      child: image != null
-                          ? Image.network(
-                              image,
-                              fit: BoxFit.cover, // Ensure image covers the box
-                            )
-                          : Image.asset(
-                              AppAssets.restaurantImg1,
-                              fit: BoxFit.cover, // Ensure image covers the box
-                            ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0), // Adjust the left padding value as needed
+                    child: SizedBox(
+                      height: 100, // Set a fixed height
+                      width: 100, // Set a fixed width
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            14), // Set the radius to half the height/width for circular shape
+                        child: image != null
+                            ? Image.network(
+                                image,
+                                fit:
+                                    BoxFit.cover, // Ensure image covers the box
+                              )
+                            : Image.asset(
+                                AppAssets.restaurantImg1,
+                                fit:
+                                    BoxFit.cover, // Ensure image covers the box
+                              ),
+                      ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ],

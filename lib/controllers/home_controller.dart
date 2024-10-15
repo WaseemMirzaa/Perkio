@@ -97,7 +97,7 @@ class HomeController extends GetxController {
     await FlutterImageCompress.compressAndGetFile(
       _pickedImage.value!.path,
       originalPath,
-      quality: 60,
+      quality: 100,
       minHeight: 600,
       minWidth: 600,
     );
@@ -109,8 +109,8 @@ class HomeController extends GetxController {
     try {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: _pickedImage.value!.path,
-        maxWidth: 150,
-        maxHeight: 150,
+        maxWidth: 600,
+        maxHeight: 600,
         aspectRatio: const CropAspectRatio(ratioX: 150, ratioY: 150),
         aspectRatioPresets: [
           CropAspectRatioPreset.square,

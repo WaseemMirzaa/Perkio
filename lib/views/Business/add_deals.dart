@@ -66,6 +66,7 @@ class _AddDealsState extends State<AddDeals> {
                       userName: 'Loading...', // Placeholder text
                       userLocation: 'Loading...',
                       isNotification: false,
+                      isChangeBusinessLocation: true,
                     );
                   }
 
@@ -81,6 +82,7 @@ class _AddDealsState extends State<AddDeals> {
                     latitude: latLog?.latitude ?? 0.0,
                     longitude: latLog?.longitude ?? 0.0,
                     userLocation: userLocation,
+                    isChangeBusinessLocation: true,
                   );
                 }),
               ),
@@ -247,6 +249,9 @@ class _AddDealsState extends State<AddDeals> {
                         } else if (homeController.pickedImage == null) {
                           showSnackBar(
                               'Empty Fields', 'Deal logo field is required');
+                        } else if (myController.counter.value <= 0) {
+                          showSnackBar(
+                              'Empty Fields', 'Please set the number of uses');
                         } else {
                           context.loaderOverlay.show(
                             widgetBuilder: (context) =>

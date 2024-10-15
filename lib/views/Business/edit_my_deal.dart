@@ -69,6 +69,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
                     isNotification: false,
                     userName: 'Loading...', // Placeholder text
                     userLocation: 'Loading...',
+                    isChangeBusinessLocation: true,
                   );
                 }
 
@@ -84,6 +85,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
                   latitude: latLog?.latitude ?? 0.0,
                   longitude: latLog?.longitude ?? 0.0,
                   userLocation: userLocation,
+                  isChangeBusinessLocation: true,
                 );
               }),
             ),
@@ -267,6 +269,9 @@ class _EditMyDealsState extends State<EditMyDeals> {
                                 widget.dealModel.image.isEmptyOrNull) {
                               showSnackBar(
                                   'Deal Logo', 'Deal Logo is required');
+                            } else if (myController.counter.value <= 0) {
+                              showSnackBar('Empty Fields',
+                                  'Please set the number of uses');
                             } else {
                               context.loaderOverlay.show(
                                 widgetBuilder: (context) =>
@@ -288,6 +293,14 @@ class _EditMyDealsState extends State<EditMyDeals> {
                               widget.dealModel.image = imageLink.isEmptyOrNull
                                   ? widget.dealModel.image
                                   : imageLink;
+
+                              widget.dealModel.location =
+                                  userController.userProfile.value!.address;
+                              widget.dealModel.longLat =
+                                  userController.userProfile.value!.latLong;
+
+                              print(
+                                  '------------ + ${widget.dealModel.location}');
 
                               await controller
                                   .editMyDeal(widget.dealModel)

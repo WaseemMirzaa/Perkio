@@ -44,6 +44,7 @@ class _UserProfileViewState extends State<UserProfileView> {
   TextEditingController phoneNoController = TextEditingController();
   //open map to fetch this points
   TextEditingController addressController = TextEditingController();
+  final homeServices = Get.put(HomeServices());
 
   var add;
 
@@ -336,11 +337,19 @@ class _UserProfileViewState extends State<UserProfileView> {
                                 if (isPremitt) {
                                   print(SharedPrefKey.latitude.toDouble() +
                                       SharedPrefKey.longitude.toDouble());
+
+                                  final currentPosition =
+                                      await homeServices.getCurrentLocation();
+
                                   address = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => LocationService(
                                               child: PlacesPick(
+                                                  changeCurrentLocation: LatLng(
+                                                    currentPosition!.latitude,
+                                                    currentPosition.longitude,
+                                                  ),
                                                   currentLocation: latLng ??
                                                       LatLng(
                                                           userProfile.latLong!

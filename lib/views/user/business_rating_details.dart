@@ -103,34 +103,54 @@ class _BusinessRatingDetailsScreenState
                     Center(
                       child: Text(
                         businessDetails?.result?.name ?? "No Name",
-                        style: poppinsBold(
+                        style: poppinsSemiBold(
                           color: AppColors.blackColor,
-                          fontSize: 18.sp,
+                          fontSize: 14.sp,
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Business Rating
-                    Text(
-                      'Rating: ${businessDetails?.result?.rating ?? 'N/A'}',
-                      style: poppinsBold(
-                        color: AppColors.blackColor,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                    // Rating and Reviews in a Row
 
-                    // Reviews Section
-                    Text(
-                      'Reviews:',
-                      style: poppinsBold(
-                        color: AppColors.blackColor,
-                        fontSize: 16.sp,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Reviews...',
+                          style: poppinsSemiBold(
+                            color: AppColors.blackColor,
+                            fontSize: 10.sp,
+                          ),
+                        ),
+
+                        // Add space between the star and the rating
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star, // Use a star icon
+                              color: Colors
+                                  .yellow, // You can set the color to yellow to resemble a star rating
+                              size: 16, // Adjust the size of the star
+                            ),
+                            const SizedBox(width: 4),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16),
+                              child: Text(
+                                businessDetails?.result?.rating != null
+                                    ? '${businessDetails?.result?.rating}'
+                                    : 'N/A',
+                                style: poppinsSemiBold(
+                                  color: AppColors.blackColor,
+                                  fontSize: 10.sp,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
 
                     // List of Reviews
                     ListView.builder(

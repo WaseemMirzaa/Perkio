@@ -43,6 +43,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
                   userName: 'Loading...', // Placeholder text
                   userLocation: 'Loading...',
                   isNotification: false,
+                  isChangeBusinessLocation: true,
                 );
               }
 
@@ -58,6 +59,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
                 longitude: latLog?.longitude ?? 0.0,
                 userLocation: userLocation,
                 isNotification: false,
+                isChangeBusinessLocation: true,
               );
             }),
           ),

@@ -55,6 +55,7 @@ class _AddRewardsState extends State<AddRewards> {
                     userName: 'Loading...', // Placeholder text
                     userLocation: 'Loading...',
                     isNotification: false,
+                    isChangeBusinessLocation: true,
                   );
                 }
 
@@ -70,6 +71,7 @@ class _AddRewardsState extends State<AddRewards> {
                   latitude: latLog?.latitude ?? 0.0,
                   longitude: latLog?.longitude ?? 0.0,
                   userLocation: userLocation,
+                  isChangeBusinessLocation: true,
                 );
               }),
             ),
@@ -278,6 +280,9 @@ class _AddRewardsState extends State<AddRewards> {
                       } else if (homeController.pickedImage == null) {
                         showSnackBar(
                             'Empty Fields', 'Please upload the reward logo');
+                      } else if (myController.counter.value <= 0) {
+                        showSnackBar(
+                            'Empty Fields', 'Please set the number of uses');
                       } else if (points % controller.pps.value! != 0) {
                         showSnackBar('Invalid Input',
                             'Please enter a number that is a multiple of pps: ${controller.pps.value}.');

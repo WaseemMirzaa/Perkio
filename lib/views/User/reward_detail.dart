@@ -121,6 +121,7 @@ class _RewardDetailState extends State<RewardDetail> {
             children: [
               DetailTile(
                 businessId: widget.reward?.businessId,
+                
               ),
               const SpacerBoxVertical(height: 10),
               Padding(
@@ -164,13 +165,6 @@ class _RewardDetailState extends State<RewardDetail> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           color: Colors.grey[200],
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
                         ),
                       ),
                       Container(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -27,6 +28,7 @@ final homeController = Get.put(HomeController(HomeServices()));
 final userController = Get.put(UserController(UserServices()));
 final notificationController = Get.find<NotificationController>();
 final homeServices = Get.put(HomeServices());
+Address? address;
 
 Widget customAppBar({
   String? userName,
@@ -37,6 +39,7 @@ Widget customAppBar({
   double? longitude,
   bool isLocation = true,
   bool isNotification = true,
+  bool isChangeBusinessLocation = false,
   TextEditingController? textController, // Add this parameter
   Function(String)? onChanged,
   bool isSearchField = false,
@@ -117,47 +120,113 @@ Widget customAppBar({
                                   ),
                                   GestureDetector(
                                     onTap: () async {
-                                      final currentPosition = await homeServices
-                                          .getCurrentLocation();
+                                      BuildContext context = Get.context!;
+                                      try {
+                                        print(
+                                            'Change Location tapped.'); // Log the tap event
 
-                                      log('💥💥💥💥💥Current Position: ${currentPosition!.latitude} ${currentPosition.longitude}');
+                                        // Get the current location
+                                        final currentPosition =
+                                            await homeServices
+                                                .getCurrentLocation();
+                                        if (currentPosition == null) {
+                                          print(
+                                              'Current position is null.'); // Log if the current position is null
+                                          // Show an error message to the user
 
-                                      AddressModel address =
-                                          await Get.to(() => LocationService(
-                                                  child: PlacesPick(
-                                                isReward: isReward,
-                                                changeCurrentLocation:
-                                                    currentPosition,
+                                          return;
+                                        }
+                                        print(
+                                            'Current Position: $currentPosition'); // Log the current position
+
+                                        // Navigate to location picker and get the selected address
+                                        final address = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                LocationService(
+                                              child: PlacesPick(
+                                                isChangeBusinessLocation:
+                                                    isChangeBusinessLocation,
+                                                changeCurrentLocation: LatLng(
+                                                  currentPosition.latitude,
+                                                  currentPosition.longitude,
+                                                ),
                                                 currentLocation: LatLng(
-                                                    latitude!, longitude!),
-                                              )));
-                                      final add = await GeoLocationHelper
-                                          .getCityFromGeoPoint(GeoPoint(
-                                              address.latitude!,
-                                              address.longitude!));
-                                      await setValue(
-                                          SharedPrefKey.address, add);
-                                      await setValue(SharedPrefKey.latitude,
-                                          address.latitude);
-                                      await setValue(SharedPrefKey.longitude,
-                                          address.longitude);
+                                                  latitude ??
+                                                      getDoubleAsync(
+                                                          SharedPrefKey
+                                                              .latitude),
+                                                  longitude ??
+                                                      getDoubleAsync(
+                                                          SharedPrefKey
+                                                              .longitude),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
 
-                                      await homeController.updateCollection(
+                                        print(
+                                            'Address returned from PlacesPick: $address'); // Log the returned address
+
+                                        // If address is null, gracefully handle it
+                                        if (address == null) {
+                                          print(
+                                              'No address selected.'); // Log if no address was selected
+                                          // Show a message to the user
+
+                                          return;
+                                        }
+
+                                        // Get the city name from the geolocation
+                                        final add = await GeoLocationHelper
+                                            .getCityFromGeoPoint(
+                                          GeoPoint(address.latitude!,
+                                              address.longitude!),
+                                        );
+                                        print(
+                                            'City fetched from GeoPoint: $add'); // Log the fetched city
+
+                                        // Update the Shared Preferences with new address and location
+                                        await setValue(
+                                            SharedPrefKey.address, add);
+                                        await setValue(SharedPrefKey.latitude,
+                                            address.latitude);
+                                        await setValue(SharedPrefKey.longitude,
+                                            address.longitude);
+                                        print(
+                                            'Shared Preferences updated. Address: $add, Latitude: ${address.latitude}, Longitude: ${address.longitude}'); // Log the updated values
+
+                                        // Update the user's collection with the new address and location
+                                        await homeController.updateCollection(
                                           getStringAsync(SharedPrefKey.uid),
-                                          CollectionsKey.USERS, {
-                                        UserKey.ADDRESS: add,
-                                        UserKey.LATLONG: GeoPoint(
-                                            getDoubleAsync(
-                                                SharedPrefKey.latitude),
-                                            getDoubleAsync(
-                                                SharedPrefKey.longitude)),
-                                      });
+                                          CollectionsKey.USERS,
+                                          {
+                                            UserKey.ADDRESS: add,
+                                            UserKey.LATLONG: GeoPoint(
+                                              getDoubleAsync(
+                                                  SharedPrefKey.latitude),
+                                              getDoubleAsync(
+                                                  SharedPrefKey.longitude),
+                                            ),
+                                          },
+                                        );
+                                        print(
+                                            'User collection updated successfully.'); // Log success message
+                                      } catch (e) {
+                                        // Handle any errors that occur during the process
+                                        print(
+                                            'Error updating location: $e'); // Log the error
+                                        // Show an error message to the user
+                                      }
                                     },
                                     child: Text(
                                       'Change Location',
                                       style: poppinsRegular(
-                                          fontSize: 8,
-                                          color: AppColors.blueColor),
+                                        fontSize: 8,
+                                        color: AppColors.blueColor,
+                                      ),
                                     ),
                                   )
                                 ],

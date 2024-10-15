@@ -45,6 +45,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
                 userName: 'Loading...', // Placeholder text
                 userLocation: 'Loading...',
                 isNotification: false,
+                isChangeBusinessLocation: true,
               );
             }
 
@@ -60,6 +61,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
               longitude: latLog?.longitude ?? 0.0,
               userLocation: userLocation,
               isNotification: false,
+              isChangeBusinessLocation: true,
             );
           }),
         ),

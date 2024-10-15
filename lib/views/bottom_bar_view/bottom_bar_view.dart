@@ -45,14 +45,18 @@ class _BottomBarViewState extends State<BottomBarView> {
     RewardsView(),
     MyDealsView(),
     FavouritesScreen(),
-    const SettingsView(),
+    SettingsView(
+      isUser: true,
+    ),
   ];
 
   final businessList = [
     const HomeBusiness(),
     const RewardsBusiness(),
     const PromotedDealView(),
-    const SettingsView(),
+    SettingsView(
+      isUser: false,
+    ),
   ];
 
   void _onItemTapped(int index) {

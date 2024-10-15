@@ -65,185 +65,37 @@ class _EditMyRewardsState extends State<EditMyRewards> {
         backgroundColor: AppColors.whiteColor,
         appBar: PreferredSize(
           preferredSize:
-              Size.fromHeight(14.95.h), // Adjust height to match first bar
+              Size.fromHeight(15.40.h), // Adjust height to match first bar
           child: SizedBox(
-            height: 14.95.h,
-            child: Padding(
-              padding: EdgeInsets.only(top: 2.h),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    AppAssets.header,
-                    width: 100.w,
-                    height: 100.h,
-                    fit: BoxFit.fill,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 20.sp,
-                              backgroundImage:
-                                  !getStringAsync(SharedPrefKey.photo)
-                                          .isEmptyOrNull
-                                      ? NetworkImage(
-                                          getStringAsync(SharedPrefKey.photo))
-                                      : const AssetImage(AppAssets.profileImg)
-                                          as ImageProvider,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    getStringAsync(SharedPrefKey.userName),
-                                    style: poppinsRegular(fontSize: 13.sp),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      AddressModel address =
-                                          await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PlacesPick(
-                                            currentLocation: LatLng(
-                                              getDoubleAsync(
-                                                  SharedPrefKey.latitude),
-                                              getDoubleAsync(
-                                                  SharedPrefKey.longitude),
-                                            ),
-                                          ),
-                                        ),
-                                      );
+            height: 15.40.h,
+            child: PreferredSize(
+              preferredSize: Size.fromHeight(12.h),
+              child: Obx(() {
+                // Use Obx to react to changes in userProfile
+                if (userController.userProfile.value == null) {
+                  return customAppBar(
+                    isNotification: false,
+                    userName: 'Loading...', // Placeholder text
+                    userLocation: 'Loading...',
+                    isChangeBusinessLocation: true,
+                  );
+                }
 
-                                      print(
-                                          "Address is \n\n\n ${address.latitude}");
-                                      final add = await GeoLocationHelper
-                                          .getCityFromGeoPoint(GeoPoint(
-                                              address.latitude!,
-                                              address.longitude!));
-                                      await setValue(
-                                          SharedPrefKey.address, add);
-                                      await setValue(SharedPrefKey.latitude,
-                                          address.latitude);
-                                      await setValue(SharedPrefKey.longitude,
-                                          address.longitude);
-                                      await homeController.updateCollection(
-                                        getStringAsync(SharedPrefKey.uid),
-                                        CollectionsKey.USERS,
-                                        {
-                                          UserKey.LATLONG: GeoPoint(
-                                            getDoubleAsync(
-                                                SharedPrefKey.latitude),
-                                            getDoubleAsync(
-                                                SharedPrefKey.longitude),
-                                          ),
-                                        },
-                                      ).then((value) {
-                                        setState(() {
-                                          print("Rebuild");
-                                        });
-                                      });
-                                    },
-                                    child: Row(
-                                      children: [
-                                        FutureBuilder(
-                                          future: GeoLocationHelper
-                                              .getCityFromGeoPoint(AppStatics
-                                                      .geoPoint ??
-                                                  GeoPoint(
-                                                    getDoubleAsync(
-                                                        SharedPrefKey.latitude),
-                                                    getDoubleAsync(SharedPrefKey
-                                                        .longitude),
-                                                  )),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return Text(
-                                                "Loading...",
-                                                style: poppinsRegular(
-                                                    fontSize: 10.sp,
-                                                    color: AppColors.hintText),
-                                              );
-                                            }
-                                            return Text(
-                                              (snapshot.data?.length ?? 0) > 20
-                                                  ? '${snapshot.data!.substring(0, 20)}...'
-                                                  : snapshot.data ??
-                                                      'Loading...',
-                                              style: poppinsRegular(
-                                                fontSize: 10.sp,
-                                                color: AppColors.hintText,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        const SizedBox(
-                                          width: 12,
-                                        ),
-                                        Text(
-                                          'Change Location',
-                                          style: poppinsRegular(
-                                              fontSize: 8,
-                                              color: AppColors.blueColor),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Get.to(() => const NotificationsView());
-                              },
-                              child: Obx(() {
-                                return Stack(
-                                  children: [
-                                    Image.asset(
-                                      AppAssets.notificationImg,
-                                      scale: 3.5,
-                                    ),
-                                    if (notificationController
-                                            .unreadBusinessNotificationCount
-                                            .value >
-                                        0)
-                                      Positioned(
-                                        right: 0,
-                                        top: 0,
-                                        child: CircleAvatar(
-                                          radius: 8,
-                                          backgroundColor: Colors.red,
-                                          child: Text(
-                                            '${notificationController.unreadBusinessNotificationCount.value}',
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                // Use the data from the observable
+                final user = userController.userProfile.value!;
+                final userName = user.userName ?? 'Unknown';
+                final userLocation = user.address ?? 'No Address';
+                final latLog = user.latLong;
+
+                return customAppBar(
+                  userName: userName,
+                  isNotification: false,
+                  latitude: latLog?.latitude ?? 0.0,
+                  longitude: latLog?.longitude ?? 0.0,
+                  userLocation: userLocation,
+                  isChangeBusinessLocation: true,
+                );
+              }),
             ),
           ),
         ),
@@ -469,16 +321,19 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                                 widget.rewardModel.rewardLogo.isEmptyOrNull) {
                               showSnackBar('Empty Fields',
                                   'Please upload the reward logo');
+                            } else if (myController.counter.value <= 0) {
+                              showSnackBar('Empty Fields',
+                                  'Please set the number of uses');
                             } else if (points % controller.pps.value! != 0) {
                               showSnackBar('Invalid Input',
                                   'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
                             } else {
                               int userInput = int.parse(
                                   myController.pointsToRedeemController.text);
-                                context.loaderOverlay.show(
-                            widgetBuilder: (context) =>
-                                Center(child: circularProgressBar()),
-                          );
+                              context.loaderOverlay.show(
+                                widgetBuilder: (context) =>
+                                    Center(child: circularProgressBar()),
+                              );
                               final imageLink = homeController.pickedImage ==
                                       null
                                   ? null
@@ -496,6 +351,14 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                                   imageLink.isEmptyOrNull
                                       ? widget.rewardModel.rewardLogo
                                       : imageLink;
+
+                              widget.rewardModel.rewardAddress =
+                                  userController.userProfile.value!.address;
+                              widget.rewardModel.latLong =
+                                  userController.userProfile.value!.latLong;
+
+                              print(
+                                  '------------ + ${widget.rewardModel.rewardAddress}');
 
                               final isDealDone = await controller
                                   .editMyRewards(widget.rewardModel)

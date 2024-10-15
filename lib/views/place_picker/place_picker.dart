@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -9,7 +11,9 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/app_utils/GeoLocationHelper.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/app_statics.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/user_model.dart';
@@ -28,6 +32,7 @@ class PlacesPick extends StatefulWidget {
   LatLng currentLocation;
   LatLng changeCurrentLocation;
   bool isUserLocation;
+  bool isChangeBusinessLocation;
   bool? isReward;
   final UserModel?
       userModel; // Make userModel optional by using a nullable type
@@ -35,6 +40,7 @@ class PlacesPick extends StatefulWidget {
   PlacesPick({
     super.key,
     this.isReward,
+    this.isChangeBusinessLocation = false,
     this.currentLocation = const LatLng(38.00000000, -97.00000000),
     this.changeCurrentLocation = const LatLng(38.00000000, -97.00000000),
     this.isUserLocation = false,
@@ -478,6 +484,7 @@ class _PlacesPickState extends State<PlacesPick> {
                                             address.completeAddress =
                                                 location.value;
                                             //moving back to previous screen
+
                                             // Create a GeoPoint from the address coordinates
                                             GeoPoint? geoPoint = GeoPoint(
                                                 address.latitude!,
@@ -510,6 +517,43 @@ class _PlacesPickState extends State<PlacesPick> {
 
                                               // Navigator.pop(context, address);
                                               // }
+
+                                              if (widget
+                                                  .isChangeBusinessLocation) {
+                                                log('-------------------Change Business Location---------');
+                                                controller.loading.value = true;
+
+                                                // Assuming the surrounding function is async
+                                                String? addressCity =
+                                                    await GeoLocationHelper
+                                                        .getCityFromGeoPoint(
+                                                            GeoPoint(
+                                                                address
+                                                                    .latitude!,
+                                                                address
+                                                                    .longitude!)); // Fix the second argument to longitude.
+
+                                                await controller
+                                                    .updateBusinessLocation(
+                                                        addressCity ??
+                                                            'No new location',
+                                                        addressCity ??
+                                                            'No new location',
+                                                        geoPoint);
+
+                                                await setValue(
+                                                    SharedPrefKey.latitude,
+                                                    address.latitude);
+                                                await setValue(
+                                                    SharedPrefKey.longitude,
+                                                    address.longitude);
+                                                await setValue(
+                                                    SharedPrefKey.address,
+                                                    addressCity);
+
+                                                controller.loading.value =
+                                                    false;
+                                              }
 
                                               Navigator.pop(context, address);
                                             }

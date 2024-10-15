@@ -112,11 +112,13 @@ class FavouritesWidget extends StatelessWidget {
                                 return IconButton(
                                   onPressed: () async {
                                     if (isFavorite) {
+                                      controller.decreaseDealLikes(dealId);
                                       await controller.unLikeDeal(dealId);
                                       isFav.value = false;
                                       controller.favoriteCache[dealId] =
                                           false; // Update cache
                                     } else {
+                                      controller.incrementDealLikes(dealId);
                                       await controller.likeDeal(dealId);
                                       controller.favoriteCache[dealId] =
                                           true; // Update cache
@@ -288,11 +290,13 @@ class FavouritesWidget extends StatelessWidget {
                         return IconButton(
                           onPressed: () async {
                             if (isFavorite) {
+                              controller.decreaseDealLikes(dealId);
                               await controller.unLikeDeal(dealId);
 
                               controller.favoriteCache[dealId] =
                                   false; // Update cache
                             } else {
+                              controller.incrementDealLikes(dealId);
                               await controller.likeDeal(dealId);
                               controller.favoriteCache[dealId] =
                                   true; // Update cache

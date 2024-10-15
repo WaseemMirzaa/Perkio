@@ -23,85 +23,93 @@ class VerificationPendingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SecondaryLayoutWidget(
-      header: ClipPath(
-        clipper: CustomMessageClipper(),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(colors: [
-            AppColors.gradientStartColor,
-            AppColors.gradientEndColor
-          ], begin: Alignment.topLeft, end: Alignment.center)),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SpacerBoxVertical(height: 40),
-                BackButtonWidget(
-                  padding: EdgeInsets.zero,
-                  onBack: () {},
-                ),
-                Center(
-                    child: Text(
-                  'Verification Pending',
-                  style:
-                      poppinsMedium(fontSize: 25, color: AppColors.whiteColor),
-                ))
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(height: 2.h),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 16.0), // Equal left and right padding
-            child: Center(
-              child: Text(
-                'Your account verification status is in ${getStringAsync(UserKey.ISVERIFIED)}. '
-                'Please note that your account will be verified within 24 hours. Swipe team is currently reviewing your information and will notify you once the process is complete. Thank you for your patience!',
-                style: poppinsMedium(fontSize: 16, color: AppColors.blackColor),
-                textAlign: TextAlign.center, // Center-align the text
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: SecondaryLayoutWidget(
+        header: ClipPath(
+          clipper: CustomMessageClipper(),
+          child: Container(
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: [
+              AppColors.gradientStartColor,
+              AppColors.gradientEndColor
+            ], begin: Alignment.topLeft, end: Alignment.center)),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SpacerBoxVertical(height: 40),
+                  BackButtonWidget(
+                    padding: EdgeInsets.zero,
+                    onBack: () {},
+                  ),
+                  Center(
+                      child: Text(
+                    'Verification Pending',
+                    style: poppinsMedium(
+                        fontSize: 25, color: AppColors.whiteColor),
+                  ))
+                ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20, left: 8, right: 8),
-            child: ButtonWidget(
-              onSwipe: () async {
-                await userController.getUser(getStringAsync(SharedPrefKey.uid));
-                String verificationStatus = getStringAsync(UserKey.ISVERIFIED);
-
-                if (verificationStatus == 'verified') {
-                  {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LocationService(
-                            child: BottomBarView(
-                                isUser: getStringAsync(SharedPrefKey.role) ==
-                                        SharedPrefKey.user
-                                    ? true
-                                    : false)),
-                      ),
-                      (route) => false,
-                    );
-                  }
-                  // Do nothing or show a message if needed
-                  print('User is verified and cannot swipe.');
-                } else {
-                  // Navigate to LocationService if not verified
-                }
-              },
-              text: 'Verify',
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(height: 2.h),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0), // Equal left and right padding
+              child: Center(
+                child: Text(
+                  'Your account verification status is in ${getStringAsync(UserKey.ISVERIFIED)}. '
+                  'Please note that your account will be verified within 24 hours. Swipe team is currently reviewing your information and will notify you once the process is complete. Thank you for your patience!',
+                  style:
+                      poppinsMedium(fontSize: 16, color: AppColors.blackColor),
+                  textAlign: TextAlign.center, // Center-align the text
+                ),
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, left: 8, right: 8),
+              child: ButtonWidget(
+                onSwipe: () async {
+                  await userController
+                      .getUser(getStringAsync(SharedPrefKey.uid));
+                  String verificationStatus =
+                      getStringAsync(UserKey.ISVERIFIED);
+
+                  if (verificationStatus == 'verified') {
+                    {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LocationService(
+                              child: BottomBarView(
+                                  isUser: getStringAsync(SharedPrefKey.role) ==
+                                          SharedPrefKey.user
+                                      ? true
+                                      : false)),
+                        ),
+                        (route) => false,
+                      );
+                    }
+                    // Do nothing or show a message if needed
+                    print('User is verified and cannot swipe.');
+                  } else {
+                    // Navigate to LocationService if not verified
+                  }
+                },
+                text: 'Verify',
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

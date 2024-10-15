@@ -174,8 +174,13 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           final DealModel favourite =
                               myController.favouriteDeals[index];
+
                           return GestureDetector(
                               onTap: () {
+                                controller
+                                    .incrementDealViews(favourite.dealId!);
+                                controller.handleBusinessBalanceUpdate(
+                                    favourite.businessId!);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

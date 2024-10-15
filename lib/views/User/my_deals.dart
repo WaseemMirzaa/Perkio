@@ -176,6 +176,10 @@ class _MyDealsViewState extends State<MyDealsView> {
                               myController.favouriteDeals[index];
                           return GestureDetector(
                               onTap: () {
+                                controller
+                                    .incrementDealViews(favourite.dealId!);
+                                controller.handleBusinessBalanceUpdate(
+                                    favourite.businessId!);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

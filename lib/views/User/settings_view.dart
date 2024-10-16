@@ -264,9 +264,9 @@ class _SettingsViewState extends State<SettingsView> {
                   },
                 ),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     controller.clearTextFields();
-                    controller.logout();
+                    await controller.logout();
                   },
                   child: const SettingsListItems(
                     path: AppAssets.helpImg,

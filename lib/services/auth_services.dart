@@ -1,11 +1,12 @@
 // ignore_for_file: unused_local_variable, unused_catch_clause
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
+import 'package:nb_utils/nb_utils.dart' as NBUtils;
 
 class AuthServices {
   final auth = FirebaseAuth.instance;
@@ -108,16 +109,15 @@ class AuthServices {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         String userId = currentUser.uid;
-
         DocumentReference userDocRef =
             firestore.collection('users').doc(userId);
 
-        // Directly using the stored FCM token
+        // Fetch the stored FCM token
         String? fcmToken = FCMManager.fcmToken;
 
         print('Current FCM Token: $fcmToken');
 
-        // Check if the fcmToken is available
+        // Remove FCM token if it exists
         if (fcmToken != null && fcmToken.isNotEmpty) {
           await userDocRef.update({
             'fcmTokens': FieldValue.arrayRemove([fcmToken])
@@ -128,16 +128,33 @@ class AuthServices {
         }
       }
 
-      // Sign out the user
-      await auth.signOut();
-
       // Clear shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.remove(UserKey.USERID);
+
+      // Check values before logout
+      print('--------${NBUtils.getStringAsync(SharedPrefKey.uid)}');
+
+      String? userId = prefs.getString(UserKey.USERID);
+      String? role = prefs.getString(UserKey.ROLE);
+
+      print('--------Before Logout - UserId: $userId, Role: $role');
+
+      await prefs.remove(NBUtils.getStringAsync(SharedPrefKey.uid));
       await prefs.remove(UserKey.ROLE);
+      await prefs.clear(); // This will clear all shared preferences.
+
+      // Check if values are cleared
+      print(
+          '---------SharedPreferences cleared. USERID: ${prefs.getString(UserKey.USERID)}, ROLE: ${prefs.getString(UserKey.ROLE)}');
+
+      // Sign out the user
+      await auth.signOut();
       print('User signed out successfully');
+
+      // Optionally, you can navigate to the login screen or another page after logout.
     } catch (e) {
       print('Error during logout: $e');
+      // Show a user-friendly message (e.g., using a Snackbar or a Dialog)
     }
   }
 }

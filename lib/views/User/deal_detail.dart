@@ -25,6 +25,7 @@ class DealDetail extends StatefulWidget {
   final DealModel? deal;
 
   const DealDetail({super.key, this.deal});
+  
 
   @override
   State<DealDetail> createState() => _DealDetailState();

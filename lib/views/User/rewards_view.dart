@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -33,6 +34,8 @@ class _RewardsViewState extends State<RewardsView> {
   // Added this to keep track of the search query
   String searchQuery = '';
 
+  late final String currentUserUid; // `late final` to ensure it's set only once
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +43,18 @@ class _RewardsViewState extends State<RewardsView> {
     allRewards = []; // Initialize the list for all rewards
     filteredRewards = []; // Initialize the list for filtered rewards
     getRewards();
+
+    // Initialize the user ID immediately on widget creation
+    final user = FirebaseAuth.instance.currentUser;
+
+    // Check if user is logged in and fetch the UID
+    if (user != null) {
+      currentUserUid = user.uid;
+    } else {
+      // Handle the case where there is no logged-in user
+
+      return; // Stop further execution if no user is logged in
+    }
 
     // Listen for location changes
     userController.userProfile.listen((user) {
@@ -176,19 +191,23 @@ class _RewardsViewState extends State<RewardsView> {
                     final reward = rewards[index];
                     return GestureDetector(
                       onTap: () {
+                        print(
+                            'HERE IS THE PASSED ID OF REWARD : ${reward.rewardId}');
+                        print(
+                            'HERE IS THE PASSED ID OF USER : ${_controller.currentUserId.value}');
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => RewardDetail(
                               reward: reward,
-                              userId: _controller.currentUserId.value,
+                              userId: currentUserUid,
                             ),
                           ),
                         );
                       },
                       child: RewardsListItems(
                         reward: reward,
-                        userId: _controller.currentUserId.value,
+                        userId: currentUserUid,
                         isFavFromFavScreen: false,
                       ),
                     );

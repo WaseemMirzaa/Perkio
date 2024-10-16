@@ -427,4 +427,30 @@ class RewardService {
       log('No FCM tokens found to send notifications.');
     }
   }
+
+  //check swipe
+
+  Future<Map<String, dynamic>> fetchRewardData(String rewardId) async {
+    try {
+      DocumentReference dealRef = _firestore.collection('reward').doc(rewardId);
+      DocumentSnapshot dealSnapshot = await dealRef.get();
+      return dealSnapshot.data() as Map<String, dynamic>;
+    } catch (e) {
+      print('Error fetching deal data: $e');
+      return {};
+    }
+  }
+
+  Future<bool> canSwipe(String rewardId, String userId) async {
+    try {
+      Map<String, dynamic> dealData = await fetchRewardData(rewardId);
+      Map<String, int> usedBy = Map<String, int>.from(dealData['usedBy'] ?? {});
+      int userCurrentUsage = usedBy[userId] ?? 0;
+      int maxUses = dealData['uses'] ?? 0;
+      return userCurrentUsage < maxUses;
+    } catch (e) {
+      print('Error checking swipe eligibility: $e');
+      return false;
+    }
+  }
 }

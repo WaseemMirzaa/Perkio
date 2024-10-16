@@ -21,12 +21,22 @@ class HomeController extends GetxController {
   final Rx<File?> _pickedImage = Rx<File?>(null);
   final Rx<File?> _pickedImage2 = Rx<File?>(null);
   final RxString _pickedStringImage = RxString('');
+ 
   String originalPath = '';
 
   // Getters for reactive variables
   File? get pickedImage => _pickedImage.value;
   File? get pickedImage2 => _pickedImage2.value;
+  
   String? get pickedStringImage => _pickedStringImage.value;
+
+
+   set pickedImage(File? value) {
+    _pickedImage.value = value; // Update the reactive variable
+  }
+
+
+  
 
   // Picking image from camera
   Future<void> pickImageFromCamera(

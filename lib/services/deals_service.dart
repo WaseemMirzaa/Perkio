@@ -35,17 +35,6 @@ class DealService {
     }
   }
 
-  Future<Map<String, dynamic>> fetchDealData(String dealId) async {
-    try {
-      DocumentReference dealRef = _firestore.collection('deals').doc(dealId);
-      DocumentSnapshot dealSnapshot = await dealRef.get();
-      return dealSnapshot.data() as Map<String, dynamic>;
-    } catch (e) {
-      print('Error fetching deal data: $e');
-      return {};
-    }
-  }
-
   // Call this to get deal data from notification
   Future<DealModel?> fetchDealDataFromNotification(String dealId) async {
     try {
@@ -183,6 +172,17 @@ class DealService {
       }
     } else {
       log('No FCM tokens found to send notifications.');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchDealData(String dealId) async {
+    try {
+      DocumentReference dealRef = _firestore.collection('deals').doc(dealId);
+      DocumentSnapshot dealSnapshot = await dealRef.get();
+      return dealSnapshot.data() as Map<String, dynamic>;
+    } catch (e) {
+      print('Error fetching deal data: $e');
+      return {};
     }
   }
 

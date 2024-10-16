@@ -42,10 +42,10 @@ class _BottomBarViewState extends State<BottomBarView> {
 
   final userList = [
     const HomeUser(),
-    RewardsView(),
+    const RewardsView(),
     MyDealsView(),
     FavouritesScreen(),
-    SettingsView(
+    const SettingsView(
       isUser: true,
     ),
   ];
@@ -54,7 +54,7 @@ class _BottomBarViewState extends State<BottomBarView> {
     const HomeBusiness(),
     const RewardsBusiness(),
     const PromotedDealView(),
-    SettingsView(
+    const SettingsView(
       isUser: false,
     ),
   ];

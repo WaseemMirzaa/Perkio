@@ -91,7 +91,6 @@ class UserServices {
   }
 
   //.....Get User in stream
-
   Stream<UserModel?> gettingUserById(String userId) {
     return _userCollection.doc(userId).snapshots().map((snapshot) {
       if (snapshot.exists) {

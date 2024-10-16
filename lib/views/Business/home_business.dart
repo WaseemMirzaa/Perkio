@@ -217,6 +217,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
           children: [
             ButtonWidget(
                 onSwipe: () {
+                  homeController.setImageNull();
                   Navigator.push(
                       context,
                       MaterialPageRoute(

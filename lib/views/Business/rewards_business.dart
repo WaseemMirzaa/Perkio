@@ -120,6 +120,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
           padding: const EdgeInsets.all(12.0),
           child: ButtonWidget(
               onSwipe: () {
+                homeController.setImageNull();
                 Navigator.push(
                     context,
                     MaterialPageRoute(

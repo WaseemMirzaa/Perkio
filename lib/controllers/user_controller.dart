@@ -47,7 +47,7 @@ class UserController extends GetxController {
   }
 
   // Method to reset password by sending an email
-  Future<bool> sendPasswordReset(String email,bool isUser) async {
+  Future<bool> sendPasswordReset(String email, bool isUser) async {
     loading.value = true;
 
     // Validate that email is not empty and in correct format
@@ -64,7 +64,8 @@ class UserController extends GetxController {
 
     try {
       // Call UserService to check if email exists and send password reset email
-      bool isSuccess = await userServices.resetPasswordIfEmailExists(email,isUser);
+      bool isSuccess =
+          await userServices.resetPasswordIfEmailExists(email, isUser);
 
       if (isSuccess) {
         loading.value = false;
@@ -410,7 +411,7 @@ class UserController extends GetxController {
   /// ♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️♦️
 
   Future<void> logout() async {
-    authServices.logOut().then((value) => Get.off(const SplashScreen()));
+    authServices.logOut().then((value) => Get.off(() => const SplashScreen()));
   }
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 ADD TO FIREBASE

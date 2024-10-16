@@ -204,13 +204,15 @@ class _SelectLocationState extends State<SelectLocation> {
 
                   // Secondary message (Optional, add if needed)
                   Text(
-                    'Please grant location permissions to continue.',
+                    'Allowing location access helps us recommend personalized deals and rewards near you. '
+                    'Please grant location permissions to unlock the best offers available in your area.',
                     style: poppinsRegular(
                       color: AppColors.whiteColor,
                       fontSize: 16,
                     ),
                     textAlign: TextAlign.center,
                   ),
+
                   SizedBox(height: 4.h), // Space between message and button
 
                   // Button container

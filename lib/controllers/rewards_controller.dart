@@ -260,9 +260,17 @@ class RewardController extends GetxController {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
     if (image != null) {
+      print("Image selected: ${image.path}");
       try {
         final file = File(image.path);
 
+        if (!file.existsSync()) {
+          print("File does not exist at path: ${image.path}");
+          isLoadingforscan.value = false;
+          return;
+        }
+
+        print("Uploading file: ${file.path}");
         // Get the UploadTask and track progress
         final uploadTask =
             await _rewardService.uploadReceiptImage(file, rewardModel, userId);
@@ -272,6 +280,7 @@ class RewardController extends GetxController {
           if (taskSnapshot.state == TaskState.running) {
             progress.value = (taskSnapshot.bytesTransferred.toDouble() /
                 taskSnapshot.totalBytes.toDouble());
+            print("Progress: ${progress.value}");
           }
         });
 
@@ -279,10 +288,14 @@ class RewardController extends GetxController {
         final snapshot = await uploadTask.whenComplete(() {});
         final downloadUrl = await snapshot.ref.getDownloadURL();
 
+        print("Download URL: $downloadUrl");
+
         // Save the receipt and add points
         await _rewardService.saveReceipt(rewardModel, userId, downloadUrl);
         await _rewardService.addPointsToReward(
             rewardModel.rewardId!, userId, 20);
+
+        print("Points added to reward.");
 
         // Navigate to the reward detail screen
         Get.offAll(() => RewardRedeemDetail(
@@ -297,6 +310,7 @@ class RewardController extends GetxController {
         progress.value = 0.0; // Reset progress
       }
     } else {
+      print("No image selected.");
       isLoadingforscan.value = false; // Stop loading if no image was selected
       progress.value = 0.0; // Reset progress
     }
@@ -340,6 +354,13 @@ class RewardController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", e.toString());
     }
+  }
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<bool> canSwipe(String rewardId) async {
+    String userId = _auth.currentUser?.uid ?? '';
+    return await _rewardService.canSwipe(rewardId, userId);
   }
 
   // Future<bool?> checkIfReceiptVerified(String rewardId) async {

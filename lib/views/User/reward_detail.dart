@@ -62,6 +62,9 @@ class _RewardDetailState extends State<RewardDetail> {
     if (status.isGranted) {
       rewardController.isLoadingforscan.value = true;
 
+      print('💥💥💥💥💥💥💥💥💥💥 ${widget.reward!.rewardId} ');
+      print('💥💥💥💥💥💥💥💥💥💥 ${widget.userId} ');
+
       await rewardController.pickImageAndUpload(
         widget.reward!,
         widget.userId!,
@@ -118,14 +121,14 @@ class _RewardDetailState extends State<RewardDetail> {
       body: Stack(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DetailTile(
                 businessId: widget.reward?.businessId,
-                
               ),
               const SpacerBoxVertical(height: 10),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,12 +147,21 @@ class _RewardDetailState extends State<RewardDetail> {
                   ],
                 ),
               ),
-              const SpacerBoxVertical(height: 20),
+              const SpacerBoxVertical(height: 50),
               Center(
-                child: Text(
-                  '$pointsEarned/$pointsToRedeem',
-                  style: poppinsBold(
-                      fontSize: 13.sp, color: AppColors.secondaryText),
+                child: Column(
+                  children: [
+                    Text(
+                      'Points',
+                      style: poppinsBold(
+                          fontSize: 12.sp, color: AppColors.hintText),
+                    ),
+                    Text(
+                      '$pointsEarned/$pointsToRedeem',
+                      style: poppinsBold(
+                          fontSize: 13.sp, color: AppColors.secondaryText),
+                    ),
+                  ],
                 ),
               ),
               const SpacerBoxVertical(height: 10),
@@ -211,58 +223,69 @@ class _RewardDetailState extends State<RewardDetail> {
                 ),
               ),
               const SpacerBoxVertical(height: 40),
-              if (userUses < widget.reward!.uses!)
-                Center(
-                  child: GestureDetector(
-                    onTap: rewardController.isLoadingforscan.value
-                        ? null
-                        : _pickImageAndUpload, // Prevent tapping during processing
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: AppColors.whiteColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 12,
-                            spreadRadius: 6,
-                            offset: const Offset(5, 0),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            gradient: const LinearGradient(
-                              colors: [
-                                AppColors.gradientStartColor,
-                                AppColors.gradientEndColor,
-                              ],
-                              begin: Alignment.bottomLeft,
-                              end: Alignment.topRight,
+              FutureBuilder<bool>(
+                future: rewardController.canSwipe(widget.reward!.rewardId!),
+                builder: (context, snapshot) {
+                  // if (snapshot.connectionState == ConnectionState.waiting) {
+                  //   return _buildLoadingIndicator();
+                  // }
+
+                  bool canSwipe = snapshot.data ?? true;
+
+                  return canSwipe
+                      ? Center(
+                          child: GestureDetector(
+                            onTap: rewardController.isLoadingforscan.value
+                                ? null
+                                : _pickImageAndUpload, // Prevent tapping during processing
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: AppColors.whiteColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 12,
+                                    spreadRadius: 6,
+                                    offset: const Offset(5, 0),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Container(
+                                  height: 80,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        AppColors.gradientStartColor,
+                                        AppColors.gradientEndColor,
+                                      ],
+                                      begin: Alignment.bottomLeft,
+                                      end: Alignment.topRight,
+                                    ),
+                                  ),
+                                  child: Image.asset(AppAssets.scannerImg,
+                                      scale: 3),
+                                ),
+                              ),
                             ),
                           ),
-                          child: Image.asset(AppAssets.scannerImg, scale: 3),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              if (userUses >= widget.reward!.uses!)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
-                    "You have used this reward the maximum allowed times.",
-                    style: poppinsRegular(
-                        fontSize: 12.sp, color: AppColors.hintText),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            "You have used this reward the maximum allowed times.",
+                            style: poppinsRegular(
+                                fontSize: 12.sp, color: AppColors.hintText),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                },
+              ),
             ],
           ),
           Obx(() => rewardController.isLoadingforscan.value

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+
 import 'package:swipe_app/models/business_details_model.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'dart:developer';
@@ -21,22 +22,18 @@ class HomeController extends GetxController {
   final Rx<File?> _pickedImage = Rx<File?>(null);
   final Rx<File?> _pickedImage2 = Rx<File?>(null);
   final RxString _pickedStringImage = RxString('');
- 
+
   String originalPath = '';
 
   // Getters for reactive variables
   File? get pickedImage => _pickedImage.value;
   File? get pickedImage2 => _pickedImage2.value;
-  
+
   String? get pickedStringImage => _pickedStringImage.value;
 
-
-   set pickedImage(File? value) {
+  set pickedImage(File? value) {
     _pickedImage.value = value; // Update the reactive variable
   }
-
-
-  
 
   // Picking image from camera
   Future<void> pickImageFromCamera(
@@ -98,6 +95,22 @@ class HomeController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  var userHasBalance = Rxn<bool>();
+
+  Future<bool?> checkBalance(String uid) async {
+    // Fetch the balance status from the service
+    bool? balanceStatus = await homeService.checkUserBalance(uid);
+
+    // Update the observable
+    userHasBalance.value = balanceStatus;
+
+    // Debug print to check the result
+    print('User balance check result: ${userHasBalance.value}');
+
+    // Return the fetched balance status (true, false, or null)
+    return balanceStatus;
   }
 
   // Compressing the image

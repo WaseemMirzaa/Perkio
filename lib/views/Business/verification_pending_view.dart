@@ -89,12 +89,8 @@ class VerificationPendingView extends StatelessWidget {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LocationService(
-                              child: BottomBarView(
-                                  isUser: getStringAsync(SharedPrefKey.role) ==
-                                          SharedPrefKey.user
-                                      ? true
-                                      : false)),
+                          builder: (context) => const LocationService(
+                              child: BottomBarView(isUser: false)),
                         ),
                         (route) => false,
                       );

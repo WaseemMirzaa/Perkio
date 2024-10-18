@@ -18,16 +18,33 @@ class NotificationController extends GetxController {
   var unreadBusinessNotificationCount = 0.obs;
   var unreadUserNotificationCount = 0.obs;
 
-  String? currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+  String? currentUserUid;
 
   @override
   void onInit() {
     super.onInit();
-    if (currentUserUid != null) {
-      fetchInitialNotifications(); // Fetch initial notifications
-      countUnreadBusinessNotifications(); // Count unread Business notifications
-      countUnreadUserNotifications(); // Count unread User notifications
-    } else {}
+
+    // Fetch the current user's UID on init
+    _getCurrentUserUid();
+
+    fetchInitialNotifications(); // Fetch initial notifications
+    countUnreadBusinessNotifications(); // Count unread Business notifications
+    countUnreadUserNotifications(); // Count unread User notifications
+  }
+
+  // Method to get current user UID
+  void _getCurrentUserUid() async {
+    // Listen for authentication state changes
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        // If a user is signed in, set the currentUserUid and log it
+        currentUserUid = user.uid;
+        log("💥💥💥💥💥💥💥 FROM NOTIFCATION CONTROLLER------------Current User ID: $currentUserUid");
+      } else {
+        // If no user is signed in, log this information
+        log("💥💥💥💥💥💥💥 FROM NOTIFCATION CONTROLLER------------No user is currently signed in.");
+      }
+    });
   }
 
   // Fetch initial notifications

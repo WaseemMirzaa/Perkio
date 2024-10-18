@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -197,9 +198,15 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                 widget.dealModel.isPromotionStar!
                     ? const SizedBox()
                     : GestureDetector(
-                        onTap: () {
-                          log('💥💥💥💥💥Balance: ${widget.balance}');
-                          if (widget.balance! > 0) {
+                        onTap: () async {
+                          String? currentUID =
+                              FirebaseAuth.instance.currentUser!.uid;
+
+                          bool? balanceStatus = await homeController.checkBalance(
+                              currentUID); // Replace currentUserUid with the actual user UID
+
+                          log('💥💥💥💥💥 Balance: $balanceStatus');
+                          if (balanceStatus == true) {
                             showAdaptiveDialog(
                               context: context,
                               builder: (context) => AlertDialog(

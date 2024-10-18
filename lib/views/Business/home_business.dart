@@ -42,7 +42,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
   @override
   void initState() {
     super.initState();
-    Get.put(NotificationController());
+    Get.find<NotificationController>();
     getUser();
   }
 

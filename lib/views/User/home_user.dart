@@ -49,7 +49,7 @@ class _HomeUserState extends State<HomeUser> {
             DealModel>>.broadcast(); // Use broadcast if multiple listeners are expected
     getDeals();
     getUser();
-    Get.put(NotificationController());
+    Get.find<NotificationController>();
 
     // Listen to search field changes
     searchController.addListener(() {

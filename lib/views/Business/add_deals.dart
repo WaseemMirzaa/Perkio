@@ -78,14 +78,13 @@ class _AddDealsState extends State<AddDeals> {
                   final image = user.image;
 
                   return customAppBar(
-                    userName: userName,
-                    isNotification: false,
-                    latitude: latLog?.latitude ?? 0.0,
-                    longitude: latLog?.longitude ?? 0.0,
-                    userLocation: userLocation,
-                    isChangeBusinessLocation: true,
-                    userImage: image
-                  );
+                      userName: userName,
+                      isNotification: false,
+                      latitude: latLog?.latitude ?? 0.0,
+                      longitude: latLog?.longitude ?? 0.0,
+                      userLocation: userLocation,
+                      isChangeBusinessLocation: true,
+                      userImage: image);
                 }),
               ),
             ),
@@ -292,12 +291,8 @@ class _AddDealsState extends State<AddDeals> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BottomBarView(
-                                        isUser: getStringAsync(
-                                                    SharedPrefKey.role) ==
-                                                SharedPrefKey.user
-                                            ? true
-                                            : false)),
+                                    builder: (context) =>
+                                        const BottomBarView(isUser: false)),
                                 (route) => false);
                           });
                         }

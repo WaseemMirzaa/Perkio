@@ -48,10 +48,29 @@ class _MyDealsViewState extends State<MyDealsView> {
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(12.h),
-        child: customAppBar(
-          userName: 'Loading...', // Placeholder text
-          userLocation: 'Loading...',
-        ),
+        child: Obx(() {
+          // Use Obx to react to changes in userProfile
+          if (controller.userProfile.value == null) {
+            return customAppBar(
+              userName: 'Loading...', // Placeholder text
+              userLocation: 'Loading...',
+            );
+          }
+
+          // Use the data from the observable
+          final user = controller.userProfile.value!;
+          final userName = user.userName ?? 'Unknown';
+          final userLocation = user.address ?? 'No Address';
+          final latLog = user.latLong;
+          final image = user.image;
+
+          return customAppBar(
+              userName: userName,
+              latitude: latLog?.latitude ?? 0.0,
+              longitude: latLog?.longitude ?? 0.0,
+              userLocation: userLocation,
+              userImage: image);
+        }),
       ),
       body: Obx(
         () => Column(

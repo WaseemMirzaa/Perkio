@@ -15,7 +15,6 @@ import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/views/business/profile_settings_business.dart';
 import 'package:swipe_app/views/user/user_profile_view.dart';
 import 'package:swipe_app/views/help/help_view.dart';
-import 'package:nb_utils/nb_utils.dart' as NBUtils;
 import 'package:swipe_app/views/privacy_policy/privacy_policy.dart';
 import 'package:swipe_app/views/terms_and_conditions/terms_conditions.dart';
 import 'package:swipe_app/widgets/common/common_widgets.dart';

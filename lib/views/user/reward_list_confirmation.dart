@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
-import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
@@ -167,6 +165,8 @@ class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
                           widget.userId!,
                         );
 
+                        
+
                         // Show the congratulation dialog
                         showCongratulationDialog(
                           isPendingforVerification: true,
@@ -174,12 +174,8 @@ class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LocationService(
-                                  child: BottomBarView(
-                                    isUser:
-                                        getStringAsync(SharedPrefKey.role) ==
-                                            SharedPrefKey.user,
-                                  ),
+                                builder: (context) => const LocationService(
+                                  child: BottomBarView(isUser: true),
                                 ),
                               ),
                               (route) => false,

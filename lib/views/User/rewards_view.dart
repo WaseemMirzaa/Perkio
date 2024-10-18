@@ -36,12 +36,15 @@ class _RewardsViewState extends State<RewardsView> {
 
   late final String currentUserUid; // `late final` to ensure it's set only once
 
+  // Added flag to track if widget is disposed
+  bool _isDisposed = false;
+
   @override
   void initState() {
     super.initState();
-    _rewardStreamController = StreamController<List<RewardModel>>();
-    allRewards = []; // Initialize the list for all rewards
-    filteredRewards = []; // Initialize the list for filtered rewards
+    _rewardStreamController = StreamController<List<RewardModel>>.broadcast();
+    allRewards = [];
+    filteredRewards = [];
     getRewards();
 
     // Initialize the user ID immediately on widget creation
@@ -52,23 +55,25 @@ class _RewardsViewState extends State<RewardsView> {
       currentUserUid = user.uid;
     } else {
       // Handle the case where there is no logged-in user
-
       return; // Stop further execution if no user is logged in
     }
 
-    // Listen for location changes
-    // userController.userProfile.listen((user) {
-    //   if (user != null) {
-    //     getRewards(); // Fetch rewards again on location change
-    //   }
-    // });
+    // Listen for location changes from the user profile
+    userController.userProfile.listen((user) {
+      if (user != null) {
+        // Ensure widget is not disposed before calling getRewards
+        if (!_isDisposed) {
+          getRewards(); // Fetch rewards again on location change
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
-    // Safely close the stream controller if it's not already closed
+    _isDisposed = true; // Mark widget as disposed
     if (!_rewardStreamController.isClosed) {
-      _rewardStreamController.close();
+      _rewardStreamController.close(); // Close the stream safely
     }
     searchController.dispose(); // Dispose the TextEditingController
     super.dispose();
@@ -86,18 +91,17 @@ class _RewardsViewState extends State<RewardsView> {
           companyName.contains(lowerCaseQuery);
     }).toList();
 
-    // Update the stream with filtered rewards
-    if (!_rewardStreamController.isClosed) {
+    // Ensure widget is not disposed before adding to stream
+    if (!_isDisposed && !_rewardStreamController.isClosed) {
       _rewardStreamController.add(filteredRewards);
     }
   }
 
   void getRewards() {
-    // Ensure that this block is only executed if the stream controller is open
-    if (_rewardStreamController.isClosed) {
-      return; // Exit if the stream controller is closed
-    }
     _controller.getRewards().listen((newRewards) {
+      // Ensure widget is not disposed before processing rewards
+      if (_isDisposed) return;
+
       double userLat = getDoubleAsync(SharedPrefKey.latitude);
       double userLon = getDoubleAsync(SharedPrefKey.longitude);
 
@@ -123,7 +127,10 @@ class _RewardsViewState extends State<RewardsView> {
       if (searchQuery.isNotEmpty) {
         searchDeals(searchQuery); // Update filtered rewards based on search
       } else {
-        _rewardStreamController.add(filteredRewards); // Send initial rewards
+        // Ensure widget is not disposed before adding to stream
+        if (!_isDisposed && !_rewardStreamController.isClosed) {
+          _rewardStreamController.add(filteredRewards); // Send initial rewards
+        }
       }
     });
   }
@@ -134,14 +141,36 @@ class _RewardsViewState extends State<RewardsView> {
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
-        child: customAppBar(
-          isSearchField: true,
-          onChanged: searchDeals,
-          isSearching: _controller.isSearching,
-          textController: searchController,
-          userName: 'Loading...', // Placeholder text
-          userLocation: 'Loading...',
-        ),
+        child: Obx(() {
+          if (userController.userProfile.value == null) {
+            return customAppBar(
+              isSearchField: true,
+              onChanged: searchDeals,
+              isSearching: _controller.isSearching,
+              textController: searchController,
+              userName: 'Loading...', // Placeholder text
+              userLocation: 'Loading...',
+            );
+          }
+
+          final user = userController.userProfile.value!;
+          final userName = user.userName ?? 'Unknown';
+          final userLocation = user.address ?? 'No Address';
+          final latLog = user.latLong;
+          final image = user.image;
+
+          return customAppBar(
+              isReward: true,
+              isSearchField: true,
+              onChanged: searchDeals,
+              isSearching: _controller.isSearching,
+              userName: userName,
+              latitude: latLog?.latitude ?? 0.0,
+              longitude: latLog?.longitude ?? 0.0,
+              userLocation: userLocation,
+              textController: searchController,
+              userImage: image);
+        }),
       ),
       body: StreamBuilder<List<RewardModel>>(
         stream: _rewardStreamController.stream,

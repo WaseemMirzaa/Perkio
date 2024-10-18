@@ -422,7 +422,9 @@ class UserController extends GetxController {
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 ADD TO FIREBASE
 
   //💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛💛 GET USER
-
+  //updating the user details
+  Rx<UserModel?> userProfile = Rx<UserModel?>(null);
+  Rx<UserModel?> businessProfile = Rx<UserModel?>(null);
   Future<UserModel?> getUser(String uid) async {
     final userModel = await userServices.getUserById(uid);
     await setUserInfo(userModel!);

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -18,7 +19,6 @@ import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/primary_layout.dart';
-import 'package:nb_utils/nb_utils.dart' as NBUtils;
 import '../../widgets/custom_appBar/custom_appBar.dart';
 
 class HomeBusiness extends StatefulWidget {
@@ -43,7 +43,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
   void initState() {
     super.initState();
     Get.put(NotificationController());
-    // getUser();
+    getUser();
   }
 
   @override
@@ -53,16 +53,16 @@ class _HomeBusinessState extends State<HomeBusiness> {
     searchController.dispose();
   }
 
-  // void getUser() {
-  //   userController
-  //       .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
-  //       .listen((userModel) {
-  //     if (userModel != null) {
-  //       userController.userProfile.value = userModel;
-  //       // Update the user profile
-  //     }
-  //   });
-  // }
+  void getUser() {
+    String? currentUid = FirebaseAuth.instance.currentUser!.uid;
+
+    userController.gettingUser(currentUid).listen((userModel) {
+      if (userModel != null) {
+        userController.businessProfile.value = userModel;
+        // Update the user profile
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,22 +71,52 @@ class _HomeBusinessState extends State<HomeBusiness> {
         padding: const EdgeInsets.only(top: 25),
         child: SizedBox(
           height: 20.h,
-          child: customAppBar(
-            isSearchField: true,
-            textController: searchController,
-            isSearching: RxBool(searchQuery.isNotEmpty),
-            isChangeBusinessLocation: true,
+          child: Obx(() {
+            // Use Obx to react to changes in userProfile
+            if (userController.businessProfile.value == null) {
+              return customAppBar(
+                isSearchField: true,
+                textController: searchController,
+                isSearching: RxBool(searchQuery.isNotEmpty),
+                isChangeBusinessLocation: true,
 
-            onChanged: (value) {
-              setState(() {
-                searchQuery = value;
-              });
-            },
-            isNotification: false,
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
+                isNotification: false,
 
-            userName: 'Loading...', // Placeholder text
-            userLocation: 'Loading...',
-          ),
+                userName: 'Loading...', // Placeholder text
+                userLocation: 'Loading...',
+              );
+            }
+
+            // Use the data from the observable
+            final user = userController.businessProfile.value!;
+            final userName = user.userName ?? 'Unknown';
+            final userLocation = user.address ?? 'No Address';
+            final latLog = user.latLong;
+            final image = user.image;
+
+            return customAppBar(
+              isSearchField: true,
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+              isChangeBusinessLocation: true,
+              isSearching: RxBool(searchQuery.isNotEmpty),
+              isNotification: false,
+              userName: userName,
+              textController: searchController,
+              latitude: latLog?.latitude ?? 0.0,
+              longitude: latLog?.longitude ?? 0.0,
+              userLocation: userLocation,
+              userImage: image
+            );
+          }),
         ),
       ),
       body: SafeArea(

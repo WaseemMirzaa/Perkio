@@ -9,6 +9,8 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
+import 'package:swipe_app/controllers/notification_controller.dart';
+import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
@@ -344,6 +346,8 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                           print(
                               'HERE IS THE PASS ID ${businessIdController.text}');
                           if (value != false) {
+                            Get.put(NotificationController());
+                            Get.put(RewardController());
                             // You might need to modify `signUp` to return a success indicator
                             Navigator.push(
                                 context,

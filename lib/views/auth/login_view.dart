@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/notification_controller.dart';
+import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
@@ -121,6 +123,8 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                                 if (isAuthenticated &&
                                     await LocationPermissionManager
                                         .requestLocationPermissions(context)) {
+                                  Get.put(NotificationController());
+                                  Get.put(RewardController());
                                   // if(LocationPermissionManager().requestLocationPermissions(context))
                                   Navigator.pushReplacement(
                                       context,

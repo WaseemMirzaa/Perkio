@@ -27,9 +27,7 @@ class NotificationController extends GetxController {
       fetchInitialNotifications(); // Fetch initial notifications
       countUnreadBusinessNotifications(); // Count unread Business notifications
       countUnreadUserNotifications(); // Count unread User notifications
-    } else {
-      Get.snackbar('Error', 'User not logged in.');
-    }
+    } else {}
   }
 
   // Fetch initial notifications

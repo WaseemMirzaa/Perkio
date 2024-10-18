@@ -68,10 +68,12 @@ Widget customAppBar({
                 children: [
                   CircleAvatar(
                     radius: 20.sp,
-                    backgroundImage:
-                        !getStringAsync(SharedPrefKey.photo).isEmptyOrNull
-                            ? NetworkImage(getStringAsync(SharedPrefKey.photo))
-                            : AssetImage(userImage ?? AppAssets.profileImg),
+                    backgroundImage: userImage != null && userImage.isNotEmpty
+                        ? NetworkImage(userImage)
+                        : const AssetImage(AppAssets.profileImg),
+                    //userImage != null
+                    //     ? NetworkImage(userImage)
+                    //     : const AssetImage(AppAssets.profileImg),
                   ),
                   const SizedBox(
                     width: 10,

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:swipe_app/controllers/business_controller.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/ui_controllers/add_rewards_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/home_services.dart';
@@ -60,12 +62,34 @@ class _EditMyRewardsState extends State<EditMyRewards> {
             height: 15.40.h,
             child: PreferredSize(
               preferredSize: Size.fromHeight(12.h),
-              child: customAppBar(
-                isNotification: false,
-                userName: 'Loading...', // Placeholder text
-                userLocation: 'Loading...',
-                isChangeBusinessLocation: true,
-              ),
+              child: Obx(() {
+                // Use Obx to react to changes in userProfile
+                if (userController.businessProfile.value == null) {
+                  return customAppBar(
+                    isNotification: false,
+                    userName: 'Loading...', // Placeholder text
+                    userLocation: 'Loading...',
+                    isChangeBusinessLocation: true,
+                  );
+                }
+
+                // Use the data from the observable
+                final user = userController.businessProfile.value!;
+                final userName = user.userName ?? 'Unknown';
+                final userLocation = user.address ?? 'No Address';
+                final latLog = user.latLong;
+                 final image = user.image;
+
+                return customAppBar(
+                  userName: userName,
+                  isNotification: false,
+                  latitude: latLog?.latitude ?? 0.0,
+                  longitude: latLog?.longitude ?? 0.0,
+                  userLocation: userLocation,
+                  isChangeBusinessLocation: true,
+                  userImage: image
+                );
+              }),
             ),
           ),
         ),
@@ -322,10 +346,14 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                                       ? widget.rewardModel.rewardLogo
                                       : imageLink;
 
-                              // widget.rewardModel.rewardAddress =
-                              //     userController.userProfile.value!.address;
-                              // widget.rewardModel.latLong =
-                              //     userController.userProfile.value!.latLong;
+                              widget.rewardModel.rewardAddress =
+                                  getStringAsync(SharedPrefKey.address);
+
+                              print(
+                                  '-----💢💢💢💢💢${getStringAsync(SharedPrefKey.address)}');
+                              widget.rewardModel.latLong = GeoPoint(
+                                  getDoubleAsync(SharedPrefKey.latitude),
+                                  getDoubleAsync(SharedPrefKey.longitude));
 
                               print(
                                   '------------ + ${widget.rewardModel.rewardAddress}');

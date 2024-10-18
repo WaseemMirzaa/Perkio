@@ -25,7 +25,6 @@ class DealDetail extends StatefulWidget {
   final DealModel? deal;
 
   const DealDetail({super.key, this.deal});
-  
 
   @override
   State<DealDetail> createState() => _DealDetailState();
@@ -219,10 +218,9 @@ class _DealDetailState extends State<DealDetail> {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LocationService(
+                        builder: (context) => const LocationService(
                           child: BottomBarView(
-                            isUser: getStringAsync(SharedPrefKey.role) ==
-                                SharedPrefKey.user,
+                            isUser: true,
                           ),
                         ),
                       ),

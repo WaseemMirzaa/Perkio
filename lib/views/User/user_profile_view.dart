@@ -137,7 +137,8 @@ class _UserProfileViewState extends State<UserProfileView> {
                           : SizedBox(
                               height: 30.h,
                               width: 100.w,
-                              child: Image.network(
+                              child: 
+                              Image.network(
                                 userProfile.image ?? '',
                                 fit: BoxFit.cover,
                                 loadingBuilder:

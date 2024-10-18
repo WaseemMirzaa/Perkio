@@ -1,12 +1,20 @@
 // ignore_for_file: unused_local_variable, unused_catch_clause
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:swipe_app/controllers/business_controller.dart';
+import 'package:swipe_app/controllers/home_controller.dart';
+import 'package:swipe_app/controllers/notification_controller.dart';
+import 'package:swipe_app/controllers/rewards_controller.dart';
+import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/models/user_model.dart';
+import 'package:swipe_app/services/deals_service.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:nb_utils/nb_utils.dart' as NBUtils;
+import 'package:swipe_app/services/reward_service.dart';
 
 class AuthServices {
   final auth = FirebaseAuth.instance;
@@ -151,7 +159,20 @@ class AuthServices {
       await auth.signOut();
       print('User signed out successfully');
 
-      // Optionally, you can navigate to the login screen or another page after logout.
+      // Dispose of all GetX controllers and services after logout
+      Get.delete<RewardController>();
+      Get.delete<GetMaterialController>();
+      Get.delete<HomeController>();
+      Get.delete<UserController>();
+      Get.delete<RewardService>();
+      Get.delete<DealService>();
+      Get.delete<NotificationController>();
+      Get.delete<BusinessController>();
+      Get.deleteAll(force: true);
+
+      print('EACH CONTROLLER HAS BEEN DISPOSED SUCCESSFULLY successfully');
+
+      // Optionally, navigate to the login screen or another page after logout.
     } catch (e) {
       print('Error during logout: $e');
       // Show a user-friendly message (e.g., using a Snackbar or a Dialog)

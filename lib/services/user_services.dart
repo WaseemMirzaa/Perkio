@@ -21,10 +21,11 @@ class UserServices {
   Future<bool> addUserData(UserModel userModel) async {
     try {
       if (authServices.auth.currentUser != null) {
-        _userCollection
+        await _userCollection
             .doc(authServices.auth.currentUser!.uid)
             .set(userModel.toMap());
-      } else {
+      } 
+      else {
         Get.snackbar('Firebase Error', 'User not found');
       }
       return true;

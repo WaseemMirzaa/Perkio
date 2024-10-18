@@ -66,7 +66,10 @@ class _RewardsViewState extends State<RewardsView> {
 
   @override
   void dispose() {
-    _rewardStreamController.close();
+    // Safely close the stream controller if it's not already closed
+    if (!_rewardStreamController.isClosed) {
+      _rewardStreamController.close();
+    }
     searchController.dispose(); // Dispose the TextEditingController
     super.dispose();
   }
@@ -84,10 +87,16 @@ class _RewardsViewState extends State<RewardsView> {
     }).toList();
 
     // Update the stream with filtered rewards
-    _rewardStreamController.add(filteredRewards);
+    if (!_rewardStreamController.isClosed) {
+      _rewardStreamController.add(filteredRewards);
+    }
   }
 
   void getRewards() {
+    // Ensure that this block is only executed if the stream controller is open
+    if (_rewardStreamController.isClosed) {
+      return; // Exit if the stream controller is closed
+    }
     _controller.getRewards().listen((newRewards) {
       double userLat = getDoubleAsync(SharedPrefKey.latitude);
       double userLon = getDoubleAsync(SharedPrefKey.longitude);

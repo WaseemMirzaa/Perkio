@@ -32,6 +32,8 @@ class UserController extends GetxController {
 
   final RewardService _rewardService = RewardService();
 
+  String? currentUseruid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -43,7 +45,9 @@ class UserController extends GetxController {
     phoneController = TextEditingController();
 
     // Fetch favorite deals on controller initialization
-    fetchAndCacheFavouriteDeals();
+    if (currentUseruid != null) {
+      fetchAndCacheFavouriteDeals();
+    }
   }
 
   // Method to reset password by sending an email
@@ -183,6 +187,7 @@ class UserController extends GetxController {
         UserModel? userModel = await userServices
             .getUserById(FirebaseAuth.instance.currentUser!.uid);
         if (userModel != null) {
+          print('------------💥💥💥💥💥 I AM WORKING');
           await setUserInfo(userModel);
           loading.value = false;
           clearTextFields();

@@ -459,12 +459,12 @@ class UserController extends GetxController {
   }
 
   // This method will be called on a button click or other event
-  Future<void> handleBusinessBalanceUpdate(String businessId) async {
+  Future<void> handleBusinessBalanceUpdate(String businessId,String dealId) async {
     if (businessId.isNotEmpty) {
       try {
         print(
             'Initiating balance check and update for businessId: $businessId');
-        await userServices.checkAndUpdateBalance(businessId);
+        await userServices.checkAndUpdateBalance(businessId,dealId);
         print('Balance check and update process completed');
       } catch (e) {
         print('Error occurred: $e');

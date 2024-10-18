@@ -180,7 +180,7 @@ class _MyDealsViewState extends State<MyDealsView> {
                                 controller
                                     .incrementDealViews(favourite.dealId!);
                                 controller.handleBusinessBalanceUpdate(
-                                    favourite.businessId!);
+                                    favourite.businessId!,favourite.dealId!);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

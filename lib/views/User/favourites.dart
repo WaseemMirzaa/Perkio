@@ -62,15 +62,14 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
           final userName = user.userName ?? 'Unknown';
           final userLocation = user.address ?? 'No Address';
           final latLog = user.latLong;
-           final image = user.image;
+          final image = user.image;
 
           return customAppBar(
-            userName: userName,
-            latitude: latLog?.latitude ?? 0.0,
-            longitude: latLog?.longitude ?? 0.0,
-            userLocation: userLocation,
-            userImage: image
-          );
+              userName: userName,
+              latitude: latLog?.latitude ?? 0.0,
+              longitude: latLog?.longitude ?? 0.0,
+              userLocation: userLocation,
+              userImage: image);
         }),
       ),
       body: Obx(
@@ -182,7 +181,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                 controller
                                     .incrementDealViews(favourite.dealId!);
                                 controller.handleBusinessBalanceUpdate(
-                                    favourite.businessId!);
+                                    favourite.businessId!, favourite.dealId!);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

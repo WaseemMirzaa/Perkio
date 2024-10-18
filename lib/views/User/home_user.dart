@@ -229,7 +229,8 @@ class _HomeUserState extends State<HomeUser> {
                 return GestureDetector(
                   onTap: () {
                     print('passed business ID is:${deal.businessId!}');
-                    controller.handleBusinessBalanceUpdate(deal.businessId!);
+                    controller.handleBusinessBalanceUpdate(
+                        deal.businessId!, deal.dealId!);
                     controller.incrementDealViews(deal.dealId!);
                     Navigator.push(
                       context,
@@ -277,8 +278,8 @@ class _HomeUserState extends State<HomeUser> {
                         return GestureDetector(
                           onTap: () {
                             controller.incrementDealViews(deal.dealId!);
-                            controller
-                                .handleBusinessBalanceUpdate(deal.businessId!);
+                            controller.handleBusinessBalanceUpdate(
+                                deal.businessId!, deal.dealId!);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -326,7 +327,8 @@ class _HomeUserState extends State<HomeUser> {
                 return GestureDetector(
                   onTap: () {
                     controller.incrementDealViews(deal.dealId!);
-                    controller.handleBusinessBalanceUpdate(deal.businessId!);
+                    controller.handleBusinessBalanceUpdate(
+                        deal.businessId!, deal.dealId!);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

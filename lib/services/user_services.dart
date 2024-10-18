@@ -24,8 +24,7 @@ class UserServices {
         await _userCollection
             .doc(authServices.auth.currentUser!.uid)
             .set(userModel.toMap());
-      } 
-      else {
+      } else {
         Get.snackbar('Firebase Error', 'User not found');
       }
       return true;
@@ -336,7 +335,8 @@ class UserServices {
   }
 
   //deduct points from user
-  Future<void> checkAndUpdateBalance(String businessId) async {
+
+  Future<void> checkAndUpdateBalance(String businessId, String dealId) async {
     try {
       // Access 'users' collection and get the document by its ID
       final userDocRef = _userCollection.doc(businessId);
@@ -349,19 +349,22 @@ class UserServices {
         print(
             'Found user with businessId (docId): $businessId, balance: $balance');
 
-        // Query deals collection for any deal with matching businessId
-        final dealQuery = await _dealCollection
-            .where('businessId', isEqualTo: businessId)
-            .get();
+        // Get the specific deal by dealId
+        final dealDocRef = _dealCollection.doc(dealId);
+        final dealDocSnapshot = await dealDocRef.get();
 
-        // Check if any deal has 'isPromotionStart' set to true
-        bool anyPromotionStarted = dealQuery.docs.any((doc) {
-          final dealData = doc.data() as Map<String, dynamic>;
-          return dealData['isPromotionStart'] == true;
-        });
+        if (!dealDocSnapshot.exists) {
+          print('No deal found with dealId: $dealId');
+          return;
+        }
 
-        if (!anyPromotionStarted) {
-          print('No promotions have started. Balance will not be deducted.');
+        final dealData = dealDocSnapshot.data() as Map<String, dynamic>;
+        final isPromotionStart = dealData['isPromotionStart'] ?? false;
+
+        // Check if the specific deal has 'isPromotionStart' set to true
+        if (!isPromotionStart) {
+          print(
+              'The promotion for this deal has not started. Balance will not be deducted.');
           return; // Exit early, do not deduct balance
         }
 
@@ -371,21 +374,13 @@ class UserServices {
             WriteBatch batch = FirebaseFirestore.instance.batch();
 
             // Update the user's balance and set their isPromotionStart to false
-            batch.update(userDocRef, {'balance': 0, 'isPromotionStart': false});
-            print('Balance updated to 0, turning off promotion for the user.');
-
-            // Set 'isPromotionStart' to false and reset 'views' for all deals with this businessId
-            for (var dealDoc in dealQuery.docs) {
-              batch.update(dealDoc.reference, {
-                'isPromotionStart': false,
-                'views': 0,
-              });
-              print('Queued update for deal: ${dealDoc.id}');
-            }
+            batch.update(userDocRef, {'balance': 0});
+            batch.update(dealDocRef, {'isPromotionStart': false, 'views': 0});
+            print('Balance updated to 0, turning off promotion for the deal.');
 
             // Commit the batch update
             await batch.commit();
-            print('All deals and user promotion status updated to false.');
+            print('Deal promotion status updated to false.');
           } else {
             // If the balance is greater than 2, deduct 2
             await userDocRef.update({'balance': balance - 2});
@@ -393,7 +388,7 @@ class UserServices {
           }
         } else {
           // If balance <= 0, go to 'deals' collection and update 'isPromotionStart'
-          await _updatePromotionStatus(businessId);
+          await _updatePromotionStatus(dealId);
         }
       } else {
         print('No user found with businessId (docId): $businessId');
@@ -404,37 +399,135 @@ class UserServices {
     }
   }
 
-// Private helper method to update promotion status in deals collection
-  Future<void> _updatePromotionStatus(String businessId) async {
+// Private helper method to update promotion status in a specific deal
+  Future<void> _updatePromotionStatus(String dealId) async {
     try {
-      // Query to find all deals with the same businessId
-      final querySnapshot = await _dealCollection
-          .where('businessId', isEqualTo: businessId)
-          .get();
+      // Get the specific deal by dealId
+      final dealDocRef = _dealCollection.doc(dealId);
+      final dealDocSnapshot = await dealDocRef.get();
 
-      if (querySnapshot.docs.isEmpty) {
-        print('No deals found for businessId: $businessId');
+      if (!dealDocSnapshot.exists) {
+        print('No deal found with dealId: $dealId');
         return;
       }
 
-      // Create a batch to update all deals atomically
+      // Create a batch to update the deal atomically
       WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      for (var doc in querySnapshot.docs) {
-        batch.update(doc.reference, {
-          'isPromotionStart': false,
-          'views': 0,
-        });
-        print('Queued update for deal: ${doc.id}');
-      }
+      batch.update(dealDocRef, {
+        'isPromotionStart': false,
+        'views': 0,
+      });
+      print('Queued update for deal: $dealId');
 
       // Commit the batch update
       await batch.commit();
-      print(
-          'Successfully updated promotion status for all deals of businessId: $businessId');
+      print('Successfully updated promotion status for dealId: $dealId');
     } catch (e) {
       print('Error in _updatePromotionStatus: $e');
       rethrow;
     }
   }
+
+//   Future<void> checkAndUpdateBalance(String businessId, String dealId) async {
+//     try {
+//       // Access 'users' collection and get the document by its ID
+//       final userDocRef = _userCollection.doc(businessId);
+//       final docSnapshot = await userDocRef.get();
+
+//       if (docSnapshot.exists) {
+//         final data = docSnapshot.data() as Map<String, dynamic>;
+//         final balance = data['balance'] ?? 0;
+
+//         print(
+//             'Found user with businessId (docId): $businessId, balance: $balance');
+
+//         // Query deals collection for any deal with matching businessId
+//         final dealQuery = await _dealCollection
+//             .where('businessId', isEqualTo: businessId)
+//             .get();
+
+//         // Check if any deal has 'isPromotionStart' set to true
+//         bool anyPromotionStarted = dealQuery.docs.any((doc) {
+//           final dealData = doc.data() as Map<String, dynamic>;
+//           return dealData['isPromotionStart'] == true;
+//         });
+
+//         if (!anyPromotionStarted) {
+//           print('No promotions have started. Balance will not be deducted.');
+//           return; // Exit early, do not deduct balance
+//         }
+
+//         if (balance > 0) {
+//           if (balance == 2) {
+//             // If the balance is exactly 2, deduct 2 and turn off promotion
+//             WriteBatch batch = FirebaseFirestore.instance.batch();
+
+//             // Update the user's balance and set their isPromotionStart to false
+//             batch.update(userDocRef, {'balance': 0, 'isPromotionStart': false});
+//             print('Balance updated to 0, turning off promotion for the user.');
+
+//             // Set 'isPromotionStart' to false and reset 'views' for all deals with this businessId
+//             for (var dealDoc in dealQuery.docs) {
+//               batch.update(dealDoc.reference, {
+//                 'isPromotionStart': false,
+//                 'views': 0,
+//               });
+//               print('Queued update for deal: ${dealDoc.id}');
+//             }
+
+//             // Commit the batch update
+//             await batch.commit();
+//             print('All deals and user promotion status updated to false.');
+//           } else {
+//             // If the balance is greater than 2, deduct 2
+//             await userDocRef.update({'balance': balance - 2});
+//             print('Balance updated, new balance: ${balance - 2}');
+//           }
+//         } else {
+//           // If balance <= 0, go to 'deals' collection and update 'isPromotionStart'
+//           await _updatePromotionStatus(businessId);
+//         }
+//       } else {
+//         print('No user found with businessId (docId): $businessId');
+//       }
+//     } catch (e) {
+//       print('Error in checkAndUpdateBalance: $e');
+//       rethrow;
+//     }
+//   }
+
+// // Private helper method to update promotion status in deals collection
+//   Future<void> _updatePromotionStatus(String businessId) async {
+//     try {
+//       // Query to find all deals with the same businessId
+//       final querySnapshot = await _dealCollection
+//           .where('businessId', isEqualTo: businessId)
+//           .get();
+
+//       if (querySnapshot.docs.isEmpty) {
+//         print('No deals found for businessId: $businessId');
+//         return;
+//       }
+
+//       // Create a batch to update all deals atomically
+//       WriteBatch batch = FirebaseFirestore.instance.batch();
+
+//       for (var doc in querySnapshot.docs) {
+//         batch.update(doc.reference, {
+//           'isPromotionStart': false,
+//           'views': 0,
+//         });
+//         print('Queued update for deal: ${doc.id}');
+//       }
+
+//       // Commit the batch update
+//       await batch.commit();
+//       print(
+//           'Successfully updated promotion status for all deals of businessId: $businessId');
+//     } catch (e) {
+//       print('Error in _updatePromotionStatus: $e');
+//       rethrow;
+//     }
+//   }
 }

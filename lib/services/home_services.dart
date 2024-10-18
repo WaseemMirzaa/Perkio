@@ -25,16 +25,27 @@ class HomeServices {
     Map<String, dynamic> list,
   ) async {
     try {
-      // Update the user document
-      await _db.collection(collectionUser).doc(docID).update(list);
+      // Ensure FirebaseAuth.currentUser is not null
+      if (FirebaseAuth.instance.currentUser == null) {
+        log("User is not authenticated");
+        return false;
+      }
 
       String? currentUID = FirebaseAuth.instance.currentUser!.uid;
 
+      // Update the user document
+      await _db.collection(collectionUser).doc(docID).update(list);
+
       // Extract the necessary parameters for updating the business name
-      String businessId =
-          currentUID; // Assuming the business ID is passed in the list
-      String newBusinessName = list[
-          UserKey.USERNAME]; // Assuming the new business name is the username
+      String businessId = currentUID;
+
+      // Ensure 'UserKey.USERNAME' exists in the list
+      if (!list.containsKey(UserKey.USERNAME)) {
+        log("USERNAME key not found in list");
+        return false;
+      }
+
+      String newBusinessName = list[UserKey.USERNAME];
 
       // Update the business name in the specified collection (deals or rewards)
       await updateBusinessNameInCollection(

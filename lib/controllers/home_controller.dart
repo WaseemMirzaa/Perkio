@@ -95,13 +95,15 @@ class HomeController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
     }
-  }
-
+  } 
+  
   var userHasBalance = Rxn<bool>();
+
+
 
   Future<bool?> checkBalance(String uid) async {
     // Fetch the balance status from the service
-    bool? balanceStatus = await homeService.checkUserBalance(uid);
+    bool? balanceStatus = await  homeService.checkUserBalance(uid);
 
     // Update the observable
     userHasBalance.value = balanceStatus;
@@ -277,6 +279,8 @@ class HomeController extends GetxController {
       String docID, String collectionName, Map<String, dynamic> list) async {
     return await homeService.updateCollection(collectionName, docID, list);
   }
+
+
 
   Future<String?> uploadImageToFirebaseOnID(String image, String userId) async {
     return await homeService.uploadImageToFirebaseOnID(image, userId);

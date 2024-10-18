@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -140,9 +141,11 @@ Future showBalanceDialog({
                             customerId:
                                 getStringAsync(UserKey.STRIPECUSTOMERID))
                         .then((value) async {
-                      await homeController.updateCollection(
-                          getStringAsync(getStringAsync(UserKey.USERID)),
-                          CollectionsKey.USERS, {
+                      String? currentUID =
+                          FirebaseAuth.instance.currentUser!.uid;
+                      log('-----------BEFORE PAYMENT ADD currentUID: $currentUID');
+                      await homeController
+                          .updateCollection(currentUID, CollectionsKey.USERS, {
                         UserKey.ISPROMOTIONSTART: true,
                       }).then((value) async {
                         await homeController

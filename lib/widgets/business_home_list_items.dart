@@ -233,6 +233,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                               ),
                             );
                           } else {
+                            print('-----${widget.dealModel.dealId!}');
                             showBalanceDialog(
                                 context: context,
                                 promotionAmountController:

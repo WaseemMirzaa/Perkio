@@ -60,32 +60,12 @@ class _EditMyRewardsState extends State<EditMyRewards> {
             height: 15.40.h,
             child: PreferredSize(
               preferredSize: Size.fromHeight(12.h),
-              child: Obx(() {
-                // Use Obx to react to changes in userProfile
-                if (userController.userProfile.value == null) {
-                  return customAppBar(
-                    isNotification: false,
-                    userName: 'Loading...', // Placeholder text
-                    userLocation: 'Loading...',
-                    isChangeBusinessLocation: true,
-                  );
-                }
-
-                // Use the data from the observable
-                final user = userController.userProfile.value!;
-                final userName = user.userName ?? 'Unknown';
-                final userLocation = user.address ?? 'No Address';
-                final latLog = user.latLong;
-
-                return customAppBar(
-                  userName: userName,
-                  isNotification: false,
-                  latitude: latLog?.latitude ?? 0.0,
-                  longitude: latLog?.longitude ?? 0.0,
-                  userLocation: userLocation,
-                  isChangeBusinessLocation: true,
-                );
-              }),
+              child: customAppBar(
+                isNotification: false,
+                userName: 'Loading...', // Placeholder text
+                userLocation: 'Loading...',
+                isChangeBusinessLocation: true,
+              ),
             ),
           ),
         ),
@@ -342,10 +322,10 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                                       ? widget.rewardModel.rewardLogo
                                       : imageLink;
 
-                              widget.rewardModel.rewardAddress =
-                                  userController.userProfile.value!.address;
-                              widget.rewardModel.latLong =
-                                  userController.userProfile.value!.latLong;
+                              // widget.rewardModel.rewardAddress =
+                              //     userController.userProfile.value!.address;
+                              // widget.rewardModel.latLong =
+                              //     userController.userProfile.value!.latLong;
 
                               print(
                                   '------------ + ${widget.rewardModel.rewardAddress}');

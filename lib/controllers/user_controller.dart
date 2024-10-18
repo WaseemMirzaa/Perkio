@@ -154,7 +154,7 @@ class UserController extends GetxController {
   void clearTextFields() {
     emailController.clear();
     passwordController.clear();
-    userProfile.value = null;
+    // userProfile.value = null;
     userNameController.clear();
     phoneController.clear();
     resetEmailController.clear();
@@ -530,7 +530,7 @@ class UserController extends GetxController {
   }
 
   //updating the user details
-  Rx<UserModel?> userProfile = Rx<UserModel?>(null);
+  // Rx<UserModel?> userProfile = Rx<UserModel?>(null);
 
   //UPDATING BUSINESS LOCATION, THEIR REWARDS AND DEALS
   // Method to update both Rewards and Deals collections in a batch

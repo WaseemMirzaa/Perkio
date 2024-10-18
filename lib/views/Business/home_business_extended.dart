@@ -36,32 +36,12 @@ class _PromotedDealViewState extends State<PromotedDealView> {
           height: 16.40.h,
           child: PreferredSize(
             preferredSize: Size.fromHeight(12.h),
-            child: Obx(() {
-              // Use Obx to react to changes in userProfile
-              if (userController.userProfile.value == null) {
-                return customAppBar(
-                  userName: 'Loading...', // Placeholder text
-                  userLocation: 'Loading...',
-                  isNotification: false,
-                  isChangeBusinessLocation: true,
-                );
-              }
-
-              // Use the data from the observable
-              final user = userController.userProfile.value!;
-              final userName = user.userName ?? 'Unknown';
-              final userLocation = user.address ?? 'No Address';
-              final latLog = user.latLong;
-
-              return customAppBar(
-                userName: userName,
-                latitude: latLog?.latitude ?? 0.0,
-                longitude: latLog?.longitude ?? 0.0,
-                userLocation: userLocation,
-                isNotification: false,
-                isChangeBusinessLocation: true,
-              );
-            }),
+            child: customAppBar(
+              userName: 'Loading...', // Placeholder text
+              userLocation: 'Loading...',
+              isNotification: false,
+              isChangeBusinessLocation: true,
+            ),
           ),
         ),
         body: SafeArea(

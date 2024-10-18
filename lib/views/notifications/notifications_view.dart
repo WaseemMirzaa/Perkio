@@ -28,6 +28,7 @@ class _NotificationsViewState extends State<NotificationsView> {
 
   @override
   Widget build(BuildContext context) {
+    print('-------curent user uid: $currentUserUid');
     return SecondaryLayoutWidget(
       header: titleBarComp(TempLanguage.txtNotifications),
       body: SingleChildScrollView(

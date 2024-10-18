@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -62,22 +63,42 @@ class _UserProfileViewState extends State<UserProfileView> {
 
   @override
   void dispose() {
-    _userProfileStreamController.close();
+    // Safely close the stream controller
+    if (!_userProfileStreamController.isClosed) {
+      _userProfileStreamController.close();
+    }
+
+    // Dispose controllers
+    userNameController.dispose();
+    emailController.dispose();
+    phoneNoController.dispose();
+    addressController.dispose();
+
     super.dispose();
   }
 
   Future<void> getUser() async {
-    userProfile =
-        await controller.getUser(NBUtils.getStringAsync(SharedPrefKey.uid));
+    try {
+      String? currentUseruid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentUseruid != null) {
+        userProfile = await controller.getUser(currentUseruid);
 
-    // Store original values
-    final address = userProfile!.address ?? 'No Address';
-    userNameController.text = userProfile?.userName ?? '';
-    emailController.text = userProfile?.email ?? '';
-    phoneNoController.text = userProfile?.phoneNo ?? '';
-    addressController.text = address;
+        // Store original values
+        final address = userProfile?.address ?? 'No Address';
+        userNameController.text = userProfile?.userName ?? '';
+        emailController.text = userProfile?.email ?? '';
+        phoneNoController.text = userProfile?.phoneNo ?? '';
+        addressController.text = address;
 
-    _userProfileStreamController.add(userProfile!);
+        // Check if the stream is still open before adding data
+        if (!_userProfileStreamController.isClosed) {
+          _userProfileStreamController.add(userProfile!);
+        }
+      }
+    } catch (e) {
+      print('Error fetching user: $e');
+      // Handle error here, if needed
+    }
   }
 
   AddressModel? address;

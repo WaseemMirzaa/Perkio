@@ -57,11 +57,11 @@ class _RewardsViewState extends State<RewardsView> {
     }
 
     // Listen for location changes
-    userController.userProfile.listen((user) {
-      if (user != null) {
-        getRewards(); // Fetch rewards again on location change
-      }
-    });
+    // userController.userProfile.listen((user) {
+    //   if (user != null) {
+    //     getRewards(); // Fetch rewards again on location change
+    //   }
+    // });
   }
 
   @override
@@ -134,35 +134,14 @@ class _RewardsViewState extends State<RewardsView> {
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
-        child: Obx(() {
-          if (userController.userProfile.value == null) {
-            return customAppBar(
-              isSearchField: true,
-              onChanged: searchDeals,
-              isSearching: _controller.isSearching,
-              textController: searchController,
-              userName: 'Loading...', // Placeholder text
-              userLocation: 'Loading...',
-            );
-          }
-
-          final user = userController.userProfile.value!;
-          final userName = user.userName ?? 'Unknown';
-          final userLocation = user.address ?? 'No Address';
-          final latLog = user.latLong;
-
-          return customAppBar(
-            isReward: true,
-            isSearchField: true,
-            onChanged: searchDeals,
-            isSearching: _controller.isSearching,
-            userName: userName,
-            latitude: latLog?.latitude ?? 0.0,
-            longitude: latLog?.longitude ?? 0.0,
-            userLocation: userLocation,
-            textController: searchController,
-          );
-        }),
+        child: customAppBar(
+          isSearchField: true,
+          onChanged: searchDeals,
+          isSearching: _controller.isSearching,
+          textController: searchController,
+          userName: 'Loading...', // Placeholder text
+          userLocation: 'Loading...',
+        ),
       ),
       body: StreamBuilder<List<RewardModel>>(
         stream: _rewardStreamController.stream,

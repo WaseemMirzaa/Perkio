@@ -62,32 +62,12 @@ class _EditMyDealsState extends State<EditMyDeals> {
             height: 15.40.h,
             child: PreferredSize(
               preferredSize: Size.fromHeight(12.h),
-              child: Obx(() {
-                // Use Obx to react to changes in userProfile
-                if (userController.userProfile.value == null) {
-                  return customAppBar(
-                    isNotification: false,
-                    userName: 'Loading...', // Placeholder text
-                    userLocation: 'Loading...',
-                    isChangeBusinessLocation: true,
-                  );
-                }
-
-                // Use the data from the observable
-                final user = userController.userProfile.value!;
-                final userName = user.userName ?? 'Unknown';
-                final userLocation = user.address ?? 'No Address';
-                final latLog = user.latLong;
-
-                return customAppBar(
-                  userName: userName,
-                  isNotification: false,
-                  latitude: latLog?.latitude ?? 0.0,
-                  longitude: latLog?.longitude ?? 0.0,
-                  userLocation: userLocation,
-                  isChangeBusinessLocation: true,
-                );
-              }),
+              child: customAppBar(
+                isNotification: false,
+                userName: 'Loading...', // Placeholder text
+                userLocation: 'Loading...',
+                isChangeBusinessLocation: true,
+              ),
             ),
           ),
         ),
@@ -294,10 +274,10 @@ class _EditMyDealsState extends State<EditMyDeals> {
                                   ? widget.dealModel.image
                                   : imageLink;
 
-                              widget.dealModel.location =
-                                  userController.userProfile.value!.address;
-                              widget.dealModel.longLat =
-                                  userController.userProfile.value!.latLong;
+                              // widget.dealModel.location =
+                              //     userController.userProfile.value!.address;
+                              // widget.dealModel.longLat =
+                              //     userController.userProfile.value!.latLong;
 
                               print(
                                   '------------ + ${widget.dealModel.location}');

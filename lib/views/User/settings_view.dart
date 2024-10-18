@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -47,21 +48,29 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   void dispose() {
-    _userProfileStreamController.close();
+    if (!_userProfileStreamController.isClosed) {
+      _userProfileStreamController.close();
+    }
     super.dispose();
   }
 
   Future<void> getUser() async {
     try {
-      userProfile =
-          await controller.getUser(NBUtils.getStringAsync(SharedPrefKey.uid));
-      if (userProfile != null) {
-        _userProfileStreamController.add(userProfile!);
-      } else {
-        _userProfileStreamController.addError("User not found.");
+      String? currentUseruid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentUseruid != null) {
+        userProfile = await controller.getUser(currentUseruid);
+
+        // Before adding data or errors, check if the stream is still open
+        if (userProfile != null && !_userProfileStreamController.isClosed) {
+          _userProfileStreamController.add(userProfile!);
+        } else if (!_userProfileStreamController.isClosed) {
+          _userProfileStreamController.addError("User not found.");
+        }
       }
     } catch (e) {
-      _userProfileStreamController.addError("Failed to fetch user: $e");
+      if (!_userProfileStreamController.isClosed) {
+        _userProfileStreamController.addError("Failed to fetch user: $e");
+      }
     }
   }
 

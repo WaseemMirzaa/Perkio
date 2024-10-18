@@ -42,7 +42,7 @@ class _HomeUserState extends State<HomeUser> {
     super.initState();
     _dealStreamController = StreamController<List<DealModel>>();
     getDeals();
-    getUser();
+    // getUser();
 
     // Listen to search field changes
     searchController.addListener(() {
@@ -109,17 +109,17 @@ class _HomeUserState extends State<HomeUser> {
 
   LatLng? latLng;
 
-  void getUser() {
-    controller
-        .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
-        .listen((userModel) {
-      if (userModel != null) {
-        controller.userProfile.value = userModel;
-        // Update the user profile
-        getDeals();
-      }
-    });
-  }
+  // void getUser() {
+  //   controller
+  //       .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
+  //       .listen((userModel) {
+  //     if (userModel != null) {
+  //       controller.userProfile.value = userModel;
+  //       // Update the user profile
+  //       getDeals();
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -127,36 +127,14 @@ class _HomeUserState extends State<HomeUser> {
       backgroundColor: AppColors.whiteColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(22.h),
-        child: Obx(() {
-          // Use Obx to react to changes in userProfile
-          if (controller.userProfile.value == null) {
-            return customAppBar(
-              isSearchField: true,
-              onChanged: searchDeals,
-              isSearching: controller.isSearching,
-              userName: 'Loading...', // Placeholder text
-              userLocation: 'Loading...',
-              textController: searchController,
-            );
-          }
-
-          // Use the data from the observable
-          final user = controller.userProfile.value!;
-          final userName = user.userName ?? 'Unknown';
-          final userLocation = user.address ?? 'No Address';
-          final latLog = user.latLong;
-
-          return customAppBar(
-            isSearchField: true,
-            onChanged: searchDeals,
-            isSearching: controller.isSearching,
-            userName: userName,
-            latitude: latLog?.latitude ?? 0.0,
-            longitude: latLog?.longitude ?? 0.0,
-            userLocation: userLocation,
-            textController: searchController,
-          );
-        }),
+        child: customAppBar(
+          isSearchField: true,
+          onChanged: searchDeals,
+          isSearching: controller.isSearching,
+          userName: 'Loading...', // Placeholder text
+          userLocation: 'Loading...',
+          textController: searchController,
+        ),
       ),
       body: Obx(() {
         bool isSearching = controller.isSearching.value;

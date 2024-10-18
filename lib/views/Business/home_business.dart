@@ -43,7 +43,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
   void initState() {
     super.initState();
     Get.put(NotificationController());
-    getUser();
+    // getUser();
   }
 
   @override
@@ -53,16 +53,16 @@ class _HomeBusinessState extends State<HomeBusiness> {
     searchController.dispose();
   }
 
-  void getUser() {
-    userController
-        .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
-        .listen((userModel) {
-      if (userModel != null) {
-        userController.userProfile.value = userModel;
-        // Update the user profile
-      }
-    });
-  }
+  // void getUser() {
+  //   userController
+  //       .gettingUser(NBUtils.getStringAsync(SharedPrefKey.uid))
+  //       .listen((userModel) {
+  //     if (userModel != null) {
+  //       userController.userProfile.value = userModel;
+  //       // Update the user profile
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -71,50 +71,22 @@ class _HomeBusinessState extends State<HomeBusiness> {
         padding: const EdgeInsets.only(top: 25),
         child: SizedBox(
           height: 20.h,
-          child: Obx(() {
-            // Use Obx to react to changes in userProfile
-            if (userController.userProfile.value == null) {
-              return customAppBar(
-                isSearchField: true,
-                textController: searchController,
-                isSearching: RxBool(searchQuery.isNotEmpty),
-                isChangeBusinessLocation: true,
+          child: customAppBar(
+            isSearchField: true,
+            textController: searchController,
+            isSearching: RxBool(searchQuery.isNotEmpty),
+            isChangeBusinessLocation: true,
 
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
-                },
-                isNotification: false,
+            onChanged: (value) {
+              setState(() {
+                searchQuery = value;
+              });
+            },
+            isNotification: false,
 
-                userName: 'Loading...', // Placeholder text
-                userLocation: 'Loading...',
-              );
-            }
-
-            // Use the data from the observable
-            final user = userController.userProfile.value!;
-            final userName = user.userName ?? 'Unknown';
-            final userLocation = user.address ?? 'No Address';
-            final latLog = user.latLong;
-
-            return customAppBar(
-              isSearchField: true,
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
-              isChangeBusinessLocation: true,
-              isSearching: RxBool(searchQuery.isNotEmpty),
-              isNotification: false,
-              userName: userName,
-              textController: searchController,
-              latitude: latLog?.latitude ?? 0.0,
-              longitude: latLog?.longitude ?? 0.0,
-              userLocation: userLocation,
-            );
-          }),
+            userName: 'Loading...', // Placeholder text
+            userLocation: 'Loading...',
+          ),
         ),
       ),
       body: SafeArea(

@@ -370,24 +370,41 @@ class UserServices {
 
         if (balance > 0) {
           if (balance == 2) {
-            // If the balance is exactly 2, deduct 2 and turn off promotion
+            // If the balance is exactly 2, deduct 2 and turn off all promotions for the business
             WriteBatch batch = FirebaseFirestore.instance.batch();
 
-            // Update the user's balance and set their isPromotionStart to false
+            // Update the user's balance
             batch.update(userDocRef, {'balance': 0});
-            batch.update(dealDocRef, {'isPromotionStart': false, 'views': 0});
-            print('Balance updated to 0, turning off promotion for the deal.');
+            print('Balance updated to 0.');
+
+            // Turn off promotions for all deals with the same businessId
+            final dealQuery = await _dealCollection
+                .where('businessId', isEqualTo: businessId)
+                .get();
+
+            for (var dealDoc in dealQuery.docs) {
+              batch.update(
+                  dealDoc.reference, {'isPromotionStart': false, 'views': 0});
+              print(
+                  'Queued update to turn off promotion for deal: ${dealDoc.id}');
+            }
+
+            // Also update the user's isPromotionStart to false
+            batch.update(userDocRef, {'isPromotionStart': false});
+            print(
+                'Turned off promotion for user with businessId: $businessId.');
 
             // Commit the batch update
             await batch.commit();
-            print('Deal promotion status updated to false.');
+            print(
+                'All deals and user promotion status turned off for businessId $businessId.');
           } else {
             // If the balance is greater than 2, deduct 2
             await userDocRef.update({'balance': balance - 2});
             print('Balance updated, new balance: ${balance - 2}');
           }
         } else {
-          // If balance <= 0, go to 'deals' collection and update 'isPromotionStart'
+          // If balance <= 0, go to 'deals' collection and update 'isPromotionStart' for the specific deal
           await _updatePromotionStatus(dealId);
         }
       } else {

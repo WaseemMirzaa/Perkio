@@ -198,7 +198,7 @@ class _AddDealsState extends State<AddDeals> {
                   ),
                   const SpacerBoxVertical(height: 20),
                   Text(
-                    'Deal Logo',
+                    'Deal Photo',
                     style: poppinsRegular(fontSize: 13),
                   ),
                   const SizedBox(

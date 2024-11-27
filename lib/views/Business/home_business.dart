@@ -100,22 +100,21 @@ class _HomeBusinessState extends State<HomeBusiness> {
             final image = user.image;
 
             return customAppBar(
-              isSearchField: true,
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
-              isChangeBusinessLocation: true,
-              isSearching: RxBool(searchQuery.isNotEmpty),
-              isNotification: false,
-              userName: userName,
-              textController: searchController,
-              latitude: latLog?.latitude ?? 0.0,
-              longitude: latLog?.longitude ?? 0.0,
-              userLocation: userLocation,
-              userImage: image
-            );
+                isSearchField: true,
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
+                isChangeBusinessLocation: true,
+                isSearching: RxBool(searchQuery.isNotEmpty),
+                isNotification: false,
+                userName: userName,
+                textController: searchController,
+                latitude: latLog?.latitude ?? 0.0,
+                longitude: latLog?.longitude ?? 0.0,
+                userLocation: userLocation,
+                userImage: image);
           }),
         ),
       ),
@@ -149,7 +148,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
                           } else {
                             balance = snapshot.data!
                                 .balance!; // Get the balance from UserModel
-                            return Text("$balance\$ Remaining");
+                            return Text("\$$balance Remaining");
                           }
                         }),
                   ],

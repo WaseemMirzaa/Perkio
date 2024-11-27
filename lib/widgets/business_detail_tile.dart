@@ -64,7 +64,7 @@ class BusinessDetailTile extends StatelessWidget {
                 children: [
                   Text(
                     businessName ?? TempLanguage.txtBusinessName,
-                    style: poppinsMedium(fontSize: 14),
+                    style: poppinsMedium(fontSize: 18),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -76,7 +76,7 @@ class BusinessDetailTile extends StatelessWidget {
                     child: Text(
                       TempLanguage.txtViewRating,
                       style: poppinsMedium(
-                          fontSize: 8.sp, color: AppColors.yellowColor),
+                          fontSize: 10.sp, color: AppColors.yellowColor),
                     ),
                   ),
                 ],
@@ -90,13 +90,13 @@ class BusinessDetailTile extends StatelessWidget {
                     const Icon(
                       Icons.star_half,
                       color: AppColors.yellowColor,
-                      size: 10,
+                      size: 12,
                     ),
                     const SpacerBoxHorizontal(width: 4),
                     Text(
                       rating!,
                       style: poppinsRegular(
-                          fontSize: 10, color: AppColors.yellowColor),
+                          fontSize: 12, color: AppColors.yellowColor),
                     ),
                   ],
                 ),
@@ -109,13 +109,13 @@ class BusinessDetailTile extends StatelessWidget {
                     const Icon(
                       Icons.phone,
                       color: AppColors.hintText,
-                      size: 10,
+                      size: 12,
                     ),
                     const SpacerBoxHorizontal(width: 4),
                     Text(
                       phone!,
                       style: poppinsRegular(
-                          fontSize: 10, color: AppColors.hintText),
+                          fontSize: 12, color: AppColors.hintText),
                     ),
                   ],
                 ),
@@ -136,7 +136,7 @@ class BusinessDetailTile extends StatelessWidget {
                         website!,
                         overflow: TextOverflow.ellipsis,
                         style: poppinsRegular(
-                            fontSize: 10, color: AppColors.hintText),
+                            fontSize: 12, color: AppColors.hintText),
                       ),
                     ),
                   ],
@@ -150,7 +150,7 @@ class BusinessDetailTile extends StatelessWidget {
                     const Icon(
                       Icons.location_on,
                       color: AppColors.hintText,
-                      size: 10,
+                      size: 12,
                     ),
                     const SpacerBoxHorizontal(width: 4),
                     Expanded(
@@ -158,7 +158,7 @@ class BusinessDetailTile extends StatelessWidget {
                         location!,
                         overflow: TextOverflow.ellipsis,
                         style: poppinsRegular(
-                            fontSize: 10, color: AppColors.hintText),
+                            fontSize: 12, color: AppColors.hintText),
                       ),
                     ),
                   ],

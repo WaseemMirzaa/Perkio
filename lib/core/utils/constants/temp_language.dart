@@ -2,11 +2,12 @@ class TempLanguage {
   static const String btnLblSwipeToAdd = 'SWIPE TO ADD';
   static const String btnLblSwipeToAddDeal = 'SWIPE TO ADD NEW DEAL';
   static const String btnLblSwipeToLogin = 'SWIPE TO LOGIN';
-  static const String btnLblSwipeToAddRewards = 'SWIPE TO ADD NEW REWARDS';
+  static const String btnLblSwipeToAddRewards = 'SWIPE TO ADD A NEW REWARD';
   static const String btnLblSwipeToSignup = 'SWIPE TO SIGNUP';
   static const String btnLblSwipeToRedeem = 'SWIPE TO REDEEM';
   static const String btnLblSwipeToClaim = 'SWIPE TO CLAIM REWARD';
   static const String btnLblSwipeToSelect = 'SWIPE TO SELECT';
+  static const String btnLblSwipeToSelectLocation = 'SWIPE TO SELECT LOCATION';
   static const String btnLblSwipeToStart = 'SWIPE TO GET STARTED';
   static const String btnLblDone = 'DONE';
   static const String lblSwipe = 'Swipe';
@@ -33,6 +34,9 @@ class TempLanguage {
   static const String lblPassword = 'Password';
   static const String txtPointsToRedeemPoints =
       'Collect points to\nredeem special rewards';
+  static const String txtSwipeSS = 'Swipe';
+  static const String txtSScanS = 'Scan';
+  static const String txtSSSave = 'Save';
   static const String txtHowToUse = 'HOW TO USE?';
   static const String txtBusinessName = 'Business Name';
   static const String txtUserName = 'User Name';
@@ -48,7 +52,7 @@ class TempLanguage {
   static const String txtLogin = 'LOGIN';
   static const String txtSignup = 'SIGNUP';
   static const String txtNewUser = 'NEW USER? SIGN UP NOW';
-  static const String txtNewBusiness = 'NEW BUSINESS? SIGN UP NOW';
+  static const String txtNewBusiness = 'NEW BUSINESS? SIGN UP NOW!';
   static const String txtForgotPassword = 'Forgot Password?';
   static const String txtEdit = 'Edit';
   static const String txtDummyPassword = '**** *** ***';
@@ -88,6 +92,7 @@ class TempLanguage {
       "Don't bother typing “lorem ipsum” into\nGoogle translate. If you already tried,\nyou may have gotten anything from";
   static const String txtPoints = 'Points';
   static const String txtSpendMore = 'Spend More';
+  static const String txtEarnMore = 'Earn More Points!';
   static const String txtScanReceipt = 'Scan Receipt';
   static const String txtScanning = 'Scanning...';
   static const String txtProcessing = 'Processing please wait...';
@@ -117,5 +122,6 @@ class TempLanguage {
   static const String txtSearch = 'Search';
   static const String txtRedeemDeals = 'Redeem Unlimited Deals';
   static const String txtGetRewards = 'Get Unlimited Rewards';
-  static const String txtAllowLocation = 'Please enable GPS on your phone to use the app';
+  static const String txtAllowLocation =
+      'Please enable GPS on your phone to use the app';
 }

@@ -106,7 +106,7 @@ class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
                       left: 8,
                       right: 8), // Adjust padding as needed
                   child: Text(
-                    'Show these receipts to business in order to claim the reward. Business will verify and then redeem the reward.',
+                    'Show these receipts to the business. The business will verify your receipts and swipe to redeem your reward.',
                     style: poppinsRegular(
                       color: AppColors.blackColor,
                       fontSize: 16,
@@ -164,8 +164,6 @@ class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
                           widget.rewardId,
                           widget.userId!,
                         );
-
-                        
 
                         // Show the congratulation dialog
                         showCongratulationDialog(

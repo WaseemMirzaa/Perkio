@@ -560,7 +560,8 @@ class _PlacesPickState extends State<PlacesPick> {
                                           print(
                                               "Full ELse Condition is Called ${address?.completeAddress}");
                                         },
-                                        text: TempLanguage.btnLblSwipeToSelect)
+                                        text: TempLanguage
+                                            .btnLblSwipeToSelectLocation)
                                     .cornerRadiusWithClipRRect(10),
                               ),
                             50.height

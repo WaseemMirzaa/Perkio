@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/role_selection/role_selection_view.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:animated_text_kit/animated_text_kit.dart' as animated_text_kit;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -84,10 +86,15 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [
-          AppColors.gradientStartColor,
-          AppColors.gradientEndColor
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.gradientStartColor,
+              AppColors.gradientEndColor,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -95,76 +102,72 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               const SizedBox.shrink(),
               Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    TempLanguage.lblSwipe,
-                    style:
-                        altoysFont(fontSize: 45, color: AppColors.whiteColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    TempLanguage.txtPointsToRedeemPoints,
-                    style: poppinsRegular(
-                      color: AppColors.whiteColor,
-                      fontSize: 16,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // "Swipe" Text
+                    Text(
+                      TempLanguage.lblSwipe,
+                      style: altoysFont(
+                        fontSize: 45,
+                        color: AppColors.whiteColor,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              )),
+
+                    // Animated Text with Fixed Height
+                    SizedBox(
+                      height: 50, // Adjust height as needed
+                      child: animated_text_kit.AnimatedTextKit(
+                        animatedTexts: [
+                          FadeAnimatedText(
+                            TempLanguage.txtSwipeSS,
+                            textStyle: poppinsRegular(
+                              color: AppColors.whiteColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                          FadeAnimatedText(
+                            TempLanguage.txtSScanS,
+                            textStyle: poppinsRegular(
+                              color: AppColors.whiteColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                          FadeAnimatedText(
+                            TempLanguage.txtSSSave,
+                            textStyle: poppinsRegular(
+                              color: AppColors.whiteColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                        repeatForever: true, // Keeps cycling through the texts
+                        pause: const Duration(milliseconds: 500),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Bottom Button
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    TempLanguage.txtHowToUse,
-                    style: GoogleFonts.poppins(
-                      color: AppColors.whiteColor,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50),
-                    child: Container(
-                      height: 50.h,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(14)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 6,
-                              offset: const Offset(
-                                  0, 3) // changes position of shadow
-                              ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        AppAssets.pauseImg,
-                        scale: 3,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
                   ButtonWidget(
                     onSwipe: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SelectionScreen()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SelectionScreen(),
+                        ),
+                      );
                     },
                     text: TempLanguage.btnLblSwipeToStart,
                     isGradient: false,
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

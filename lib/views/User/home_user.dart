@@ -311,6 +311,8 @@ class _HomeUserState extends State<HomeUser> {
                 combinedList.add(const SizedBox(height: 20));
               }
 
+              // Filter deals to exclude featured ones
+
               // Continue with the available deals section
               combinedList.add(
                 Padding(
@@ -322,6 +324,12 @@ class _HomeUserState extends State<HomeUser> {
                 ),
               );
               combinedList.add(const SizedBox(height: 10));
+
+              // This will be used to display the available deals section
+              //-------------comment this line you want to show featured + simple deals----------
+              List<DealModel> availableDeals =
+                  deals.where((deal) => deal.isPromotionStar != true).toList();
+              //-------------comment this line you want to show featured + simple deals----------
 
               combinedList.addAll(availableDeals.map((deal) {
                 return GestureDetector(

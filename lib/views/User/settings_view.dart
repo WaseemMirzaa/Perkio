@@ -253,7 +253,7 @@ class _SettingsViewState extends State<SettingsView> {
                           ? BalanceTile(
                               path: filteredSettingsItems[index]['icon'],
                               text:
-                                  "${filteredSettingsItems[index]['title']} ${getIntAsync(UserKey.BALANCE)}",
+                                  "${filteredSettingsItems[index]['title']} \$${getIntAsync(UserKey.BALANCE)}",
                               onAdd: () {
                                 showBalanceDialog(
                                   context: context,

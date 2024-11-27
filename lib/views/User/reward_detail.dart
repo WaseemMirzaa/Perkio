@@ -197,26 +197,35 @@ class _RewardDetailState extends State<RewardDetail> {
                           ),
                         ),
                       ),
-                      Positioned(
-                        right: 0,
-                        top: -1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                TempLanguage.txtSpendMore,
+                      Stack(
+                        children: [
+                          // Center the first text in the screen
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 18),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                TempLanguage.txtEarnMore,
                                 style: poppinsRegular(
-                                    fontSize: 10.sp, color: AppColors.hintText),
+                                  fontSize: 10.sp,
+                                  color: AppColors.hintText,
+                                ),
                               ),
-                              const SpacerBoxHorizontal(width: 20),
-                              Text(
-                                "$remainingPoints points",
-                                style: poppinsMedium(fontSize: 8.sp),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                          // Keep the second text at its current position
+                          // Positioned(
+                          //   right: 0,
+                          //   top: -1,
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.all(8.0),
+                          //     child: Text(
+                          //       "$remainingPoints points",
+                          //       style: poppinsMedium(fontSize: 8.sp),
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ],
                   ),

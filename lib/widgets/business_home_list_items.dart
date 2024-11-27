@@ -121,7 +121,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                       ),
                       const SpacerBoxVertical(height: 5),
                       Text(
-                        '${widget.dealModel.noOfUsedTellNow} People used by now',
+                        '${widget.dealModel.noOfUsedTellNow} People have used this deal',
                         style: poppinsRegular(
                           fontSize: 10.sp,
                           color: AppColors.hintText,
@@ -213,7 +213,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                 title: Text('Deal Promotion',
                                     style: poppinsBold(fontSize: 15.sp)),
                                 content: const Text(
-                                    'Do you really want to Promote the deal?'),
+                                    'Are you sure you want to promote this deal?'),
                                 actions: [
                                   TextButton(
                                       onPressed: () async {

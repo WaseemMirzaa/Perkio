@@ -106,7 +106,7 @@ class DetailTile extends StatelessWidget {
                   children: [
                     Text(
                       user?.userName ?? TempLanguage.txtBusinessName,
-                      style: poppinsMedium(fontSize: 14),
+                      style: poppinsMedium(fontSize: 18),
                     ),
                     if (!isRedeeming)
                       GestureDetector(
@@ -129,7 +129,7 @@ class DetailTile extends StatelessWidget {
                         child: Text(
                           TempLanguage.txtViewDeals,
                           style: poppinsMedium(
-                            fontSize: 8.sp,
+                            fontSize: 10.sp,
                             color: AppColors.yellowColor,
                           ),
                         ),
@@ -142,13 +142,13 @@ class DetailTile extends StatelessWidget {
                     const Icon(
                       Icons.star_half,
                       color: AppColors.yellowColor,
-                      size: 10,
+                      size: 12,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       user?.rating.toString() ?? '0.0',
                       style: poppinsRegular(
-                          fontSize: 10, color: AppColors.yellowColor),
+                          fontSize: 12, color: AppColors.yellowColor),
                     ),
                   ],
                 ),
@@ -160,12 +160,12 @@ class DetailTile extends StatelessWidget {
                   Row(
                     children: [
                       const Icon(Icons.phone,
-                          color: AppColors.hintText, size: 10),
+                          color: AppColors.hintText, size: 12),
                       const SizedBox(width: 4),
                       Text(
                         user?.phoneNo ?? 'No Phone available',
                         style: poppinsRegular(
-                            fontSize: 10, color: AppColors.hintText),
+                            fontSize: 12, color: AppColors.hintText),
                       ),
                     ],
                   ),
@@ -178,7 +178,7 @@ class DetailTile extends StatelessWidget {
                       Text(
                         user?.website ?? TempLanguage.txtDummyWebsite,
                         style: poppinsRegular(
-                            fontSize: 10, color: AppColors.hintText),
+                            fontSize: 12, color: AppColors.hintText),
                       ),
                     ],
                   ),
@@ -188,7 +188,7 @@ class DetailTile extends StatelessWidget {
                     const Icon(
                       Icons.location_on,
                       color: AppColors.hintText,
-                      size: 10,
+                      size: 12,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
@@ -196,7 +196,7 @@ class DetailTile extends StatelessWidget {
                         user?.address ?? 'No Location available',
                         overflow: TextOverflow.ellipsis,
                         style: poppinsRegular(
-                          fontSize: 10,
+                          fontSize: 12,
                           color: AppColors.hintText,
                         ),
                       ),

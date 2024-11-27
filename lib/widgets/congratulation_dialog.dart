@@ -33,7 +33,7 @@ void showCongratulationDialog(
               ),
             if (!isPendingforVerification)
               Text(
-                "Congratulations! You've successfully redeemed this $message. Enjoy the benefits!",
+                "Congratulations! You've successfully redeemed this $message. Enjoy the savings!",
                 style: poppinsRegular(
                     fontSize: 15, color: AppColors.secondaryText),
                 textAlign: TextAlign.center,

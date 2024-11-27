@@ -64,17 +64,16 @@ class _AddRewardsState extends State<AddRewards> {
                 final userName = user.userName ?? 'Unknown';
                 final userLocation = user.address ?? 'No Address';
                 final latLog = user.latLong;
-                 final image = user.image;
+                final image = user.image;
 
                 return customAppBar(
-                  userName: userName,
-                  isNotification: false,
-                  latitude: latLog?.latitude ?? 0.0,
-                  longitude: latLog?.longitude ?? 0.0,
-                  userLocation: userLocation,
-                  isChangeBusinessLocation: true,
-                  userImage: image
-                );
+                    userName: userName,
+                    isNotification: false,
+                    latitude: latLog?.latitude ?? 0.0,
+                    longitude: latLog?.longitude ?? 0.0,
+                    userLocation: userLocation,
+                    isChangeBusinessLocation: true,
+                    userImage: image);
               }),
             ),
           ),
@@ -88,7 +87,7 @@ class _AddRewardsState extends State<AddRewards> {
                 const SpacerBoxVertical(height: 10),
                 Center(
                     child: Text(
-                  "Add Rewards Details",
+                  "Add Reward Details",
                   style: poppinsMedium(fontSize: 14),
                 )),
                 const SpacerBoxVertical(height: 20),
@@ -106,12 +105,13 @@ class _AddRewardsState extends State<AddRewards> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Points to Redeem',
-                      style: poppinsRegular(fontSize: 13),
+                      'Total Points Needed to Redeem',
+                      style: poppinsRegular(fontSize: 10),
                     ),
                     Align(
                         alignment: Alignment.centerRight,
-                        child: Text('PPS (Points Per Scan): ${controller.pps}'))
+                        child: Text('PPS (Points Per Scan): ${controller.pps}',
+                            style: poppinsRegular(fontSize: 10)))
                   ],
                 ),
                 const SpacerBoxVertical(height: 10),

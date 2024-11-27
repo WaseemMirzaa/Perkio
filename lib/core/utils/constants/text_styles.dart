@@ -19,6 +19,8 @@ TextStyle poppinsMedium(
   );
 }
 
+
+
 TextStyle poppinsSemiBold(
     {Color color = Colors.black, required double fontSize}) {
   return GoogleFonts.poppins(

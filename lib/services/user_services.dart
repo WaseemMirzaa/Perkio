@@ -164,12 +164,33 @@ class UserServices {
     });
   }
 
-  //............ Get Deals
+  //............ Get Deals without filter of uses.....................
+  // Stream<List<DealModel>> getDeals() {
+  //   return _dealCollection.snapshots().map((querySnapshot) {
+  //     return querySnapshot.docs.map<DealModel>((doc) {
+  //       return DealModel.fromDocumentSnapshot(
+  //           doc as DocumentSnapshot<Map<String, dynamic>>);
+  //     }).toList();
+  //   });
+  // }
+  //............ Get Deals without filter of uses.....................
+
+  //............ Get Deals (Method added for uses for user)
   Stream<List<DealModel>> getDeals() {
     return _dealCollection.snapshots().map((querySnapshot) {
       return querySnapshot.docs.map<DealModel>((doc) {
-        return DealModel.fromDocumentSnapshot(
+        final deal = DealModel.fromDocumentSnapshot(
             doc as DocumentSnapshot<Map<String, dynamic>>);
+
+        final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+        // Adjust `uses` based on `usedBy` for the current user
+        if (deal.usedBy != null && deal.usedBy!.containsKey(currentUserId)) {
+          final userUses = deal.usedBy![currentUserId] ?? 0;
+          deal.uses = (deal.uses ?? 0) - userUses;
+        }
+
+        return deal;
       }).toList();
     });
   }
@@ -208,16 +229,39 @@ class UserServices {
     return favorites.contains(userId);
   }
 
-  //............ Get Favourite Deals
+  //............ Get Favourite Deals without filtering of uses.....................
+  // Future<List<DealModel>> getFavouriteDeals(String userId) async {
+  //   final querySnapshot = await _dealCollection
+  //       .where(DealKey.FAVOURITES, arrayContains: userId)
+  //       .get();
+  //   return querySnapshot.docs.map<DealModel>((doc) {
+  //     return DealModel.fromDocumentSnapshot(
+  //         doc as DocumentSnapshot<Map<String, dynamic>>);
+  //   }).toList();
+  // }
+  //............ Get Favourite Deals without filtering of uses.....................
+
+  //............ Get Favourite Deals with filtering of uses.....................
   Future<List<DealModel>> getFavouriteDeals(String userId) async {
     final querySnapshot = await _dealCollection
         .where(DealKey.FAVOURITES, arrayContains: userId)
         .get();
+
     return querySnapshot.docs.map<DealModel>((doc) {
-      return DealModel.fromDocumentSnapshot(
+      final deal = DealModel.fromDocumentSnapshot(
           doc as DocumentSnapshot<Map<String, dynamic>>);
+
+      // Adjust `uses` based on `usedBy` for the current user
+      if (deal.usedBy != null && deal.usedBy!.containsKey(userId)) {
+        final userUses = deal.usedBy![userId] ?? 0;
+        deal.uses = (deal.uses ?? 0) - userUses;
+      }
+
+      return deal;
     }).toList();
   }
+
+  //............ Get Favourite Deals with filtering of uses.....................
 
 // Fetch rewards based on earnedPoints map
   Future<List<RewardModel>> getRewardsForCurrentUser() async {
@@ -241,26 +285,58 @@ class UserServices {
     return userRewards; // Return the list of rewards for the current user
   }
 
-// Fetch deal based on usedBy list
+  // -----------Fetch deal based on usedBy list WITHOUT USES FILTERING----------------
+  // Future<List<DealModel>> getDealsUsedByCurrentUser() async {
+  //   final userId = authServices.auth.currentUser!.uid;
+
+  //   // Fetch deals where 'usedBy' is not empty (optimization step)
+  //   final querySnapshot = await _dealCollection
+  //       .where('usedBy', isNotEqualTo: {}) // Fetch deals where 'usedBy' exists
+  //       .get();
+
+  //   // Filter results based on whether 'usedBy' map contains the userId
+  //   return querySnapshot.docs.where((doc) {
+  //     final data = doc.data() as Map<String, dynamic>;
+  //     final usedBy = Map<String, int>.from(data['usedBy'] ?? {});
+  //     return usedBy.containsKey(
+  //         userId); // Only return deals where userId exists in usedBy map
+  //   }).map<DealModel>((doc) {
+  //     return DealModel.fromDocumentSnapshot(
+  //         doc as DocumentSnapshot<Map<String, dynamic>>);
+  //   }).toList();
+  // }
+  // -----------Fetch deal based on usedBy list WITHOUT USES FILTERING----------------
+
+  // -----------Fetch deal based on usedBy list USES FILTERING----------------
   Future<List<DealModel>> getDealsUsedByCurrentUser() async {
     final userId = authServices.auth.currentUser!.uid;
 
-    // Fetch deals where 'usedBy' is not empty (optimization step)
+    // Fetch deals where 'usedBy' is not empty
     final querySnapshot = await _dealCollection
         .where('usedBy', isNotEqualTo: {}) // Fetch deals where 'usedBy' exists
         .get();
 
-    // Filter results based on whether 'usedBy' map contains the userId
+    // Filter and map results
     return querySnapshot.docs.where((doc) {
       final data = doc.data() as Map<String, dynamic>;
       final usedBy = Map<String, int>.from(data['usedBy'] ?? {});
       return usedBy.containsKey(
-          userId); // Only return deals where userId exists in usedBy map
+          userId); // Only include deals where userId exists in usedBy map
     }).map<DealModel>((doc) {
-      return DealModel.fromDocumentSnapshot(
+      final deal = DealModel.fromDocumentSnapshot(
           doc as DocumentSnapshot<Map<String, dynamic>>);
+
+      // Adjust the 'uses' field for the current user
+      final usedBy = deal.usedBy ?? {};
+      if (usedBy.containsKey(userId)) {
+        final userUses = usedBy[userId] ?? 0;
+        deal.uses = (deal.uses ?? 0) - userUses;
+      }
+
+      return deal;
     }).toList();
   }
+  // -----------Fetch deal based on usedBy list USES FILTERING----------------
 
   Future<UserModel?> fetchBusinessDetails(String businessId) async {
     try {
@@ -335,83 +411,111 @@ class UserServices {
   }
 
   //deduct points from user
-
   Future<void> checkAndUpdateBalance(String businessId, String dealId) async {
     try {
       // Access 'users' collection and get the document by its ID
       final userDocRef = _userCollection.doc(businessId);
       final docSnapshot = await userDocRef.get();
 
-      if (docSnapshot.exists) {
-        final data = docSnapshot.data() as Map<String, dynamic>;
-        final balance = data['balance'] ?? 0;
+      if (!docSnapshot.exists) {
+        print('No user found with businessId (docId): $businessId');
+        return;
+      }
 
+      final data = docSnapshot.data() as Map<String, dynamic>;
+      final balance = data['balance'] ?? 0;
+
+      print(
+          'Found user with businessId (docId): $businessId, balance: $balance');
+
+      // Get the specific deal by dealId
+      final dealDocRef = _dealCollection.doc(dealId);
+      final dealDocSnapshot = await dealDocRef.get();
+
+      if (!dealDocSnapshot.exists) {
+        print('No deal found with dealId: $dealId');
+        return;
+      }
+
+      final dealData = dealDocSnapshot.data() as Map<String, dynamic>;
+      final isPromotionStart = dealData['isPromotionStart'] ?? false;
+
+      // If the promotion hasn't started, exit early
+      if (!isPromotionStart) {
         print(
-            'Found user with businessId (docId): $businessId, balance: $balance');
+            'The promotion for this deal has not started. Balance will not be deducted.');
+        return;
+      }
 
-        // Get the specific deal by dealId
-        final dealDocRef = _dealCollection.doc(dealId);
-        final dealDocSnapshot = await dealDocRef.get();
+      if (balance > 0) {
+        // Record the click and date
+        await _recordClickAndDate(dealId);
 
-        if (!dealDocSnapshot.exists) {
-          print('No deal found with dealId: $dealId');
-          return;
-        }
+        if (balance == 2) {
+          // If balance is exactly 2, deduct and turn off promotions
+          WriteBatch batch = FirebaseFirestore.instance.batch();
 
-        final dealData = dealDocSnapshot.data() as Map<String, dynamic>;
-        final isPromotionStart = dealData['isPromotionStart'] ?? false;
+          // Update user's balance to 0
+          batch.update(userDocRef, {'balance': 0});
 
-        // Check if the specific deal has 'isPromotionStart' set to true
-        if (!isPromotionStart) {
-          print(
-              'The promotion for this deal has not started. Balance will not be deducted.');
-          return; // Exit early, do not deduct balance
-        }
+          // Turn off promotions for all deals with the same businessId
+          final dealQuery = await _dealCollection
+              .where('businessId', isEqualTo: businessId)
+              .get();
 
-        if (balance > 0) {
-          if (balance == 2) {
-            // If the balance is exactly 2, deduct 2 and turn off all promotions for the business
-            WriteBatch batch = FirebaseFirestore.instance.batch();
-
-            // Update the user's balance
-            batch.update(userDocRef, {'balance': 0});
-            print('Balance updated to 0.');
-
-            // Turn off promotions for all deals with the same businessId
-            final dealQuery = await _dealCollection
-                .where('businessId', isEqualTo: businessId)
-                .get();
-
-            for (var dealDoc in dealQuery.docs) {
-              batch.update(
-                  dealDoc.reference, {'isPromotionStart': false, 'views': 0});
-              print(
-                  'Queued update to turn off promotion for deal: ${dealDoc.id}');
-            }
-
-            // Also update the user's isPromotionStart to false
-            batch.update(userDocRef, {'isPromotionStart': false});
+          for (var dealDoc in dealQuery.docs) {
+            batch.update(
+                dealDoc.reference, {'isPromotionStart': false, 'views': 0});
             print(
-                'Turned off promotion for user with businessId: $businessId.');
-
-            // Commit the batch update
-            await batch.commit();
-            print(
-                'All deals and user promotion status turned off for businessId $businessId.');
-          } else {
-            // If the balance is greater than 2, deduct 2
-            await userDocRef.update({'balance': balance - 2});
-            print('Balance updated, new balance: ${balance - 2}');
+                'Queued update to turn off promotion for deal: ${dealDoc.id}');
           }
+
+          // Update user's promotion status to false
+          batch.update(userDocRef, {'isPromotionStart': false});
+
+          // Commit the batch update
+          await batch.commit();
+          print(
+              'All deals and user promotion status turned off for businessId $businessId.');
         } else {
-          // If balance <= 0, go to 'deals' collection and update 'isPromotionStart' for the specific deal
-          await _updatePromotionStatus(dealId);
+          // If balance is greater than 2, deduct 2
+          await userDocRef.update({'balance': balance - 2});
+          print('Balance updated, new balance: ${balance - 2}');
         }
       } else {
-        print('No user found with businessId (docId): $businessId');
+        // If balance <= 0, turn off promotion for the specific deal
+        await _updatePromotionStatus(dealId);
       }
     } catch (e) {
       print('Error in checkAndUpdateBalance: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _recordClickAndDate(String dealId) async {
+    try {
+      final dealDocRef = _dealCollection.doc(dealId);
+      final dealDocSnapshot = await dealDocRef.get();
+
+      if (dealDocSnapshot.exists) {
+        final dealData = dealDocSnapshot.data() as Map<String, dynamic>;
+        final clickHistory = dealData['clickHistory'] ?? {};
+
+        // Get today's date in `yyyy-MM-dd` format
+        final today = DateTime.now();
+        final todayKey =
+            '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+
+        // Increment the click count for today
+        final currentClicks = clickHistory[todayKey] ?? 0;
+        clickHistory[todayKey] = currentClicks + 1;
+
+        // Update the `clickHistory` field in Firestore
+        await dealDocRef.update({'clickHistory': clickHistory});
+        print('Updated clickHistory for deal $dealId: $clickHistory');
+      }
+    } catch (e) {
+      print('Error in _recordClickAndDate: $e');
       rethrow;
     }
   }

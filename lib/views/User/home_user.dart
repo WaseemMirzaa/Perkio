@@ -199,6 +199,13 @@ class _HomeUserState extends State<HomeUser> {
             }
 
             final List<DealModel> deals = snapshot.data!;
+
+            
+
+
+
+
+
             // Use the state variable for featured deals
             List<DealModel> featuredDeals =
                 deals.where((deal) => deal.isPromotionStar == true).toList();

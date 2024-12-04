@@ -247,10 +247,12 @@ class _AddDealsState extends State<AddDeals> {
                             .dealNameController.text.isEmptyOrNull) {
                           showSnackBar(
                               'Empty Fields', 'Name field is required');
-                        } else if (homeController.pickedImage == null) {
-                          showSnackBar(
-                              'Empty Fields', 'Deal logo field is required');
-                        } else if (myController.counter.value <= 0) {
+                        }
+                        //  else if (homeController.pickedImage == null) {
+                        //   showSnackBar(
+                        //       'Empty Fields', 'Deal logo field is required');
+                        // }
+                        else if (myController.counter.value <= 0) {
                           showSnackBar(
                               'Empty Fields', 'Please set the number of uses');
                         } else {
@@ -258,42 +260,58 @@ class _AddDealsState extends State<AddDeals> {
                             widgetBuilder: (context) =>
                                 Center(child: circularProgressBar()),
                           );
-                          final imageLink = await homeController
-                              .uploadImageToFirebaseWithCustomPath(
-                                  homeController.pickedImage!.path,
-                                  'Deals/${DateTime.now().toIso8601String()}');
-                          print("Link Is: $imageLink");
+
+                          String imageLink;
+
+                          if (homeController.pickedImage != null) {
+                            // If pickedImage is not null, upload it and get the URL
+                            imageLink = (await homeController
+                                .uploadImageToFirebaseWithCustomPath(
+                              homeController.pickedImage!.path,
+                              'Deals/${DateTime.now().toIso8601String()}',
+                            ))!;
+                            print("Link Is: $imageLink");
+                          } else {
+                            // If pickedImage is null, use the URL from businessProfile
+                            imageLink =
+                                userController.businessProfile.value!.image ??
+                                    '';
+                          }
+
                           DealModel dealModel = DealModel(
-                              dealName: myController.dealNameController.text
-                                  .toLowerCase(),
-                              companyName:
-                                  getStringAsync(SharedPrefKey.userName),
-                              location: getStringAsync(SharedPrefKey.address),
-                              uses: myController.counter.value,
-                              businessId: getStringAsync(SharedPrefKey.uid),
-                              image: imageLink,
-                              // ignore: unnecessary_null_comparison
-                              longLat: getDoubleAsync(SharedPrefKey.latitude) !=
-                                      null
-                                  ? GeoPoint(
-                                      getDoubleAsync(SharedPrefKey.latitude),
-                                      getDoubleAsync(SharedPrefKey.longitude))
-                                  : null,
-                              createdAt: Timestamp.now(),
-                              isPromotionStar: false);
+                            dealName: myController.dealNameController.text
+                                .toLowerCase(),
+                            companyName: getStringAsync(SharedPrefKey.userName),
+                            location: getStringAsync(SharedPrefKey.address),
+                            uses: myController.counter.value,
+                            businessId: getStringAsync(SharedPrefKey.uid),
+                            image: imageLink,
+                            longLat:
+                                getDoubleAsync(SharedPrefKey.latitude) != null
+                                    ? GeoPoint(
+                                        getDoubleAsync(SharedPrefKey.latitude),
+                                        getDoubleAsync(SharedPrefKey.longitude),
+                                      )
+                                    : null,
+                            createdAt: Timestamp.now(),
+                            isPromotionStar: false,
+                          );
+
                           print(dealModel.longLat);
                           print(dealModel.uses.toString());
                           log(dealModel.businessId!);
+
                           await controller.addDeal(dealModel).then((value) {
                             myController.clearTextFields();
                             homeController.setImageNull();
                             context.loaderOverlay.hide();
                             Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const BottomBarView(isUser: false)),
-                                (route) => false);
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BottomBarView(isUser: false)),
+                              (route) => false,
+                            );
                           });
                         }
                       },

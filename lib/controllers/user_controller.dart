@@ -130,6 +130,8 @@ class UserController extends GetxController {
     return isFavorite;
   }
 
+  
+
   /// Fetch and cache all favorite deals on initialization
   Future<void> fetchAndCacheFavouriteDeals() async {
     List<DealModel> favouriteDeals = await getFavouriteDeals();

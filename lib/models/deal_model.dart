@@ -13,12 +13,13 @@ class DealModel {
   int? likes;
   int? views;
   String? location;
-  GeoPoint? longLat; 
+  GeoPoint? longLat;
   List<String>? favourites;
   List<String>? dealParams;
   Timestamp? createdAt;
   Map<String, int>? usedBy;
-  double? businessRating; // Add this line
+  double? businessRating;
+  Map<String, dynamic>? clickHistory; // Added clickHistory
 
   DealModel({
     this.businessId,
@@ -37,7 +38,8 @@ class DealModel {
     this.createdAt,
     this.dealParams,
     this.usedBy,
-    this.businessRating, // Add this
+    this.businessRating,
+    this.clickHistory, // Added clickHistory
   });
 
   factory DealModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
@@ -59,7 +61,8 @@ class DealModel {
       dealParams: data[DealKey.DEALPARAMS] != null ? List<String>.from(data[DealKey.DEALPARAMS]) : [],
       createdAt: data[DealKey.CREATEDAT] ?? Timestamp.now(),
       usedBy: data['usedBy'] != null ? Map<String, int>.from(data['usedBy']) : {},
-      businessRating: data['businessRating']?.toDouble(), // Handle businessRating
+      businessRating: data['businessRating']?.toDouble(),
+      clickHistory: data['clickHistory'] != null ? Map<String, dynamic>.from(data['clickHistory']) : {}, // Parse clickHistory
     );
   }
 
@@ -81,7 +84,8 @@ class DealModel {
       dealParams: map[DealKey.DEALPARAMS] != null ? List<String>.from(map[DealKey.DEALPARAMS]) : [],
       createdAt: map[DealKey.CREATEDAT] ?? Timestamp.now(),
       usedBy: map['usedBy'] != null ? Map<String, int>.from(map['usedBy']) : {},
-      businessRating: map['businessRating']?.toDouble(), // Handle businessRating
+      businessRating: map['businessRating']?.toDouble(),
+      clickHistory: map['clickHistory'] != null ? Map<String, dynamic>.from(map['clickHistory']) : {}, // Parse clickHistory
     );
   }
 
@@ -102,7 +106,8 @@ class DealModel {
       DealKey.DEALPARAMS: dealParams ?? [],
       DealKey.CREATEDAT: createdAt ?? Timestamp.now(),
       'usedBy': usedBy ?? {},
-      'businessRating': businessRating ?? null, // Include businessRating
+      'businessRating': businessRating ?? null,
+      'clickHistory': clickHistory ?? {}, // Include clickHistory
     };
 
     if (longLat != null) map[DealKey.LATLONG] = longLat!;

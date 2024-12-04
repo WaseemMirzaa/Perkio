@@ -137,8 +137,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                           : SizedBox(
                               height: 30.h,
                               width: 100.w,
-                              child: 
-                              Image.network(
+                              child: Image.network(
                                 userProfile.image ?? '',
                                 fit: BoxFit.cover,
                                 loadingBuilder:
@@ -176,85 +175,85 @@ class _UserProfileViewState extends State<UserProfileView> {
                             );
                     }),
                     BackButtonWidget(),
-                    Positioned(
-                      right: 3.w,
-                      top: 6.h,
-                      child: GestureDetector(
-                        onTap: () {
-                          showAdaptiveDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    title: Text(
-                                      'Pick Image',
-                                      style: poppinsBold(fontSize: 15),
-                                    ),
-                                    content: const Text(
-                                        'Upload profile from gallery or catch with Camera'),
-                                    actions: [
-                                      IconButton(
-                                          onPressed: () async {
-                                            Get.back();
-                                            await homeController
-                                                .pickImageFromGallery()
-                                                .then((value) async {
-                                              String? path = await homeController
-                                                  .uploadImageToFirebaseOnID(
-                                                      homeController.pickedImage
-                                                              ?.path ??
-                                                          '',
-                                                      getStringAsync(
-                                                          SharedPrefKey.uid));
-                                              if (!path.isEmptyOrNull) {
-                                                homeController.updateCollection(
-                                                    getStringAsync(
-                                                        SharedPrefKey.uid),
-                                                    'users',
-                                                    {UserKey.IMAGE: path});
-                                              }
-                                            });
-                                          },
-                                          icon: const Icon(
-                                              Icons.drive_file_move_outline)),
-                                      IconButton(
-                                          onPressed: () async {
-                                            Get.back();
-                                            await homeController
-                                                .pickImageFromCamera()
-                                                .then((value) async {
-                                              String? path = await homeController
-                                                  .uploadImageToFirebaseOnID(
-                                                      homeController.pickedImage
-                                                              ?.path ??
-                                                          '',
-                                                      getStringAsync(
-                                                          SharedPrefKey.uid));
-                                              print("The path is: === $path");
-                                              if (!path.isEmptyOrNull) {
-                                                print("DB called");
-                                                homeController.updateCollection(
-                                                    getStringAsync(
-                                                        SharedPrefKey.uid),
-                                                    'users',
-                                                    {UserKey.IMAGE: path});
-                                              }
-                                            });
-                                          },
-                                          icon: const Icon(
-                                              Icons.camera_alt_outlined)),
-                                    ],
-                                  ));
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.all(7),
-                            decoration: const BoxDecoration(
-                                color: AppColors.whiteColor,
-                                shape: BoxShape.circle),
-                            child: Icon(
-                              Icons.camera_enhance_rounded,
-                              size: 20.sp,
-                            )),
-                      ),
-                    ),
+                    // Positioned(
+                    //   right: 3.w,
+                    //   top: 6.h,
+                    //   child: GestureDetector(
+                    //     onTap: () {
+                    //       showAdaptiveDialog(
+                    //           context: context,
+                    //           builder: (context) => AlertDialog(
+                    //                 title: Text(
+                    //                   'Pick Image',
+                    //                   style: poppinsBold(fontSize: 15),
+                    //                 ),
+                    //                 content: const Text(
+                    //                     'Upload profile from gallery or catch with Camera'),
+                    //                 actions: [
+                    //                   IconButton(
+                    //                       onPressed: () async {
+                    //                         Get.back();
+                    //                         await homeController
+                    //                             .pickImageFromGallery()
+                    //                             .then((value) async {
+                    //                           String? path = await homeController
+                    //                               .uploadImageToFirebaseOnID(
+                    //                                   homeController.pickedImage
+                    //                                           ?.path ??
+                    //                                       '',
+                    //                                   getStringAsync(
+                    //                                       SharedPrefKey.uid));
+                    //                           if (!path.isEmptyOrNull) {
+                    //                             homeController.updateCollection(
+                    //                                 getStringAsync(
+                    //                                     SharedPrefKey.uid),
+                    //                                 'users',
+                    //                                 {UserKey.IMAGE: path});
+                    //                           }
+                    //                         });
+                    //                       },
+                    //                       icon: const Icon(
+                    //                           Icons.drive_file_move_outline)),
+                    //                   IconButton(
+                    //                       onPressed: () async {
+                    //                         Get.back();
+                    //                         await homeController
+                    //                             .pickImageFromCamera()
+                    //                             .then((value) async {
+                    //                           String? path = await homeController
+                    //                               .uploadImageToFirebaseOnID(
+                    //                                   homeController.pickedImage
+                    //                                           ?.path ??
+                    //                                       '',
+                    //                                   getStringAsync(
+                    //                                       SharedPrefKey.uid));
+                    //                           print("The path is: === $path");
+                    //                           if (!path.isEmptyOrNull) {
+                    //                             print("DB called");
+                    //                             homeController.updateCollection(
+                    //                                 getStringAsync(
+                    //                                     SharedPrefKey.uid),
+                    //                                 'users',
+                    //                                 {UserKey.IMAGE: path});
+                    //                           }
+                    //                         });
+                    //                       },
+                    //                       icon: const Icon(
+                    //                           Icons.camera_alt_outlined)),
+                    //                 ],
+                    //               ));
+                    //     },
+                    //     child: Container(
+                    //         padding: const EdgeInsets.all(7),
+                    //         decoration: const BoxDecoration(
+                    //             color: AppColors.whiteColor,
+                    //             shape: BoxShape.circle),
+                    //         child: Icon(
+                    //           Icons.camera_enhance_rounded,
+                    //           size: 20.sp,
+                    //         )),
+                    //   ),
+                    // ),
                   ],
                 ),
                 Align(

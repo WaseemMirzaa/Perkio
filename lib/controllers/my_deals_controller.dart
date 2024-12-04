@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:swipe_app/models/deal_model.dart';
@@ -45,6 +46,40 @@ class MyDealScreenController extends GetxController {
       favouriteDeals.value = await userController.getDealsUsedByCurrentUser();
     } else {
       favouriteRewards.value = await userController.getRewardForCurrentUser();
+    }
+  }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<List<DealModel>> fetchDeals(String userId) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('deals')
+          .where('businessId', isEqualTo: userId)
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+
+        // Parsing clickHistory as a Map and calculating the total clicks
+        Map<String, dynamic> clickHistory = data['clickHistory'] != null
+            ? Map<String, dynamic>.from(data['clickHistory'])
+            : {};
+
+        return DealModel(
+          dealId: doc.id,
+          dealName: data['dealName'] ?? 'Unknown Deal',
+          companyName: data['companyName'] ?? 'Unknown Business',
+          createdAt: data['createdAt'] as Timestamp?,
+          clickHistory:
+              clickHistory, // Store the entire map for future reference
+          image: data['image'] ?? '',
+          // Other fields like businessRating, likes, views, etc. can be mapped here as well
+        );
+      }).toList();
+    } catch (e) {
+      print('Error fetching deals: $e');
+      return [];
     }
   }
 }

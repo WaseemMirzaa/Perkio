@@ -12,6 +12,7 @@ import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/views/business/manage_business.dart';
 import 'package:swipe_app/views/business/profile_settings_business.dart';
 import 'package:swipe_app/views/user/user_profile_view.dart';
 import 'package:swipe_app/views/help/help_view.dart';
@@ -112,6 +113,18 @@ class _SettingsViewState extends State<SettingsView> {
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
+      floatingActionButton: widget.isUser
+          ? null // If isUser is true, don't show the button
+          : FloatingActionButton(
+              onPressed: () {
+                Get.to(() => const BusinessManagementScreen());
+              },
+              backgroundColor: AppColors.gradientEndColor,
+              child: const Icon(
+                Icons.account_balance_wallet_rounded, // Icon for "manage"
+                color: AppColors.whiteColor,
+              ),
+            ),
       body: StreamBuilder<UserModel>(
         stream: _userProfileStreamController.stream,
         builder: (context, snapshot) {
@@ -129,61 +142,58 @@ class _SettingsViewState extends State<SettingsView> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                ClipPath(
-                  clipper: CustomMessageClipper(),
-                  child: SizedBox(
-                    height: 210,
-                    width: double.infinity,
-                    child: Obx(() {
-                      return (homeController.pickedImage != null)
-                          ? Image.file(
-                              homeController.pickedImage!,
-                              height: 30.h,
-                              width: 100.w,
-                              fit: BoxFit.cover,
-                            )
-                          : SizedBox(
-                              height: 30.h,
-                              width: 100.w,
-                              child: Image.network(
-                                userProfile.image ?? '',
-                                fit: BoxFit.cover,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  } else {
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppColors.gradientEndColor,
-                                        value: loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                (loadingProgress
-                                                        .expectedTotalBytes ??
-                                                    1)
-                                            : null,
-                                      ),
-                                    );
-                                  }
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Center(
-                                    child: Image.asset(
-                                      AppAssets.imageHeader,
-                                      fit: BoxFit.fill,
-                                      height: 30.h,
-                                      width: 100.w,
-                                    ),
+                userProfile.image != null && userProfile.image!.isNotEmpty
+                    ? ClipPath(
+                        clipper: CustomMessageClipper(),
+                        child: SizedBox(
+                          height: 210,
+                          width: double.infinity,
+                          child: Obx(() {
+                            return (homeController.pickedImage != null)
+                                ? Image.file(
+                                    homeController.pickedImage!,
+                                    height: 30.h,
+                                    width: 100.w,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.network(
+                                    userProfile.image!,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      } else {
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: AppColors.gradientEndColor,
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    (loadingProgress
+                                                            .expectedTotalBytes ??
+                                                        1)
+                                                : null,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    // errorBuilder: (context, error, stackTrace) {
+                                    //   return Image.asset(
+                                    //     AppAssets.imageHeader,
+                                    //     fit: BoxFit.cover,
+                                    //   );
+                                    // },
                                   );
-                                },
-                              ),
-                            );
-                    }),
-                  ),
-                ),
+                          }),
+                        ),
+                      )
+                    : Image.asset(
+                        AppAssets.imageHeader,
+                        fit: BoxFit.cover,
+                      ),
                 ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   shrinkWrap: true,

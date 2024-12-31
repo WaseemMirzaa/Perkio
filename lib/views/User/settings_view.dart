@@ -12,8 +12,10 @@ import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/home_services.dart';
+
 import 'package:swipe_app/views/business/manage_business.dart';
 import 'package:swipe_app/views/business/profile_settings_business.dart';
+import 'package:swipe_app/views/subscription/subscription_ui.dart';
 import 'package:swipe_app/views/user/user_profile_view.dart';
 import 'package:swipe_app/views/help/help_view.dart';
 import 'package:swipe_app/views/privacy_policy/privacy_policy.dart';
@@ -82,6 +84,10 @@ class _SettingsViewState extends State<SettingsView> {
     {
       'icon': AppAssets.evaluationImg,
       'title': TempLanguage.txtManageAccount,
+    },
+       {
+      'icon': AppAssets.subscriptionImg, // Add subscription icon here
+      'title': 'Subscription',
     },
     {
       'icon': AppAssets.networkImg,
@@ -229,10 +235,20 @@ class _SettingsViewState extends State<SettingsView> {
                               ),
                             );
                             break;
-                          case 2:
-                            shareDummyLink();
+                                case 2:
+                                Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const VendorSubscriptionUI(),
+                              ),
+                            );
+                            
                             break;
                           case 3:
+                            shareDummyLink();
+                            break;
+                          case 4:
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -241,7 +257,7 @@ class _SettingsViewState extends State<SettingsView> {
                               ),
                             );
                             break;
-                          case 4:
+                          case 5:
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -249,7 +265,7 @@ class _SettingsViewState extends State<SettingsView> {
                               ),
                             );
                             break;
-                          case 5:
+                          case 6:
                             Navigator.push(
                               context,
                               MaterialPageRoute(

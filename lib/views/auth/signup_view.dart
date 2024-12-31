@@ -14,6 +14,8 @@ import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
 import 'package:swipe_app/views/location/select_location_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
+import 'package:swipe_app/views/subscription/terms_and_conditions.dart';
+
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -207,22 +209,43 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                       children: [
                         const SpacerBoxHorizontal(width: 5),
                         RoundCheckBox(
-                            size: 20.sp,
-                            border: Border.all(
-                                color:
-                                    confirm.value ? Colors.green : Colors.grey),
-                            isChecked: confirm.value,
-                            checkedWidget: Icon(
-                              Icons.check_rounded,
-                              size: 10.sp,
-                              color: AppColors.whiteColor,
-                            ),
-                            onTap: (tapped) => confirm.value = !confirm.value),
+                          size: 20.sp,
+                          border: Border.all(
+                            color: confirm.value ? Colors.green : Colors.grey,
+                          ),
+                          isChecked: confirm.value,
+                          checkedColor: Colors.green,
+                          uncheckedColor: Colors.green,
+                          disabledColor:
+                              confirm.value ? Colors.green : Colors.white,
+                          checkedWidget: Icon(
+                            Icons.check_rounded,
+                            size: 10.sp,
+                            color: AppColors.whiteColor,
+                          ),
+                          onTap:
+                              null, // Disable direct toggle, as it depends on the Terms & Conditions result
+                        ),
                         const SpacerBoxHorizontal(width: 5),
-                        Text(
-                          'Accept Terms & Condition',
-                          style: poppinsRegular(
-                              fontSize: 15, color: AppColors.secondaryText),
+                        GestureDetector(
+                          onTap: () async {
+                            // Navigate to TermsAndConditions page and await result
+                            final result =
+                                await Get.to(() => const TermsAndConditions());
+                            // Update confirm.value only if a result is returned
+                            if (result != null && result == true) {
+                              confirm.value = true; // Mark as accepted
+                            } else {
+                              confirm.value = false; // Mark as declined
+                            }
+                          },
+                          child: Text(
+                            'Accept Terms & Condition',
+                            style: poppinsRegular(
+                              fontSize: 15,
+                              color: AppColors.secondaryText,
+                            ),
+                          ),
                         ),
                         const SizedBox(
                           width: 10,

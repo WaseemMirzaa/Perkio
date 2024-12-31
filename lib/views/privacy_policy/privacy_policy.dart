@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
@@ -15,6 +16,8 @@ class PrivacyPolicy extends StatefulWidget {
 }
 
 class _PrivacyPolicyState extends State<PrivacyPolicy> {
+  late WebViewController _controller;
+
   @override
   Widget build(BuildContext context) {
     return SecondaryLayoutWidget(
@@ -42,18 +45,15 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 32),
-        children: [
-          SizedBox(height: 22.h),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              TempLanguage.txtLoremIpsum,
-              style: poppinsRegular(fontSize: 15),
-            ),
-          ),
-        ],
+      body: SizedBox(
+        height: 100.h, // Ensure the WebView takes the full available height
+        child: WebView(
+          initialUrl: "https://sites.google.com/view/swipeapp/swipe",
+          javascriptMode: JavascriptMode.unrestricted,
+          onWebViewCreated: (controller) {
+            _controller = controller;
+          },
+        ),
       ),
     );
   }

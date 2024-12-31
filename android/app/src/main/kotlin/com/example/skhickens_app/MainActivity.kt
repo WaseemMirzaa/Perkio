@@ -1,4 +1,4 @@
-package com.example.swipe_app
+package com.codetivelab.swipe_app
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

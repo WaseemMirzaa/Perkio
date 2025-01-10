@@ -30,7 +30,7 @@ class _PolicyAndPrivacyState extends State<PolicyAndPrivacy> {
         children: [
           WebView(
             initialUrl:
-                "hhttps://sites.google.com/view/swipeapp/swipe",
+                "https://sites.google.com/view/swipeapp/swipe",
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (controller) {
               _controller = controller;

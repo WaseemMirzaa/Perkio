@@ -32,7 +32,7 @@ void main() async {
   //   : const SplashScreen();
   Stripe.publishableKey =
       'pk_test_51PQ2iD00So438QdeQFWS7Bz2EyESwD51vEyhC0QFY2RqwA7rqp1xktxV8FHGbzm1XppVO4bWy9vStrGOS3BV76Q900auavqmqT';
-  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+    Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
 

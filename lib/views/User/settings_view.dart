@@ -12,6 +12,7 @@ import 'package:swipe_app/core/utils/constants/constants.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/views/User/delete_account';
 
 import 'package:swipe_app/views/business/manage_business.dart';
 import 'package:swipe_app/views/business/profile_settings_business.dart';
@@ -85,7 +86,7 @@ class _SettingsViewState extends State<SettingsView> {
       'icon': AppAssets.evaluationImg,
       'title': TempLanguage.txtManageAccount,
     },
-       {
+    {
       'icon': AppAssets.subscriptionImg, // Add subscription icon here
       'title': 'Subscription',
     },
@@ -235,15 +236,15 @@ class _SettingsViewState extends State<SettingsView> {
                               ),
                             );
                             break;
-                                case 2:
-                                Navigator.push(
+                          case 2:
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
                                     const VendorSubscriptionUI(),
                               ),
                             );
-                            
+
                             break;
                           case 3:
                             shareDummyLink();
@@ -305,6 +306,17 @@ class _SettingsViewState extends State<SettingsView> {
                   child: const SettingsListItems(
                     path: AppAssets.helpImg,
                     text: 'Logout',
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    controller.clearTextFields();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => DeleteAccountPage()));
+                  },
+                  child: const SettingsListItems(
+                    path: AppAssets.checkMark,
+                    text: 'Delete Account',
                   ),
                 ),
               ],

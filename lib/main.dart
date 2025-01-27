@@ -10,6 +10,7 @@ import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/bindings/bindings.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
+import 'package:swipe_app/views/User/delete_account';
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 
 void main() async {
@@ -65,8 +66,8 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: const SplashScreen(),
-          initialBinding: MyBinding(),
+          home: DeleteAccountPage(),
+          // initialBinding: MyBinding(),
         ),
       );
     });

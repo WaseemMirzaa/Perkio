@@ -152,8 +152,13 @@ class DeleteAccountPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Account deleted successfully.'),
         ));
+                Navigator.pop(context);  
+
       }
     } catch (e) {
+
+
+
       // Show an error message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Failed to delete account: ${e.toString()}'),

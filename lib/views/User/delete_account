@@ -133,36 +133,141 @@ class DeleteAccountPage extends StatelessWidget {
     );
   }
 
-  void _deleteAccount(BuildContext context) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        // Delete the user account
-        FirebaseFirestore.instance
-            .collection("user")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .delete();
+ void _deleteAccount(BuildContext context) async {
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String userId = user.uid;
 
-        await user.delete();
+      // Fetch the user's role from the 'users' collection
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userId)
+          .get();
 
-        // Sign out the user
-        await FirebaseAuth.instance.signOut();
-
-        // Show a success message
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Account deleted successfully.'),
-        ));
-                Navigator.pop(context);  
-
+      if (!userDoc.exists) {
+        throw Exception("User document not found.");
       }
-    } catch (e) {
 
+      String userRole = userDoc.get('role');
 
+      // Create a Firestore batch
+      WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      // Show an error message
+      if (userRole == 'user') {
+        // Step 1: Remove user ID from 'usedBy' in deals collection
+        QuerySnapshot dealsSnapshot = await FirebaseFirestore.instance
+            .collection("deals")
+            .where('usedBy.$userId')
+            .get();
+
+        for (var doc in dealsSnapshot.docs) {
+          batch.update(doc.reference, {
+            'usedBy.$userId': FieldValue.delete(),
+          });
+        }
+
+        // Step 2: Remove user ID from 'usedBy' in rewards collection
+        QuerySnapshot rewardsSnapshot = await FirebaseFirestore.instance
+            .collection("reward")
+            .where('usedBy.$userId')
+            .get();
+
+        for (var doc in rewardsSnapshot.docs) {
+          batch.update(doc.reference, {
+            'usedBy.$userId': FieldValue.delete(),
+          });
+        }
+
+        // Step 3: Delete documents in notifications collection where receiverID or senderID matches user ID
+        QuerySnapshot notificationsSnapshot = await FirebaseFirestore.instance
+            .collection("notification")
+            .where('receiverId', isEqualTo: userId)
+            .get();
+
+        for (var doc in notificationsSnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+
+        QuerySnapshot senderNotificationsSnapshot = await FirebaseFirestore.instance
+            .collection("notification")
+            .where('senderId', isEqualTo: userId)
+            .get();
+
+        for (var doc in senderNotificationsSnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+      } else if (userRole == 'business') {
+        // Step 1: Delete all deals where 'businessId' matches the user's ID
+        QuerySnapshot dealsSnapshot = await FirebaseFirestore.instance
+            .collection("deals")
+            .where('businessId', isEqualTo: userId)
+            .get();
+
+        for (var doc in dealsSnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+
+        // Step 2: Delete all rewards where 'businessId' matches the user's ID
+        QuerySnapshot rewardsSnapshot = await FirebaseFirestore.instance
+            .collection("reward")
+            .where('businessId', isEqualTo: userId)
+            .get();
+
+        for (var doc in rewardsSnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+
+        // Step 3: Delete all notifications where 'receiverID' or 'senderID' matches the user's ID
+        QuerySnapshot notificationsSnapshot = await FirebaseFirestore.instance
+            .collection("notification")
+            .where('receiverId', isEqualTo: userId)
+            .get();
+
+        for (var doc in notificationsSnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+
+        QuerySnapshot senderNotificationsSnapshot = await FirebaseFirestore.instance
+            .collection("notification")
+            .where('senderId', isEqualTo: userId)
+            .get();
+
+        for (var doc in senderNotificationsSnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+      } else {
+        throw Exception("Invalid user role.");
+      }
+
+      // Delete the user document from the 'users' collection
+      DocumentReference userDocRef = FirebaseFirestore.instance
+          .collection("users")
+          .doc(userId);
+      batch.delete(userDocRef);
+
+      // Commit the batch
+      await batch.commit();
+
+      // Delete the user account
+      await user.delete();
+
+      // Sign out the user
+      await FirebaseAuth.instance.signOut();
+
+      // Show a success message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to delete account: ${e.toString()}'),
+        content: Text('Account deleted successfully.'),
       ));
+
+      // Navigate back
+      Navigator.pop(context);
     }
+  } catch (e) {
+    // Show an error message
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Failed to delete account: ${e.toString()}'),
+    ));
   }
+}
 }

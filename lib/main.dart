@@ -5,6 +5,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/billing_service.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/bindings/bindings.dart';
@@ -35,6 +36,7 @@ void main() async {
   Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
+  BillingService().initStore();
 
   Get.put(RewardController());
 

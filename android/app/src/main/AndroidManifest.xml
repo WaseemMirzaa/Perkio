@@ -3,6 +3,8 @@
     <!-- and/or -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
+
 
     <application
         android:label="Swipe"

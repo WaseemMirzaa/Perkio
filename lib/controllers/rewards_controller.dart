@@ -9,6 +9,8 @@ import 'package:swipe_app/models/receipt_model.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/reward_service.dart';
 import 'package:swipe_app/views/user/reward_redeem_detail.dart';
+import 'package:swipe_app/widgets/price_dialog_box.dart';
+import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 class RewardController extends GetxController {
   final RewardService _rewardService = RewardService();
@@ -292,17 +294,60 @@ class RewardController extends GetxController {
 
         // Save the receipt and add points
         await _rewardService.saveReceipt(rewardModel, userId, downloadUrl);
-        await _rewardService.addPointsToReward(
-            rewardModel.rewardId!, userId, 20);
 
         print("Points added to reward.");
 
         // Navigate to the reward detail screen
-        Get.offAll(() => RewardRedeemDetail(
-              rewardId: rewardModel.rewardId,
-              businessId: rewardModel.businessId,
-              userId: userId,
-            ));
+
+        // showPriceInputDialog(onContinue: (String amount) async {
+        //   int points = (double.parse(amount) * 100)
+        //       .toInt(); // Ensures no floating-point precision issues
+        //   int remainingPoints = await _rewardService.getRemainingPoints(
+        //       rewardModel.rewardId!, userId);
+        //   await _rewardService.addPointsToReward(
+        //       rewardModel.rewardId!, userId, points);
+
+        //   Get.offAll(() => RewardRedeemDetail(
+        //         rewardId: rewardModel.rewardId,
+        //         businessId: rewardModel.businessId,
+        //         userId: userId,
+        //       ));
+        // });
+
+        // showPriceInputDialog(onContinue: (String amount) async {
+        //   int pointsToAdd =
+        //       (double.parse(amount) * 100).toInt(); // Convert to points
+        //   int remainingPoints = await _rewardService.getRemainingPoints(
+        //       rewardModel.rewardId!, userId);
+
+        //   print(remainingPoints);
+
+        //   if (pointsToAdd > remainingPoints) {
+        //     showSnackBar('Invalid Input',
+        //         'You cannot enter more than ${remainingPoints / 100} dollars.');
+        //     return;
+        //   }
+
+        //   await _rewardService.addPointsToReward(
+        //       rewardModel.rewardId!, userId, pointsToAdd);
+
+        // await updateRewardUsage(rewardModel.rewardId!, userId);
+
+        //   Get.offAll(() => RewardRedeemDetail(
+        //         rewardId: rewardModel.rewardId,
+        //         businessId: rewardModel.businessId,
+        //         userId: userId,
+        //       ));
+        // });
+
+        showPriceInputDialog(
+          rewardId: rewardModel.rewardId!,
+          userId: userId,
+          rewardModel: rewardModel,
+          getRemainingPoints: _rewardService.getRemainingPoints,
+          addPointsToReward: _rewardService.addPointsToReward,
+          updateRewardUsage: updateRewardUsage,
+        );
       } catch (e) {
         print("Error uploading image: $e");
       } finally {

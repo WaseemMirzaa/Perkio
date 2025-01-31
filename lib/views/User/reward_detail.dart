@@ -65,6 +65,9 @@ class _RewardDetailState extends State<RewardDetail> {
       print('💥💥💥💥💥💥💥💥💥💥 ${widget.reward!.rewardId} ');
       print('💥💥💥💥💥💥💥💥💥💥 ${widget.userId} ');
 
+
+      
+
       await rewardController.pickImageAndUpload(
         widget.reward!,
         widget.userId!,
@@ -118,6 +121,7 @@ class _RewardDetailState extends State<RewardDetail> {
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Column(

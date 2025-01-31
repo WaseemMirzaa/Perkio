@@ -78,17 +78,16 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                 final userName = user.userName ?? 'Unknown';
                 final userLocation = user.address ?? 'No Address';
                 final latLog = user.latLong;
-                 final image = user.image;
+                final image = user.image;
 
                 return customAppBar(
-                  userName: userName,
-                  isNotification: false,
-                  latitude: latLog?.latitude ?? 0.0,
-                  longitude: latLog?.longitude ?? 0.0,
-                  userLocation: userLocation,
-                  isChangeBusinessLocation: true,
-                  userImage: image
-                );
+                    userName: userName,
+                    isNotification: false,
+                    latitude: latLog?.latitude ?? 0.0,
+                    longitude: latLog?.longitude ?? 0.0,
+                    userLocation: userLocation,
+                    isChangeBusinessLocation: true,
+                    userImage: image);
               }),
             ),
           ),
@@ -126,9 +125,9 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                       'Points to Redeem',
                       style: poppinsRegular(fontSize: 13),
                     ),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Text('PPS (Points Per Scan): ${controller.pps}'))
+                    // Align(
+                    //     alignment: Alignment.centerRight,
+                    //     child: Text('PPS (Points Per Scan): ${controller.pps}'))
                   ],
                 ),
                 const SpacerBoxVertical(height: 10),
@@ -143,18 +142,26 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                   ],
                   onSubmit: (value) {
                     int userInput = int.parse(value);
-                    if (userInput % controller.pps.value! == 0) {
-                    } else {
+                    if (userInput < 100) {
+                      showSnackBar('Invalid Input',
+                          'The minimum redeemable points are 100.');
+                    } else if (userInput % controller.pps.value! != 0) {
                       showSnackBar('Invalid Input',
                           'Please enter a number that is a multiple of ${controller.pps.value}.');
                     }
                   },
                 ),
                 const SpacerBoxVertical(height: 5),
-                const Align(
+
+                //  Align(
+                //     alignment: Alignment.centerRight,
+                //     child: Text(
+                //         'Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
+                Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                        'Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
+                        'Note: Each \$1 spent earns users 100 points. Businesses can set a minimum redemption limit of 100 points, with no maximum cap.',
+                        style: poppinsRegular(fontSize: 12))),
                 const SpacerBoxVertical(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,10 +325,15 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                             } else if (myController.counter.value <= 0) {
                               showSnackBar('Empty Fields',
                                   'Please set the number of uses');
-                            } else if (points % controller.pps.value! != 0) {
-                              showSnackBar('Invalid Input',
-                                  'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
-                            } else {
+                            } else if (points < 100) {
+                              showSnackBar('Amount incorrect',
+                                  'Budget can not be less than 100');
+                            }
+                            // else if (points % controller.pps.value! != 0) {
+                            //   showSnackBar('Invalid Input',
+                            //       'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
+                            // }
+                            else {
                               int userInput = int.parse(
                                   myController.pointsToRedeemController.text);
                               context.loaderOverlay.show(

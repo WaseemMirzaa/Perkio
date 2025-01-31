@@ -100,10 +100,15 @@ class LocationServiceErrorWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 // Title
-                Text(
-                  TempLanguage.lblSwipe,
-                  style: altoysFont(fontSize: 45, color: AppColors.whiteColor),
-                  textAlign: TextAlign.center,
+                // Text(
+                //   TempLanguage.lblSwipe,
+                //   style: altoysFont(fontSize: 45, color: AppColors.whiteColor),
+                //   textAlign: TextAlign.center,
+                // ),
+                Image.asset(
+                  'assets/images/logo.png', // Replace with the correct path to your logo
+                  height: 100, // Adjust size as needed
+                  fit: BoxFit.contain,
                 ),
                 SizedBox(height: 2.h), // Space between title and text
                 // Message

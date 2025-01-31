@@ -53,10 +53,16 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 60),
-                    child: Text(
-                      TempLanguage.lblSwipe,
-                      style: altoysFont(fontSize: 45),
-                      textAlign: TextAlign.center,
+                    child:
+                        //  Text(
+                        //   TempLanguage.lblSwipe,
+                        //   style: altoysFont(fontSize: 45),
+                        //   textAlign: TextAlign.center,
+                        // ),
+                        Image.asset(
+                      'assets/images/logo.png', // Replace with the correct path to your logo
+                      height: 100, // Adjust size as needed
+                      fit: BoxFit.contain,
                     ),
                   ),
                   Row(

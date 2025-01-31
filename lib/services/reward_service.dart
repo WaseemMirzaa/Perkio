@@ -101,6 +101,9 @@ class RewardService {
     try {
       DocumentReference rewardDoc = _rewardCollection.doc(rewardId);
 
+      print(
+          '---------------------Adding $points points to reward $rewardId for user $userId');
+
       // Update the pointsEarned map
       await rewardDoc.update({
         'pointsEarned.$userId': FieldValue.increment(points),
@@ -110,6 +113,34 @@ class RewardService {
     } catch (e) {
       log('Error adding points: $e');
     }
+  }
+
+  Future<int> getRemainingPoints(String rewardId, String userId) async {
+    try {
+      DocumentSnapshot rewardDoc = await _rewardCollection.doc(rewardId).get();
+
+      if (rewardDoc.exists) {
+        Map<String, dynamic> data = rewardDoc.data() as Map<String, dynamic>;
+
+        // Fetch pointsEarned map
+        Map<String, dynamic> pointsEarned = data['pointsEarned'] ?? {};
+
+        // Get user-specific earned points
+        int earnedPoints = pointsEarned[userId] ?? 0;
+
+        // Fetch pointsToRedeem
+        int pointsToRedeem = data['pointsToRedeem'] ?? 0;
+
+        // Calculate remaining points
+        int remainingPoints = pointsToRedeem - earnedPoints;
+
+        return remainingPoints;
+      }
+    } catch (e) {
+      log('Error fetching remaining points: $e');
+    }
+
+    return 0; // Default to 0 if there's an error
   }
 
   Stream<RewardModel?> getRewardByIdStream(String rewardId) {

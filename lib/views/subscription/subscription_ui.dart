@@ -25,7 +25,7 @@ class VendorSubscriptionUI extends StatelessWidget {
         titleSpacing: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: (){
+          onPressed: () {
             Get.back();
           },
         ),
@@ -147,7 +147,7 @@ class VendorSubscriptionUI extends StatelessWidget {
                       thickness: 2,
                     ),
                   ),
-                  const SizedBox(width: 16), // Adds space after the divider
+                  const SizedBox(width: 8), // Adds space after the divider
                   TextButton(
                     onPressed: () {
                       // Navigate to Terms and Conditions screen
@@ -317,24 +317,10 @@ class VendorSubscriptionUI extends StatelessWidget {
 
 final plans = [
   {
-    'title': 'Basic Plan',
-    'price': '\$5',
-    'period': '/month',
-    'description': 'Perfect for getting started',
-    'isPopular': false,
-  },
-  {
-    'title': 'Standard Plan',
-    'price': '\$15',
-    'period': '/month',
-    'description': 'Most popular for small businesses',
+    'title': 'Establish Agency Starter Plan',
+    'price': '\$24.99',
+    'period': '/year',
+    'description': 'Get Unlimited Items for year just at \$24.99',
     'isPopular': true,
-  },
-  {
-    'title': 'Premium Plan',
-    'price': '\$25',
-    'period': '/month',
-    'description': 'Best value for growing businesses',
-    'isPopular': false,
   },
 ];

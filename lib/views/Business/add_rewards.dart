@@ -108,10 +108,10 @@ class _AddRewardsState extends State<AddRewards> {
                       'Total Points Needed to Redeem',
                       style: poppinsRegular(fontSize: 10),
                     ),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Text('PPS (Points Per Scan): ${controller.pps}',
-                            style: poppinsRegular(fontSize: 10)))
+                    // Align(
+                    //     alignment: Alignment.centerRight,
+                    //     child: Text('PPS (Points Per Scan): ${controller.pps}',
+                    //         style: poppinsRegular(fontSize: 10)))
                   ],
                 ),
                 const SpacerBoxVertical(height: 10),
@@ -126,19 +126,27 @@ class _AddRewardsState extends State<AddRewards> {
                   ],
                   onSubmit: (value) {
                     int userInput = int.parse(value);
-                    if (userInput % controller.pps.value! == 0) {
-                    } else {
+                    if (userInput < 100) {
+                      showSnackBar('Invalid Input',
+                          'The minimum redeemable points are 100.');
+                    } else if (userInput % controller.pps.value! != 0) {
                       showSnackBar('Invalid Input',
                           'Please enter a number that is a multiple of ${controller.pps.value}.');
                     }
                   },
                 ),
-                const SpacerBoxVertical(height: 5),
-                const Align(
+                const SpacerBoxVertical(height: 8),
+                // const Align(
+                //     alignment: Alignment.centerRight,
+                //     child: Text(
+                //         'Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
+                Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                        'Note: Points to Redeem must be multiple of the PPS (Points Per Scan)')),
-                const SpacerBoxVertical(height: 20),
+                        'Note: Each \$1 spent earns users 100 points. Businesses can set a minimum redemption limit of 100 points, with no maximum cap.',
+                        style: poppinsRegular(fontSize: 12))),
+
+                const SpacerBoxVertical(height: 18),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -276,9 +284,10 @@ class _AddRewardsState extends State<AddRewards> {
                           .pointsToRedeemController.text.isEmptyOrNull)) {
                         showSnackBar('Empty Fields',
                             'Please enter the points to redeem (PTR)');
-                      } else if (points == 0) {
-                        showSnackBar(
-                            'Amount incorrect', 'Budget should not be zero');
+                      } 
+                      else if (points < 100) {
+                        showSnackBar('Amount incorrect',
+                            'Budget can not be less than 100');
                       }
                       // else if (homeController.pickedImage == null) {
                       //   showSnackBar(
@@ -287,10 +296,12 @@ class _AddRewardsState extends State<AddRewards> {
                       else if (myController.counter.value <= 0) {
                         showSnackBar(
                             'Empty Fields', 'Please set the number of uses');
-                      } else if (points % controller.pps.value! != 0) {
-                        showSnackBar('Invalid Input',
-                            'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
-                      } else {
+                      }
+                      // else if (points % controller.pps.value! != 0) {
+                      //   showSnackBar('Invalid Input',
+                      //       'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
+                      // }
+                      else {
                         context.loaderOverlay.show(
                           widgetBuilder: (context) =>
                               Center(child: circularProgressBar()),
@@ -332,8 +343,8 @@ class _AddRewardsState extends State<AddRewards> {
                                     )
                                   : null,
                           usedBy: {},
-                          pointsPerScan: controller
-                              .pps.value!, // Use points per scan value
+                          // pointsPerScan: controller
+                          //     .pps.value!, // Use points per scan value
                           createdAt: Timestamp.now(),
                         );
 

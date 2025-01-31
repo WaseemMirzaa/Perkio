@@ -106,14 +106,22 @@ class _SplashScreenState extends State<SplashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // "Swipe" Text
-                    Text(
-                      TempLanguage.lblSwipe,
-                      style: altoysFont(
-                        fontSize: 45,
-                        color: AppColors.whiteColor,
-                      ),
-                      textAlign: TextAlign.center,
+                    // Text(
+                    //   TempLanguage.lblSwipe,
+                    //   style: altoysFont(
+                    //     fontSize: 45,
+                    //     color: AppColors.whiteColor,
+                    //   ),
+                    //   textAlign: TextAlign.center,
+                    // ),
+
+                    Image.asset(
+                      'assets/images/logo.png', // Replace with the correct path to your logo
+                      height: 100, // Adjust size as needed
+                      fit: BoxFit.contain,
                     ),
+
+                    const SizedBox(height: 10),
 
                     // Animated Text with Fixed Height
                     SizedBox(

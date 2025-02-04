@@ -22,6 +22,36 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+
+	<!-- Location Permissions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to provide better services.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We require access to your location to enhance your experience.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need continuous access to your location for optimal service delivery.</string>
+
+	<!-- Camera & Photo Library Permissions -->
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to scan QR codes and upload images.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to upload and share images.</string>
+
+	<!-- In-App Purchases -->
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>your.skadnetwork.id</string>
+		</dict>
+	</array>
+
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>

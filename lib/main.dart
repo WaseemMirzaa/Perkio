@@ -11,9 +11,7 @@ import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/bindings/bindings.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
-
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

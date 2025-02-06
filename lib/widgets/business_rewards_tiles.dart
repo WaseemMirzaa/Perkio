@@ -68,10 +68,15 @@ class BusinessRewardsTiles extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SpacerBoxVertical(height: 10),
-                      Text(
-                        rewardModel.rewardName!,
-                        style: poppinsMedium(fontSize: 13.sp),
-                      ),
+                      SizedBox(
+  width: 120, 
+  child: Text(
+    rewardModel.rewardName!,
+    style: poppinsMedium(fontSize: 13.sp),
+    overflow: TextOverflow.ellipsis, 
+    maxLines: 1,
+  ),
+),
                       const SpacerBoxVertical(height: 5),
                       Text(
                         rewardModel.companyName!,

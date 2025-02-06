@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -16,6 +17,9 @@ import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Lock orientation to portrait only
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
   await initialize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FCMManager.initialize();
@@ -24,6 +28,13 @@ void main() async {
   PushNotificationServices pushNotificationServices =
       PushNotificationServices();
   await pushNotificationServices.init();
+
+    // Set the status bar appearance globally
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // Transparent or any color
+    statusBarIconBrightness: Brightness.dark, // Icons: dark (for light backgrounds)
+    statusBarBrightness: Brightness.light, // For iOS status bar
+  ));
 
   // UserServices userServices = UserServices();
   // String? userId = await userServices.getCurrentUserIdFromPreferences();

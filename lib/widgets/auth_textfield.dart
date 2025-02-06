@@ -94,6 +94,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           onFieldSubmitted: widget.onSubmit,
           onChanged: widget.onChanged,
           onTap: widget.onTap,
+          cursorColor: orange,
           inputFormatters: widget.inputFormatters,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(2.h),

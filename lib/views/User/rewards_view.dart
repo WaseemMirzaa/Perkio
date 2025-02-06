@@ -188,7 +188,7 @@ class _RewardsViewState extends State<RewardsView> {
           }
 
           return SingleChildScrollView(
-            child: Column(
+            child:  Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(

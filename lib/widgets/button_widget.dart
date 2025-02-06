@@ -10,9 +10,11 @@ class ButtonWidget extends StatelessWidget {
   final VoidCallback onSwipe;
   final String text;
   final bool isGradient;
+  final double fontSize;
   ButtonWidget(
       {super.key,
       required this.onSwipe,
+       this.fontSize = 14,
       required this.text,
       this.isGradient = true});
   final GlobalKey<SlideActionState> _key = GlobalKey();
@@ -53,7 +55,7 @@ class ButtonWidget extends StatelessWidget {
           )),
       sliderButtonIconPadding: 0,
       textStyle: poppinsBold(
-          fontSize: 14,
+          fontSize: fontSize,
           color: isGradient ? AppColors.whiteColor : AppColors.blackColor),
       outerColor: Colors.grey[200],
       innerColor: Colors.black,

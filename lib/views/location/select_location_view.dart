@@ -30,89 +30,57 @@ class _SelectLocationState extends State<SelectLocation> {
   final homeServices = HomeServices();
   LatLng? latLng;
   AddressModel? address;
-  bool isPermitted = false; // Track location permission state
-  bool isLoading = false; // Track loading state for location fetching
+  final RxBool shouldShowPermissionUI = false.obs;
+  final RxBool isProcessing = true.obs;
 
   final UserController controller = Get.put(UserController(UserServices()));
 
   @override
   void initState() {
     super.initState();
-
     _initializeLocation();
   }
 
-  Future<void> getAndFill() async {
-    if (await LocationPermissionManager().requestLocationPermission(context)) {
-      latLng = await homeServices.getCurrentLocation(context: context);
-      final currentLocation =
-          await homeServices.getAddress(latLng ?? const LatLng(0, 0));
-      await addingAddress(currentLocation ?? const Placemark());
-    }
-  }
-
-  Future<void> addingAddress(Placemark currentAddress) async {
-    address = AddressModel(
-      administrativeArea: currentAddress.administrativeArea,
-      subAdministrativeArea: currentAddress.subAdministrativeArea,
-      completeAddress:
-          "${currentAddress.street}, ${currentAddress.administrativeArea}, ${currentAddress.country}",
-      country: currentAddress.country,
-      isoCountryCode: currentAddress.isoCountryCode,
-      locality: currentAddress.locality,
-      subLocality: currentAddress.subLocality,
-      name: currentAddress.name,
-      postalCode: currentAddress.postalCode,
-      street: currentAddress.street,
-      subThoroughfare: currentAddress.subThoroughfare,
-      thoroughfare: currentAddress.thoroughfare,
-      latitude: getDoubleAsync(SharedPrefKey.latitude),
-      longitude: getDoubleAsync(SharedPrefKey.longitude),
-    );
-    log(address!.completeAddress.toString());
-    log("CURRENT ADDRESS MODEL>>>>>>>>>>>>>>>>>>>>>>>>. ${address!.country}");
-  }
-
   Future<void> _initializeLocation() async {
-    bool permissionGranted =
-        await LocationPermissionManager().requestLocationPermission(context);
+    try {
+      bool permissionGranted =
+          await LocationPermissionManager().requestLocationPermission(context);
 
-    if (permissionGranted) {
-      setState(() {
-        isPermitted = true;
-        isLoading = true; // Set loading state while fetching location
-      });
-      await _getAndFill();
-    } else {
-      setState(() {
-        isPermitted = false; // Stop loading if permission is denied
-      });
+      if (permissionGranted) {
+        shouldShowPermissionUI.value = false;
+        await _getAndFill();
+      } else {
+        shouldShowPermissionUI.value = true;
+        isProcessing.value = false;
+      }
+    } catch (e) {
+      print("Error in initialization: $e");
+      shouldShowPermissionUI.value = true;
+      isProcessing.value = false;
     }
   }
 
   Future<void> _getAndFill() async {
     try {
+      isProcessing.value = true;
+      shouldShowPermissionUI.value = false;
+
       latLng = await homeServices.getCurrentLocation(context: context);
       if (latLng != null) {
         final currentLocation =
             await homeServices.getAddress(latLng ?? const LatLng(0, 0));
         await _addingAddress(currentLocation ?? const Placemark());
-
-        // Print latitude, longitude, and complete address in debug console
-        print("Latitude: ${latLng?.latitude}");
-        print("Longitude: ${latLng?.longitude}");
-        print("Complete Address: ${address?.completeAddress}");
-
-        // Call signUp method after fetching location
         await _callSignUp();
       }
     } catch (e) {
       print("Error getting location: $e");
       Get.snackbar('Error', 'Failed to fetch location: $e');
+      shouldShowPermissionUI.value = true;
     } finally {
-      setState(() {
-        isLoading = false; // Reset loading state
-      });
+      // Only set isProcessing to false if we're showing the permission UI
+      if (shouldShowPermissionUI.value) {
+        isProcessing.value = false;
+      }
     }
   }
 
@@ -149,106 +117,138 @@ class _SelectLocationState extends State<SelectLocation> {
       String? token = await FCMManager.getFCMToken();
       widget.userModel.fcmTokens = [token!];
 
-      // Call signup
       await controller.signUp(widget.userModel, (error) {
         if (error != null) {
           Get.snackbar('Error', error, snackPosition: SnackPosition.TOP);
+          shouldShowPermissionUI.value = true;
+          isProcessing.value = false;
         }
       }, false);
     } catch (e) {
       Get.snackbar('Error', 'Sign up failed: $e');
+      shouldShowPermissionUI.value = true;
+      isProcessing.value = false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        // Observe the loading state from the controller
-        if (controller.loading.value) {
-          return Center(
-              child:
-                  circularProgressBar()); // Show loading indicator for sign up
-        }
-
-        // Show loading indicator for fetching location if isLoading is true
-        if (isLoading) {
-          return Center(child: circularProgressBar());
-        }
-
-        return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.gradientStartColor,
-                AppColors.gradientEndColor,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.gradientStartColor,
+                  AppColors.gradientEndColor,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
           ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
+          
+          Obx(() {
+            // Show loading indicator if processing or controller is loading
+            if (isProcessing.value || controller.loading.value) {
+              return 
+              Center(child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // Title or main message
-                  // Text(
-                  //   'Swipe',
-                  //   style:
-                  //       altoysFont(fontSize: 45, color: AppColors.whiteColor),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  Image.asset(
-                    'assets/images/logo.png', // Replace with the correct path to your logo
-                    height: 100, // Adjust size as needed
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(height: 2.h), // Space between title and text
-
-                  // Secondary message (Optional, add if needed)
+                crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 40,),
                   Text(
-                    'Allowing location access helps us recommend personalized deals and rewards near you. '
-                    'Please grant location permissions to unlock the best offers available in your area.',
-                    style: poppinsRegular(
-                      color: AppColors.whiteColor,
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                            'Please wait we\'re fetching your location',
+                            style: poppinsRegular(
+                              color: AppColors.whiteColor,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+              ],
+            ));
+            }
 
-                  SizedBox(height: 4.h), // Space between message and button
-
-                  // Button container
-                  GestureDetector(
-                    onTap: () async {
-                      await _initializeLocation(); // Retry permission and location initialization
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 12.sp, horizontal: 24.sp),
-                      decoration: BoxDecoration(
-                        color: Colors.white, // Button background color
-                        borderRadius:
-                            BorderRadius.circular(8), // Rounded corners
+            // Only show permission UI if explicitly set to true
+            if (shouldShowPermissionUI.value) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/images/logo.png',
+                        height: 100,
+                        fit: BoxFit.contain,
                       ),
-                      child: Text(
-                        'Allow Permission',
+                      SizedBox(height: 2.h),
+
+                      Text(
+                        'Allowing location access helps us recommend personalized deals and rewards near you. '
+                        'Please grant location permissions to unlock the best offers available in your area.',
                         style: poppinsRegular(
-                          color: AppColors.blackColor,
+                          color: AppColors.whiteColor,
                           fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
-                    ),
+
+                      SizedBox(height: 4.h),
+
+                      GestureDetector(
+                        onTap: _initializeLocation,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12.sp, horizontal: 24.sp),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: 
+                          Text(
+                            'Allow Permission',
+                            style: poppinsRegular(
+                              color: AppColors.blackColor,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }),
+                ),
+              );
+            }
+
+            // Return loading indicator as default state
+            return 
+            Center(child: Column(
+               mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 40,),
+                  Text(
+                            'Please wait we\'re fetching your location',
+                            style: poppinsRegular(
+                              color: AppColors.whiteColor,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+              ],
+            ));
+          }),
+        ],
+      ),
     );
   }
 }

@@ -10,6 +10,7 @@ class AppAssets {
   static const privacyImg = 'assets/images/004-insurance.png';
   static const managementImg = 'assets/images/005-project-management.png';
   static const evaluationImg = 'assets/images/006-evaluation.png';
+  static const walletImg = 'assets/images/wallet.png';
   static const subscriptionImg = 'assets/images/subscription.png';
   static const checkMark = 'assets/images/check-mark.png';
   static const chineseFood = 'assets/images/chinease.png';

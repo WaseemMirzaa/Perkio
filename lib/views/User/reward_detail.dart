@@ -137,10 +137,15 @@ class _RewardDetailState extends State<RewardDetail> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.reward?.rewardName ?? TempLanguage.txtRewardInfo,
-                      style: poppinsMedium(fontSize: 13.sp),
-                    ),
+                   SizedBox(
+  width: double.infinity, 
+  child: Text(
+    widget.reward?.rewardName ?? TempLanguage.txtRewardInfo,
+    maxLines: 1, 
+    overflow: TextOverflow.ellipsis, 
+    style: poppinsMedium(fontSize: 13.sp),
+  ),
+),
                     const SpacerBoxVertical(height: 10),
                     Text(
                       widget.reward?.rewardAddress ??

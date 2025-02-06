@@ -153,10 +153,15 @@ class _DealDetailState extends State<DealDetail> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            deal.dealName ?? TempLanguage.txtDealName,
-                            style: poppinsMedium(fontSize: 13.sp),
-                          ),
+                          SizedBox(
+  width: 250.0,
+  child: Text(
+    deal.dealName ?? TempLanguage.txtDealName,
+    style: poppinsMedium(fontSize: 13.sp),
+    maxLines: 1,
+    overflow: TextOverflow.ellipsis,  
+  ),
+),
                           Text(
                             '${distance.toStringAsFixed(2)} miles', // Display distance
                             style: poppinsRegular(

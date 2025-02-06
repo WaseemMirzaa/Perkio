@@ -95,23 +95,66 @@ class _BusinessManagementScreenState extends State<BusinessManagementScreen> {
     return filteredClicks.fold(0, (sum, entry) => sum + (entry.value as int));
   }
 
-  // Open date range picker
-  Future<void> _selectDateRange() async {
+  // // Open date range picker
+  // Future<void> _selectDateRange() async {
+  //   final DateTimeRange? picked = await showDateRangePicker(
+  //     context: context,
+  //     firstDate: DateTime(2020),
+  //     lastDate: DateTime(2050),
+  //     initialDateRange: _selectedDateRange,
+  //     builder: (BuildContext context, Widget? child) {
+  //       return Theme(
+  //         data: ThemeData.dark().copyWith(
+  //           colorScheme: ColorScheme.fromSeed(
+  //             seedColor: AppColors.gradientEndColor,
+  //             primary: Colors.white,
+  //             surface: AppColors.gradientStartColor,
+  //             brightness: Brightness.dark,
+  //           ),
+  //           dialogBackgroundColor: AppColors.gradientStartColor,
+  //         ),
+  //         child: child!,
+  //       );
+  //     },
+  //   );
+
+  //   if (picked != null) {
+  //     setState(() {
+  //       _selectedDateRange = picked;
+  //     });
+  //   }
+  // }
+
+  Future _selectDateRange() async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2025),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2050),
       initialDateRange: _selectedDateRange,
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.gradientEndColor,
-              primary: Colors.white,
-              surface: AppColors.gradientStartColor,
+            colorScheme: const ColorScheme(
+              primary: AppColors.gradientStartColor,
+              onPrimary: Colors.white,
+              secondary: AppColors.gradientStartColor,
+              onSecondary: Colors.white,
+              surface: AppColors.gradientEndColor,
+              onSurface: Colors.white,
+              error: Colors.red,
+              onError: Colors.white,
               brightness: Brightness.dark,
             ),
-            dialogBackgroundColor: AppColors.gradientStartColor,
+            dialogBackgroundColor: AppColors.gradientEndColor,
+            scaffoldBackgroundColor: AppColors.gradientEndColor,
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+              ),
+            ),
+            // Add these to ensure all surfaces use your gradient color
+            cardColor: AppColors.gradientEndColor,
+            canvasColor: AppColors.gradientEndColor,
           ),
           child: child!,
         );
@@ -136,9 +179,10 @@ class _BusinessManagementScreenState extends State<BusinessManagementScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Business Management',
-            style: poppinsRegular(fontSize: 22, color: Colors.white)),
+            style: poppinsRegular(fontSize: 16, color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        centerTitle: true,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -152,13 +196,15 @@ class _BusinessManagementScreenState extends State<BusinessManagementScreen> {
           ),
         ),
         leading: IconButton(
+          
           icon:
               const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           onPressed: () => Get.back(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_today, color: Colors.white),
+            iconSize: 18,
+            icon: const Icon(Icons.calendar_month, color: Colors.white),
             onPressed: _selectDateRange,
           ),
         ],

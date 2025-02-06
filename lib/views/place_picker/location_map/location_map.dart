@@ -10,6 +10,7 @@ import 'package:swipe_app/views/place_picker/permission_utils.dart';
 
 class LocationService extends StatefulWidget {
   final Widget child;
+  
 
   const LocationService({super.key, required this.child});
 
@@ -113,7 +114,7 @@ class LocationServiceErrorWidget extends StatelessWidget {
                 SizedBox(height: 2.h), // Space between title and text
                 // Message
                 Text(
-                  TempLanguage.txtAllowLocation,
+                  TempLanguage.adminTxtAllowLocation,
                   style: poppinsRegular(
                     color: AppColors.whiteColor,
                     fontSize: 16,

@@ -15,7 +15,6 @@ import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
 import 'package:swipe_app/views/location/select_location_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/subscription/terms_and_conditions.dart';
-
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -164,6 +163,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                 getStringAsync(SharedPrefKey.role) ==
                                         SharedPrefKey.user
                                     ? Navigator.push(
+                                        // user side permissions
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
@@ -171,7 +171,9 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                                   child: SelectLocation(
                                                     userModel: userModel,
                                                   ),
-                                                ))) //controller.signUp(userModel)
+                                                )))
+
+                                    //controller.signUp(userModel)
                                     : Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -183,7 +185,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                                 ))));
                               } else {
                                 Get.snackbar('Error',
-                                    'Please Accept Terms & Conditions To Continue');
+                                    'Please Accept Terms & Conditions To Continue.');
                               }
                             } else {
                               if (controller
@@ -191,20 +193,20 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                 getStringAsync(SharedPrefKey.role) ==
                                         SharedPrefKey.user
                                     ? Get.snackbar('Error',
-                                        controller.userNameErrorText.value)
+                                        'Please enter the user name.')
                                     : Get.snackbar('Error',
-                                        'Please enter the business name');
+                                        'Please enter the business name.');
                               } else if (controller
                                   .emailErrorText.value.isNotEmpty) {
                                 Get.snackbar(
-                                    'Error', controller.emailErrorText.value);
+                                    'Error', '${controller.emailErrorText.value}.');
                               } else if (controller
                                   .passErrorText.value.isNotEmpty) {
                                 Get.snackbar(
-                                    'Error', controller.passErrorText.value);
+                                    'Error', 'Enter The Password.');
                               } else if (!confirm.value) {
                                 Get.snackbar('Error',
-                                    'Please Accept Terms & Conditions To Continue');
+                                    'Please Accept Terms & Conditions To Continue.');
                               }
                             }
                           },
@@ -221,50 +223,48 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                           ),
                           isChecked: confirm.value,
                           checkedColor: Colors.green,
-                          uncheckedColor: Colors.green,
+                          uncheckedColor: Colors.white,
                           disabledColor:
-                              confirm.value ? Colors.green : Colors.white,
+                              confirm.value ? Colors.orange : Colors.white,
                           checkedWidget: Icon(
                             Icons.check_rounded,
                             size: 10.sp,
                             color: AppColors.whiteColor,
                           ),
-                          onTap:
-                              null, // Disable direct toggle, as it depends on the Terms & Conditions result
+                          onTap: (value) {
+                            confirm.value = value!;
+                          }, // Disable direct toggle, as it depends on the Terms & Conditions result
                         ),
                         const SpacerBoxHorizontal(width: 5),
+                        Text(
+                          'I agree with ' ,
+                          style: poppinsRegular(
+                            fontSize: 15,
+                            
+                            color: Colors.black,
+                          ),
+                        ),
                         GestureDetector(
                           onTap: () async {
                             // Navigate to TermsAndConditions page and await result
-                            final result =
-                                await Get.to(() => const TermsAndConditions());
-                            // Update confirm.value only if a result is returned
-                            if (result != null && result == true) {
-                              confirm.value = true; // Mark as accepted
-                            } else {
-                              confirm.value = false; // Mark as declined
-                            }
+                            
+                                Get.to(() => const TermsAndConditions());
+                            // // Update confirm.value only if a result is returned
+                            // if (result != null && result == true) {
+                            //   confirm.value = true; // Mark as accepted
+                            // } else {
+                            //   confirm.value = false; // Mark as declined
+                            // }
                           },
                           child: Text(
-                            'Accept Terms & Condition',
+                            'terms & conditions',
                             style: poppinsRegular(
                               fontSize: 15,
-                              color: AppColors.secondaryText,
+                              
+                              color: Colors.blue,
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        socialIconsComp(
-                            icon: AppAssets.appleIcon,
-                            bgColor: AppColors.blackColor),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        socialIconsComp(
-                            icon: 'assets/images/google_icon.png',
-                            bgColor: Colors.orange),
                       ],
                     ),
                   )

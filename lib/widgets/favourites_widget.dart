@@ -149,10 +149,15 @@ class FavouritesWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SpacerBoxVertical(height: 10),
-                              Text(
-                                dealName,
-                                style: poppinsMedium(fontSize: 13.sp),
-                              ),
+                              SizedBox(
+  width: 150.0,  // Set the desired width for the text container
+  child: Text(
+    dealName,
+    style: poppinsMedium(fontSize: 13.sp),
+    overflow: TextOverflow.ellipsis,  // Adds "..." if the text overflows
+    maxLines: 1,  // Ensure text stays on a single line
+  ),
+),
                               const SpacerBoxVertical(height: 5),
                               Text(
                                 restaurantName,
@@ -327,10 +332,15 @@ class FavouritesWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SpacerBoxVertical(height: 10),
-                      Text(
-                        dealName,
-                        style: poppinsMedium(fontSize: 13.sp),
-                      ),
+                      SizedBox(
+  width: 150.0,
+  child: Text(
+    dealName,
+    style: poppinsMedium(fontSize: 13.sp),
+    overflow: TextOverflow.ellipsis,
+    maxLines: 1,  
+  ),
+),
                       const SpacerBoxVertical(height: 5),
                       Text(
                         restaurantName,

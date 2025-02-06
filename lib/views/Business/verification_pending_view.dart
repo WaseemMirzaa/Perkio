@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
@@ -9,6 +10,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
+import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 
@@ -44,7 +46,9 @@ class VerificationPendingView extends StatelessWidget {
                   const SpacerBoxVertical(height: 40),
                   BackButtonWidget(
                     padding: EdgeInsets.zero,
-                    onBack: () {},
+                    onBack: () {
+                      Get.to(const SplashScreen());
+                    },
                   ),
                   Center(
                       child: Text(
@@ -64,14 +68,14 @@ class VerificationPendingView extends StatelessWidget {
             SizedBox(height: 2.h),
             Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0), // Equal left and right padding
+                  horizontal: 24.0), // Equal left and right padding
               child: Center(
                 child: Text(
                   'Your account verification status is in ${getStringAsync(UserKey.ISVERIFIED)}. '
                   'Please note that your account will be verified within 24 hours. Swipe team is currently reviewing your information and will notify you once the process is complete. Thank you for your patience!',
                   style:
-                      poppinsMedium(fontSize: 16, color: AppColors.blackColor),
-                  textAlign: TextAlign.center, // Center-align the text
+                      poppinsRegular(fontSize: 16, color: AppColors.blackColor),
+                  textAlign: TextAlign.justify, // Center-align the text
                 ),
               ),
             ),

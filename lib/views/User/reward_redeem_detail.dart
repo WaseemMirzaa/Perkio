@@ -116,6 +116,16 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                             ),
                           ),
                           const SpacerBoxVertical(height: 10),
+                          userPoints > pointsToRedeem ?
+                          Center(
+                            child: Text(
+                              '$pointsToRedeem/$pointsToRedeem',
+                              style: poppinsBold(
+                                  fontSize: 13.sp,
+                                  color: AppColors.secondaryText),
+                            ),
+                          ) 
+                          :
                           Center(
                             child: Text(
                               '$userPoints/$pointsToRedeem',
@@ -123,7 +133,9 @@ class _RewardRedeemDetailState extends State<RewardRedeemDetail> {
                                   fontSize: 13.sp,
                                   color: AppColors.secondaryText),
                             ),
-                          ),
+                          ) 
+                          
+                          ,
                           const SpacerBoxVertical(height: 10),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),

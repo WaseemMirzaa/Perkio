@@ -41,7 +41,7 @@ class AvailableListItems extends StatelessWidget {
       final isFavorite = controller.favoriteCache[dealId] ?? false;
 
       return Container(
-        height: 18.h,
+        height: isFeatured ? 22.h :18.h,
         margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
@@ -134,10 +134,16 @@ class AvailableListItems extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SpacerBoxVertical(height: 10),
-                  Text(
-                    dealName,
-                    style: poppinsMedium(fontSize: 13.sp),
-                  ),
+                  SizedBox(
+  width: double.infinity,
+ 
+  child: Text(
+    dealName,
+    maxLines: 1, // Ensure the text doesn't exceed one line
+    overflow: TextOverflow.ellipsis, // Show ellipsis when the text overflows
+    style: poppinsMedium(fontSize: 13.sp),
+  ),
+),
                   const SpacerBoxVertical(height: 5),
                   Text(
                     restaurantName,

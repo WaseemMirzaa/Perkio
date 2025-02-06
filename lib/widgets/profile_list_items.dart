@@ -8,14 +8,17 @@ class ProfileListItems extends StatelessWidget {
   final TextEditingController textController;
   final bool enabled;
   final Function()? onTap;
+  final bool hasHintText;
+  final String hintText;
 
-  const ProfileListItems({
-    super.key,
-    required this.path,
-    required this.textController,
-    this.enabled = false,
-    this.onTap
-  });
+  const ProfileListItems(
+      {super.key,
+      required this.path,
+      required this.textController,
+      this.enabled = false,
+      this.hintText = 'Enter Text',
+      this.hasHintText = false,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +29,18 @@ class ProfileListItems extends StatelessWidget {
       style: poppinsRegular(fontSize: 14.sp),
       onTap: onTap,
       decoration: InputDecoration(
+        hintText:
+            hasHintText ? hintText : "Enter text", // Add hint text
+        hintStyle: poppinsRegular(
+            fontSize: 14.sp,
+            color: AppColors.hintText.withOpacity(0.7)), // Add hint style
         prefixIcon: Padding(
           padding: EdgeInsets.all(10.sp),
           child: ImageIcon(
             AssetImage(
-            path,),size: 20.sp,
+              path,
+            ),
+            size: 20.sp,
           ),
         ),
         border: UnderlineInputBorder(
@@ -47,11 +57,14 @@ class ProfileListItems extends StatelessWidget {
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: enabled ? AppColors.gradientStartColor : AppColors.hintText.withOpacity(0.5) ,
+            color: enabled
+                ? AppColors.gradientStartColor
+                : AppColors.hintText.withOpacity(0.5),
             width: 1.0,
           ),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 10.sp, horizontal: 12.sp),
+        contentPadding:
+            EdgeInsets.symmetric(vertical: 10.sp, horizontal: 12.sp),
       ),
     );
   }

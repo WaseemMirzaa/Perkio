@@ -29,6 +29,7 @@ class _PolicyAndPrivacyState extends State<PolicyAndPrivacy> {
       body: Stack(
         children: [
           WebView(
+            backgroundColor: Colors.white,
             initialUrl:
                 "https://sites.google.com/view/swipeapp/swipe",
             javascriptMode: JavascriptMode.unrestricted,

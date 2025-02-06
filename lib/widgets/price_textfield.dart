@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
@@ -26,10 +27,14 @@ class PriceTextFieldWidget extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
+        cursorColor: orange,
         keyboardType: TextInputType.number,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           contentPadding:
-              EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 4.w),
+              EdgeInsets.only(
+                left: 10,
+                top: 5
+              ),
           hintText: "Enter Price",
           border: InputBorder.none,
         ),

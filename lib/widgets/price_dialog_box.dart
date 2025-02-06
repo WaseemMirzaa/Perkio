@@ -62,13 +62,13 @@ void showPriceInputDialog({
                     int pointsToAdd =
                         (double.parse(amountController.text) * 100).toInt();
 
-                    if (pointsToAdd > remainingPoints.value) {
-                      showSnackBar(
-                        'Invalid Input',
-                        'You cannot enter more than ${remainingPoints.value / 100} dollars.',
-                      );
-                      return; // Don't close the dialog
-                    }
+                    // if (pointsToAdd > remainingPoints.value) {
+                    //   showSnackBar(
+                    //     'Invalid Input',
+                    //     'You cannot enter more than ${remainingPoints.value / 100} dollars.',
+                    //   );
+                    //   return; // Don't close the dialog
+                    // }
 
                     // Update points in database
                     await addPointsToReward(rewardId, userId, pointsToAdd);

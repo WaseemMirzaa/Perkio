@@ -362,18 +362,26 @@ class _UserProfileViewState extends State<UserProfileView> {
                         path: AppAssets.profile1,
                         textController: userNameController,
                         enabled: enabled.value,
+                        hasHintText: true,
+                        hintText: 'Enter User Name',
                       ),
                       ProfileListItems(
                         path: AppAssets.call,
                         textController: phoneNoController,
+                        hasHintText: true,
+                        hintText: 'Enter Phone Number',
                         enabled: enabled.value,
                       ),
                       ProfileListItems(
                         path: AppAssets.profile3,
                         textController: emailController,
+                        hasHintText: true,
+                        hintText: 'Enter Email Address',
                       ),
                       ProfileListItems(
                         path: AppAssets.profile4,
+                        hasHintText: true,
+                        hintText: 'Enter Address',
                         textController: addressController,
                         onTap: enabled.value
                             ? () async {

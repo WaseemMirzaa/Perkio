@@ -120,6 +120,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: ButtonWidget(
+            fontSize: 11,
               onSwipe: () {
                 homeController.setImageNull();
                 Navigator.push(

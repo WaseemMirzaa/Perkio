@@ -46,12 +46,15 @@ class _MyRewardsListItemsState extends State<MyRewardsListItems> {
         ? (widget.reward!.pointsEarned![widget.userId!] ?? 0)
         : 0;
 
-    // Ensure pointsToRedeem and pointsEarned are not null and prevent divide by 0
-    double progress = widget.reward != null &&
-            widget.reward!.pointsToRedeem != null &&
-            widget.reward!.pointsToRedeem! > 0
-        ? pointsEarnedByUser / widget.reward!.pointsToRedeem!
-        : 0.0;
+  // Ensure pointsToRedeem and pointsEarned are not null and prevent divide by 0
+double progress = widget.reward != null &&
+        widget.reward!.pointsToRedeem != null &&
+        widget.reward!.pointsToRedeem! > 0
+    ? (pointsEarnedByUser > widget.reward!.pointsToRedeem!
+            ? widget.reward!.pointsToRedeem! / widget.reward!.pointsToRedeem!
+            : pointsEarnedByUser / widget.reward!.pointsToRedeem!)
+    : 0.0;
+
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
@@ -79,7 +82,7 @@ class _MyRewardsListItemsState extends State<MyRewardsListItems> {
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14.sp),
-                    child: Container(
+                    child: SizedBox(
                       height: 100,
                       width: 100,
                       child: (widget.reward?.rewardLogo?.isNotEmpty ?? false)
@@ -103,10 +106,15 @@ class _MyRewardsListItemsState extends State<MyRewardsListItems> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SpacerBoxVertical(height: 10),
-                      Text(
-                        widget.reward?.rewardName ?? TempLanguage.txtRewardName,
-                        style: poppinsMedium(fontSize: 13.sp),
-                      ),
+                      SizedBox(
+  width: 170.0,
+  child: Text(
+    widget.reward?.rewardName ?? TempLanguage.txtRewardName,
+    style: poppinsMedium(fontSize: 13.sp),
+    overflow: TextOverflow.ellipsis,
+    maxLines: 1,
+  ),
+),
                       const SpacerBoxVertical(height: 5),
                       Text(
                         widget.reward?.companyName ??

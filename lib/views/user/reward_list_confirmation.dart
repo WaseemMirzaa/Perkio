@@ -106,7 +106,7 @@ class _ConfirmRewardRedeemListState extends State<ConfirmRewardRedeemList> {
                       left: 8,
                       right: 8), // Adjust padding as needed
                   child: Text(
-                    'Show these receipts to the business. The business will verify your receipts and swipe to redeem your reward.',
+                    'Show these receipts to the business. The business will verify your receipts then swipe to redeem your reward.',
                     style: poppinsRegular(
                       color: AppColors.blackColor,
                       fontSize: 16,
@@ -353,8 +353,8 @@ class FullScreenImageView extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 40,
-            right: 20,
+            top: 30,
+            right: 12,
             child: IconButton(
               icon: const Icon(Icons.close, color: Colors.white, size: 30),
               onPressed: () {

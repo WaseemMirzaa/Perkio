@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/widgets/back_button_widget.dart';
+import 'package:swipe_app/widgets/common_space.dart';
+import 'package:swipe_app/widgets/custom_container.dart';
+import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class TermsAndConditions extends StatefulWidget {
-  final bool isNotButtons; // Optional parameter to hide buttons
+  final bool isNotButtons;
 
-  const TermsAndConditions(
-      {super.key, this.isNotButtons = false}); // Default is false
+  const TermsAndConditions({super.key, this.isNotButtons = false});
 
   @override
   State<TermsAndConditions> createState() => _TermsAndConditionsState();
@@ -17,97 +22,56 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Terms and Conditions"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () =>
-              Navigator.pop(context, false), // Return false on back
-        ),
-      ),
-      body: Stack(
+    return SecondaryLayoutWidget(
+      header: Stack(
         children: [
-          WebView(
-            initialUrl:
-                "https://www.termsfeed.com/live/d3ffe34f-a931-4180-becf-a386d2d54ae1",
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (controller) {
-              _controller = controller;
-            },
-            javascriptChannels: {
-              JavascriptChannel(
-                name: 'ScrollDetector',
-                onMessageReceived: (message) {
-                  if (message.message == 'bottom') {
-                    setState(() {
-                      _reachBottom = true;
-                    });
-                  }
-                },
-              ),
-            },
-            onPageFinished: (_) {
-              _injectScrollDetectionJS();
-            },
-          ),
-          if (!widget
-              .isNotButtons) // Only show buttons if isNotButtons is false
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _reachBottom
-                          ? () => Navigator.pop(context, false) // Decline
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _reachBottom ? Colors.red : Colors.grey,
-                      ),
-                      child: const Text('Decline'),
-                    ),
+          CustomShapeContainer(height: 22.h),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SpacerBoxVertical(height: 40),
+                BackButtonWidget(padding: EdgeInsets.zero),
+                Center(
+                  child: Text(
+                    'TERMS AND CONDITIONS',
+                    style: poppinsMedium(fontSize: 25),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _reachBottom
-                          ? () => Navigator.pop(context, true) // Accept
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _reachBottom ? Colors.green : Colors.grey,
-                      ),
-                      child: const Text('Accept'),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 22.h),
+          Expanded(
+            child: WebView(
+              backgroundColor: Colors.white,
+              initialUrl:
+                  "https://www.termsfeed.com/live/d3ffe34f-a931-4180-becf-a386d2d54ae1",
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (controller) {
+                _controller = controller;
+              },
+              javascriptChannels: {
+                JavascriptChannel(
+                  name: 'ScrollDetector',
+                  onMessageReceived: (message) {
+                    if (message.message == 'bottom') {
+                      setState(() {
+                        _reachBottom = true;
+                      });
+                    }
+                  },
+                ),
+              },
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  void _injectScrollDetectionJS() {
-    _controller.runJavascript('''
-
-      function isScrolledToBottom() {
-        return window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 10;
-      }
-
-      window.onscroll = function() {
-        if (isScrolledToBottom()) {
-          ScrollDetector.postMessage('bottom');
-        }
-      };
-
-      if (isScrolledToBottom()) {
-        ScrollDetector.postMessage('bottom');
-      }
-    ''');
   }
 }

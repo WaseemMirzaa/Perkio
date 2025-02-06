@@ -37,6 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
 
+    Get.put(UserController(UserServices()));
+
     Future.microtask(() async {
       final currentUser = FirebaseAuth.instance.currentUser;
       print("ID is ${currentUser?.uid}");

@@ -275,12 +275,16 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           path: AppAssets.profile1,
                           textController: userNameController,
                           enabled: enabled.value,
+                               hasHintText: true,
+                        hintText: 'Enter User Name',
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         ProfileListItems(
                           path: AppAssets.call,
+                             hasHintText: true,
+                        hintText: 'Enter Phone Number',
                           textController: phoneNoController,
                           enabled: enabled.value,
                         ),
@@ -290,6 +294,8 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         ProfileListItems(
                           path: AppAssets.profile3,
                           textController: emailController,
+                           hasHintText: true,
+                        hintText: 'Enter Email Address',
                         ),
                         const SizedBox(
                           height: 10,
@@ -297,6 +303,8 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         ProfileListItems(
                           path: AppAssets.profile4,
                           textController: addressController,
+                           hasHintText: true,
+                        hintText: 'Enter Address',
                           onTap: enabled.value
                               ? () async {
                                   final currentPosition =
@@ -332,6 +340,8 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           path: AppAssets.world,
                           textController: websiteController,
                           enabled: enabled.value,
+                           hasHintText: true,
+                        hintText: 'Enter Website',
                         ),
                         const SizedBox(
                           height: 10,
@@ -340,10 +350,13 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           path: AppAssets.profile6,
                           textController: businessIdController,
                           enabled: enabled.value,
+                           hasHintText: true,
+                        hintText: 'Enter Google Business ID',
                         ),
                         const SizedBox(
                           height: 20,
                         ),
+
                         !enabled.value
                             ? const SizedBox()
                             : ButtonWidget(
@@ -352,27 +365,27 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                     // Validate input fields
                                     if (userNameController.text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
-                                          'Name is required');
+                                          'Name is required.');
                                     } else if (emailController
                                         .text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
-                                          'Email is required');
+                                          'Email is required.');
                                     } else if (phoneNoController
                                         .text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
-                                          'Phone is required');
+                                          'Phone is required.');
                                     } else if (addressController
                                         .text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
-                                          'Address is required');
+                                          'Address is required.');
                                     } else if (websiteController
                                         .text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
-                                          'Website is required');
+                                          'Website is required.');
                                     } else if (businessIdController
                                         .text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
-                                          'Business ID is required');
+                                          'Business ID is required.');
                                     } else {
                                       // Check if business ID is valid
                                       var businessDetails = await homeController

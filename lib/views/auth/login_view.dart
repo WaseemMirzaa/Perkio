@@ -146,23 +146,23 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                                 } else if (!await LocationPermissionManager
                                     .requestLocationPermissions(context)) {
                                   showSnackBar('Location Needed',
-                                      'Location permissions are needed');
+                                      'Location permissions are needed.');
                                   controller.loading.value = false;
                                 } else {
                                   showSnackBar(
-                                      'Error', 'Incorrect email and password');
+                                      'Error', 'Incorrect email and password.');
                                   controller.loading.value = false;
                                 }
                               } else {
                                 if (controller.emailErrorText.isNotEmpty) {
                                   Get.snackbar(
-                                      'Error', controller.emailErrorText.value);
+                                      'Error', '${controller.emailErrorText.value}.');
                                 } else if (controller
                                     .passErrorText.isNotEmpty) {
                                   Get.snackbar(
-                                      'Error', controller.passErrorText.value);
+                                      'Error', '${controller.passErrorText.value}.');
                                 } else {
-                                  Get.snackbar('Error', 'Field required');
+                                  Get.snackbar('Error', 'Field required.');
                                 }
                               }
                             },

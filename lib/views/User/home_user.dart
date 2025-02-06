@@ -275,7 +275,7 @@ class _HomeUserState extends State<HomeUser> {
 
                 combinedList.add(
                   SizedBox(
-                    height: 160,
+                    height: 20.h,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: featuredDeals.length,
@@ -297,7 +297,7 @@ class _HomeUserState extends State<HomeUser> {
                             );
                           },
                           child: SizedBox(
-                            width: 350,
+                            width: 95.w,
                             child: AvailableListItems(
                               dealId: deal.dealId ?? '',
                               dealName: deal.dealName ?? '',

@@ -104,25 +104,79 @@ Future showBalanceDialog({
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 2.h),
-            ValueListenableBuilder<int>(
-              valueListenable: totalClicksNotifier,
-              builder: (context, totalClicks, child) {
-                // Ensure controller.apc.value is not null before using it
-                return Align(
-                  alignment: Alignment.topRight,
-                  child: Text(
-                    promotionAmountController.text.isNotEmpty &&
-                            (controller.apc.value != null &&
-                                controller.apc.value! > 0) &&
-                            (promotionAmountController.text.toDouble() %
-                                    (controller.apc.value ?? 1) ==
-                                0) // Use a default value to avoid division by zero
-                        ? 'You will get $totalClicks clicks'
-                        : 'Enter your budget to calculate clicks',
-                  ),
-                );
-              },
+            // ValueListenableBuilder<int>(
+            //   valueListenable: totalClicksNotifier,
+            //   builder: (context, totalClicks, child) {
+            //     // Ensure controller.apc.value is not null before using it
+            //     return Align(
+            //       alignment: Alignment.topCenter,
+            //       child: 
+            //       Text(
+            //         style: poppinsMedium(fontSize: 12),
+            //         promotionAmountController.text.isNotEmpty &&
+            //                 (controller.apc.value != null &&
+            //                     controller.apc.value! > 0) &&
+            //                 (promotionAmountController.text.toDouble() %
+            //                         (controller.apc.value ?? 1) ==
+            //                     0) // Use a default value to avoid division by zero
+            //             ? 'Enter your budget for promotion: $totalClicks'
+            //             : 'Enter your budget for promotion',
+            //       ),
+            //     );
+            //   },
+            // ),
+          ValueListenableBuilder<int>(
+  valueListenable: totalClicksNotifier,
+  builder: (context, totalClicks, child) {
+    // Split conditions for better debugging
+    bool isAmountNotEmpty = promotionAmountController.text.isNotEmpty;
+    bool isApcValid = controller.apc.value != null && controller.apc.value! > 0;
+    
+    // Only try to parse and check division if previous conditions are met
+    bool isDivisible = false;
+    if (isAmountNotEmpty && isApcValid) {
+      try {
+        double amount = double.parse(promotionAmountController.text);
+        isDivisible = amount % controller.apc.value! == 0;
+      } catch (e) {
+        isDivisible = false; // Handle parsing errors
+      }
+    }
+
+    // Combine all conditions
+    bool showTotal = isAmountNotEmpty && isApcValid && isDivisible;
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: RichText(
+        text: TextSpan(
+          children: [
+            const TextSpan(
+              text: 'Enter your budget for promotion',
+              style: TextStyle(
+                fontSize: 14,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500, // Medium
+                color: Colors.black,
+              ),
             ),
+            if (showTotal)
+              TextSpan(
+                text: ' $totalClicks total clicks',
+                style:  const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+              
+                  fontWeight: FontWeight.w300, // Light
+                  color: Colors.black,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  },
+),
             SizedBox(height: 3.h),
             ButtonWidget(
               onSwipe: () async {

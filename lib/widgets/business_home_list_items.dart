@@ -80,10 +80,15 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SpacerBoxVertical(height: 10),
-                      Text(
-                        widget.dealModel.dealName.capitalizeEachWord(),
-                        style: poppinsMedium(fontSize: 13.sp),
-                      ),
+                      SizedBox(
+  width: 120,
+  child: Text(
+    widget.dealModel.dealName.capitalizeEachWord(),
+    style: poppinsMedium(fontSize: 13.sp),
+    overflow: TextOverflow.ellipsis,
+    maxLines: 1, 
+  ),
+),
                       const SpacerBoxVertical(height: 5),
                       Text(
                         widget.dealModel.companyName ?? '',
@@ -245,7 +250,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                           height: 2.5.h,
                           width: 16.w,
                           margin: const EdgeInsets.only(
-                              top: 10, left: 10, right: 10),
+                              top: 30, left: 10, right: 10),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [

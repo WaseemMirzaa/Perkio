@@ -40,6 +40,7 @@ class _SettingsViewState extends State<SettingsView> {
   late StreamController<UserModel> _userProfileStreamController;
   late UserModel? userProfile;
   var controller = Get.find<UserController>();
+  final promotionalBalanceController = TextEditingController();
 
   @override
   void initState() {
@@ -61,8 +62,6 @@ class _SettingsViewState extends State<SettingsView> {
       String? currentUseruid = FirebaseAuth.instance.currentUser?.uid;
       if (currentUseruid != null) {
         userProfile = await controller.getUser(currentUseruid);
-
-        // Before adding data or errors, check if the stream is still open
         if (userProfile != null && !_userProfileStreamController.isClosed) {
           _userProfileStreamController.add(userProfile!);
         } else if (!_userProfileStreamController.isClosed) {
@@ -76,61 +75,118 @@ class _SettingsViewState extends State<SettingsView> {
     }
   }
 
-  List settingsItems = [
-    {
-      'icon': AppAssets.moneyIcon,
-      'title': 'Wallet Balance:',
-    },
-    {
-      'icon': AppAssets.evaluationImg,
-      'title': TempLanguage.txtManageAccount,
-    },
-       {
-      'icon': AppAssets.subscriptionImg, // Add subscription icon here
-      'title': 'Subscription',
-    },
-    {
-      'icon': AppAssets.networkImg,
-      'title': TempLanguage.txtShare,
-    },
-    {
-      'icon': AppAssets.privacyImg,
-      'title': TempLanguage.txtTermsConditions,
-    },
-    {
-      'icon': AppAssets.insuranceImg,
-      'title': TempLanguage.txtPrivacy,
-    },
-    {
-      'icon': AppAssets.helpImg,
-      'title': TempLanguage.txtHelp,
-    },
-  ];
+  // Method to generate settings items based on user type
+  List _getSettingsItems() {
+    if (!widget.isUser) {
+      // Business View
+      return [
+        {'icon': AppAssets.moneyIcon, 'title': 'Wallet Balance:', 'type': 'balance'},
+        {'icon': AppAssets.walletImg, 'title': 'Manage Business', 'type': 'manage_business'},
+        {'icon': AppAssets.evaluationImg, 'title': TempLanguage.txtManageAccount, 'type': 'manage_account'},
+        {'icon': AppAssets.networkImg, 'title': TempLanguage.txtShare, 'type': 'share'},
+        {'icon': AppAssets.privacyImg, 'title': TempLanguage.txtTermsConditions, 'type': 'terms'},
+        {'icon': AppAssets.insuranceImg, 'title': TempLanguage.txtPrivacy, 'type': 'privacy'},
+        {'icon': AppAssets.helpImg, 'title': TempLanguage.txtHelp, 'type': 'help'},
+        
+      ];
+    } else {
+      // User View
+      return [
+        
+        {'icon': AppAssets.evaluationImg, 'title': TempLanguage.txtManageAccount, 'type': 'manage_account'},
+        {'icon': AppAssets.subscriptionImg, 'title': 'Subscription', 'type': 'subscription'},
+        {'icon': AppAssets.networkImg, 'title': TempLanguage.txtShare, 'type': 'share'},
+        {'icon': AppAssets.privacyImg, 'title': TempLanguage.txtTermsConditions, 'type': 'terms'},
+        {'icon': AppAssets.insuranceImg, 'title': TempLanguage.txtPrivacy, 'type': 'privacy'},
+        {'icon': AppAssets.helpImg, 'title': TempLanguage.txtHelp, 'type': 'help'},
+        
+      ];
+    }
+  }
 
-  final promotionalBalanceController = TextEditingController();
+  // Method to handle navigation based on item type
+  void _handleNavigation(String type) {
+    switch (type) {
+      case 'balance':
+        showBalanceDialog(
+          context: context,
+          promotionAmountController: promotionalBalanceController,
+          docId: getStringAsync(SharedPrefKey.uid),
+          fromSettings: true,
+        ).then((value) => setState(() {}));
+        break;
+      case 'manage_business':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BusinessManagementScreen(),
+          ),
+        );
+        break;
+      case 'manage_account':
+      widget.isUser ? 
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const UserProfileView(),
+          ),
+        )
+        :
+         Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ProfileSettingsBusiness(),
+          ),
+        )
+
+        ;
+        break;
+      case 'subscription':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const VendorSubscriptionUI(),
+          ),
+        );
+        break;
+      case 'share':
+        shareDummyLink();
+        break;
+      case 'terms':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const TermsAndConditions(),
+          ),
+        );
+        break;
+      case 'privacy':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PrivacyPolicy(),
+          ),
+        );
+        break;
+      case 'help':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HelpView(),
+          ),
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // If `isUser` is true, remove the first tile from `settingsItems`.
-    final List filteredSettingsItems =
-        widget.isUser ? settingsItems.sublist(1) : settingsItems;
-
     final homeController = Get.put(HomeController(HomeServices()));
+    final settingsItems = _getSettingsItems();
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      floatingActionButton: widget.isUser
-          ? null // If isUser is true, don't show the button
-          : FloatingActionButton(
-              onPressed: () {
-                Get.to(() => const BusinessManagementScreen());
-              },
-              backgroundColor: AppColors.gradientEndColor,
-              child: const Icon(
-                Icons.account_balance_wallet_rounded, // Icon for "manage"
-                color: AppColors.whiteColor,
-              ),
-            ),
       body: StreamBuilder<UserModel>(
         stream: _userProfileStreamController.stream,
         builder: (context, snapshot) {
@@ -186,12 +242,6 @@ class _SettingsViewState extends State<SettingsView> {
                                         );
                                       }
                                     },
-                                    // errorBuilder: (context, error, stackTrace) {
-                                    //   return Image.asset(
-                                    //     AppAssets.imageHeader,
-                                    //     fit: BoxFit.cover,
-                                    //   );
-                                    // },
                                   );
                           }),
                         ),
@@ -203,96 +253,23 @@ class _SettingsViewState extends State<SettingsView> {
                 ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   shrinkWrap: true,
-                  itemCount: filteredSettingsItems.length,
+                  itemCount: settingsItems.length,
                   scrollDirection: Axis.vertical,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    int adjustedIndex = widget.isUser ? index + 1 : index;
-
+                    var item = settingsItems[index];
                     return GestureDetector(
-                      onTap: () {
-                        switch (adjustedIndex) {
-                          case 0:
-                            if (!widget.isUser) {
-                              showBalanceDialog(
-                                context: context,
-                                promotionAmountController:
-                                    promotionalBalanceController,
-                                docId: getStringAsync(SharedPrefKey.uid),
-                                fromSettings: true,
-                              ).then((value) => setState(() {}));
-                            }
-                            break;
-                          case 1:
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    getStringAsync(SharedPrefKey.role) ==
-                                            SharedPrefKey.user
-                                        ? const UserProfileView()
-                                        : const ProfileSettingsBusiness(),
-                              ),
-                            );
-                            break;
-                                case 2:
-                                Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const VendorSubscriptionUI(),
-                              ),
-                            );
-                            
-                            break;
-                          case 3:
-                            shareDummyLink();
-                            break;
-                          case 4:
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const TermsAndConditions(),
-                              ),
-                            );
-                            break;
-                          case 5:
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const PrivacyPolicy(),
-                              ),
-                            );
-                            break;
-                          case 6:
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HelpView(),
-                              ),
-                            );
-                            break;
-                        }
-                      },
-                      child: !widget.isUser && index == 0
+                      onTap: () => _handleNavigation(item['type']),
+                      child: item['type'] == 'balance'
                           ? BalanceTile(
-                              path: filteredSettingsItems[index]['icon'],
+                              path: item['icon'],
                               text:
-                                  "${filteredSettingsItems[index]['title']} \$${getIntAsync(UserKey.BALANCE)}",
-                              onAdd: () {
-                                showBalanceDialog(
-                                  context: context,
-                                  promotionAmountController:
-                                      promotionalBalanceController,
-                                  docId: getStringAsync(SharedPrefKey.uid),
-                                  fromSettings: true,
-                                ).then((value) => setState(() {}));
-                              },
+                                  "${item['title']} \$${getIntAsync(UserKey.BALANCE)}",
+                              onAdd: () => _handleNavigation('balance'),
                             )
                           : SettingsListItems(
-                              path: filteredSettingsItems[index]['icon'],
-                              text: filteredSettingsItems[index]['title'],
+                              path: item['icon'],
+                              text: item['title'],
                             ),
                     );
                   },

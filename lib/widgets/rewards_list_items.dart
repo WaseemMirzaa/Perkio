@@ -49,11 +49,14 @@ class _RewardsListItemsState extends State<RewardsListItems> {
         : 0;
 
     // Ensure pointsToRedeem and pointsEarned are not null and prevent divide by 0
-    double progress = widget.reward != null &&
-            widget.reward!.pointsToRedeem != null &&
-            widget.reward!.pointsToRedeem! > 0
-        ? pointsEarnedByUser / widget.reward!.pointsToRedeem!
-        : 0.0;
+double progress = widget.reward != null &&
+        widget.reward!.pointsToRedeem != null &&
+        widget.reward!.pointsToRedeem! > 0
+    ? (pointsEarnedByUser > widget.reward!.pointsToRedeem!
+        ? 1.0  // If earned points are greater than redeem points, cap it at 1.0
+        : pointsEarnedByUser / widget.reward!.pointsToRedeem!)
+    : 0.0;
+
 
     return widget.isFavFromFavScreen
         ? Obx(() {
@@ -278,11 +281,15 @@ class _RewardsListItemsState extends State<RewardsListItems> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SpacerBoxVertical(height: 10),
-                            Text(
-                              widget.reward?.rewardName ??
-                                  TempLanguage.txtRewardName,
-                              style: poppinsMedium(fontSize: 13.sp),
-                            ),
+                            SizedBox(
+  width: 150.0,  // Set the desired width for the text container
+  child: Text(
+    widget.reward?.rewardName ?? TempLanguage.txtRewardName,
+    style: poppinsMedium(fontSize: 13.sp),
+    overflow: TextOverflow.ellipsis,  // Adds "..." if the text overflows
+    maxLines: 1,  // Ensure text stays on a single line
+  ),
+),
                             const SpacerBoxVertical(height: 5),
                             Text(
                               widget.reward?.companyName ??

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/views/subscription/privacy_and_policy.dart';
 import 'package:swipe_app/views/subscription/terms_and_conditions.dart';
 
@@ -62,8 +63,8 @@ class VendorSubscriptionUI extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue.shade600, Colors.blue.shade800],
+                  gradient: const LinearGradient(
+                    colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -214,7 +215,7 @@ class VendorSubscriptionUI extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: plan['isPopular'] ? Colors.blue : Colors.grey.shade200,
+          color: plan['isPopular'] ? Colors.orange : Colors.grey.shade200,
           width: 2,
         ),
         boxShadow: [
@@ -243,7 +244,7 @@ class VendorSubscriptionUI extends StatelessWidget {
                   'Most Popular',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: Colors.orange,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -293,7 +294,7 @@ class VendorSubscriptionUI extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    plan['isPopular'] ? Colors.blue : Colors.grey.shade100,
+                    plan['isPopular'] ? Colors.orange : Colors.grey.shade100,
                 foregroundColor:
                     plan['isPopular'] ? Colors.white : Colors.black87,
                 padding: const EdgeInsets.symmetric(vertical: 16),

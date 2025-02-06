@@ -70,7 +70,7 @@ Widget customAppBar({
                     radius: 20.sp,
                     backgroundImage: userImage != null && userImage.isNotEmpty
                         ? NetworkImage(userImage)
-                        : const AssetImage(AppAssets.profileImg),
+                        : const AssetImage('assets/images/logo.png'),
                     //userImage != null
                     //     ? NetworkImage(userImage)
                     //     : const AssetImage(AppAssets.profileImg),

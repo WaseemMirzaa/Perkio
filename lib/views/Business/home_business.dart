@@ -6,6 +6,7 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/business_controller.dart';
 import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/models/user_model.dart';
@@ -18,11 +19,13 @@ import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/primary_layout.dart';
 import '../../widgets/custom_appBar/custom_appBar.dart';
 
 class HomeBusiness extends StatefulWidget {
-  const HomeBusiness({super.key});
+  final bool isGuestLogin;
+  const HomeBusiness({super.key, this.isGuestLogin = false});
 
   @override
   State<HomeBusiness> createState() => _HomeBusinessState();
@@ -43,7 +46,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
   void initState() {
     super.initState();
     Get.find<NotificationController>();
-    getUser();
+    widget.isGuestLogin ? null : getUser();
   }
 
   @override
@@ -86,9 +89,14 @@ class _HomeBusinessState extends State<HomeBusiness> {
                   });
                 },
                 isNotification: false,
-
-                userName: 'Loading...', // Placeholder text
-                userLocation: 'Loading...',
+                isGuestLogin: true,
+                context: context,
+                isUser: false,
+                userName: widget.isGuestLogin
+                    ? 'John'
+                    : 'Loading...', // Placeholder text
+                userLocation:
+                    widget.isGuestLogin ? 'United Kingdom' : 'Loading...',
               );
             }
 
@@ -136,21 +144,23 @@ class _HomeBusinessState extends State<HomeBusiness> {
                       TempLanguage.lblMyDeals,
                       style: poppinsMedium(fontSize: 18),
                     ),
-                    StreamBuilder<UserModel?>(
-                        stream: userController
-                            .getUserByStream(getStringAsync(SharedPrefKey.uid)),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const SizedBox.shrink();
-                          } else if (!snapshot.hasData) {
-                            return const SizedBox.shrink();
-                          } else {
-                            balance = snapshot.data!
-                                .balance!; // Get the balance from UserModel
-                            return Text("\$$balance Remaining");
-                          }
-                        }),
+                    widget.isGuestLogin
+                        ? const SizedBox.shrink()
+                        : StreamBuilder<UserModel?>(
+                            stream: userController.getUserByStream(
+                                getStringAsync(SharedPrefKey.uid)),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox.shrink();
+                              } else if (!snapshot.hasData) {
+                                return const SizedBox.shrink();
+                              } else {
+                                balance = snapshot.data!
+                                    .balance!; // Get the balance from UserModel
+                                return Text("\$$balance Remaining");
+                              }
+                            }),
                   ],
                 ),
               ),
@@ -218,6 +228,10 @@ class _HomeBusinessState extends State<HomeBusiness> {
           children: [
             ButtonWidget(
                 onSwipe: () {
+                  if (widget.isGuestLogin) {
+                    LoginRequiredDialog.show(context, false);
+                    return;
+                  }
                   homeController.setImageNull();
                   Navigator.push(
                       context,

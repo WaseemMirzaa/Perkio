@@ -14,13 +14,19 @@ import 'package:swipe_app/models/user_model.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/home_services.dart';
 import 'package:swipe_app/services/user_services.dart';
+import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
-import 'package:swipe_app/widgets/common_comp.dart';
 
 class SelectLocation extends StatefulWidget {
-  final UserModel userModel;
+  final UserModel? userModel;
+  final bool isGuestUser;
+  final bool isUser;
 
-  const SelectLocation({super.key, required this.userModel});
+  const SelectLocation(
+      {super.key,
+      this.userModel,
+      this.isGuestUser = false,
+      this.isUser = false});
 
   @override
   State<SelectLocation> createState() => _SelectLocationState();
@@ -48,7 +54,11 @@ class _SelectLocationState extends State<SelectLocation> {
 
       if (permissionGranted) {
         shouldShowPermissionUI.value = false;
-        await _getAndFill();
+        if (widget.isGuestUser) {
+          await _handleGuestUser();
+        } else {
+          await _getAndFill();
+        }
       } else {
         shouldShowPermissionUI.value = true;
         isProcessing.value = false;
@@ -56,6 +66,43 @@ class _SelectLocationState extends State<SelectLocation> {
     } catch (e) {
       print("Error in initialization: $e");
       shouldShowPermissionUI.value = true;
+      isProcessing.value = false;
+    }
+  }
+
+  Future<void> _handleGuestUser() async {
+    try {
+      isProcessing.value = true;
+      shouldShowPermissionUI.value = false;
+
+      latLng = await homeServices.getCurrentLocation(context: context);
+      if (latLng != null) {
+        // final currentLocation =
+        //     await homeServices.getAddress(latLng ?? const LatLng(0, 0));
+
+        // Save location to shared preferences
+        await setValue(SharedPrefKey.latitude, latLng!.latitude);
+        await setValue(SharedPrefKey.longitude, latLng!.longitude);
+
+        // // Save complete address if needed
+        // if (currentLocation != null) {
+        //   String completeAddress =
+        //       "${currentLocation.street}, ${currentLocation.administrativeArea}, ${currentLocation.country}";
+        //   await setValue(SharedPrefKey.userAddress, completeAddress);
+        // }
+
+        // Navigate to home screen
+        Get.offAll(() => BottomBarView(
+              isUser: widget.isUser,
+              isGuestLogin: true,
+            ));
+      }
+    } catch (e) {
+      print("Error handling guest user: $e");
+      Get.snackbar('Error', 'Failed to fetch location: $e',
+          snackPosition: SnackPosition.TOP);
+      shouldShowPermissionUI.value = true;
+    } finally {
       isProcessing.value = false;
     }
   }
@@ -108,16 +155,16 @@ class _SelectLocationState extends State<SelectLocation> {
     try {
       GeoPoint geoPoint =
           GeoPoint(address?.latitude ?? 0.0, address?.longitude ?? 0.0);
-      widget.userModel.latLong = geoPoint;
-      widget.userModel.address = address?.completeAddress ?? "";
+      widget.userModel!.latLong = geoPoint;
+      widget.userModel!.address = address?.completeAddress ?? "";
 
       await setValue(SharedPrefKey.latitude, address!.latitude);
       await setValue(SharedPrefKey.longitude, address!.longitude);
 
       String? token = await FCMManager.getFCMToken();
-      widget.userModel.fcmTokens = [token!];
+      widget.userModel!.fcmTokens = [token!];
 
-      await controller.signUp(widget.userModel, (error) {
+      await controller.signUp(widget.userModel!, (error) {
         if (error != null) {
           Get.snackbar('Error', error, snackPosition: SnackPosition.TOP);
           shouldShowPermissionUI.value = true;
@@ -148,29 +195,30 @@ class _SelectLocationState extends State<SelectLocation> {
               ),
             ),
           ),
-          
           Obx(() {
             // Show loading indicator if processing or controller is loading
             if (isProcessing.value || controller.loading.value) {
-              return 
-              Center(child: Column(
+              return Center(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 40,),
+                children: [
+                  const CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
                   Text(
-                            'Please wait we\'re fetching your location',
-                            style: poppinsRegular(
-                              color: AppColors.whiteColor,
-                              fontSize: 14,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-              ],
-            ));
+                    'Please wait we\'re fetching your location.',
+                    style: poppinsRegular(
+                      color: AppColors.whiteColor,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ));
             }
 
             // Only show permission UI if explicitly set to true
@@ -187,7 +235,6 @@ class _SelectLocationState extends State<SelectLocation> {
                         fit: BoxFit.contain,
                       ),
                       SizedBox(height: 2.h),
-
                       Text(
                         'Allowing location access helps us recommend personalized deals and rewards near you. '
                         'Please grant location permissions to unlock the best offers available in your area.',
@@ -197,9 +244,7 @@ class _SelectLocationState extends State<SelectLocation> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-
                       SizedBox(height: 4.h),
-
                       GestureDetector(
                         onTap: _initializeLocation,
                         child: Container(
@@ -209,8 +254,7 @@ class _SelectLocationState extends State<SelectLocation> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: 
-                          Text(
+                          child: Text(
                             'Allow Permission',
                             style: poppinsRegular(
                               color: AppColors.blackColor,
@@ -227,23 +271,25 @@ class _SelectLocationState extends State<SelectLocation> {
             }
 
             // Return loading indicator as default state
-            return 
-            Center(child: Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const CircularProgressIndicator(
                   color: Colors.white,
                 ),
-                const SizedBox(height: 40,),
-                  Text(
-                            'Please wait we\'re fetching your location',
-                            style: poppinsRegular(
-                              color: AppColors.whiteColor,
-                              fontSize: 14,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                const SizedBox(
+                  height: 40,
+                ),
+                Text(
+                  'Please wait we\'re fetching your location',
+                  style: poppinsRegular(
+                    color: AppColors.whiteColor,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ));
           }),

@@ -11,6 +11,7 @@ import 'package:swipe_app/widgets/back_button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_clipper.dart';
+import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 
 class DetailTile extends StatelessWidget {
   final String? businessId;
@@ -18,11 +19,14 @@ class DetailTile extends StatelessWidget {
   final bool isNavigationFromNotifications;
   final bool isNormalRouting;
 
+  final bool isGuestLogin;
+
   const DetailTile(
       {super.key,
       this.businessId,
       this.isNormalRouting = false,
       this.isRedeeming = false,
+      this.isGuestLogin = false,
       this.isNavigationFromNotifications = false});
 
   @override
@@ -111,20 +115,22 @@ class DetailTile extends StatelessWidget {
                     if (!isRedeeming)
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BusinessDetail(
-                                businessImage: user?.image,
-                                businessRating: user?.rating.toString(),
-                                businessName: user?.userName,
-                                businessLocation: user?.address,
-                                businessPhone: user?.phoneNo,
-                                businessWebsite: user?.website,
-                                businessId: businessId,
-                              ),
-                            ),
-                          );
+                          isGuestLogin
+                              ? LoginRequiredDialog.show(context, true)
+                              : Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BusinessDetail(
+                                      businessImage: user?.image,
+                                      businessRating: user?.rating.toString(),
+                                      businessName: user?.userName,
+                                      businessLocation: user?.address,
+                                      businessPhone: user?.phoneNo,
+                                      businessWebsite: user?.website,
+                                      businessId: businessId,
+                                    ),
+                                  ),
+                                );
                         },
                         child: Text(
                           TempLanguage.txtViewDeals,

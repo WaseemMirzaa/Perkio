@@ -7,6 +7,7 @@ import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 
 class AvailableListItems extends StatelessWidget {
   final String dealId;
@@ -17,6 +18,7 @@ class AvailableListItems extends StatelessWidget {
   final String location;
   final bool isFeatured;
   final String image;
+  final bool isGuestLogin;
   final double businessRating;
 
   const AvailableListItems({
@@ -27,6 +29,7 @@ class AvailableListItems extends StatelessWidget {
     this.dealPrice = '\$25',
     this.uses = 'USES 3',
     this.image = '',
+    this.isGuestLogin = false,
     this.location = '4773 Waldeck Street, US',
     this.isFeatured = true,
     required this.businessRating,
@@ -41,7 +44,7 @@ class AvailableListItems extends StatelessWidget {
       final isFavorite = controller.favoriteCache[dealId] ?? false;
 
       return Container(
-        height: isFeatured ? 22.h :18.h,
+        height: isFeatured ? 22.h : 18.h,
         margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
@@ -104,7 +107,9 @@ class AvailableListItems extends StatelessWidget {
                   top: 2.sp, // Adjust the top position as needed
                   child: IconButton(
                     onPressed: () {
-                      if (isFavorite) {
+                      if (isGuestLogin) {
+                        LoginRequiredDialog.show(context,true);
+                      } else if (isFavorite) {
                         controller.decreaseDealLikes(dealId);
                         controller.unLikeDeal(dealId);
                       } else {
@@ -135,15 +140,15 @@ class AvailableListItems extends StatelessWidget {
                 children: [
                   const SpacerBoxVertical(height: 10),
                   SizedBox(
-  width: double.infinity,
- 
-  child: Text(
-    dealName,
-    maxLines: 1, // Ensure the text doesn't exceed one line
-    overflow: TextOverflow.ellipsis, // Show ellipsis when the text overflows
-    style: poppinsMedium(fontSize: 13.sp),
-  ),
-),
+                    width: double.infinity,
+                    child: Text(
+                      dealName,
+                      maxLines: 1, // Ensure the text doesn't exceed one line
+                      overflow: TextOverflow
+                          .ellipsis, // Show ellipsis when the text overflows
+                      style: poppinsMedium(fontSize: 13.sp),
+                    ),
+                  ),
                   const SpacerBoxVertical(height: 5),
                   Text(
                     restaurantName,

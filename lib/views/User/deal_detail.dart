@@ -17,14 +17,16 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/congratulation_dialog.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 
 import '../../core/utils/constants/app_const.dart';
 import '../bottom_bar_view/bottom_bar_view.dart';
 
 class DealDetail extends StatefulWidget {
   final DealModel? deal;
+  final bool isGuestLogin;
 
-  const DealDetail({super.key, this.deal});
+  const DealDetail({super.key, this.deal, this.isGuestLogin = false});
 
   @override
   State<DealDetail> createState() => _DealDetailState();
@@ -143,6 +145,7 @@ class _DealDetailState extends State<DealDetail> {
               children: [
                 DetailTile(
                   businessId: deal.businessId,
+                  isGuestLogin: widget.isGuestLogin,
                 ),
                 const SpacerBoxVertical(height: 10),
                 Padding(
@@ -154,14 +157,14 @@ class _DealDetailState extends State<DealDetail> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-  width: 250.0,
-  child: Text(
-    deal.dealName ?? TempLanguage.txtDealName,
-    style: poppinsMedium(fontSize: 13.sp),
-    maxLines: 1,
-    overflow: TextOverflow.ellipsis,  
-  ),
-),
+                            width: 250.0,
+                            child: Text(
+                              deal.dealName ?? TempLanguage.txtDealName,
+                              style: poppinsMedium(fontSize: 13.sp),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                           Text(
                             '${distance.toStringAsFixed(2)} miles', // Display distance
                             style: poppinsRegular(
@@ -209,9 +212,15 @@ class _DealDetailState extends State<DealDetail> {
                 vertical: 20), // Add vertical padding for better spacing
             child: ButtonWidget(
               onSwipe: () async {
+                if (widget.isGuestLogin) {
+                  LoginRequiredDialog.show(context, true);
+                  return;
+                }
+
                 setState(() {
                   isLoading = true; // Start loading
                 });
+
                 await controller.updateUsedBy(deal.dealId!);
 
                 setState(() {

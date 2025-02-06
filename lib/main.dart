@@ -82,6 +82,7 @@ class MyApp extends StatelessWidget {
           ),
           home: const SplashScreen(),
           initialBinding: MyBinding(),
+
           // home: const VendorSubscriptionUI(),
         ),
       );

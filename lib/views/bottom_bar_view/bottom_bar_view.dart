@@ -23,11 +23,18 @@ import 'package:swipe_app/views/user/reward_detail.dart';
 import 'package:swipe_app/views/user/settings_view.dart';
 import 'package:swipe_app/views/user/rewards_view.dart';
 import 'package:swipe_app/widgets/custom_bottom_bar/custom_bottom_bar_items.dart';
+import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 
 class BottomBarView extends StatefulWidget {
-  const BottomBarView(
-      {super.key, required this.isUser, this.isNotificationRoute = false});
+  const BottomBarView({
+    super.key,
+    required this.isUser,
+    this.isNotificationRoute = false,
+    this.isGuestLogin = false,
+  });
+
   final bool isUser;
+  final bool isGuestLogin;
   final bool isNotificationRoute;
 
   @override
@@ -36,48 +43,54 @@ class BottomBarView extends StatefulWidget {
 
 class _BottomBarViewState extends State<BottomBarView> {
   int _selectedIndex = 0;
-
   RewardService rewardService = Get.put(RewardService());
   DealService dealService = Get.put(DealService());
-
-  final userList = [
-    const HomeUser(),
-    const RewardsView(),
-    MyDealsView(),
-    FavouritesScreen(),
-    const SettingsView(
-      isUser: true,
-    ),
-  ];
-
-  final businessList = [
-    const HomeBusiness(),
-    const RewardsBusiness(),
-    const PromotedDealView(),
-    const SettingsView(
-      isUser: false,
-    ),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  late final List<Widget> userList;
+  late final List<Widget> businessList;
 
   @override
   void initState() {
     super.initState();
-    Get.put(NotificationController()); // Initialize NotificationController
+    Get.put(NotificationController());
+
+    userList = [
+      HomeUser(isGuestLogin: widget.isGuestLogin),
+      const RewardsView(),
+      MyDealsView(),
+      FavouritesScreen(),
+      const SettingsView(
+        isUser: true,
+      ),
+    ];
+
+    businessList = [
+      HomeBusiness(
+        isGuestLogin: widget.isGuestLogin,
+      ),
+      const RewardsBusiness(),
+      const PromotedDealView(),
+      const SettingsView(
+        isUser: false,
+      ),
+    ];
 
     if (widget.isNotificationRoute == false) {
       _navigatetoScreen();
     }
   }
 
-  _navigatetoScreen() async {
-    // Get any messages which caused the application to open from
-    // a terminated state.
+  void _onItemTapped(int index) {
+    if (widget.isGuestLogin && widget.isUser ||
+        widget.isUser == false && index != 0) {
+      LoginRequiredDialog.show(context, widget.isUser);
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
+  Future<void> _navigatetoScreen() async {
     RemoteMessage? initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
@@ -92,9 +105,7 @@ class _BottomBarViewState extends State<BottomBarView> {
     DealModel? dealModel =
         await dealService.fetchDealDataFromNotification(docId);
 
-    // Check if the user is a regular user or a business user
     if (widget.isUser) {
-      // Logic for regular user (when isUser is true)
       if (message.data['notificationType'] == 'newDeal') {
         if (dealModel != null) {
           Get.to(() => DealDetail(deal: dealModel));
@@ -115,12 +126,8 @@ class _BottomBarViewState extends State<BottomBarView> {
         }
       }
     } else {
-      // Logic for business user (when isUser is false)
-      if (message.data['notificationType'] == 'dealUsed') {
-        Get.to(() => const NotificationsView());
-      }
-
-      if (message.data['notificationType'] == 'rewardUsed') {
+      if (message.data['notificationType'] == 'dealUsed' ||
+          message.data['notificationType'] == 'rewardUsed') {
         Get.to(() => const NotificationsView());
       }
     }
@@ -143,17 +150,16 @@ class _BottomBarViewState extends State<BottomBarView> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(false); // Cancel
+                    Navigator.of(context).pop(false);
                   },
                   child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(true); // Close App
+                    Navigator.of(context).pop(true);
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors
-                        .red, // Customize the color as per your preference
+                    foregroundColor: Colors.red,
                   ),
                   child: const Text('Close App'),
                 ),
@@ -162,12 +168,14 @@ class _BottomBarViewState extends State<BottomBarView> {
           },
         );
         if (shouldClose) {
-          SystemNavigator.pop(); // Close the app
+          SystemNavigator.pop();
         }
       },
       child: Scaffold(
         body: widget.isUser
-            ? userList.elementAt(_selectedIndex)
+            ? (widget.isGuestLogin
+                ? userList.first
+                : userList.elementAt(_selectedIndex))
             : businessList.elementAt(_selectedIndex),
         bottomNavigationBar: widget.isUser
             ? Container(
@@ -176,10 +184,11 @@ class _BottomBarViewState extends State<BottomBarView> {
                   color: AppColors.whiteColor,
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 0,
-                        blurRadius: 6,
-                        offset: Offset(0, -7)),
+                      color: Colors.black12,
+                      spreadRadius: 0,
+                      blurRadius: 6,
+                      offset: Offset(0, -7),
+                    ),
                   ],
                 ),
                 child: Padding(
@@ -196,25 +205,29 @@ class _BottomBarViewState extends State<BottomBarView> {
                       CustomBottomBarItem(
                         icon: Icons.star_border,
                         path: AppAssets.navBarIcon2,
-                        isSelected: _selectedIndex == 1,
+                        isSelected:
+                            _selectedIndex == 0 ? false : _selectedIndex == 1,
                         onTap: () => _onItemTapped(1),
                       ),
                       CustomBottomBarItem(
                         icon: Icons.assignment,
                         path: AppAssets.navBarIcon3,
-                        isSelected: _selectedIndex == 2,
+                        isSelected:
+                            _selectedIndex == 0 ? false : _selectedIndex == 2,
                         onTap: () => _onItemTapped(2),
                       ),
                       CustomBottomBarItem(
                         icon: Icons.favorite_border,
                         path: AppAssets.navBarIcon4,
-                        isSelected: _selectedIndex == 3,
+                        isSelected:
+                            _selectedIndex == 0 ? false : _selectedIndex == 3,
                         onTap: () => _onItemTapped(3),
                       ),
                       CustomBottomBarItem(
                         icon: Icons.person_outline,
                         path: AppAssets.navBarIcon5,
-                        isSelected: _selectedIndex == 4,
+                        isSelected:
+                            _selectedIndex == 0 ? false : _selectedIndex == 4,
                         onTap: () => _onItemTapped(4),
                       ),
                     ],
@@ -227,10 +240,11 @@ class _BottomBarViewState extends State<BottomBarView> {
                   color: AppColors.whiteColor,
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 0,
-                        blurRadius: 6,
-                        offset: Offset(0, -7)),
+                      color: Colors.black12,
+                      spreadRadius: 0,
+                      blurRadius: 6,
+                      offset: Offset(0, -7),
+                    ),
                   ],
                 ),
                 child: Padding(
@@ -256,12 +270,6 @@ class _BottomBarViewState extends State<BottomBarView> {
                         isSelected: _selectedIndex == 2,
                         onTap: () => _onItemTapped(2),
                       ),
-                      // CustomBottomBarItem(
-                      //   icon: Icons.favorite_border,
-                      //   path: AppAssets.navBarIcon4,
-                      //   isSelected: _selectedIndex == 3,
-                      //   onTap: () => _onItemTapped(3),
-                      // ),
                       CustomBottomBarItem(
                         icon: Icons.person_outline,
                         path: AppAssets.navBarIcon5,

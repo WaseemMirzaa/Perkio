@@ -22,6 +22,7 @@ import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
+import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 import '../../core/utils/constants/app_assets.dart';
 
 final homeController = Get.put(HomeController(HomeServices()));
@@ -34,9 +35,12 @@ Widget customAppBar({
   String? userName,
   String? userImage,
   String? userLocation,
+  BuildContext? context,
   String hintText = 'Search',
   double? latitude,
   double? longitude,
+  bool isUser = false,
+  bool isGuestLogin = false,
   bool isLocation = true,
   bool isNotification = true,
   bool isChangeBusinessLocation = false,
@@ -120,117 +124,139 @@ Widget customAppBar({
                                   const SizedBox(
                                     width: 10,
                                   ),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      BuildContext context = Get.context!;
-                                      try {
-                                        print(
-                                            'Change Location tapped.'); // Log the tap event
-
-                                        // Get the current location
-                                        final currentPosition =
-                                            await homeServices
-                                                .getCurrentLocation();
-                                        if (currentPosition == null) {
-                                          print(
-                                              'Current position is null.'); // Log if the current position is null
-                                          // Show an error message to the user
-
-                                          return;
-                                        }
-                                        print(
-                                            'Current Position: $currentPosition'); // Log the current position
-
-                                        // Navigate to location picker and get the selected address
-                                        final address = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                LocationService(
-                                              child: PlacesPick(
-                                                isChangeBusinessLocation:
-                                                    isChangeBusinessLocation,
-                                                changeCurrentLocation: LatLng(
-                                                  currentPosition.latitude,
-                                                  currentPosition.longitude,
-                                                ),
-                                                currentLocation: LatLng(
-                                                  latitude ??
-                                                      getDoubleAsync(
-                                                          SharedPrefKey
-                                                              .latitude),
-                                                  longitude ??
-                                                      getDoubleAsync(
-                                                          SharedPrefKey
-                                                              .longitude),
-                                                ),
-                                              ),
+                                  isGuestLogin
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            LoginRequiredDialog.show(context!,isUser);
+                                          },
+                                          child: Text(
+                                            'Change Location',
+                                            style: poppinsRegular(
+                                              fontSize: 8,
+                                              color: AppColors.blueColor,
                                             ),
                                           ),
-                                        );
+                                        )
+                                      : GestureDetector(
+                                          onTap: () async {
+                                            BuildContext context = Get.context!;
+                                            try {
+                                              print(
+                                                  'Change Location tapped.'); // Log the tap event
 
-                                        print(
-                                            'Address returned from PlacesPick: $address'); // Log the returned address
+                                              // Get the current location
+                                              final currentPosition =
+                                                  await homeServices
+                                                      .getCurrentLocation();
+                                              if (currentPosition == null) {
+                                                print(
+                                                    'Current position is null.'); // Log if the current position is null
+                                                // Show an error message to the user
 
-                                        // If address is null, gracefully handle it
-                                        if (address == null) {
-                                          print(
-                                              'No address selected.'); // Log if no address was selected
-                                          // Show a message to the user
+                                                return;
+                                              }
+                                              print(
+                                                  'Current Position: $currentPosition'); // Log the current position
 
-                                          return;
-                                        }
+                                              // Navigate to location picker and get the selected address
+                                              final address =
+                                                  await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LocationService(
+                                                    child: PlacesPick(
+                                                      isChangeBusinessLocation:
+                                                          isChangeBusinessLocation,
+                                                      changeCurrentLocation:
+                                                          LatLng(
+                                                        currentPosition
+                                                            .latitude,
+                                                        currentPosition
+                                                            .longitude,
+                                                      ),
+                                                      currentLocation: LatLng(
+                                                        latitude ??
+                                                            getDoubleAsync(
+                                                                SharedPrefKey
+                                                                    .latitude),
+                                                        longitude ??
+                                                            getDoubleAsync(
+                                                                SharedPrefKey
+                                                                    .longitude),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
 
-                                        // Get the city name from the geolocation
-                                        final add = await GeoLocationHelper
-                                            .getCityFromGeoPoint(
-                                          GeoPoint(address.latitude!,
-                                              address.longitude!),
-                                        );
-                                        print(
-                                            'City fetched from GeoPoint: $add'); // Log the fetched city
+                                              print(
+                                                  'Address returned from PlacesPick: $address'); // Log the returned address
 
-                                        // Update the Shared Preferences with new address and location
-                                        await setValue(
-                                            SharedPrefKey.address, add);
-                                        await setValue(SharedPrefKey.latitude,
-                                            address.latitude);
-                                        await setValue(SharedPrefKey.longitude,
-                                            address.longitude);
-                                        print(
-                                            'Shared Preferences updated. Address: $add, Latitude: ${address.latitude}, Longitude: ${address.longitude}'); // Log the updated values
+                                              // If address is null, gracefully handle it
+                                              if (address == null) {
+                                                print(
+                                                    'No address selected.'); // Log if no address was selected
+                                                // Show a message to the user
 
-                                        // Update the user's collection with the new address and location
-                                        await homeController.updateCollection(
-                                          getStringAsync(SharedPrefKey.uid),
-                                          CollectionsKey.USERS,
-                                          {
-                                            UserKey.ADDRESS: add,
-                                            UserKey.LATLONG: GeoPoint(
-                                              getDoubleAsync(
-                                                  SharedPrefKey.latitude),
-                                              getDoubleAsync(
-                                                  SharedPrefKey.longitude),
-                                            ),
+                                                return;
+                                              }
+
+                                              // Get the city name from the geolocation
+                                              final add =
+                                                  await GeoLocationHelper
+                                                      .getCityFromGeoPoint(
+                                                GeoPoint(address.latitude!,
+                                                    address.longitude!),
+                                              );
+                                              print(
+                                                  'City fetched from GeoPoint: $add'); // Log the fetched city
+
+                                              // Update the Shared Preferences with new address and location
+                                              await setValue(
+                                                  SharedPrefKey.address, add);
+                                              await setValue(
+                                                  SharedPrefKey.latitude,
+                                                  address.latitude);
+                                              await setValue(
+                                                  SharedPrefKey.longitude,
+                                                  address.longitude);
+                                              print(
+                                                  'Shared Preferences updated. Address: $add, Latitude: ${address.latitude}, Longitude: ${address.longitude}'); // Log the updated values
+
+                                              // Update the user's collection with the new address and location
+                                              await homeController
+                                                  .updateCollection(
+                                                getStringAsync(
+                                                    SharedPrefKey.uid),
+                                                CollectionsKey.USERS,
+                                                {
+                                                  UserKey.ADDRESS: add,
+                                                  UserKey.LATLONG: GeoPoint(
+                                                    getDoubleAsync(
+                                                        SharedPrefKey.latitude),
+                                                    getDoubleAsync(SharedPrefKey
+                                                        .longitude),
+                                                  ),
+                                                },
+                                              );
+                                              print(
+                                                  'User collection updated successfully.'); // Log success message
+                                            } catch (e) {
+                                              // Handle any errors that occur during the process
+                                              print(
+                                                  'Error updating location: $e'); // Log the error
+                                              // Show an error message to the user
+                                            }
                                           },
-                                        );
-                                        print(
-                                            'User collection updated successfully.'); // Log success message
-                                      } catch (e) {
-                                        // Handle any errors that occur during the process
-                                        print(
-                                            'Error updating location: $e'); // Log the error
-                                        // Show an error message to the user
-                                      }
-                                    },
-                                    child: Text(
-                                      'Change Location',
-                                      style: poppinsRegular(
-                                        fontSize: 8,
-                                        color: AppColors.blueColor,
-                                      ),
-                                    ),
-                                  )
+                                          child: Text(
+                                            'Change Location',
+                                            style: poppinsRegular(
+                                              fontSize: 8,
+                                              color: AppColors.blueColor,
+                                            ),
+                                          ),
+                                        )
                                 ],
                               )
                             : const SizedBox.shrink(),

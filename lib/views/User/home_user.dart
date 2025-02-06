@@ -21,7 +21,8 @@ import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 
 class HomeUser extends StatefulWidget {
-  const HomeUser({super.key});
+  final bool isGuestLogin;
+  const HomeUser({super.key, this.isGuestLogin = false});
 
   @override
   State<HomeUser> createState() => _HomeUserState();
@@ -48,7 +49,7 @@ class _HomeUserState extends State<HomeUser> {
         List<
             DealModel>>.broadcast(); // Use broadcast if multiple listeners are expected
     getDeals();
-    getUser();
+    widget.isGuestLogin ? null : getUser();
     Get.find<NotificationController>();
 
     // Listen to search field changes
@@ -156,9 +157,14 @@ class _HomeUserState extends State<HomeUser> {
             return customAppBar(
               isSearchField: true,
               onChanged: searchDeals,
+              isGuestLogin: true,
               isSearching: controller.isSearching,
-              userName: 'Loading...', // Placeholder text
-              userLocation: 'Loading...',
+              context: context,
+              userName: widget.isGuestLogin
+                  ? 'John'
+                  : 'Loading...', // Placeholder text
+              userLocation:
+                  widget.isGuestLogin ? 'United Kingdom' : 'Loading...',
               textController: searchController,
             );
           }
@@ -200,12 +206,6 @@ class _HomeUserState extends State<HomeUser> {
 
             final List<DealModel> deals = snapshot.data!;
 
-            
-
-
-
-
-
             // Use the state variable for featured deals
             List<DealModel> featuredDeals =
                 deals.where((deal) => deal.isPromotionStar == true).toList();
@@ -244,6 +244,7 @@ class _HomeUserState extends State<HomeUser> {
                       MaterialPageRoute(
                         builder: (context) => DealDetail(
                           deal: deal,
+                          isGuestLogin: widget.isGuestLogin,
                         ),
                       ),
                     );
@@ -251,6 +252,7 @@ class _HomeUserState extends State<HomeUser> {
                   child: AvailableListItems(
                     dealId: deal.dealId ?? '',
                     dealName: deal.dealName ?? '',
+                    isGuestLogin: widget.isGuestLogin,
                     restaurantName: deal.companyName ?? '',
                     uses: deal.uses.toString(),
                     isFeatured: deal.isPromotionStar!,
@@ -292,6 +294,7 @@ class _HomeUserState extends State<HomeUser> {
                               MaterialPageRoute(
                                 builder: (context) => DealDetail(
                                   deal: deal,
+                                  isGuestLogin: widget.isGuestLogin,
                                 ),
                               ),
                             );
@@ -302,6 +305,7 @@ class _HomeUserState extends State<HomeUser> {
                               dealId: deal.dealId ?? '',
                               dealName: deal.dealName ?? '',
                               restaurantName: deal.companyName ?? '',
+                              isGuestLogin: widget.isGuestLogin,
                               uses: deal.uses.toString(),
                               businessRating: deal.businessRating ?? 0.0,
                               isFeatured: deal.isPromotionStar!,
@@ -349,6 +353,7 @@ class _HomeUserState extends State<HomeUser> {
                       MaterialPageRoute(
                         builder: (context) => DealDetail(
                           deal: deal,
+                          isGuestLogin: widget.isGuestLogin,
                         ),
                       ),
                     );
@@ -358,6 +363,7 @@ class _HomeUserState extends State<HomeUser> {
                     dealName: deal.dealName ?? '',
                     restaurantName: deal.companyName ?? '',
                     uses: deal.uses.toString(),
+                    isGuestLogin: widget.isGuestLogin,
                     isFeatured: deal.isPromotionStar!,
                     image: deal.image ?? '',
                     businessRating: deal.businessRating ?? 0.0,

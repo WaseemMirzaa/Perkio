@@ -14,6 +14,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/auth/forget_password_view.dart';
 import 'package:swipe_app/views/auth/signup_view.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
+import 'package:swipe_app/views/location/select_location_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
@@ -155,12 +156,12 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                                 }
                               } else {
                                 if (controller.emailErrorText.isNotEmpty) {
-                                  Get.snackbar(
-                                      'Error', '${controller.emailErrorText.value}.');
+                                  Get.snackbar('Error',
+                                      '${controller.emailErrorText.value}.');
                                 } else if (controller
                                     .passErrorText.isNotEmpty) {
-                                  Get.snackbar(
-                                      'Error', '${controller.passErrorText.value}.');
+                                  Get.snackbar('Error',
+                                      '${controller.passErrorText.value}.');
                                 } else {
                                   Get.snackbar('Error', 'Field required.');
                                 }
@@ -169,15 +170,37 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                             text: TempLanguage.btnLblSwipeToLogin)),
                     SpacerBoxVertical(height: 1.5.h),
                     TextButton(
-                        onPressed: () {
-                          Get.to(
-                              () => ForgotPasswordView(isUser: widget.isUser));
-                        },
-                        child: Text(
-                          TempLanguage.txtForgotPassword,
-                          style: poppinsMedium(
-                              fontSize: 15.sp, color: AppColors.secondaryText),
-                        ))
+                      onPressed: () {
+                        Get.to(() => ForgotPasswordView(isUser: widget.isUser));
+                      },
+                      child: Text(
+                        TempLanguage.txtForgotPassword,
+                        style: poppinsMedium(
+                            fontSize: 15.sp, color: AppColors.secondaryText),
+                      ),
+                    ),
+                    SpacerBoxVertical(height: 1.5.h),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          // user side permissions
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LocationService(
+                              child: SelectLocation(
+                                isGuestUser: true,
+                                isUser: widget.isUser,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Continue as a Guest',
+                        style: poppinsMedium(
+                            fontSize: 15.sp, color: AppColors.secondaryText),
+                      ),
+                    ),
                   ],
                 ),
               ),

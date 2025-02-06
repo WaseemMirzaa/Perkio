@@ -166,12 +166,13 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                         // user side permissions
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                LocationService(
-                                                  child: SelectLocation(
-                                                    userModel: userModel,
-                                                  ),
-                                                )))
+                                          builder: (context) => LocationService(
+                                            child: SelectLocation(
+                                              userModel: userModel,
+                                            ),
+                                          ),
+                                        ),
+                                      )
 
                                     //controller.signUp(userModel)
                                     : Navigator.push(
@@ -192,18 +193,17 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                                   .userNameErrorText.value.isNotEmpty) {
                                 getStringAsync(SharedPrefKey.role) ==
                                         SharedPrefKey.user
-                                    ? Get.snackbar('Error',
-                                        'Please enter the user name.')
+                                    ? Get.snackbar(
+                                        'Error', 'Please enter the user name.')
                                     : Get.snackbar('Error',
                                         'Please enter the business name.');
                               } else if (controller
                                   .emailErrorText.value.isNotEmpty) {
-                                Get.snackbar(
-                                    'Error', '${controller.emailErrorText.value}.');
+                                Get.snackbar('Error',
+                                    '${controller.emailErrorText.value}.');
                               } else if (controller
                                   .passErrorText.value.isNotEmpty) {
-                                Get.snackbar(
-                                    'Error', 'Enter The Password.');
+                                Get.snackbar('Error', 'Enter The Password.');
                               } else if (!confirm.value) {
                                 Get.snackbar('Error',
                                     'Please Accept Terms & Conditions To Continue.');
@@ -237,18 +237,17 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                         ),
                         const SpacerBoxHorizontal(width: 5),
                         Text(
-                          'I agree with ' ,
+                          'I agree with ',
                           style: poppinsRegular(
                             fontSize: 15,
-                            
                             color: Colors.black,
                           ),
                         ),
                         GestureDetector(
                           onTap: () async {
                             // Navigate to TermsAndConditions page and await result
-                            
-                                Get.to(() => const TermsAndConditions());
+
+                            Get.to(() => const TermsAndConditions());
                             // // Update confirm.value only if a result is returned
                             // if (result != null && result == true) {
                             //   confirm.value = true; // Mark as accepted
@@ -260,14 +259,36 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                             'terms & conditions',
                             style: poppinsRegular(
                               fontSize: 15,
-                              
                               color: Colors.blue,
                             ),
                           ),
                         ),
                       ],
                     ),
-                  )
+                  ),
+                  SpacerBoxVertical(height: 1.5.h),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        // user side permissions
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LocationService(
+                            child: SelectLocation(
+                              isGuestUser: true,
+                              isUser: getStringAsync(SharedPrefKey.role) ==
+                                  SharedPrefKey.user,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Continue as a Guest',
+                      style: poppinsMedium(
+                          fontSize: 15.sp, color: AppColors.secondaryText),
+                    ),
+                  ),
                 ],
               ),
             ),

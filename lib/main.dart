@@ -18,7 +18,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Lock orientation to portrait only
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   await initialize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -29,10 +30,11 @@ void main() async {
       PushNotificationServices();
   await pushNotificationServices.init();
 
-    // Set the status bar appearance globally
+  // Set the status bar appearance globally
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // Transparent or any color
-    statusBarIconBrightness: Brightness.dark, // Icons: dark (for light backgrounds)
+    statusBarIconBrightness:
+        Brightness.dark, // Icons: dark (for light backgrounds)
     statusBarBrightness: Brightness.light, // For iOS status bar
   ));
 

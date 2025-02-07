@@ -64,9 +64,7 @@ class _BottomBarViewState extends State<BottomBarView> {
     ];
 
     businessList = [
-      HomeBusiness(
-        isGuestLogin: widget.isGuestLogin,
-      ),
+      const HomeBusiness(),
       const RewardsBusiness(),
       const PromotedDealView(),
       const SettingsView(
@@ -80,8 +78,7 @@ class _BottomBarViewState extends State<BottomBarView> {
   }
 
   void _onItemTapped(int index) {
-    if (widget.isGuestLogin && widget.isUser ||
-        widget.isUser == false && index != 0) {
+    if (widget.isGuestLogin && widget.isUser && index != 0) {
       LoginRequiredDialog.show(context, widget.isUser);
     } else {
       setState(() {

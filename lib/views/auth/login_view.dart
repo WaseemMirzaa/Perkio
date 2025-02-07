@@ -180,27 +180,30 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                       ),
                     ),
                     SpacerBoxVertical(height: 1.5.h),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          // user side permissions
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LocationService(
-                              child: SelectLocation(
-                                isGuestUser: true,
-                                isUser: widget.isUser,
-                              ),
+                    widget.isUser
+                        ? TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                // user side permissions
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LocationService(
+                                    child: SelectLocation(
+                                      isGuestUser: true,
+                                      isUser: widget.isUser,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Continue as a Guest',
+                              style: poppinsMedium(
+                                  fontSize: 15.sp,
+                                  color: AppColors.secondaryText),
                             ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Continue as a Guest',
-                        style: poppinsMedium(
-                            fontSize: 15.sp, color: AppColors.secondaryText),
-                      ),
-                    ),
+                          )
+                        : const SizedBox.shrink(),
                   ],
                 ),
               ),

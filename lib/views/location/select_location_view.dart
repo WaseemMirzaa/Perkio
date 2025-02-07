@@ -77,19 +77,19 @@ class _SelectLocationState extends State<SelectLocation> {
 
       latLng = await homeServices.getCurrentLocation(context: context);
       if (latLng != null) {
-        // final currentLocation =
-        //     await homeServices.getAddress(latLng ?? const LatLng(0, 0));
+        final currentLocation =
+            await homeServices.getAddress(latLng ?? const LatLng(0, 0));
 
         // Save location to shared preferences
         await setValue(SharedPrefKey.latitude, latLng!.latitude);
         await setValue(SharedPrefKey.longitude, latLng!.longitude);
 
         // // Save complete address if needed
-        // if (currentLocation != null) {
-        //   String completeAddress =
-        //       "${currentLocation.street}, ${currentLocation.administrativeArea}, ${currentLocation.country}";
-        //   await setValue(SharedPrefKey.userAddress, completeAddress);
-        // }
+        if (currentLocation != null) {
+          String completeAddress =
+              "${currentLocation.street}, ${currentLocation.administrativeArea}, ${currentLocation.country}";
+          await setValue(SharedPrefKey.userAddress, completeAddress);
+        }
 
         // Navigate to home screen
         Get.offAll(() => BottomBarView(

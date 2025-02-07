@@ -163,8 +163,9 @@ class _HomeUserState extends State<HomeUser> {
               userName: widget.isGuestLogin
                   ? 'John'
                   : 'Loading...', // Placeholder text
-              userLocation:
-                  widget.isGuestLogin ? 'United Kingdom' : 'Loading...',
+              userLocation: widget.isGuestLogin
+                  ? getStringAsync(SharedPrefKey.userAddress)
+                  : 'Loading...',
               textController: searchController,
             );
           }

@@ -31,8 +31,9 @@ class VendorSubscriptionUI extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: Obx(() {
-        if (subscriptionController.isSubscribed.value) {
-          return const PremiumScreen();
+        // Show loading indicator while fetching data
+        if (subscriptionController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
         }
 
         return SingleChildScrollView(
@@ -144,43 +145,39 @@ class SubscriptionPlansList extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  await subscriptionController.purchaseSubscription();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Obx(() {
+                return ElevatedButton(
+                  onPressed: () async {
+                    if (subscriptionController.isSubscribed.value) {
+                      await subscriptionController.cancelSubscription();
+                    } else {
+                      await subscriptionController.purchaseSubscription();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: subscriptionController.isSubscribed.value
+                        ? Colors.red
+                        : Colors.orange,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Subscribe Now',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+                  child: subscriptionController.isLoading.value
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                          subscriptionController.isSubscribed.value
+                              ? 'Cancel Subscription'
+                              : 'Subscribe Now',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                );
+              }),
             ],
           ),
         ),
       );
     });
-  }
-}
-
-class PremiumScreen extends StatelessWidget {
-  const PremiumScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        "🎉 Premium Rewards Unlocked! Enjoy 🎉",
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-    );
   }
 }

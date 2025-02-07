@@ -267,28 +267,32 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                     ),
                   ),
                   SpacerBoxVertical(height: 1.5.h),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        // user side permissions
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LocationService(
-                            child: SelectLocation(
-                              isGuestUser: true,
-                              isUser: getStringAsync(SharedPrefKey.role) ==
-                                  SharedPrefKey.user,
-                            ),
+                  getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                      ? TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              // user side permissions
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LocationService(
+                                  child: SelectLocation(
+                                    isGuestUser: true,
+                                    isUser:
+                                        getStringAsync(SharedPrefKey.role) ==
+                                            SharedPrefKey.user,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Continue as a Guest',
+                            style: poppinsMedium(
+                                fontSize: 15.sp,
+                                color: AppColors.secondaryText),
                           ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Continue as a Guest',
-                      style: poppinsMedium(
-                          fontSize: 15.sp, color: AppColors.secondaryText),
-                    ),
-                  ),
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),

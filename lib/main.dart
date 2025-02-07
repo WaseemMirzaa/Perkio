@@ -8,10 +8,12 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/billing_service.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
+import 'package:swipe_app/controllers/subscription_controller.dart';
 import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/bindings/bindings.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
+import 'package:swipe_app/services/revenue_cat_service.dart';
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 
 void main() async {
@@ -24,6 +26,7 @@ void main() async {
   await initialize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FCMManager.initialize();
+  await RevenueCatService.init();
 
   // Initialize Push Notification Services
   PushNotificationServices pushNotificationServices =
@@ -50,6 +53,8 @@ void main() async {
   Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
   BillingService().initStore();
+
+  Get.put(SubscriptionController());
 
   Get.put(RewardController());
 
@@ -81,6 +86,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           home: const SplashScreen(),
+          // home: HomeSubscriptionScreen(),
           initialBinding: MyBinding(),
 
           // home: const VendorSubscriptionUI(),

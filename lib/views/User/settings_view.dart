@@ -80,26 +80,75 @@ class _SettingsViewState extends State<SettingsView> {
     if (!widget.isUser) {
       // Business View
       return [
-        {'icon': AppAssets.moneyIcon, 'title': 'Wallet Balance:', 'type': 'balance'},
-        {'icon': AppAssets.walletImg, 'title': 'Manage Business', 'type': 'manage_business'},
-        {'icon': AppAssets.evaluationImg, 'title': TempLanguage.txtManageAccount, 'type': 'manage_account'},
-        {'icon': AppAssets.networkImg, 'title': TempLanguage.txtShare, 'type': 'share'},
-        {'icon': AppAssets.privacyImg, 'title': TempLanguage.txtTermsConditions, 'type': 'terms'},
-        {'icon': AppAssets.insuranceImg, 'title': TempLanguage.txtPrivacy, 'type': 'privacy'},
-        {'icon': AppAssets.helpImg, 'title': TempLanguage.txtHelp, 'type': 'help'},
-        
+        {
+          'icon': AppAssets.moneyIcon,
+          'title': 'Wallet Balance:',
+          'type': 'balance'
+        },
+        {
+          'icon': AppAssets.walletImg,
+          'title': 'Manage Business',
+          'type': 'manage_business'
+        },
+        {
+          'icon': AppAssets.evaluationImg,
+          'title': TempLanguage.txtManageAccount,
+          'type': 'manage_account'
+        },
+        {
+          'icon': AppAssets.networkImg,
+          'title': TempLanguage.txtShare,
+          'type': 'share'
+        },
+        {
+          'icon': AppAssets.privacyImg,
+          'title': TempLanguage.txtTermsConditions,
+          'type': 'terms'
+        },
+        {
+          'icon': AppAssets.insuranceImg,
+          'title': TempLanguage.txtPrivacy,
+          'type': 'privacy'
+        },
+        {
+          'icon': AppAssets.helpImg,
+          'title': TempLanguage.txtHelp,
+          'type': 'help'
+        },
       ];
     } else {
       // User View
       return [
-        
-        {'icon': AppAssets.evaluationImg, 'title': TempLanguage.txtManageAccount, 'type': 'manage_account'},
-        {'icon': AppAssets.subscriptionImg, 'title': 'Subscription', 'type': 'subscription'},
-        {'icon': AppAssets.networkImg, 'title': TempLanguage.txtShare, 'type': 'share'},
-        {'icon': AppAssets.privacyImg, 'title': TempLanguage.txtTermsConditions, 'type': 'terms'},
-        {'icon': AppAssets.insuranceImg, 'title': TempLanguage.txtPrivacy, 'type': 'privacy'},
-        {'icon': AppAssets.helpImg, 'title': TempLanguage.txtHelp, 'type': 'help'},
-        
+        {
+          'icon': AppAssets.evaluationImg,
+          'title': TempLanguage.txtManageAccount,
+          'type': 'manage_account'
+        },
+        {
+          'icon': AppAssets.subscriptionImg,
+          'title': 'Subscription',
+          'type': 'subscription'
+        },
+        {
+          'icon': AppAssets.networkImg,
+          'title': TempLanguage.txtShare,
+          'type': 'share'
+        },
+        {
+          'icon': AppAssets.privacyImg,
+          'title': TempLanguage.txtTermsConditions,
+          'type': 'terms'
+        },
+        {
+          'icon': AppAssets.insuranceImg,
+          'title': TempLanguage.txtPrivacy,
+          'type': 'privacy'
+        },
+        {
+          'icon': AppAssets.helpImg,
+          'title': TempLanguage.txtHelp,
+          'type': 'help'
+        },
       ];
     }
   }
@@ -124,29 +173,25 @@ class _SettingsViewState extends State<SettingsView> {
         );
         break;
       case 'manage_account':
-      widget.isUser ? 
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const UserProfileView(),
-          ),
-        )
-        :
-         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ProfileSettingsBusiness(),
-          ),
-        )
-
-        ;
+        widget.isUser
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const UserProfileView(),
+                ),
+              )
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileSettingsBusiness(),
+                ),
+              );
         break;
       case 'subscription':
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const VendorSubscriptionUI(),
+            builder: (context) => VendorSubscriptionUI(),
           ),
         );
         break;

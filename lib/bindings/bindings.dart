@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:swipe_app/controllers/notification_controller.dart';
+import 'package:swipe_app/controllers/subscription_controller.dart';
 import 'package:swipe_app/controllers/ui_controllers/add_deals_controller.dart';
 import 'package:swipe_app/controllers/ui_controllers/add_rewards_controller.dart';
 import 'package:swipe_app/controllers/business_controller.dart';
@@ -17,6 +18,7 @@ class MyBinding implements Bindings {
     Get.lazyPut(() => AddDealsController(), fenix: true);
     Get.lazyPut(() => AddRewardsController(), fenix: true);
     Get.lazyPut(() => BusinessDetailController(), fenix: true);
+    Get.lazyPut(() => SubscriptionController(), fenix: true);
     Get.lazyPut(() => FavouritesScreenController(), fenix: true);
     Get.lazyPut(() => UserController(UserServices()), fenix: true);
     Get.lazyPut(() => BusinessController(BusinessServices()), fenix: true);

@@ -40,7 +40,7 @@ class FavouritesWidget extends StatelessWidget {
         ? Obx(() {
             return isFav.value
                 ? Container(
-                    height: 140,
+                    height: 18.h,
                     margin:
                         const EdgeInsets.only(bottom: 10, left: 12, right: 12),
                     padding: const EdgeInsets.all(2),
@@ -150,14 +150,17 @@ class FavouritesWidget extends StatelessWidget {
                             children: [
                               const SpacerBoxVertical(height: 10),
                               SizedBox(
-  width: 150.0,  // Set the desired width for the text container
-  child: Text(
-    dealName,
-    style: poppinsMedium(fontSize: 13.sp),
-    overflow: TextOverflow.ellipsis,  // Adds "..." if the text overflows
-    maxLines: 1,  // Ensure text stays on a single line
-  ),
-),
+                                width:
+                                    150.0, // Set the desired width for the text container
+                                child: Text(
+                                  dealName,
+                                  style: poppinsMedium(fontSize: 13.sp),
+                                  overflow: TextOverflow
+                                      .ellipsis, // Adds "..." if the text overflows
+                                  maxLines:
+                                      1, // Ensure text stays on a single line
+                                ),
+                              ),
                               const SpacerBoxVertical(height: 5),
                               Text(
                                 restaurantName,
@@ -229,7 +232,7 @@ class FavouritesWidget extends StatelessWidget {
                 : const SizedBox.shrink();
           })
         : Container(
-            height: 140,
+            height: 18.h,
             margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
@@ -333,14 +336,14 @@ class FavouritesWidget extends StatelessWidget {
                     children: [
                       const SpacerBoxVertical(height: 10),
                       SizedBox(
-  width: 150.0,
-  child: Text(
-    dealName,
-    style: poppinsMedium(fontSize: 13.sp),
-    overflow: TextOverflow.ellipsis,
-    maxLines: 1,  
-  ),
-),
+                        width: 150.0,
+                        child: Text(
+                          dealName,
+                          style: poppinsMedium(fontSize: 13.sp),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
                       const SpacerBoxVertical(height: 5),
                       Text(
                         restaurantName,

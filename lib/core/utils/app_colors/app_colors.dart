@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppColors{
+class AppColors {
   static const Color hintText = Color(0xFF858585);
   static const Color blackColor = Color(0xFF000000);
   static const Color whiteColor = Color(0xFFFFFFFF);
@@ -12,4 +12,5 @@ class AppColors{
   static const Color appBarBackColor = Color(0xFFF8FAFC);
   static const Color gradientStartColor = Color(0xFFFF197C);
   static const Color gradientEndColor = Color(0xFFFFAA00);
+  static const Color primaryColor = Color(0xFFFF197C); // Using gradientStartColor as primary
 }

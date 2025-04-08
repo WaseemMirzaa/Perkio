@@ -52,6 +52,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
           // Use Obx to react to changes in userProfile
           if (controller.userProfile.value == null) {
             return customAppBar(
+              context: context,
               userName: 'Loading...', // Placeholder text
               userLocation: 'Loading...',
             );
@@ -65,6 +66,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
           final image = user.image;
 
           return customAppBar(
+              context: context,
               userName: userName,
               latitude: latLog?.latitude ?? 0.0,
               longitude: latLog?.longitude ?? 0.0,

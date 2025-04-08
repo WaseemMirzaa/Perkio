@@ -88,9 +88,9 @@ class _HomeBusinessState extends State<HomeBusiness> {
                     searchQuery = value;
                   });
                 },
+                context: context,
                 isNotification: false,
                 isGuestLogin: true,
-                context: context,
                 isUser: false,
                 userName: widget.isGuestLogin
                     ? 'John'
@@ -109,6 +109,7 @@ class _HomeBusinessState extends State<HomeBusiness> {
             final image = user.image;
 
             return customAppBar(
+                context: context,
                 isSearchField: true,
                 onChanged: (value) {
                   setState(() {

@@ -55,6 +55,7 @@ class _AddRewardsState extends State<AddRewards> {
                     userName: 'Loading...', // Placeholder text
                     userLocation: 'Loading...',
                     isNotification: false,
+                    context: context,
                     isChangeBusinessLocation: true,
                   );
                 }
@@ -67,6 +68,7 @@ class _AddRewardsState extends State<AddRewards> {
                 final image = user.image;
 
                 return customAppBar(
+                    context: context,
                     userName: userName,
                     isNotification: false,
                     latitude: latLog?.latitude ?? 0.0,
@@ -251,7 +253,7 @@ class _AddRewardsState extends State<AddRewards> {
                                         isCropActive: false);
                                   }, cameraTap: () {
                                     Get.back();
-                                    homeController.pickImageFromCamera(
+                                    homeController.pickImageFromCamera(context: context,
                                         isCropActive: false);
                                   }));
                         }),

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart' as NBUtils;
 import 'package:nb_utils/nb_utils.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
@@ -385,16 +386,16 @@ class _UserProfileViewState extends State<UserProfileView> {
                         textController: addressController,
                         onTap: enabled.value
                             ? () async {
-                                bool isPremitt =
+                                var permissionStatus =
                                     await LocationPermissionManager()
                                         .requestLocationPermission(context);
                                 // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationChangeScreen()));
-                                if (isPremitt) {
+                                if (permissionStatus == PermissionStatus.granted) {
                                   print(SharedPrefKey.latitude.toDouble() +
                                       SharedPrefKey.longitude.toDouble());
 
                                   final currentPosition =
-                                      await homeServices.getCurrentLocation();
+                                      await homeServices.getCurrentLocation(context);
 
                                   address = await Navigator.push(
                                       context,

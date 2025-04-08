@@ -23,44 +23,86 @@ class SubscriptionPlan extends StatefulWidget {
 class _SubscriptionPlanState extends State<SubscriptionPlan> {
   @override
   Widget build(BuildContext context) {
-    return SecondaryLayoutWidget(header:  Stack(
-      children: [
-        CustomShapeContainer(height: 21.h,),
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SpacerBoxVertical(height: 40),
-              BackButtonWidget(padding: EdgeInsets.zero,),
-              Center(child: Text(TempLanguage.txtSubscriptionPlan, style: poppinsMedium(fontSize: 25),))
-            ],
+    return SecondaryLayoutWidget(
+      header: Stack(
+        children: [
+          CustomShapeContainer(
+            height: 21.h,
           ),
-        ),
-      ],
-    ),body:  ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
-      children: [
-        SizedBox(height: 22.h,),
-        const gradientTile(),
-        const SpacerBoxVertical(height: 20),
-
-        Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Text(TempLanguage.txtChooseAPlan, style: poppinsMedium(fontSize: 18),),
-        ),
-        const SpacerBoxVertical(height: 20),
-        PlanTiles(heading: TempLanguage.txtMonthly, price: '4.99', desc: '',onTap: (){
-          widget.fromSignUp ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Navigator.pop(context);
-        },),
-        const SpacerBoxVertical(height: 20),
-        PlanTiles(heading: TempLanguage.txtYearly, price: '45', desc: '\$60 (crossed out), save 24% with yearly subscription',onTap: (){
-          widget.fromSignUp ?  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationService(child: BottomBarView(isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user ? true : false))),(route)=>false) : Get.back();
-        },
-
-
-        ),
-      ],
-    ),);
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SpacerBoxVertical(height: 40),
+                BackButtonWidget(
+                  padding: EdgeInsets.zero,
+                ),
+                Center(
+                    child: Text(
+                  TempLanguage.txtSubscriptionPlan,
+                  style: poppinsMedium(fontSize: 25),
+                ))
+              ],
+            ),
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        children: [
+          SizedBox(
+            height: 22.h,
+          ),
+          const gradientTile(),
+          const SpacerBoxVertical(height: 20),
+          Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Text(
+              TempLanguage.txtChooseAPlan,
+              style: poppinsMedium(fontSize: 18),
+            ),
+          ),
+          const SpacerBoxVertical(height: 20),
+          PlanTiles(
+            heading: TempLanguage.txtMonthly,
+            price: '4.99',
+            desc: '',
+            onTap: () {
+              widget.fromSignUp
+                  ? Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LocationService(
+                              child: BottomBarView(
+                                  isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                                      ? true
+                                      : false))),
+                      (route) => false)
+                  : Navigator.pop(context);
+            },
+          ),
+          const SpacerBoxVertical(height: 20),
+          PlanTiles(
+            heading: TempLanguage.txtYearly,
+            price: '45',
+            desc: '\$60 (crossed out), save 24% with yearly subscription',
+            onTap: () {
+              widget.fromSignUp
+                  ? Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LocationService(
+                              child: BottomBarView(
+                                  isUser: getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                                      ? true
+                                      : false))),
+                      (route) => false)
+                  : Get.back();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

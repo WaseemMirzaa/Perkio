@@ -42,6 +42,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
                 return customAppBar(
                   userName: 'Loading...', // Placeholder text
                   userLocation: 'Loading...',
+                  context: context,
                   isNotification: false,
                   isChangeBusinessLocation: true,
                 );
@@ -59,6 +60,7 @@ class _PromotedDealViewState extends State<PromotedDealView> {
                   latitude: latLog?.latitude ?? 0.0,
                   longitude: latLog?.longitude ?? 0.0,
                   userLocation: userLocation,
+                  context: context,
                   isNotification: false,
                   isChangeBusinessLocation: true,
                   userImage: image);

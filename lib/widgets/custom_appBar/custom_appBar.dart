@@ -35,7 +35,7 @@ Widget customAppBar({
   String? userName,
   String? userImage,
   String? userLocation,
-  BuildContext? context,
+  required BuildContext context,
   String hintText = 'Search',
   double? latitude,
   double? longitude,
@@ -139,29 +139,38 @@ Widget customAppBar({
                                         )
                                       : GestureDetector(
                                           onTap: () async {
-                                            BuildContext context = Get.context!;
+                                            // BuildContext context = Get.context!;
                                             try {
                                               print(
                                                   'Change Location tapped.'); // Log the tap event
 
+                                              print('😊😊😊 ');
                                               // Get the current location
                                               final currentPosition =
                                                   await homeServices
-                                                      .getCurrentLocation();
+                                                      .getCurrentLocation(context);
+
+                                              print('😊😊😊 getCurrentLocation');
+
                                               if (currentPosition == null) {
+                                                print('😊😊😊 currentPosition == null');
+
                                                 print(
                                                     'Current position is null.'); // Log if the current position is null
                                                 // Show an error message to the user
 
                                                 return;
                                               }
+
+                                              print('😊😊😊 currentPosition == null');
+
                                               print(
                                                   'Current Position: $currentPosition'); // Log the current position
 
                                               // Navigate to location picker and get the selected address
                                               final address =
                                                   await Navigator.push(
-                                                context,
+                                                  context!,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       LocationService(

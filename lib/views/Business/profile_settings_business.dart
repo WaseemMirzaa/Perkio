@@ -26,6 +26,8 @@ import 'package:swipe_app/widgets/profile_list_items.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart' as X;
 
+import 'google_business_search.dart';
+
 class ProfileSettingsBusiness extends StatefulWidget {
   const ProfileSettingsBusiness({super.key});
 
@@ -163,7 +165,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                           onPressed: () async {
                                             Get.back();
                                             await homeController
-                                                .pickImageFromCamera()
+                                                .pickImageFromCamera(context: context)
                                                 .then((value) async {
                                               String? path = await homeController
                                                   .uploadImageToFirebaseOnID(
@@ -308,7 +310,7 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                           onTap: enabled.value
                               ? () async {
                                   final currentPosition =
-                                      await homeServices.getCurrentLocation();
+                                      await homeServices.getCurrentLocation(context);
 
                                   AddressModel address = await Navigator.push(
                                       context,
@@ -349,9 +351,29 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                         ProfileListItems(
                           path: AppAssets.profile6,
                           textController: businessIdController,
-                          enabled: enabled.value,
-                           hasHintText: true,
-                        hintText: 'Enter Google Business ID',
+                          enabled: false,
+                          hasHintText: true,
+                          hintText: 'Enter Google Business ID',
+                          onTap: enabled.value
+                              ? () async {
+                            final result = await Navigator.push<Map<String, dynamic>>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const GoogleBusinessSearch(),
+                              ),
+                            );
+
+                            if (result != null) {
+                              setState(() {
+                                businessIdController.text = result['placeId'];
+                                // Optionally update the business name if needed
+                                // userNameController.text = result['name'];
+                                // Optionally update the address if needed
+                                // addressController.text = result['address'];
+                              });
+                            }
+                          }
+                              : null,
                         ),
                         const SizedBox(
                           height: 20,
@@ -370,10 +392,6 @@ class _ProfileSettingsBusinessState extends State<ProfileSettingsBusiness> {
                                         .text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',
                                           'Email is required.');
-                                    } else if (phoneNoController
-                                        .text.isEmptyOrNull) {
-                                      X.showSnackBar('Fields Required',
-                                          'Phone is required.');
                                     } else if (addressController
                                         .text.isEmptyOrNull) {
                                       X.showSnackBar('Fields Required',

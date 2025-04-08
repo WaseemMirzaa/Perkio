@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/notification_controller.dart';
@@ -32,6 +33,7 @@ import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_container.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 import '../../widgets/snackbar_widget.dart' as X;
+import '../Business/google_business_search.dart';
 
 class AddBusinessDetailsView extends StatefulWidget {
   AddBusinessDetailsView({super.key, required this.userModel});
@@ -70,7 +72,7 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
       if (address != null) {
         businessAddressController.text = address!.completeAddress!;
       } else {
-        await homeServices.getCurrentLocation(context: context).then((value) {
+        await homeServices.getCurrentLocation(context).then((value) {
           print("Then Called");
           getAndFill();
         });
@@ -139,12 +141,12 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                     onTap: isLoading
                         ? null
                         : () async {
-                            bool isPremitt = await LocationPermissionManager()
+                            var permissionStatus = await LocationPermissionManager()
                                 .requestLocationPermission(context);
 
-                            if (isPremitt) {
+                            if (permissionStatus == PermissionStatus.granted) {
                               final currentPosition =
-                                  await homeServices.getCurrentLocation();
+                                  await homeServices.getCurrentLocation(context);
                               address = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -190,10 +192,28 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                     style: poppinsRegular(fontSize: 13),
                   ),
                   const SpacerBoxVertical(height: 10),
+                  const SpacerBoxVertical(height: 10),
                   TextFieldWidget(
                     text: 'Google Business ID',
                     textController: businessIdController,
                     focusNode: businessIDNode,
+                    isReadOnly: true, // Make it read-only since we'll handle the input through search
+                    onTap: () async {
+                      final result = await Navigator.push<Map<String, dynamic>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const GoogleBusinessSearch(),
+                        ),
+                      );
+
+                      if (result != null) {
+                        setState(() {
+                          businessIdController.text = result['placeId'];
+                          // Optionally store the business name for later use
+                          // widget.userModel.businessName = result['name'];
+                        });
+                      }
+                    },
                     onEditComplete: () => unFocusChange(context),
                   ),
                   const SpacerBoxVertical(height: 20),
@@ -221,7 +241,7 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                                     }, cameraTap: () {
                                       Get.back();
                                       homeController.pickImageFromCamera(
-                                          isCropActive: false, isLogo: true);
+                                          isCropActive: false, isLogo: true, context: context);
                                     }));
                           }),
                           Positioned(
@@ -267,7 +287,7 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                                     }, cameraTap: () {
                                       Get.back();
                                       homeController.pickImageFromCamera(
-                                          isCropActive: false);
+                                          isCropActive: false, context: context);
                                     }));
                           }),
                           Positioned(
@@ -375,8 +395,10 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
   }
 
   Future<void> getAndFill() async {
-    if (await LocationPermissionManager().requestLocationPermission(context)) {
-      latLng = await homeServices.getCurrentLocation(context: context);
+
+    var permission = await LocationPermissionManager().requestLocationPermission(context);
+    if (permission == PermissionStatus.granted) {
+      latLng = await homeServices.getCurrentLocation(context);
       final currentLocation =
           await homeServices.getAddress(latLng ?? const LatLng(0, 0));
       await addingAddress(currentLocation ?? const Placemark());

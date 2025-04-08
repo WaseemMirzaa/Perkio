@@ -15,6 +15,8 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:swipe_app/views/place_picker/apis.dart';
 
+import '../utils/permission_manager.dart';
+
 class HomeController extends GetxController {
   HomeServices homeService;
   HomeController(this.homeService);
@@ -36,18 +38,34 @@ class HomeController extends GetxController {
   }
 
   // Picking image from camera
-  Future<void> pickImageFromCamera(
-      {bool isCropActive = true, bool isLogo = false}) async {
-    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+  Future<void> pickImageFromCamera({
+    bool isCropActive = true,
+    bool isLogo = false,
+    required BuildContext context,
+  }) async {
     try {
+      final hasPermission = await PermissionManager.checkAndRequestCameraPermission(context);
+
+      if (!hasPermission) {
+        return;
+      }
+
+      final image = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+        preferredCameraDevice: CameraDevice.rear,
+      );
+
+      if (image == null) return;
+
       if (isLogo) {
-        _pickedImage2.value = File(image!.path);
+        _pickedImage2.value = File(image.path);
       } else {
-        _pickedImage.value = File(image!.path);
+        _pickedImage.value = File(image.path);
         _pickedStringImage.value = image.toString();
-        // Notify listeners via GetX
         update();
       }
+
       if (isCropActive) {
         await cropImage();
         await compressImage();
@@ -56,14 +74,18 @@ class HomeController extends GetxController {
       }
 
       _pickedImage.value = File(originalPath);
-
-      // Notify listeners via GetX
       update();
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Error picking image: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to capture image. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
-
   // Method to refresh the UI
   void refreshUI() {
     update(); // This will refresh the UI

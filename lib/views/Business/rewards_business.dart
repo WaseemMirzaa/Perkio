@@ -44,6 +44,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
               return customAppBar(
                 userName: 'Loading...', // Placeholder text
                 userLocation: 'Loading...',
+                context: context,
                 isNotification: false,
                 isChangeBusinessLocation: true,
               );
@@ -57,6 +58,7 @@ class _RewardsBusinessState extends State<RewardsBusiness> {
             final image = user.image;
 
             return customAppBar(
+                context: context,
                 userName: userName,
                 latitude: latLog?.latitude ?? 0.0,
                 longitude: latLog?.longitude ?? 0.0,

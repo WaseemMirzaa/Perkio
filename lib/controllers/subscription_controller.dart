@@ -1,102 +1,119 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-import '../services/revenue_cat_service.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SubscriptionController extends GetxController {
-  var isSubscribed = false.obs; // Initialize as false
-  var offering = Rxn<Offering>();
-  var isLoading = false.obs;
+  static const String _apiKey = 'YOUR_REVENUECAT_API_KEY';
+  static const String _entitlementId = 'premium';
+
+  final isSubscribed = false.obs;
+  final offering = Rxn<Offering>();
+  final isLoading = false.obs;
+  final currentSubscriptionType = Rxn<String>();
+  final offerings = Rxn<Offerings>();
+
+  final currentExpirationDate = Rxn<DateTime>();
+  final subscriptionStatus = Rxn<String>();
 
   @override
   void onInit() {
     super.onInit();
-    loadOfferings();
-    // Add listener for subscription status changes
-    ever(isSubscribed, (_) => update());
+    initializePurchases();
   }
 
-  Future<void> checkSubscription() async {
-    try {
-      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      print("Refreshed Customer Info: ${customerInfo.toJson()}");
-
-      // Extract active subscription status
-      bool hasActiveSubscription = customerInfo.entitlements.active
-          .containsKey('establish_agency_starter_v2');
-
-      // Check expiration date (only for active subscriptions)
-      if (hasActiveSubscription) {
-        EntitlementInfo? entitlement =
-            customerInfo.entitlements.active['establish_agency_starter_v2'];
-
-        // If the expiration date has passed, mark as unsubscribed
-        if (entitlement != null && entitlement.expirationDate != null) {
-          DateTime expiration = DateTime.parse(entitlement.expirationDate!);
-          if (DateTime.now().isAfter(expiration)) {
-            hasActiveSubscription = false;
-          }
-        }
-      }
-
-      print("Final Active Subscription Status: $hasActiveSubscription");
-      isSubscribed.value = hasActiveSubscription;
-    } catch (e) {
-      print("Error checking subscription: $e");
-      isSubscribed.value = false;
-    }
-  }
-
-  Future<void> loadOfferings() async {
+  Future<void> initializePurchases() async {
     isLoading.value = true;
+
     try {
-      offering.value = await RevenueCatService.getCurrentOffering();
-      await checkSubscription();
+      await Purchases.setDebugLogsEnabled(true);
+      String apiKey = Platform.isAndroid
+          ? 'goog_oyVwBiMHcJMhYfurnlCsjLQDxSv'
+          : 'appl_TORGRcXEczpcEfaUjrNEdUxKeqO';
+
+      await Purchases.configure(PurchasesConfiguration(apiKey));
+      await loadOfferings();
+      await checkSubscriptionStatus();
     } catch (e) {
-      print("Error loading offerings: $e");
+      showError('Failed to initialize purchases: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> purchaseSubscription() async {
-    if (offering.value?.annual == null) return;
-
-    isLoading.value = true;
+  Future<void> loadOfferings() async {
     try {
-      bool success = await RevenueCatService.purchaseProduct(
-          offering.value!.annual!.storeProduct);
+      final offerings = await Purchases.getOfferings();
 
-      await checkSubscription(); // 🔥 Ensure updated status is fetched
+      offering.value = offerings.getOffering('monthly_sub');
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      // currentSubscriptionType.value = offerings.current.('monthly_sub').getPackage('\$rc_annual').
+      this.offerings.value = offerings;
 
-      if (isSubscribed.value) {
-        Get.snackbar(
-          "Success",
-          "Subscription purchased successfully!",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-      } else {
-        Get.snackbar(
-          "Error",
-          "Subscription status not updated. Try restoring purchases.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
+      // print(offerings.getOffering('identifier'))
+
+      if (offering.value == null) {
+        showWarning('No subscription offerings available');
       }
     } catch (e) {
-      print("Error during purchase: $e");
-      Get.snackbar(
-        "Error",
-        "Purchase failed: ${e.toString()}",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showError('Failed to load offerings: ${e.toString()}');
+    }
+  }
+
+  Future<void> checkSubscriptionStatus() async {
+    try {
+      final customerInfo = await Purchases.getCustomerInfo();
+      final entitlement = customerInfo.entitlements.active[_entitlementId];
+
+      isSubscribed.value = entitlement != null;
+
+      if (isSubscribed.value && entitlement != null) {
+        // Parse expiration date
+        if (entitlement.expirationDate != null) {
+          currentExpirationDate.value = DateTime.parse(entitlement.expirationDate!);
+        }
+
+        // Determine subscription type
+        final productId = entitlement.productIdentifier.toLowerCase();
+        currentSubscriptionType.value = productId.contains('annual') ? 'yearly' : 'monthly';
+
+        // Set subscription status
+        subscriptionStatus.value = 'Active${currentExpirationDate.value != null ? " until ${_formatDate(currentExpirationDate.value!)}" : ""}';
+      } else {
+        _resetSubscriptionData();
+      }
+    } catch (e) {
+      showError('Failed to check subscription status: ${e.toString()}');
+    }
+  }
+
+  Future<void> purchaseSubscription(Package type) async {
+    if (isSubscribed.value) {
+      showWarning('You already have an active subscription');
+      return;
+    }
+
+    isLoading.value = true;
+
+    try {
+      final package = type;
+
+      if (package == null) {
+        showError('Selected subscription package not available');
+        return;
+      }
+
+      final purchaseResult = await Purchases.purchasePackage(package);
+      await _handlePurchaseResult(purchaseResult);
+    } on PurchasesErrorCode catch (e) {
+
+      if (e != PurchasesErrorCode.purchaseCancelledError) {
+        showError('Purchase failed: ${e.toString()}');
+      }
+    } catch (e) {
+      showError('Failed to process purchase: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
@@ -104,81 +121,80 @@ class SubscriptionController extends GetxController {
 
   Future<void> restorePurchases() async {
     isLoading.value = true;
+
     try {
-      await RevenueCatService.restorePurchases();
-      await checkSubscription(); // 🔥 Ensure latest data is fetched
+      final customerInfo = await Purchases.restorePurchases();
+      await checkSubscriptionStatus();
 
       if (isSubscribed.value) {
-        Get.snackbar(
-          "Restore Successful",
-          "Your subscription has been restored.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        showSuccess('Purchases restored successfully!');
       } else {
-        Get.snackbar(
-          "No Active Subscription",
-          "No active subscription found. Please subscribe.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
+        showWarning('No previous subscriptions found');
       }
     } catch (e) {
-      print("Error restoring purchases: $e");
-      Get.snackbar(
-        "Restore Failed",
-        "An error occurred while restoring purchases.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      print("type ois ;===========ss${e.toString()}");
+
+      showError('Failed to restore purchases: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
   }
 
   Future<void> cancelSubscription() async {
-    // Inform the UI that the cancellation process has started
-    isLoading.value = true;
-
-    String url = Platform.isIOS
-        ? 'https://apps.apple.com/account/subscriptions'
-        : 'https://play.google.com/store/account/subscriptions';
-
-    try {
-      if (await canLaunch(url)) {
-        await launch(url);
-        // Optionally, show some feedback like "Cancellation in progress..."
-        Get.snackbar(
-          "Cancellation Request",
-          "We've redirected you to the subscription management page.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
-
-        // 🚀 Force refresh after opening subscription page
-        Future.delayed(const Duration(seconds: 5), () async {
-          print("Rechecking subscription after cancellation...");
-          await checkSubscription();
-          // Update the UI once the subscription is checked again
-        });
-      } else {
-        throw 'Could not launch $url';
+    if (GetPlatform.isIOS) {
+      final url = Uri.parse('https://apps.apple.com/account/subscriptions');
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
       }
-    } catch (e) {
-      print("Could not launch subscription page: $e");
-      Get.snackbar(
-        "Error",
-        "Could not open subscription management page",
-        snackPosition: SnackPosition.BOTTOM,
+    } else if (GetPlatform.isAndroid) {
+      final url = Uri.parse('https://play.google.com/store/account/subscriptions');
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      }
+    }
+  }
+
+  Package? _getPackageForType(String type) {
+    final packageId = type == 'monthly' ? 'monthly_sub' : 'yearly_sub';
+    return offering.value?.getPackage(packageId);
+  }
+
+  Future<void> _handlePurchaseResult(CustomerInfo purchaseResult) async {
+    final entitlement = purchaseResult.entitlements.active[_entitlementId];
+    if (entitlement != null) {
+      await checkSubscriptionStatus();
+      showSuccess('Subscription activated successfully!');
+    }
+  }
+
+  void _resetSubscriptionData() {
+    currentSubscriptionType.value = null;
+    currentExpirationDate.value = null;
+    subscriptionStatus.value = 'Not subscribed';
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  void showSuccess(String message) {
+    Get.snackbar('Success', message,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM);
+  }
+
+  void showError(String message) {
+    Get.snackbar('Error', message,
         backgroundColor: Colors.red,
         colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false; // Stop the loading spinner after the action
-    }
+        snackPosition: SnackPosition.BOTTOM);
+  }
+
+  void showWarning(String message) {
+    Get.snackbar('Notice', message,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM);
   }
 }

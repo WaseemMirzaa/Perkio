@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/billing_service.dart';
@@ -14,10 +15,14 @@ import 'package:swipe_app/bindings/bindings.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
 import 'package:swipe_app/services/revenue_cat_service.dart';
+import 'package:swipe_app/views/place_picker/key.dart';
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await RevenueCatService.init();
+  BillingService().initStore();
 
   // Lock orientation to portrait only
   SystemChrome.setPreferredOrientations(
@@ -26,7 +31,6 @@ void main() async {
   await initialize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FCMManager.initialize();
-  await RevenueCatService.init();
 
   // Initialize Push Notification Services
   PushNotificationServices pushNotificationServices =
@@ -52,7 +56,8 @@ void main() async {
   Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
-  BillingService().initStore();
+
+  // await GoogleMap..init(apiKey: MAP_API_KEY);
 
   Get.put(SubscriptionController());
 
@@ -84,7 +89,10 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
+            scaffoldBackgroundColor: Colors.white,
           ),
+
+
           home: const SplashScreen(),
           // home: HomeSubscriptionScreen(),
           initialBinding: MyBinding(),

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
@@ -33,11 +34,14 @@ class SelectLocation extends StatefulWidget {
 }
 
 class _SelectLocationState extends State<SelectLocation> {
+
+  final RxBool isLoading = false.obs;
   final homeServices = HomeServices();
   LatLng? latLng;
   AddressModel? address;
-  final RxBool shouldShowPermissionUI = false.obs;
-  final RxBool isProcessing = true.obs;
+  // final RxBool shouldShowPermissionUI = false.obs;
+  // final RxBool isProcessing = true.obs;
+  Rx<PermissionStatus>? permissionStatusObx = Rx<PermissionStatus>(PermissionStatus.denied) ;
 
   final UserController controller = Get.put(UserController(UserServices()));
 
@@ -48,34 +52,27 @@ class _SelectLocationState extends State<SelectLocation> {
   }
 
   Future<void> _initializeLocation() async {
+
     try {
-      bool permissionGranted =
+
+      permissionStatusObx?.value =
           await LocationPermissionManager().requestLocationPermission(context);
 
-      if (permissionGranted) {
-        shouldShowPermissionUI.value = false;
-        if (widget.isGuestUser) {
-          await _handleGuestUser();
-        } else {
-          await _getAndFill();
-        }
-      } else {
-        shouldShowPermissionUI.value = true;
-        isProcessing.value = false;
+      if (permissionStatusObx?.value == PermissionStatus.granted) {
+
+       _handlePermissionGranted();
+
       }
+
     } catch (e) {
-      print("Error in initialization: $e");
-      shouldShowPermissionUI.value = true;
-      isProcessing.value = false;
+
     }
   }
 
   Future<void> _handleGuestUser() async {
     try {
-      isProcessing.value = true;
-      shouldShowPermissionUI.value = false;
 
-      latLng = await homeServices.getCurrentLocation(context: context);
+      latLng = await homeServices.getCurrentLocation(context);
       if (latLng != null) {
         final currentLocation =
             await homeServices.getAddress(latLng ?? const LatLng(0, 0));
@@ -101,18 +98,18 @@ class _SelectLocationState extends State<SelectLocation> {
       print("Error handling guest user: $e");
       Get.snackbar('Error', 'Failed to fetch location: $e',
           snackPosition: SnackPosition.TOP);
-      shouldShowPermissionUI.value = true;
+      // shouldShowPermissionUI.value = true;
     } finally {
-      isProcessing.value = false;
+      // isProcessing.value = false;
     }
   }
 
   Future<void> _getAndFill() async {
     try {
-      isProcessing.value = true;
-      shouldShowPermissionUI.value = false;
+      // isProcessing.value = true;
+      // shouldShowPermissionUI.value = false;
 
-      latLng = await homeServices.getCurrentLocation(context: context);
+      latLng = await homeServices.getCurrentLocation(context);
       if (latLng != null) {
         final currentLocation =
             await homeServices.getAddress(latLng ?? const LatLng(0, 0));
@@ -122,12 +119,12 @@ class _SelectLocationState extends State<SelectLocation> {
     } catch (e) {
       print("Error getting location: $e");
       Get.snackbar('Error', 'Failed to fetch location: $e');
-      shouldShowPermissionUI.value = true;
+      // shouldShowPermissionUI.value = true;
     } finally {
       // Only set isProcessing to false if we're showing the permission UI
-      if (shouldShowPermissionUI.value) {
-        isProcessing.value = false;
-      }
+      // if (shouldShowPermissionUI.value) {
+      //   isProcessing.value = false;
+      // }
     }
   }
 
@@ -167,14 +164,14 @@ class _SelectLocationState extends State<SelectLocation> {
       await controller.signUp(widget.userModel!, (error) {
         if (error != null) {
           Get.snackbar('Error', error, snackPosition: SnackPosition.TOP);
-          shouldShowPermissionUI.value = true;
-          isProcessing.value = false;
+          // shouldShowPermissionUI.value = true;
+          // isProcessing.value = false;
         }
       }, false);
     } catch (e) {
       Get.snackbar('Error', 'Sign up failed: $e');
-      shouldShowPermissionUI.value = true;
-      isProcessing.value = false;
+      // shouldShowPermissionUI.value = true;
+      // isProcessing.value = false;
     }
   }
 
@@ -197,7 +194,7 @@ class _SelectLocationState extends State<SelectLocation> {
           ),
           Obx(() {
             // Show loading indicator if processing or controller is loading
-            if (isProcessing.value || controller.loading.value) {
+            if (permissionStatusObx == null) {
               return Center(
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -222,7 +219,8 @@ class _SelectLocationState extends State<SelectLocation> {
             }
 
             // Only show permission UI if explicitly set to true
-            if (shouldShowPermissionUI.value) {
+            if (permissionStatusObx != null
+            && permissionStatusObx?.value != PermissionStatus.granted ) {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -246,7 +244,8 @@ class _SelectLocationState extends State<SelectLocation> {
                       ),
                       SizedBox(height: 4.h),
                       GestureDetector(
-                        onTap: _initializeLocation,
+                        onTap: ()  async {
+                          _initializeLocation();                        },
                         child: Container(
                           padding: EdgeInsets.symmetric(
                               vertical: 12.sp, horizontal: 24.sp),
@@ -255,7 +254,7 @@ class _SelectLocationState extends State<SelectLocation> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            'Allow Permission',
+                            'Allow Permission From Settings',
                             style: poppinsRegular(
                               color: AppColors.blackColor,
                               fontSize: 16,
@@ -296,5 +295,18 @@ class _SelectLocationState extends State<SelectLocation> {
         ],
       ),
     );
+  }
+
+  Future<void> _handlePermissionGranted() async {
+
+    if (widget.isGuestUser) {
+
+      await _handleGuestUser();
+
+    } else {
+
+      await _getAndFill();
+
+    }
   }
 }

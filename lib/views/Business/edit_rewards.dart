@@ -69,6 +69,7 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                     isNotification: false,
                     userName: 'Loading...', // Placeholder text
                     userLocation: 'Loading...',
+                    context: context,
                     isChangeBusinessLocation: true,
                   );
                 }
@@ -81,6 +82,7 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                 final image = user.image;
 
                 return customAppBar(
+                    context: context,
                     userName: userName,
                     isNotification: false,
                     latitude: latLog?.latitude ?? 0.0,
@@ -267,7 +269,7 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                                               isCropActive: false);
                                         }, cameraTap: () {
                                           Get.back();
-                                          homeController.pickImageFromCamera(
+                                          homeController.pickImageFromCamera(context: context,
                                               isCropActive: false);
                                         }));
                               })
@@ -282,7 +284,7 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                                               isCropActive: false);
                                         }, cameraTap: () {
                                           Get.back();
-                                          homeController.pickImageFromCamera(
+                                          homeController.pickImageFromCamera(context: context,
                                               isCropActive: false);
                                         }));
                               }),

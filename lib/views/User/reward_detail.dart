@@ -14,6 +14,8 @@ import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:get/get.dart';
 
+import '../../utils/permission_manager.dart';
+
 class RewardDetail extends StatefulWidget {
   final RewardModel? reward;
   final String? userId;
@@ -55,25 +57,30 @@ class _RewardDetailState extends State<RewardDetail> {
   }
 
   Future<void> _pickImageAndUpload() async {
-    await Future.delayed(
-        const Duration(milliseconds: 200)); // Give the UI time to update
-    final status = await Permission.camera.request();
+    try {
+      final hasPermission = await PermissionManager.checkAndRequestCameraPermission(context);
 
-    if (status.isGranted) {
+      if (!hasPermission) {
+        return;
+      }
+
       rewardController.isLoadingforscan.value = true;
-
-      print('💥💥💥💥💥💥💥💥💥💥 ${widget.reward!.rewardId} ');
-      print('💥💥💥💥💥💥💥💥💥💥 ${widget.userId} ');
-
-
-      
 
       await rewardController.pickImageAndUpload(
         widget.reward!,
         widget.userId!,
       );
-    } else if (status.isDenied || status.isPermanentlyDenied) {
-      _showPermissionDialog(context);
+    } catch (e) {
+      debugPrint('Error in _pickImageAndUpload: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to process image. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      rewardController.isLoadingforscan.value = false;
     }
   }
 

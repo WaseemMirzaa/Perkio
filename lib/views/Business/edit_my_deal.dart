@@ -69,6 +69,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
                 if (userController.businessProfile.value == null) {
                   return customAppBar(
                     isNotification: false,
+                    context: context,
                     userName: 'Loading...', // Placeholder text
                     userLocation: 'Loading...',
                     isChangeBusinessLocation: true,
@@ -83,6 +84,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
                  final image = user.image;
 
                 return customAppBar(
+                  context: context,
                   userName: userName,
                   isNotification: false,
                   latitude: latLog?.latitude ?? 0.0,
@@ -225,7 +227,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
                                               isCropActive: false);
                                         }, cameraTap: () {
                                           Get.back();
-                                          homeController.pickImageFromCamera(
+                                          homeController.pickImageFromCamera(context: context,
                                               isCropActive: false);
                                         }));
                               })
@@ -239,7 +241,7 @@ class _EditMyDealsState extends State<EditMyDeals> {
                                               isCropActive: false);
                                         }, cameraTap: () {
                                           Get.back();
-                                          homeController.pickImageFromCamera(
+                                          homeController.pickImageFromCamera(context: context,
                                               isCropActive: false);
                                         }));
                               }),

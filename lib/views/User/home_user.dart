@@ -158,8 +158,9 @@ class _HomeUserState extends State<HomeUser> {
               isSearchField: true,
               onChanged: searchDeals,
               isGuestLogin: true,
-              isSearching: controller.isSearching,
               context: context,
+
+              isSearching: controller.isSearching,
               userName: widget.isGuestLogin
                   ? 'John'
                   : 'Loading...', // Placeholder text
@@ -182,6 +183,7 @@ class _HomeUserState extends State<HomeUser> {
             onChanged: searchDeals,
             isSearching: controller.isSearching,
             userName: userName,
+            context: context,
             latitude: latLog?.latitude ?? 0.0,
             longitude: latLog?.longitude ?? 0.0,
             userLocation: userLocation,

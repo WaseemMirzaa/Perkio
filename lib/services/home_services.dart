@@ -148,9 +148,14 @@ class HomeServices {
     }
   }
 
-  Future<LatLng?> getCurrentLocation({BuildContext? context}) async {
+  Future<LatLng?> getCurrentLocation(BuildContext context) async {
     LatLng? latLng;
-    if (await Permission.location.isGranted) {
+
+    // print('😊😊😊 Permission.location.isGranted ${await Permission.location.isGranted}');
+
+
+    if (await LocationPermissionManager.isLocationPermissionEnabled(context)) {
+
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -160,23 +165,24 @@ class HomeServices {
 
       log("✔✔✔✔✔✔✔ LATITUDE WHEN APP STARTED: ${latLng.latitude}");
       log(" ✔✔✔✔✔✔✔✔ LONGITUDE WHEN APP STARTED: ${latLng.longitude}");
-      // } catch (e) {
-      //   print('Error: $e');
-      // }
+
     } else {
+
+      // print('😊😊😊 Permission.location.isGranted == false');
+
       await LocationPermissionManager
           .requestLocationPermissionWithConsentDialog(
               scaffoldContext: context!,
               onGranted: () async {
-                print("ON GRANTED");
-                await getCurrentLocation();
+                // print("ON GRANTED");
+                // await getCurrentLocation(context: context);
               },
               onDenied: () async {
-                print("ON DENIED");
-                showAdaptiveDialog(
-                    context: context,
-                    builder: (context) => const PermissionDeniedDialog());
-              });
+                // print("ON DENIED");
+                // showAdaptiveDialog(
+                //     context: context,
+                //     builder: (context) => const PermissionDeniedDialog());
+              },);
     }
     return latLng;
   }

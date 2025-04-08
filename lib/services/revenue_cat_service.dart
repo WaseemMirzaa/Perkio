@@ -7,18 +7,26 @@ class RevenueCatService {
     await Purchases.setDebugLogsEnabled(true);
 
     String apiKey = Platform.isAndroid
-        ? 'goog_SFVBBIuzwEmVLXfudbSBzVMfHGh'
-        : 'appl_rlskQNVQHfwDPQbaFJCDVfPEHlM';
+        ? 'goog_oyVwBiMHcJMhYfurnlCsjLQDxSv'
+        : 'appl_TORGRcXEczpcEfaUjrNEdUxKeqO';
 
     await Purchases.configure(PurchasesConfiguration(apiKey));
   }
 
   static Future<Offering?> getCurrentOffering() async {
+
     try {
+
       Offerings offerings = await Purchases.getOfferings();
+
+      print('🟢🟢🟢🟢🟢getCurrentOffering $offerings');
+
       return offerings.current;
     } catch (e) {
-      print("Error fetching offering: $e");
+
+      print('🟢🟢🟢🟢🟢Error $e');
+
+      print("🟦🟦🟦🟦 Error fetching offering: $e");
       rethrow; // Rethrow to handle in controller
     }
   }
@@ -45,7 +53,7 @@ class RevenueCatService {
       return customerInfo.entitlements.active.containsKey('establish_agency_starter_v2');
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
-
+ 
       // If the user already owns the product, treat it as success.
       if (errorCode == PurchasesErrorCode.productAlreadyPurchasedError ||
           errorCode == PurchasesErrorCode.productNotAvailableForPurchaseError) {
@@ -61,7 +69,7 @@ class RevenueCatService {
   static Future<bool> isUserSubscribed() async {
     try {
       CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      return customerInfo.entitlements.active.containsKey('establish_agency_starter_v2');
+      return customerInfo.entitlements.active.containsKey('establish_agency_starter_v2 ❗️❗️❗️');
     } catch (e) {
       print("Subscription check error: $e");
       rethrow; // Rethrow to handle in controller

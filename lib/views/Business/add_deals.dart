@@ -63,6 +63,7 @@ class _AddDealsState extends State<AddDeals> {
                   // Use Obx to react to changes in userProfile
                   if (userController.businessProfile.value == null) {
                     return customAppBar(
+                      context: context,
                       userName: 'Loading...', // Placeholder text
                       userLocation: 'Loading...',
                       isNotification: false,
@@ -79,6 +80,7 @@ class _AddDealsState extends State<AddDeals> {
 
                   return customAppBar(
                       userName: userName,
+                      context: context,
                       isNotification: false,
                       latitude: latLog?.latitude ?? 0.0,
                       longitude: latLog?.longitude ?? 0.0,
@@ -220,7 +222,7 @@ class _AddDealsState extends State<AddDeals> {
                                           isCropActive: false);
                                     }, cameraTap: () {
                                       Get.back();
-                                      homeController.pickImageFromCamera(
+                                      homeController.pickImageFromCamera(context: context,
                                           isCropActive: false);
                                     }));
                           }),

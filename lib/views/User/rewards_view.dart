@@ -145,6 +145,7 @@ class _RewardsViewState extends State<RewardsView> {
           if (userController.userProfile.value == null) {
             return customAppBar(
               isSearchField: true,
+              context: context,
               onChanged: searchDeals,
               isSearching: _controller.isSearching,
               textController: searchController,
@@ -161,6 +162,7 @@ class _RewardsViewState extends State<RewardsView> {
 
           return customAppBar(
               isReward: true,
+              context: context,
               isSearchField: true,
               onChanged: searchDeals,
               isSearching: _controller.isSearching,

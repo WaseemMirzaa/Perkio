@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:swipe_app/controllers/subscription_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:purchases_flutter/models/package_wrapper.dart';
 
 class VendorSubscriptionUI extends StatelessWidget {
-  final SubscriptionController subscriptionController =
-      Get.put(SubscriptionController());
+  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
+  final bool fromSignUp;
 
-  VendorSubscriptionUI({super.key});
+  VendorSubscriptionUI({super.key, this.fromSignUp = false});
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,22 +19,26 @@ class VendorSubscriptionUI extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 1,
         centerTitle: true,
-        title: const Text(
-          'Subscription Plans',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+        title: Text(
+          'Premium Plans',
+          style: poppinsMedium(fontSize: 20),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Get.back(),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => subscriptionController.restorePurchases(),
+            child: Text(
+              'Restore',
+              style: poppinsRegular(fontSize: 14, color: AppColors.gradientStartColor),
+            ),
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       body: Obx(() {
-        // Show loading indicator while fetching data
         if (subscriptionController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -41,143 +48,434 @@ class VendorSubscriptionUI extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Choose Your Plan',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Select the perfect plan for your business needs',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
+              _buildHeader(),
               const SizedBox(height: 32),
-              SubscriptionPlansList(subscriptionController),
+              _buildFeaturesList(),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () => subscriptionController.restorePurchases(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey.shade200,
-                  foregroundColor: Colors.black87,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  'Restore Subscription',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
+              _buildSubscriptionPlans(),
             ],
           ),
         );
       }),
     );
   }
-}
 
-class SubscriptionPlansList extends StatelessWidget {
-  final SubscriptionController subscriptionController;
-
-  const SubscriptionPlansList(this.subscriptionController, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      if (subscriptionController.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      if (subscriptionController.offering.value?.annual == null) {
-        return const Center(child: Text("No subscription available"));
-      }
-
-      Package product = subscriptionController.offering.value!.annual!;
-
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.orange, width: 2),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                product.storeProduct.title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                'Unlock Premium Features',
+                style: poppinsBold(fontSize: 24, color: Colors.white),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                'Enjoy premium features and rewards!',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                'Get unlimited access to all premium features and grow your business',
+                style: poppinsRegular(fontSize: 14, color: Colors.white),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
-              Text(
-                product.storeProduct.priceString,
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Obx(() {
-                return ElevatedButton(
-                  onPressed: () async {
-                    if (subscriptionController.isSubscribed.value) {
-                      await subscriptionController.cancelSubscription();
-                    } else {
-                      await subscriptionController.purchaseSubscription();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: subscriptionController.isSubscribed.value
-                        ? Colors.red
-                        : Colors.orange,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: subscriptionController.isLoading.value
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          subscriptionController.isSubscribed.value
-                              ? 'Cancel Subscription'
-                              : 'Subscribe Now',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                );
-              }),
             ],
           ),
         ),
-      );
-    });
+      ],
+    );
+  }
+  Widget _buildSubscriptionPlans() {
+    return Column(
+      children: [
+        // Active Subscription Section
+        Obx(() => subscriptionController.isSubscribed.value
+            ? Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.green.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: [
+              Text(
+                'Active Subscription',
+                style: poppinsBold(fontSize: 20),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                subscriptionController.subscriptionStatus.value ?? '',
+                style: poppinsRegular(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => subscriptionController.cancelSubscription(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Manage Subscription',
+                  style: poppinsMedium(fontSize: 16, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        )
+            : const SizedBox.shrink()
+        ),
+
+        // No Plans Available Message
+        Obx(() => subscriptionController.offering.value == null
+            ? Center(
+          child: Text(
+            'No subscription plans available',
+            style: poppinsMedium(fontSize: 16),
+          ),
+        )
+            : const SizedBox.shrink()
+        ),
+
+
+        // Monthly Plan
+        Obx(() => subscriptionController.offering.value?.getPackage('\$rc_monthly') != null
+            ? _buildPlanCard(
+          package: subscriptionController.offering.value!.getPackage('\$rc_monthly'),
+          title: 'Monthly Premium',
+          description: 'Perfect for trying out our premium features',
+          isPopular: false,
+          subscriptionType: 'monthly',
+        )
+            : const SizedBox.shrink()
+        ),
+
+        const SizedBox(height: 16),
+
+        // Yearly Plan
+        Obx(() => subscriptionController.offering.value?.getPackage('\$rc_annual') != null
+            ? _buildPlanCard(
+          package: subscriptionController.offering.value!.getPackage('\$rc_annual'),
+          title: 'Yearly Premium',
+          description: 'Our best value plan with 2 months free',
+          isPopular: true,
+          subscriptionType: 'yearly',
+        )
+            : const SizedBox.shrink()
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPlanCard({
+    required Package? package,
+    required String title,
+    required String description,
+    required bool isPopular,
+    required String subscriptionType,
+  }) {
+    if (package == null) return const SizedBox.shrink();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isPopular ? AppColors.gradientStartColor : Colors.grey.shade300,
+          width: isPopular ? 2 : 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          if (isPopular)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.gradientStartColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(isPopular ? 14 : 15),
+                  topRight: Radius.circular(isPopular ? 14 : 15),
+                ),
+              ),
+              child: Text(
+                'MOST POPULAR',
+                style: poppinsBold(fontSize: 12, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: poppinsBold(fontSize: 20),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  description,
+                  style: poppinsRegular(fontSize: 14, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      package.storeProduct.priceString,
+                      style: poppinsBold(fontSize: 32),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      subscriptionType == 'yearly' ? '/year' : '/month',
+                      style: poppinsRegular(fontSize: 14, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    //  onPressed: () async {
+                    //   print("tyope ksdhf ; $subscriptionType");
+                    //   try {
+                    //     await subscriptionController.purchaseSubscription(package);
+                    //     if (subscriptionController.isSubscribed.value) {
+                    //       Get.back();
+                    //       Get.snackbar(
+                    //         'Success',
+                    //         'Subscription activated successfully!',
+                    //         backgroundColor: Colors.green,
+                    //         colorText: Colors.white,
+                    //       );
+                    //     }
+                    //   } catch (e) {
+                    //     Get.snackbar(
+                    //       'Error',
+                    //       'Failed to process subscription',
+                    //       backgroundColor: Colors.red,
+                    //       colorText: Colors.white,
+                    //     );
+                    //   }
+                    // },
+                    onPressed: () async {
+                      // Show confirmation dialog first
+                      bool? confirm = await Get.dialog<bool>(
+                        AlertDialog(
+                          title: Text(
+                            'Confirm Subscription',
+                            style: poppinsBold(fontSize: 18),
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Are you sure you want to subscribe to this plan?',
+                                style: poppinsRegular(fontSize: 16),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'You will get:',
+                                style: poppinsMedium(fontSize: 14),
+                              ),
+                              const SizedBox(height: 8),
+                              _buildBulletPoint('Unlimited Deal Scanning'),
+                              _buildBulletPoint('Deal Notifications'),
+                              _buildBulletPoint('Area-Based Alerts'),
+                              _buildBulletPoint('Featured Listings'),
+                              _buildBulletPoint('Premium Support'),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Price: ${package.storeProduct.priceString}/${subscriptionType == 'yearly' ? 'year' : 'month'}',
+                                style: poppinsBold(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Get.back(result: false),
+                              child: Text(
+                                'Cancel',
+                                style: poppinsRegular(fontSize: 14),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Get.back(result: true),
+                              child: Text(
+                                'Subscribe',
+                                style: poppinsMedium(
+                                  fontSize: 14,
+                                  color: AppColors.gradientStartColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      // Only proceed if user confirmed
+                      if (confirm == true) {
+                        try {
+                          await subscriptionController.purchaseSubscription(package);
+                          if (subscriptionController.isSubscribed.value) {
+                            Get.snackbar(
+                              'Success',
+                              'Subscription activated successfully!',
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                            );
+                            await Future.delayed(const Duration(seconds: 1));
+                            Get.back();
+                          } else {
+                            Get.snackbar(
+                              'Notice',
+                              'Subscription process incomplete. Please try again.',
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.white,
+                            );
+                          }
+                        } catch (e) {
+                          if (e.toString().contains('canceled')) {
+                            return;
+                          }
+                          Get.snackbar(
+                            'Error',
+                            'Failed to process subscription. Please try again.',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                        }
+                      }
+                    },                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isPopular ? AppColors.gradientStartColor : Colors.blue,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Subscribe Now',
+                      style: poppinsMedium(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeaturesList() {
+    final features = [
+      {
+        'icon': Icons.notifications_active_outlined,
+        'title': 'Deal Notifications',
+        'description': 'Get instant notifications for new deals and rewards in your area',
+      },
+      {
+        'icon': Icons.qr_code_scanner_outlined,
+        'title': 'Unlimited Deal Scanning',
+        'description': 'Scan unlimited deals and rewards',
+      },
+      {
+        'icon': Icons.location_on_outlined,
+        'title': 'Area-Based Alerts',
+        'description': 'Stay updated with deals near you',
+      },
+      {
+        'icon': Icons.star_outline,
+        'title': 'Featured Listings',
+        'description': 'Get more visibility for your deals',
+      },
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Premium Features',
+          style: poppinsBold(fontSize: 20),
+        ),
+        const SizedBox(height: 16),
+        ...features.map((feature) => _buildFeatureItem(feature)),
+      ],
+    );
+  }
+
+  Widget _buildFeatureItem(Map<String, dynamic> feature) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.gradientStartColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              feature['icon'] as IconData,
+              color: AppColors.gradientStartColor,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  feature['title'] as String,
+                  style: poppinsMedium(fontSize: 16),
+                ),
+                Text(
+                  feature['description'] as String,
+                  style: poppinsRegular(fontSize: 14, color: Colors.grey.shade600),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _buildBulletPoint(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Icon(
+            Icons.check_circle,
+            size: 16,
+            color: AppColors.gradientStartColor,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: poppinsRegular(fontSize: 14),
+          ),
+        ],
+      ),
+    );
   }
 }

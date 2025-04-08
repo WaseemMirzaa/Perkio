@@ -1,3 +1,3 @@
-const MAP_API_KEY= "AIzaSyBaY8StWK9aj873nhaxmlSfB-puHYpYo7I"; // Linker
+const MAP_API_KEY= "AIzaSyDeoZ_Qn4I9iwMptMAlyvjCLKrQYWVeZIw"; // Linker
 
 

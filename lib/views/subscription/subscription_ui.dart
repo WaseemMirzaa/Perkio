@@ -11,7 +11,6 @@ class VendorSubscriptionUI extends StatelessWidget {
 
   VendorSubscriptionUI({super.key, this.fromSignUp = false});
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,85 +91,122 @@ class VendorSubscriptionUI extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildSubscriptionPlans() {
     return Column(
       children: [
         // Active Subscription Section
-        Obx(() => subscriptionController.isSubscribed.value
+        Obx(() => subscriptionController.isSubscribed.value == true
             ? Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              Text(
-                'Active Subscription',
-                style: poppinsBold(fontSize: 20),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                subscriptionController.subscriptionStatus.value ?? '',
-                style: poppinsRegular(fontSize: 16),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => subscriptionController.cancelSubscription(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                child: Text(
-                  'Manage Subscription',
-                  style: poppinsMedium(fontSize: 16, color: Colors.white),
+                child: Column(
+                  children: [
+                    Text(
+                      'Active Subscription',
+                      style: poppinsBold(fontSize: 20),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      subscriptionController.subscriptionStatus.value ?? '',
+                      style: poppinsRegular(fontSize: 16),
+                    ),
+                    const SizedBox(height: 16),
+                    Obx(() =>subscriptionController.isCancellingSubscription.value
+                        ?   Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // const SizedBox(
+                        //   width: 16,
+                        //   height: 16,
+                        //   child: CircularProgressIndicator(
+                        //     strokeWidth: 2,
+                        //     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        //   ),
+                        // ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Your subscription has been canceled.\nPlease allow some time for the changes to take effect.",
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          style: poppinsMedium(fontSize: 16, color: Colors.red),
+                        ),
+                      ],
+                    )
+                        :ElevatedButton(
+                      onPressed: subscriptionController.isCancellingSubscription.value
+                        ? null  // Disable button when cancelling
+                        : () => subscriptionController.cancelSubscription(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                            'Manage Subscription',
+                            style: poppinsMedium(fontSize: 16, color: Colors.white),
+                          ),
+                    )),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        )
-            : const SizedBox.shrink()
-        ),
+              )
+            : const SizedBox.shrink()),
 
         // No Plans Available Message
         Obx(() => subscriptionController.offering.value == null
             ? Center(
-          child: Text(
-            'No subscription plans available',
-            style: poppinsMedium(fontSize: 16),
-          ),
-        )
-            : const SizedBox.shrink()
-        ),
-
+                child: Text(
+                  'No subscription plans available',
+                  style: poppinsMedium(fontSize: 16),
+                ),
+              )
+            : const SizedBox.shrink()),
+        const SizedBox(height: 16),
 
         // Monthly Plan
-        Obx(() => subscriptionController.offering.value?.getPackage('\$rc_monthly') != null
-            ? _buildPlanCard(
-          package: subscriptionController.offering.value!.getPackage('\$rc_monthly'),
-          title: 'Monthly Premium',
-          description: 'Perfect for trying out our premium features',
-          isPopular: false,
-          subscriptionType: 'monthly',
-        )
-            : const SizedBox.shrink()
-        ),
+        Obx(() {
+          final isSubscribed = subscriptionController.isSubscribed.value;
+          final subscriptionType = subscriptionController.currentSubscriptionType.value;
+          print("Monthly plan UI check: isSubscribed=$isSubscribed, subscriptionType=$subscriptionType");
+
+          return isSubscribed == true && subscriptionType == 'yearly'
+            ? const SizedBox.shrink()  // Hide if yearly subscription is active
+            : subscriptionController.offering.value?.getPackage('\$rc_monthly') != null
+                ? _buildPlanCard(
+                    package: subscriptionController.offering.value!.getPackage('\$rc_monthly'),
+                    title: 'Monthly Premium',
+                    description: 'Perfect for trying out our premium features',
+                    isPopular: false,
+                    subscriptionType: 'monthly',
+                  )
+                : const SizedBox.shrink();
+        }),
 
         const SizedBox(height: 16),
 
         // Yearly Plan
-        Obx(() => subscriptionController.offering.value?.getPackage('\$rc_annual') != null
-            ? _buildPlanCard(
-          package: subscriptionController.offering.value!.getPackage('\$rc_annual'),
-          title: 'Yearly Premium',
-          description: 'Our best value plan with 2 months free',
-          isPopular: true,
-          subscriptionType: 'yearly',
-        )
-            : const SizedBox.shrink()
-        ),
+        Obx(() {
+          final isSubscribed = subscriptionController.isSubscribed.value;
+          final subscriptionType = subscriptionController.currentSubscriptionType.value;
+          print("Yearly plan UI check: isSubscribed=$isSubscribed, subscriptionType=$subscriptionType");
+
+          return isSubscribed == true && subscriptionType == 'monthly'
+            ? const SizedBox.shrink()  // Hide if monthly subscription is active
+            : subscriptionController.offering.value?.getPackage('\$rc_annual') != null
+                ?
+          _buildPlanCard(
+                    package: subscriptionController.offering.value!.getPackage('\$rc_annual'),
+                    title: 'Yearly Premium',
+                    description: 'Our best value plan with 2 months free',
+                    isPopular: true,
+                    subscriptionType: 'yearly',
+                  )
+                : const SizedBox.shrink();
+        }),
       ],
     );
   }
@@ -252,30 +288,54 @@ class VendorSubscriptionUI extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    //  onPressed: () async {
-                    //   print("tyope ksdhf ; $subscriptionType");
-                    //   try {
-                    //     await subscriptionController.purchaseSubscription(package);
-                    //     if (subscriptionController.isSubscribed.value) {
-                    //       Get.back();
-                    //       Get.snackbar(
-                    //         'Success',
-                    //         'Subscription activated successfully!',
-                    //         backgroundColor: Colors.green,
-                    //         colorText: Colors.white,
-                    //       );
-                    //     }
-                    //   } catch (e) {
-                    //     Get.snackbar(
-                    //       'Error',
-                    //       'Failed to process subscription',
-                    //       backgroundColor: Colors.red,
-                    //       colorText: Colors.white,
-                    //     );
-                    //   }
-                    // },
                     onPressed: () async {
-                      // Show confirmation dialog first
+                      // Check subscription status first
+                      if (subscriptionController.isSubscribed.value) {
+                        // Show cancellation confirmation dialog
+                        bool? confirmCancel = await Get.dialog<bool>(
+                          AlertDialog(
+                            title: Text(
+                              'Cancel Subscription',
+                              style: poppinsBold(fontSize: 18),
+                            ),
+                            content: Text(
+                              'Are you sure you want to cancel your subscription? You will continue to have access until the end of your current billing period.',
+                              style: poppinsRegular(fontSize: 16),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Get.back(result: false),
+                                child: Text(
+                                  'Keep Subscription',
+                                  style: poppinsRegular(fontSize: 14),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => Get.back(result: true),
+                                child: Text(
+                                  'Cancel Subscription',
+                                  style: poppinsMedium(
+                                    fontSize: 14,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirmCancel == true) {
+                          try {
+                            await subscriptionController.cancelSubscription();
+                          } catch (e) {
+                            // Error handling is done in the controller
+                          }
+                        }
+                        return;
+                      }
+
+                      // Original subscription flow for non-subscribed users
+                      // Show confirmation dialog
                       bool? confirm = await Get.dialog<bool>(
                         AlertDialog(
                           title: Text(
@@ -330,51 +390,31 @@ class VendorSubscriptionUI extends StatelessWidget {
                         ),
                       );
 
-                      // Only proceed if user confirmed
                       if (confirm == true) {
                         try {
                           await subscriptionController.purchaseSubscription(package);
-                          if (subscriptionController.isSubscribed.value) {
-                            Get.snackbar(
-                              'Success',
-                              'Subscription activated successfully!',
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                            );
-                            await Future.delayed(const Duration(seconds: 1));
-                            Get.back();
-                          } else {
-                            Get.snackbar(
-                              'Notice',
-                              'Subscription process incomplete. Please try again.',
-                              backgroundColor: Colors.orange,
-                              colorText: Colors.white,
-                            );
-                          }
                         } catch (e) {
-                          if (e.toString().contains('canceled')) {
-                            return;
-                          }
-                          Get.snackbar(
-                            'Error',
-                            'Failed to process subscription. Please try again.',
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white,
-                          );
+                          // Error handling is done in the controller
                         }
                       }
-                    },                    style: ElevatedButton.styleFrom(
+                    },
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: isPopular ? AppColors.gradientStartColor : Colors.blue,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(
-                      'Subscribe Now',
-                      style: poppinsMedium(fontSize: 16, color: Colors.white),
-                    ),
+                    child: Obx(() {
+                      // Force UI update by accessing the value
+                      final isSubscribed = subscriptionController.isSubscribed.value;
+                      print("UI Button Update: isSubscribed = $isSubscribed");
+
+                      return Text(
+                        isSubscribed ? 'Cancel' : 'Subscribe Now',
+                        style: poppinsMedium(fontSize: 16, color: Colors.white),
+                      );
+                    }),
                   ),
                 ),
               ],
@@ -459,12 +499,13 @@ class VendorSubscriptionUI extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildBulletPoint(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.check_circle,
             size: 16,
             color: AppColors.gradientStartColor,

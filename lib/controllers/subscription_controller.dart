@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:get/get.dart';
@@ -7,11 +8,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SubscriptionController extends GetxController {
   static const String _apiKey = 'YOUR_REVENUECAT_API_KEY';
-  static const String _entitlementId = 'premium';
+  // Update entitlement IDs to match PlayStore products
+  static const String _monthlyEntitlementId = 'monthly_sub';
+  static const String _yearlyEntitlementId = 'yearly_sub';
 
   final isSubscribed = false.obs;
   final offering = Rxn<Offering>();
   final isLoading = false.obs;
+  final isCancellingSubscription = false.obs;
   final currentSubscriptionType = Rxn<String>();
   final offerings = Rxn<Offerings>();
 
@@ -65,51 +69,87 @@ class SubscriptionController extends GetxController {
   Future<void> checkSubscriptionStatus() async {
     try {
       final customerInfo = await Purchases.getCustomerInfo();
-      final entitlement = customerInfo.entitlements.active[_entitlementId];
 
-      isSubscribed.value = entitlement != null;
+      // Check for either subscription type
+      final monthlyEntitlement = customerInfo.entitlements.active[_monthlyEntitlementId];
+      final yearlyEntitlement = customerInfo.entitlements.active[_yearlyEntitlementId];
 
-      if (isSubscribed.value && entitlement != null) {
-        // Parse expiration date
-        if (entitlement.expirationDate != null) {
-          currentExpirationDate.value = DateTime.parse(entitlement.expirationDate!);
+      // Debug log
+      print("Active entitlements: ${customerInfo.entitlements.active.keys}");
+      print("Monthly entitlement: $monthlyEntitlement");
+      print("Yearly entitlement: $yearlyEntitlement");
+
+      isSubscribed.value = monthlyEntitlement != null || yearlyEntitlement != null;
+
+      if (isSubscribed.value) {
+        // Set subscription type
+        currentSubscriptionType.value = monthlyEntitlement != null ? 'monthly' : 'yearly';
+
+        // Set subscription status message
+        final activeSubscription = monthlyEntitlement ?? yearlyEntitlement;
+        if (activeSubscription?.expirationDate != null) {
+          final expiryDate = activeSubscription!.expirationDate;
+          currentExpirationDate.value = expiryDate as DateTime?;
+          subscriptionStatus.value = 'Active until ${_formatDate(expiryDate as DateTime)}';
+        } else {
+          subscriptionStatus.value = 'Active subscription';
         }
-
-        // Determine subscription type
-        final productId = entitlement.productIdentifier.toLowerCase();
-        currentSubscriptionType.value = productId.contains('annual') ? 'yearly' : 'monthly';
-
-        // Set subscription status
-        subscriptionStatus.value = 'Active${currentExpirationDate.value != null ? " until ${_formatDate(currentExpirationDate.value!)}" : ""}';
       } else {
-        _resetSubscriptionData();
+        // Check if there's any active entitlement (fallback check)
+        final anyActiveEntitlement = customerInfo.entitlements.active.isNotEmpty;
+        if (anyActiveEntitlement) {
+          // If there's any active entitlement, consider it as subscribed
+          isSubscribed.value = true;
+          currentSubscriptionType.value = 'yearly'; // Default to yearly if specific type unknown
+          subscriptionStatus.value = 'Active subscription';
+        } else {
+          // Reset subscription data
+          _resetSubscriptionData();
+        }
       }
+
+      print("Subscription status check - isSubscribed: ${isSubscribed.value}, type: ${currentSubscriptionType.value}");
     } catch (e) {
+      print("Error checking subscription status: $e");
       showError('Failed to check subscription status: ${e.toString()}');
     }
   }
 
   Future<void> purchaseSubscription(Package type) async {
-    if (isSubscribed.value) {
-      showWarning('You already have an active subscription');
-      return;
-    }
-
-    isLoading.value = true;
-
     try {
-      final package = type;
-
-      if (package == null) {
-        showError('Selected subscription package not available');
+      // First check if user is already subscribed
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      if (customerInfo.entitlements.active.containsKey(_monthlyEntitlementId) ||
+          customerInfo.entitlements.active.containsKey(_yearlyEntitlementId)) {
+        // User is already subscribed
+        isSubscribed.value = true;
+        showWarning('You already have an active subscription');
         return;
       }
 
-      final purchaseResult = await Purchases.purchasePackage(package);
-      await _handlePurchaseResult(purchaseResult);
-    } on PurchasesErrorCode catch (e) {
+      isLoading.value = true;
 
-      if (e != PurchasesErrorCode.purchaseCancelledError) {
+      final package = type;
+      final purchaseResult = await Purchases.purchasePackage(package);
+
+      // Check if the purchase was successful
+      if (purchaseResult.entitlements.active.containsKey(_monthlyEntitlementId) ||
+          purchaseResult.entitlements.active.containsKey(_yearlyEntitlementId)) {
+        isSubscribed.value = true;
+        await checkSubscriptionStatus(); // Update subscription status
+        showSuccess('Subscription activated successfully!');
+        Get.back(); // Close the subscription dialog
+      } else {
+        showWarning('Subscription process incomplete. Please try again.');
+      }
+
+    } on PurchasesErrorCode catch (e) {
+      if (e == PurchasesErrorCode.productAlreadyPurchasedError) {
+        showWarning('You already have an active subscription');
+        isSubscribed.value = true;
+        await checkSubscriptionStatus();
+        Get.back();
+      } else if (e != PurchasesErrorCode.purchaseCancelledError) {
         showError('Purchase failed: ${e.toString()}');
       }
     } catch (e) {
@@ -141,17 +181,95 @@ class SubscriptionController extends GetxController {
   }
 
   Future<void> cancelSubscription() async {
-    if (GetPlatform.isIOS) {
-      final url = Uri.parse('https://apps.apple.com/account/subscriptions');
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
+    try {
+      isCancellingSubscription.value = true;
+      isLoading.value = true;
+
+      // Get current customer info
+      final customerInfo = await Purchases.getCustomerInfo();
+
+      // Check which subscription is active
+      final monthlyEntitlement = customerInfo.entitlements.active[_monthlyEntitlementId];
+      final yearlyEntitlement = customerInfo.entitlements.active[_yearlyEntitlementId];
+
+      if (monthlyEntitlement != null || yearlyEntitlement != null) {
+        if (Platform.isIOS) {
+          final url = Uri.parse('app-settings:');
+          if (await canLaunchUrl(url)) {
+            await launchUrl(url);
+            showWarning('Please cancel your subscription in iOS Settings');
+            _startPollingSubscriptionStatus();
+          } else {
+            showError('Could not open Settings app');
+          }
+        } else if (Platform.isAndroid) {
+          final url = Uri.parse(
+            'https://play.google.com/store/account/subscriptions'
+          );
+          if (await canLaunchUrl(url)) {
+            await launchUrl(url);
+            showWarning('Please cancel your subscription in Google Play');
+            _startPollingSubscriptionStatus();
+          } else {
+            showError('Could not open Play Store');
+          }
+        }
+        Get.back(); // Close any open dialogs
+      } else {
+        showWarning('No active subscription found');
       }
-    } else if (GetPlatform.isAndroid) {
-      final url = Uri.parse('https://play.google.com/store/account/subscriptions');
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
-      }
+    } catch (e) {
+      showError('Failed to cancel subscription: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
     }
+  }
+
+  // Improved polling method
+  void _startPollingSubscriptionStatus() {
+    // Poll every 5 seconds for 5 minutes (60 attempts)
+    int attempts = 0;
+    const maxAttempts = 60;
+    const pollInterval = Duration(seconds: 5);
+
+    Timer.periodic(pollInterval, (Timer timer) async {
+      attempts++;
+
+      try {
+        // Force cache refresh
+        await Purchases.invalidateCustomerInfoCache();
+        final customerInfo = await Purchases.getCustomerInfo();
+
+        final isStillSubscribed = customerInfo.entitlements.active.containsKey(_monthlyEntitlementId) ||
+                                customerInfo.entitlements.active.containsKey(_yearlyEntitlementId);
+
+        // Update subscription status
+        isSubscribed.value = isStillSubscribed;
+
+        if (!isStillSubscribed) {
+          // Subscription was cancelled successfully
+          currentSubscriptionType.value = null;
+          currentExpirationDate.value = null;
+          subscriptionStatus.value = 'Not subscribed';
+          isCancellingSubscription.value = false;
+          showSuccess('Subscription cancelled successfully');
+          timer.cancel(); // Stop polling
+          return;
+        }
+
+        // Stop polling after max attempts
+        if (attempts >= maxAttempts) {
+          timer.cancel();
+          isCancellingSubscription.value = false;
+          showWarning('Please check your subscription status later. Changes may take some time to reflect.');
+        }
+      } catch (e) {
+        print('Error checking subscription status: $e');
+        timer.cancel(); // Stop polling on error
+        isCancellingSubscription.value = false;
+        showError('Error updating subscription status. Please check again later.');
+      }
+    });
   }
 
   Package? _getPackageForType(String type) {
@@ -160,7 +278,8 @@ class SubscriptionController extends GetxController {
   }
 
   Future<void> _handlePurchaseResult(CustomerInfo purchaseResult) async {
-    final entitlement = purchaseResult.entitlements.active[_entitlementId];
+    final entitlement = purchaseResult.entitlements.active[_monthlyEntitlementId] ??
+                        purchaseResult.entitlements.active[_yearlyEntitlementId];
     if (entitlement != null) {
       await checkSubscriptionStatus();
       showSuccess('Subscription activated successfully!');
@@ -171,6 +290,7 @@ class SubscriptionController extends GetxController {
     currentSubscriptionType.value = null;
     currentExpirationDate.value = null;
     subscriptionStatus.value = 'Not subscribed';
+    isSubscribed.value = false;
   }
 
   String _formatDate(DateTime date) {

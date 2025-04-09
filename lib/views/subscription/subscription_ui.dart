@@ -129,10 +129,10 @@ class VendorSubscriptionUI extends StatelessWidget {
                         // ),
                         const SizedBox(width: 8),
                         Text(
-                          "Your subscription has been canceled.\nPlease allow some time for the changes to take effect.",
+                          "Your subscription has been canceled.\nPlease wait a few minutes for the cancellation..",
                           maxLines: 2,
                           textAlign: TextAlign.center,
-                          style: poppinsMedium(fontSize: 16, color: Colors.red),
+                          style: poppinsMedium(fontSize: 12, color: Colors.red),
                         ),
                       ],
                     )

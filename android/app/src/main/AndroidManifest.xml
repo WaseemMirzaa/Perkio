@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="Swipe"
+        android:label="Perkio"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="false"
         android:icon="@mipmap/ic_launcher">

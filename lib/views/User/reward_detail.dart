@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/subscription_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
+import 'package:swipe_app/views/subscription/subscription_ui.dart';
 import 'package:swipe_app/views/user/reward_redeem_detail.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
@@ -22,10 +24,7 @@ class RewardDetail extends StatefulWidget {
   final bool isNavigationFromNotifications;
 
   const RewardDetail(
-      {super.key,
-      this.reward,
-      this.userId,
-      this.isNavigationFromNotifications = false});
+      {super.key, this.reward, this.userId, this.isNavigationFromNotifications = false});
 
   @override
   State<RewardDetail> createState() => _RewardDetailState();
@@ -90,8 +89,7 @@ class _RewardDetailState extends State<RewardDetail> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Camera Permission'),
-          content:
-              const Text('Please allow camera permission to scan the receipt.'),
+          content: const Text('Please allow camera permission to scan the receipt.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -102,8 +100,7 @@ class _RewardDetailState extends State<RewardDetail> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
-                final status = await Permission.camera
-                    .request(); // Request permission again
+                final status = await Permission.camera.request(); // Request permission again
 
                 if (status.isGranted) {
                   _pickImageAndUpload(); // Try picking the image again
@@ -144,21 +141,19 @@ class _RewardDetailState extends State<RewardDetail> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   SizedBox(
-  width: double.infinity, 
-  child: Text(
-    widget.reward?.rewardName ?? TempLanguage.txtRewardInfo,
-    maxLines: 1, 
-    overflow: TextOverflow.ellipsis, 
-    style: poppinsMedium(fontSize: 13.sp),
-  ),
-),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        widget.reward?.rewardName ?? TempLanguage.txtRewardInfo,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: poppinsMedium(fontSize: 13.sp),
+                      ),
+                    ),
                     const SpacerBoxVertical(height: 10),
                     Text(
-                      widget.reward?.rewardAddress ??
-                          TempLanguage.txtLoremIpsumShort,
-                      style: poppinsRegular(
-                          fontSize: 10.sp, color: AppColors.hintText),
+                      widget.reward?.rewardAddress ?? TempLanguage.txtLoremIpsumShort,
+                      style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),
                     ),
                   ],
                 ),
@@ -169,13 +164,11 @@ class _RewardDetailState extends State<RewardDetail> {
                   children: [
                     Text(
                       'Points',
-                      style: poppinsBold(
-                          fontSize: 12.sp, color: AppColors.hintText),
+                      style: poppinsBold(fontSize: 12.sp, color: AppColors.hintText),
                     ),
                     Text(
                       '$pointsEarned/$pointsToRedeem',
-                      style: poppinsBold(
-                          fontSize: 13.sp, color: AppColors.secondaryText),
+                      style: poppinsBold(fontSize: 13.sp, color: AppColors.secondaryText),
                     ),
                   ],
                 ),
@@ -260,9 +253,57 @@ class _RewardDetailState extends State<RewardDetail> {
                   return canSwipe
                       ? Center(
                           child: GestureDetector(
-                            onTap: rewardController.isLoadingforscan.value
-                                ? null
-                                : _pickImageAndUpload, // Prevent tapping during processing
+                            onTap: () async {
+                              // Check subscription status
+                              final subscriptionController = Get.find<SubscriptionController>();
+                              final isSubscribed = await subscriptionController.isUserSubscribed();
+
+                              if (!isSubscribed) {
+                                // Show subscription popup if user is not subscribed
+                                return showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) => AlertDialog(
+                                    title: Text(
+                                      'Subscription Required',
+                                      style: poppinsRegular(
+                                          fontSize: 15, color: AppColors.gradientStartColor),
+                                      textAlign: TextAlign.center,                                    ),
+                                    content: Text(
+                                      'To access this deal, you need an active subscription. Subscribe now to unlock all premium features and deals!',
+                                      style: poppinsRegular(
+                                          fontSize: 12, color: AppColors.secondaryText),
+                                      textAlign: TextAlign.center,                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Get.back(),
+                                        child: Text(
+                                          'Cancel',
+                                          style: poppinsRegular(
+                                              fontSize: 15, color: AppColors.redColor),
+
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Get.back(); // Close dialog first
+                                          Get.to(() => VendorSubscriptionUI()); // Then navigate
+                                        },
+                                        child: Text(
+                                          'Subscribe Now',
+                                          style: poppinsMedium(
+                                            fontSize: 14,
+                                            color: AppColors.gradientStartColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              rewardController.isLoadingforscan.value
+                                  ? null
+                                  : _pickImageAndUpload();
+                            }, // Prevent tapping during processing
                             child: Container(
                               height: 100,
                               width: 100,
@@ -293,8 +334,7 @@ class _RewardDetailState extends State<RewardDetail> {
                                       end: Alignment.topRight,
                                     ),
                                   ),
-                                  child: Image.asset(AppAssets.scannerImg,
-                                      scale: 3),
+                                  child: Image.asset(AppAssets.scannerImg, scale: 3),
                                 ),
                               ),
                             ),
@@ -304,8 +344,7 @@ class _RewardDetailState extends State<RewardDetail> {
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
                             "You have used this reward the maximum allowed times.",
-                            style: poppinsRegular(
-                                fontSize: 12.sp, color: AppColors.hintText),
+                            style: poppinsRegular(fontSize: 12.sp, color: AppColors.hintText),
                             textAlign: TextAlign.center,
                           ),
                         );

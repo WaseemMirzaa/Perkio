@@ -97,7 +97,8 @@ class PermissionManager {
               child: const Text('Open Settings'),
               onPressed: () {
                 openAppSettings();
-                Navigator.of(context).pop(true);
+                // Navigator.of(context).pop(true);
+                Navigator.of(context).pop();
               },
             ),
           ],

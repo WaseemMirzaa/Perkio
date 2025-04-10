@@ -10,11 +10,13 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/billing_service.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/controllers/subscription_controller.dart';
+import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/firebase_options.dart';
 import 'package:swipe_app/bindings/bindings.dart';
 import 'package:swipe_app/services/fcm_manager.dart';
 import 'package:swipe_app/services/push_notification_service.dart';
 import 'package:swipe_app/services/revenue_cat_service.dart';
+import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/place_picker/key.dart';
 import 'package:swipe_app/views/splash_screen/splash_screen.dart';
 
@@ -59,7 +61,9 @@ void main() async {
 
   // await GoogleMap..init(apiKey: MAP_API_KEY);
 
-  Get.put(SubscriptionController());
+  // Get.put(SubscriptionController());
+  Get.lazyPut(() => SubscriptionController(), fenix: true);
+  Get.lazyPut(() => UserController(UserServices()), fenix: true);
 
   Get.put(RewardController());
 

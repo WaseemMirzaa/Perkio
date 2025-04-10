@@ -5,7 +5,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open to provide you with location-based services and accurate address information.</string>
 	<key>CFBundleDisplayName</key>
-	<string>Skhickens App</string>
+	<string>Perkio</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs access to location when in the background for providing continuous location-based services.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

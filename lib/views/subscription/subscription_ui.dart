@@ -96,65 +96,78 @@ class VendorSubscriptionUI extends StatelessWidget {
     return Column(
       children: [
         // Active Subscription Section
-        Obx(() => subscriptionController.isSubscribed.value == true
-            ? Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Active Subscription',
-                      style: poppinsBold(fontSize: 20),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      subscriptionController.subscriptionStatus.value ?? '',
-                      style: poppinsRegular(fontSize: 16),
-                    ),
-                    const SizedBox(height: 16),
-                    Obx(() =>subscriptionController.isCancellingSubscription.value
-                        ?   Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // const SizedBox(
-                        //   width: 16,
-                        //   height: 16,
-                        //   child: CircularProgressIndicator(
-                        //     strokeWidth: 2,
-                        //     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        //   ),
-                        // ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Your subscription has been canceled.\nPlease wait a few minutes for the cancellation..",
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          style: poppinsMedium(fontSize: 12, color: Colors.red),
-                        ),
-                      ],
-                    )
-                        :ElevatedButton(
-                      onPressed: subscriptionController.isCancellingSubscription.value
-                        ? null  // Disable button when cancelling
-                        : () => subscriptionController.cancelSubscription(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                            'Manage Subscription',
-                            style: poppinsMedium(fontSize: 16, color: Colors.white),
-                          ),
-                    )),
-                  ],
-                ),
-              )
-            : const SizedBox.shrink()),
+        // Obx(() => subscriptionController.isSubscribed.value == true
+        //     ? Container(
+        //         padding: const EdgeInsets.all(16),
+        //         decoration: BoxDecoration(
+        //           color: Colors.green.withOpacity(0.1),
+        //           borderRadius: BorderRadius.circular(16),
+        //         ),
+        //         child: Column(
+        //           children: [
+        //             Text(
+        //               'Active Subscription',
+        //               style: poppinsBold(fontSize: 20),
+        //             ),
+        //             const SizedBox(height: 8),
+        //             Text(
+        //               subscriptionController.subscriptionStatus.value ?? '',
+        //               style: poppinsRegular(fontSize: 16),
+        //             ),
+        //             const SizedBox(height: 16),
+        //             Obx(() => subscriptionController.isCancellingSubscription.value
+        //                 ? Row(
+        //                     mainAxisSize: MainAxisSize.min,
+        //                     children: [
+        //                       // const SizedBox(
+        //                       //   width: 16,
+        //                       //   height: 16,
+        //                       //   child: CircularProgressIndicator(
+        //                       //     strokeWidth: 2,
+        //                       //     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        //                       //   ),
+        //                       // ),
+        //                       const SizedBox(width: 8),
+        //                       Text(
+        //                         "Your subscription has been canceled.\nPlease wait a few minutes for the cancellation..",
+        //                         maxLines: 2,
+        //                         textAlign: TextAlign.center,
+        //                         style: poppinsMedium(fontSize: 12, color: Colors.red),
+        //                       ),
+        //                     ],
+        //                   )
+        //                 : Container(
+        //                     // width: double.infinity,
+        //                     decoration: BoxDecoration(
+        //                       gradient: const LinearGradient(
+        //                         colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
+        //                         begin: Alignment.centerLeft,
+        //                         end: Alignment.centerRight,
+        //                       ),
+        //                       borderRadius: BorderRadius.circular(12),
+        //                     ),
+        //                     child: ElevatedButton(
+        //                       onPressed: subscriptionController.isCancellingSubscription.value
+        //                           ? null // Disable button when cancelling
+        //                           : () => subscriptionController.cancelSubscription(),
+        //                       style: ElevatedButton.styleFrom(
+        //                         backgroundColor: Colors.transparent,
+        //                         shadowColor: Colors.transparent,
+        //                         // padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+        //                         shape: RoundedRectangleBorder(
+        //                           borderRadius: BorderRadius.circular(12),
+        //                         ),
+        //                       ),
+        //                       child: Text(
+        //                         'Manage Subscription',
+        //                         style: poppinsMedium(fontSize: 16, color: Colors.white),
+        //                       ),
+        //                     ),
+        //                   )),
+        //           ],
+        //         ),
+        //       )
+        //     : const SizedBox.shrink()),
 
         // No Plans Available Message
         Obx(() => subscriptionController.offering.value == null
@@ -171,19 +184,20 @@ class VendorSubscriptionUI extends StatelessWidget {
         Obx(() {
           final isSubscribed = subscriptionController.isSubscribed.value;
           final subscriptionType = subscriptionController.currentSubscriptionType.value;
-          print("Monthly plan UI check: isSubscribed=$isSubscribed, subscriptionType=$subscriptionType");
+          print(
+              "Monthly plan UI check: isSubscribed=$isSubscribed, subscriptionType=$subscriptionType");
 
           return isSubscribed == true && subscriptionType == 'yearly'
-            ? const SizedBox.shrink()  // Hide if yearly subscription is active
-            : subscriptionController.offering.value?.getPackage('\$rc_monthly') != null
-                ? _buildPlanCard(
-                    package: subscriptionController.offering.value!.getPackage('\$rc_monthly'),
-                    title: 'Monthly Premium',
-                    description: 'Perfect for trying out our premium features',
-                    isPopular: false,
-                    subscriptionType: 'monthly',
-                  )
-                : const SizedBox.shrink();
+              ? const SizedBox.shrink() // Hide if yearly subscription is active
+              : subscriptionController.offering.value?.getPackage('\$rc_monthly') != null
+                  ? _buildPlanCard(
+                      package: subscriptionController.offering.value!.getPackage('\$rc_monthly'),
+                      title: 'Monthly Premium',
+                      description: 'Perfect for trying out our premium features',
+                      isPopular: false,
+                      subscriptionType: 'monthly',
+                    )
+                  : const SizedBox.shrink();
         }),
 
         const SizedBox(height: 16),
@@ -192,20 +206,20 @@ class VendorSubscriptionUI extends StatelessWidget {
         Obx(() {
           final isSubscribed = subscriptionController.isSubscribed.value;
           final subscriptionType = subscriptionController.currentSubscriptionType.value;
-          print("Yearly plan UI check: isSubscribed=$isSubscribed, subscriptionType=$subscriptionType");
+          print(
+              "Yearly plan UI check: isSubscribed=$isSubscribed, subscriptionType=$subscriptionType");
 
           return isSubscribed == true && subscriptionType == 'monthly'
-            ? const SizedBox.shrink()  // Hide if monthly subscription is active
-            : subscriptionController.offering.value?.getPackage('\$rc_annual') != null
-                ?
-          _buildPlanCard(
-                    package: subscriptionController.offering.value!.getPackage('\$rc_annual'),
-                    title: 'Yearly Premium',
-                    description: 'Our best value plan with 2 months free',
-                    isPopular: true,
-                    subscriptionType: 'yearly',
-                  )
-                : const SizedBox.shrink();
+              ? const SizedBox.shrink() // Hide if monthly subscription is active
+              : subscriptionController.offering.value?.getPackage('\$rc_annual') != null
+                  ? _buildPlanCard(
+                      package: subscriptionController.offering.value!.getPackage('\$rc_annual'),
+                      title: 'Yearly Premium',
+                      description: 'Our best value plan with 2 months free',
+                      isPopular: true,
+                      subscriptionType: 'yearly',
+                    )
+                  : const SizedBox.shrink();
         }),
       ],
     );
@@ -260,9 +274,21 @@ class VendorSubscriptionUI extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: poppinsBold(fontSize: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: poppinsBold(fontSize: 20),
+                    ),
+                    subscriptionController.isSubscribed.value
+                        ? Icon(Icons.circle,
+                            color: isPopular
+                                ? AppColors.gradientStartColor
+                                : AppColors.gradientEndColor,
+                            size: 8)
+                        : const SizedBox(),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -284,9 +310,150 @@ class VendorSubscriptionUI extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                SizedBox(
+                // const SizedBox(height: 20),
+
+                // Free Trial Section
+                if (!subscriptionController.isSubscribed.value &&
+                    !subscriptionController.hasTrialExpired.value)
+                  Container(
+                    // margin: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                    decoration: BoxDecoration(
+                      color: AppColors.whiteColor.withOpacity(0.1),
+                      // color: isPopular ? AppColors.gradientStartColor.withOpacity(0.1) : Colors.grey.shade300,
+
+                      borderRadius: BorderRadius.circular(12),
+                      // border: Border.all(
+                      //   // color: AppColors.gradientStartColor,
+                      //   color: isPopular ? AppColors.gradientStartColor.withOpacity(0.1) : Colors.grey.shade300,
+                      //
+                      // width: 1,
+                      // ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            //  Icon(
+                            //   Icons.star,
+                            //   // color: AppColors.gradientStartColor,
+                            //   color: isPopular ? AppColors.gradientStartColor : Colors.blue,
+                            //
+                            //   size: 24,
+                            // ),
+                            // const SizedBox(width: 8),
+                            Text(
+                              'Free for 7 Days',
+                              style: poppinsRegular(fontSize: 14, color: Colors.grey.shade600),
+                            ),
+                          ],
+                        ),
+                        // const SizedBox(height: 12),
+                        // Text(
+                        //   'Start your free trial now and get access to all premium features. No payment required.',
+                        //   style: poppinsRegular(fontSize: 12),
+                        //   textAlign: TextAlign.center,
+                        // ),
+                        // const SizedBox(height: 16),
+                        // SizedBox(
+                        //   width: double.infinity,
+                        //   child: ElevatedButton(
+                        //     onPressed: () async {
+                        //       try {
+                        //         // Get the trial package
+                        //         final trialPackage = subscriptionController
+                        //             .offering.value?.getPackage('\$rc_trial');
+                        //
+                        //         if (trialPackage != null) {
+                        //           bool? confirm = await Get.dialog<bool>(
+                        //             AlertDialog(
+                        //               title: Text(
+                        //                 'Start Free Trial',
+                        //                 style: poppinsBold(fontSize: 18),
+                        //               ),
+                        //               content: Column(
+                        //                 mainAxisSize: MainAxisSize.min,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   Text(
+                        //                     'Start your 7-day free trial with full access to:',
+                        //                     style: poppinsRegular(fontSize: 12),
+                        //                   ),
+                        //                   const SizedBox(height: 12),
+                        //                   _buildBulletPoint('Unlimited Deal Scanning'),
+                        //                   _buildBulletPoint('Deal Notifications'),
+                        //                   _buildBulletPoint('Area-Based Alerts'),
+                        //                   _buildBulletPoint('Featured Listings'),
+                        //                   _buildBulletPoint('Premium Support'),
+                        //                   const SizedBox(height: 12),
+                        //                   Text(
+                        //                     'After the trial ends, you\'ll be charged ${trialPackage.storeProduct.priceString}/month unless you cancel.',
+                        //                     style: poppinsRegular(fontSize: 14),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //               actions: [
+                        //                 TextButton(
+                        //                   onPressed: () => Get.back(result: false),
+                        //                   child: Text(
+                        //                     'Not Now',
+                        //                     style: poppinsRegular(fontSize: 14),
+                        //                   ),
+                        //                 ),
+                        //                 TextButton(
+                        //                   onPressed: () => Get.back(result: true),
+                        //                   child: Text(
+                        //                     'Start Trial',
+                        //                     style: poppinsMedium(
+                        //                       fontSize: 14,
+                        //                       color: AppColors.gradientStartColor,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           );
+                        //
+                        //           if (confirm == true) {
+                        //             await subscriptionController
+                        //                 .purchaseSubscription(trialPackage);
+                        //           }
+                        //         }
+                        //       } catch (e) {
+                        //         // Error handling is done in the controller
+                        //       }
+                        //     },
+                        //     style: ElevatedButton.styleFrom(
+                        //       backgroundColor: isPopular ? AppColors.gradientStartColor : Colors.blue,
+                        //       padding: const EdgeInsets.symmetric(vertical: 16),
+                        //       shape: RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(12),
+                        //       ),
+                        //     ),
+                        //     child: Text(
+                        //       'Start Free Trial',
+                        //       style: poppinsMedium(fontSize: 16, color: Colors.white),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 12),
+
+                Container(
                   width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: subscriptionController.isSubscribed.value
+                          ? [AppColors.redColor, AppColors.redColor]
+                          : [AppColors.gradientStartColor, AppColors.gradientEndColor],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: ElevatedButton(
                     onPressed: () async {
                       // Check subscription status first
@@ -334,82 +501,87 @@ class VendorSubscriptionUI extends StatelessWidget {
                         return;
                       }
 
-                      // Original subscription flow for non-subscribed users
-                      // Show confirmation dialog
-                      bool? confirm = await Get.dialog<bool>(
-                        AlertDialog(
-                          title: Text(
-                            'Confirm Subscription',
-                            style: poppinsBold(fontSize: 18),
-                          ),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Are you sure you want to subscribe to this plan?',
-                                style: poppinsRegular(fontSize: 16),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'You will get:',
-                                style: poppinsMedium(fontSize: 14),
-                              ),
-                              const SizedBox(height: 8),
-                              _buildBulletPoint('Unlimited Deal Scanning'),
-                              _buildBulletPoint('Deal Notifications'),
-                              _buildBulletPoint('Area-Based Alerts'),
-                              _buildBulletPoint('Featured Listings'),
-                              _buildBulletPoint('Premium Support'),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Price: ${package.storeProduct.priceString}/${subscriptionType == 'yearly' ? 'year' : 'month'}',
-                                style: poppinsBold(fontSize: 14),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Get.back(result: false),
-                              child: Text(
-                                'Cancel',
-                                style: poppinsRegular(fontSize: 14),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () => Get.back(result: true),
-                              child: Text(
-                                'Subscribe',
-                                style: poppinsMedium(
-                                  fontSize: 14,
-                                  color: AppColors.gradientStartColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (confirm == true) {
-                        try {
-                          await subscriptionController.purchaseSubscription(package);
-                        } catch (e) {
-                          // Error handling is done in the controller
-                        }
-                      }
+                      // Show confirmation dialog with trial information for new users
+                      // bool? confirm = await Get.dialog<bool>(
+                      //   AlertDialog(
+                      //     title: Text(
+                      //       'Start 7-Day Free Trial',
+                      //       style: poppinsBold(fontSize: 18),
+                      //     ),
+                      //     content: Column(
+                      //       mainAxisSize: MainAxisSize.min,
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: [
+                      //         Text(
+                      //           'Try all premium features free for 7 days:',
+                      //           style: poppinsRegular(fontSize: 16),
+                      //         ),
+                      //         const SizedBox(height: 16),
+                      //         _buildBulletPoint('Unlimited Deal Scanning'),
+                      //         _buildBulletPoint('Deal Notifications'),
+                      //         _buildBulletPoint('Area-Based Alerts'),
+                      //         _buildBulletPoint('Featured Listings'),
+                      //         _buildBulletPoint('Premium Support'),
+                      //         const SizedBox(height: 16),
+                      //         Text(
+                      //           'After the trial ends, you\'ll be automatically subscribed to:',
+                      //           style: poppinsMedium(fontSize: 14),
+                      //         ),
+                      //         const SizedBox(height: 8),
+                      //         Text(
+                      //           '${package.storeProduct.priceString}/${subscriptionType == 'yearly' ? 'year' : 'month'}',
+                      //           style: poppinsBold(fontSize: 14),
+                      //         ),
+                      //         const SizedBox(height: 8),
+                      //         Text(
+                      //           'Cancel anytime during the trial - no charge.',
+                      //           style: poppinsRegular(fontSize: 12),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //     actions: [
+                      //       TextButton(
+                      //         onPressed: () => Get.back(result: false),
+                      //         child: Text(
+                      //           'Not Now',
+                      //           style: poppinsRegular(fontSize: 14),
+                      //         ),
+                      //       ),
+                      //       TextButton(
+                      //         onPressed: () => Get.back(result: true),
+                      //         child: Text(
+                      //           'Start Free Trial',
+                      //           style: poppinsMedium(
+                      //             fontSize: 14,
+                      //             color: AppColors.gradientStartColor,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // );
+                      //
+                      // if (confirm == true) {
+                      //   try {
+                      //     await subscriptionController.purchaseSubscription(package);
+                      //   } catch (e) {
+                      //     // Error handling is done in the controller
+                      //   }
+                      // }
+                      await subscriptionController.purchaseSubscription(package);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isPopular ? AppColors.gradientStartColor : Colors.blue,
+                      // backgroundColor: isPopular ? AppColors.gradientStartColor : Colors.blue,
+                      backgroundColor: Colors.transparent,
                       padding: const EdgeInsets.symmetric(vertical: 16),
+                      shadowColor: Colors.transparent,
+
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: Obx(() {
-                      // Force UI update by accessing the value
                       final isSubscribed = subscriptionController.isSubscribed.value;
-                      print("UI Button Update: isSubscribed = $isSubscribed");
-
                       return Text(
                         isSubscribed ? 'Cancel' : 'Subscribe Now',
                         style: poppinsMedium(fontSize: 16, color: Colors.white),

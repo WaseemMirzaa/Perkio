@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
+import 'package:swipe_app/controllers/subscription_controller.dart';
 import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
@@ -21,6 +22,7 @@ import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 
 import '../../core/utils/constants/app_const.dart';
 import '../bottom_bar_view/bottom_bar_view.dart';
+import '../subscription/subscription_ui.dart';
 
 class DealDetail extends StatefulWidget {
   final DealModel? deal;
@@ -78,8 +80,7 @@ class _DealDetailState extends State<DealDetail> {
           return Stack(
             children: [
               _buildDealInfo(context, deal, canSwipe, distance),
-              if (isLoading)
-                _buildLoadingOverlay(), // Overlay with loading spinner
+              if (isLoading) _buildLoadingOverlay(), // Overlay with loading spinner
             ],
           );
         },
@@ -133,8 +134,7 @@ class _DealDetailState extends State<DealDetail> {
     );
   }
 
-  Widget _buildDealInfo(
-      BuildContext context, DealModel deal, bool canSwipe, double distance) {
+  Widget _buildDealInfo(BuildContext context, DealModel deal, bool canSwipe, double distance) {
     final controller = Get.find<BusinessDetailController>();
 
     return Column(
@@ -184,8 +184,7 @@ class _DealDetailState extends State<DealDetail> {
                 ),
                 const SpacerBoxVertical(height: 20),
                 _buildImage(deal.image),
-                const SizedBox(
-                    height: 20), // Space before the message or button
+                const SizedBox(height: 20), // Space before the message or button
 
                 // Display message if canSwipe is false
                 if (!canSwipe)
@@ -208,15 +207,59 @@ class _DealDetailState extends State<DealDetail> {
         if (canSwipe)
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 20), // Add vertical padding for better spacing
+                horizontal: 12, vertical: 20), // Add vertical padding for better spacing
             child: ButtonWidget(
               onSwipe: () async {
                 if (widget.isGuestLogin) {
                   LoginRequiredDialog.show(context, true);
                   return;
                 }
+                // Check subscription status
+                final subscriptionController = Get.find<SubscriptionController>();
+                final isSubscribed = await subscriptionController.isUserSubscribed();
 
+                if (!isSubscribed) {
+                  // Show subscription popup if user is not subscribed
+                  return showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: Text(
+                        'Subscription Required',
+                        style: poppinsRegular(
+                            fontSize: 15, color: AppColors.gradientStartColor),
+                        textAlign: TextAlign.center,
+                      ),
+                      content: Text(
+                        'To access this deal, you need an active subscription. Subscribe now to unlock all premium features and deals!',
+                        style: poppinsRegular(
+                            fontSize: 12, color: AppColors.secondaryText),
+                        textAlign: TextAlign.center,                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Get.back(),
+                          child: Text(
+                            'Cancel',
+                            style: poppinsRegular(
+                                fontSize: 15, color: AppColors.redColor),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Get.back(); // Close dialog first
+                            Get.to(() => VendorSubscriptionUI()); // Then navigate
+                          },
+                          child: Text(
+                            'Subscribe Now',
+                            style: poppinsMedium(
+                              fontSize: 14,
+                              color: AppColors.gradientEndColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
                 setState(() {
                   isLoading = true; // Start loading
                 });

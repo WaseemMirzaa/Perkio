@@ -118,7 +118,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     // ),
 
                     Image.asset(
-                      'assets/images/logo.png', // Replace with the correct path to your logo
+                      'assets/images/finalLogo.jpeg', // Replace with the correct path to your logo
                       height: 100, // Adjust size as needed
                       fit: BoxFit.contain,
                     ),

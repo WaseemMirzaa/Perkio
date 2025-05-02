@@ -30,7 +30,7 @@ class HomeUser extends StatefulWidget {
 
 class _HomeUserState extends State<HomeUser> {
   final controller = Get.put(UserController(UserServices()));
-// final controller = Get.lazyPut(UserController(UserServices()));
+
   late StreamController<List<DealModel>> _dealStreamController;
   late List<DealModel> deals;
   List<DealModel> featuredDeals = [];

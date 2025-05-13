@@ -15,6 +15,7 @@ import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
 import 'package:swipe_app/views/location/select_location_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/subscription/terms_and_conditions.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -59,7 +60,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
                         //   textAlign: TextAlign.center,
                         // ),
                         Image.asset(
-                      'assets/images/logo.png', // Replace with the correct path to your logo
+                      AppImages.logo, // Replace with the correct path to your logo
                       height: 100, // Adjust size as needed
                       fit: BoxFit.contain,
                     ),

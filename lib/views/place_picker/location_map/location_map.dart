@@ -7,6 +7,7 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/place_picker/permission_utils.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 
 class LocationService extends StatefulWidget {
   final Widget child;
@@ -107,7 +108,7 @@ class LocationServiceErrorWidget extends StatelessWidget {
                 //   textAlign: TextAlign.center,
                 // ),
                 Image.asset(
-                  'assets/images/logo.png', // Replace with the correct path to your logo
+                 AppImages.logo, // Replace with the correct path to your logo
                   height: 100, // Adjust size as needed
                   fit: BoxFit.contain,
                 ),

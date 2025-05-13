@@ -6,6 +6,7 @@ import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/auth/login_view.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/selection_tile.dart';
 
 class SelectionScreen extends StatelessWidget {
@@ -16,15 +17,8 @@ class SelectionScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.gradientStartColor,
-              AppColors.gradientEndColor,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+        decoration:  const BoxDecoration(
+        color: AppColors.primaryColor
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -45,7 +39,7 @@ class SelectionScreen extends StatelessWidget {
                   //   ),
                   // ),
                   Image.asset(
-                    'assets/images/logo.png', // Replace with the correct path to your logo
+                    AppImages.logo, // Replace with the correct path to your logo
                     height: 100, // Adjust size as needed
                     fit: BoxFit.contain,
                   ),

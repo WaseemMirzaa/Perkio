@@ -21,6 +21,7 @@ import 'package:swipe_app/views/notifications/notifications_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 import '../../core/utils/constants/app_assets.dart';
@@ -74,7 +75,7 @@ Widget customAppBar({
                     radius: 20.sp,
                     backgroundImage: userImage != null && userImage.isNotEmpty
                         ? NetworkImage(userImage)
-                        : const AssetImage('assets/images/logo.png'),
+                        : const AssetImage(AppImages.logo),
                     //userImage != null
                     //     ? NetworkImage(userImage)
                     //     : const AssetImage(AppAssets.profileImg),
@@ -127,7 +128,7 @@ Widget customAppBar({
                                   isGuestLogin
                                       ? GestureDetector(
                                           onTap: () {
-                                            LoginRequiredDialog.show(context!,isUser);
+                                            LoginRequiredDialog.show(context,isUser);
                                           },
                                           child: Text(
                                             'Change Location',
@@ -170,7 +171,7 @@ Widget customAppBar({
                                               // Navigate to location picker and get the selected address
                                               final address =
                                                   await Navigator.push(
-                                                  context!,
+                                                  context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       LocationService(

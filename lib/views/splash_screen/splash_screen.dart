@@ -18,6 +18,7 @@ import 'package:swipe_app/views/business/verification_pending_view.dart';
 import 'package:swipe_app/views/bottom_bar_view/bottom_bar_view.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/role_selection/role_selection_view.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:animated_text_kit/animated_text_kit.dart' as animated_text_kit;
@@ -88,14 +89,15 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.gradientStartColor,
-              AppColors.gradientEndColor,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          // gradient: LinearGradient(
+          //   colors: [
+          //     AppColors.gradientStartColor,
+          //     AppColors.gradientEndColor,
+          //   ],
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          // ),
+          color: AppColors.primaryColor,
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -118,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     // ),
 
                     Image.asset(
-                      'assets/images/finalLogo.jpeg', // Replace with the correct path to your logo
+                      AppImages.logo, // Replace with the correct path to your logo
                       height: 100, // Adjust size as needed
                       fit: BoxFit.contain,
                     ),

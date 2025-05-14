@@ -65,11 +65,12 @@ class VendorSubscriptionUI extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: AppColors.primaryColor,
+            // gradient: const LinearGradient(
+            //   colors: [AppColors.gradientStartColor, AppColors.gradientEndColor],
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomRight,
+            // ),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -444,16 +445,20 @@ class VendorSubscriptionUI extends StatelessWidget {
 
                 Container(
                   width: double.infinity,
+                  // decoration: BoxDecoration(
+                  //   gradient: LinearGradient(
+                  //     colors: subscriptionController.isSubscribed.value
+                  //         ? [AppColors.redColor, const Color.fromARGB(255, 5, 4, 4)]
+                  //         : [AppColors.gradientStartColor, AppColors.gradientEndColor],
+                  //     begin: Alignment.topLeft,
+                  //     end: Alignment.bottomRight,
+                  //   ),
+                  //   borderRadius: BorderRadius.circular(12),
+                  // ),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: subscriptionController.isSubscribed.value
-                          ? [AppColors.redColor, AppColors.redColor]
-                          : [AppColors.gradientStartColor, AppColors.gradientEndColor],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+    color: AppColors.primaryColor,
+    borderRadius: BorderRadius.circular(12),
+  ),
                   child: ElevatedButton(
                     onPressed: () async {
                       // Check subscription status first

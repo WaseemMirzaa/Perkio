@@ -374,6 +374,7 @@
 // }
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 
 class CustomSlideActionButton extends StatefulWidget {
   final double sliderButtonIconSize;
@@ -459,13 +460,17 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
               ? null
               : BoxConstraints.expand(height: widget.height),
           child: Container(
+            // decoration: BoxDecoration(
+            //   borderRadius: BorderRadius.circular(widget.borderRadius),
+            //   color: widget.gradient == null
+            //       ? widget.outerColor ?? Theme.of(context).primaryIconTheme.color
+            //       : null,
+            //   gradient: widget.gradient,
+            // ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-              color: widget.gradient == null
-                  ? widget.outerColor ?? Theme.of(context).primaryIconTheme.color
-                  : null,
-              gradient: widget.gradient,
-            ),
+        borderRadius: BorderRadius.circular(widget.borderRadius),
+        color: AppColors.primaryColor, // Replaced with primaryColor
+      ),
             child: submitted
                 ? Transform(
               alignment: Alignment.center,

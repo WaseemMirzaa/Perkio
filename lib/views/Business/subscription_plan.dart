@@ -66,7 +66,7 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
           const SpacerBoxVertical(height: 20),
           PlanTiles(
             heading: TempLanguage.txtMonthly,
-            price: '4.99',
+            price: '2.99',
             desc: '',
             onTap: () {
               widget.fromSignUp
@@ -85,8 +85,8 @@ class _SubscriptionPlanState extends State<SubscriptionPlan> {
           const SpacerBoxVertical(height: 20),
           PlanTiles(
             heading: TempLanguage.txtYearly,
-            price: '45',
-            desc: '\$60 (crossed out), save 24% with yearly subscription',
+            price: '15',
+            desc: '\$20 (crossed out), save 24% with yearly subscription',
             onTap: () {
               widget.fromSignUp
                   ? Navigator.pushAndRemoveUntil(

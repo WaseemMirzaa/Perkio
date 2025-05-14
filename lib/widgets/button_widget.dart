@@ -3,6 +3,7 @@ import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
@@ -35,22 +36,27 @@ class ButtonWidget extends StatelessWidget {
       sliderButtonIcon: Container(
           height: 42.sp,
           width: 42.sp,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isGradient ? AppColors.whiteColor : null,
-            gradient: isGradient
-                ? null
-                : const LinearGradient(
-                    colors: [
-                      AppColors.gradientStartColor,
-                      AppColors.gradientEndColor
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-          ),
+          // decoration: BoxDecoration(
+          //   shape: BoxShape.circle,
+          //   color: isGradient ? AppColors.whiteColor : null,
+          //   gradient: isGradient
+          //       ? null
+          //       : const LinearGradient(
+          //           colors: [
+          //             AppColors.gradientStartColor,
+          //             AppColors.gradientEndColor
+          //           ],
+          //           begin: Alignment.topLeft,
+          //           end: Alignment.bottomRight,
+          //         ),
+          // ),
+          decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.primaryColor, 
+        ),
+      
           child: Image.asset(
-            AppAssets.swipeImg,
+            AppImages.logo,
             scale: 2.5,
           )),
       sliderButtonIconPadding: 0,

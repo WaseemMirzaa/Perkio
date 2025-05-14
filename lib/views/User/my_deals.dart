@@ -97,22 +97,28 @@ class _MyDealsViewState extends State<MyDealsView> {
                     child: Container(
                       height: 30,
                       width: 90,
-                      decoration: BoxDecoration(
-                        gradient: myController.selectedIndex.value == 0
-                            ? const LinearGradient(
-                                colors: [
-                                  AppColors.gradientStartColor,
-                                  AppColors.gradientEndColor
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              )
-                            : null,
-                        color: myController.selectedIndex.value == 0
-                            ? null
-                            : Colors.grey[200],
-                        borderRadius: BorderRadius.circular(100),
-                      ),
+                      // decoration: BoxDecoration(
+                      //   gradient: myController.selectedIndex.value == 0
+                      //       ? const LinearGradient(
+                      //           colors: [
+                      //             AppColors.gradientStartColor,
+                      //             AppColors.gradientEndColor
+                      //           ],
+                      //           begin: Alignment.topLeft,
+                      //           end: Alignment.bottomRight,
+                      //         )
+                      //       : null,
+                      //   color: myController.selectedIndex.value == 0
+                      //       ? null
+                      //       : Colors.grey[200],
+                      //   borderRadius: BorderRadius.circular(100),
+                      // ),
+                       decoration: BoxDecoration(
+    color: myController.selectedIndex.value == 0
+        ? AppColors.primaryColor
+        : Colors.grey[200],
+    borderRadius: BorderRadius.circular(100),
+  ),
                       child: Center(
                         child: Text(
                           TempLanguage.lblMyDeals,
@@ -132,22 +138,28 @@ class _MyDealsViewState extends State<MyDealsView> {
                     child: Container(
                       height: 30,
                       width: 90,
-                      decoration: BoxDecoration(
-                        gradient: myController.selectedIndex.value == 1
-                            ? const LinearGradient(
-                                colors: [
-                                  AppColors.gradientStartColor,
-                                  AppColors.gradientEndColor
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              )
-                            : null,
-                        color: myController.selectedIndex.value == 1
-                            ? null
-                            : Colors.grey[200],
-                        borderRadius: BorderRadius.circular(100),
-                      ),
+                      // decoration: BoxDecoration(
+                      //   gradient: myController.selectedIndex.value == 1
+                      //       ? const LinearGradient(
+                      //           colors: [
+                      //             AppColors.gradientStartColor,
+                      //             AppColors.gradientEndColor
+                      //           ],
+                      //           begin: Alignment.topLeft,
+                      //           end: Alignment.bottomRight,
+                      //         )
+                      //       : null,
+                      //   color: myController.selectedIndex.value == 1
+                      //       ? null
+                      //       : Colors.grey[200],
+                      //   borderRadius: BorderRadius.circular(100),
+                      // ),
+                       decoration: BoxDecoration(
+    color: myController.selectedIndex.value == 1
+        ? AppColors.primaryColor
+        : Colors.grey[200],
+    borderRadius: BorderRadius.circular(100),
+  ),
                       child: Center(
                         child: Text(
                           TempLanguage.lblMyRewards,

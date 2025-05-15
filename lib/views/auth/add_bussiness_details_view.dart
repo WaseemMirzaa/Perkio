@@ -13,6 +13,7 @@ import 'package:swipe_app/controllers/home_controller.dart';
 import 'package:swipe_app/controllers/notification_controller.dart';
 import 'package:swipe_app/controllers/rewards_controller.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/app_utils/location_permission_manager.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
@@ -24,6 +25,7 @@ import 'package:swipe_app/views/business/verification_pending_view.dart';
 import 'package:swipe_app/views/place_picker/address_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
 import 'package:swipe_app/views/place_picker/place_picker.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/back_button_widget.dart';
@@ -31,6 +33,7 @@ import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_container.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/secondary_layout.dart';
 import '../../widgets/snackbar_widget.dart' as X;
 import '../Business/google_business_search.dart';
@@ -307,8 +310,94 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                     ),
                   ),
                   SpacerBoxVertical(height: 3.h),
-                  ButtonWidget(
-                    onSwipe: () async {
+                  // ButtonWidget(
+                  //   onSwipe: () async {
+                  //     print(
+                  //         "The LOGO is: ${homeController.pickedImage2?.path} \n and \n The Business Image is ${homeController.pickedImage?.path}");
+                  //     if (businessAddressController.text.isEmptyOrNull) {
+                  //       X.showSnackBar('Fields Required',
+                  //           'Please enter the business address');
+                  //     } else if (websiteController.text.isEmptyOrNull) {
+                  //       X.showSnackBar(
+                  //           'Fields Required', 'Please enter the website');
+                  //     } else if (businessIdController.text.isEmptyOrNull) {
+                  //       X.showSnackBar('Fields Required',
+                  //           'Please enter the Google Business ID');
+                  //     } else if (homeController.pickedImage2 == null) {
+                  //       X.showSnackBar('Fields Required',
+                  //           'Please upload the business Logo');
+                  //     } else if (homeController.pickedImage == null) {
+                  //       X.showSnackBar('Fields Required',
+                  //           'Please upload the business image');
+                  //     } else {
+                  //       context.loaderOverlay.show(
+                  //         widgetBuilder: (context) =>
+                  //             Center(child: circularProgressBar()),
+                  //       );
+                  //       widget.userModel.latLong = GeoPoint(
+                  //           getDoubleAsync(SharedPrefKey.latitude),
+                  //           getDoubleAsync(SharedPrefKey.longitude));
+                  //       widget.userModel.website = websiteController.text;
+                  //       widget.userModel.businessId = businessIdController.text;
+                  //       widget.userModel.address =
+                  //           businessAddressController.text;
+
+                  //       if (getStringAsync(SharedPrefKey.role) ==
+                  //           SharedPrefKey.business) {
+                  //         widget.userModel.image =
+                  //             homeController.pickedImage?.path;
+                  //         widget.userModel.logo =
+                  //             homeController.pickedImage2?.path;
+                  //       }
+
+                  //       //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
+                  //       //tets placeID = 'ChIJrTLr-GyuEmsRBfy61i59si0'
+
+                  //       String? token = await FCMManager.getFCMToken();
+                  //       widget.userModel.fcmTokens = [token!];
+
+                  //       // Await the signUp call and only navigate if it was successful
+                  //       await userController.signUp(widget.userModel, (error) {
+                  //         // Error callback, just hide the loader and stay on the current screen
+                  //         if (error != null) {
+                  //           Get.snackbar('Error', error,
+                  //               snackPosition: SnackPosition.TOP);
+                  //         }
+                  //         context.loaderOverlay.hide();
+                  //       }, true, businessIdController.text).then((value) {
+                  //         // Navigate only if signup didn't fail
+                  //         print(
+                  //             'HERE IS THE PASS ID ${businessIdController.text}');
+                  //         if (value != false) {
+                  //           Get.put(NotificationController());
+                  //           Get.put(RewardController());
+                  //           // You might need to modify `signUp` to return a success indicator
+                  //           Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) =>
+                  //                       VerificationPendingView()));
+                  //           homeController.setImageNull();
+                  //           homeController.clearLogo();
+                  //         }
+
+                  //         context.loaderOverlay
+                  //             .hide(); // Hide loader whether signup is successful or not
+                  //       });
+                  //     }
+                  //   },
+                  //   text: "SWIPE TO SIGNUP",
+                  // )
+                  CustomSlideActionButton(
+                    outerColor: AppColors.primaryColor, // Red button background
+                    innerColor: AppColors.whiteColor, // White slider background
+                    sliderButtonIconAsset: AppImages.logoWhite, // White logo
+                    text: "SWIPE TO SIGNUP",
+                    textStyle: poppinsMedium(
+                      fontSize: 15.sp,
+                      color: AppColors.whiteColor, // White text for contrast
+                    ),
+                    onSubmit: () async {
                       print(
                           "The LOGO is: ${homeController.pickedImage2?.path} \n and \n The Business Image is ${homeController.pickedImage?.path}");
                       if (businessAddressController.text.isEmptyOrNull) {
@@ -347,28 +436,21 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                               homeController.pickedImage2?.path;
                         }
 
-                        //test placeID = 'ChIJN1t_tDeuEmsRUsoyG83frY4'
-                        //tets placeID = 'ChIJrTLr-GyuEmsRBfy61i59si0'
-
                         String? token = await FCMManager.getFCMToken();
                         widget.userModel.fcmTokens = [token!];
 
-                        // Await the signUp call and only navigate if it was successful
                         await userController.signUp(widget.userModel, (error) {
-                          // Error callback, just hide the loader and stay on the current screen
                           if (error != null) {
                             Get.snackbar('Error', error,
                                 snackPosition: SnackPosition.TOP);
                           }
                           context.loaderOverlay.hide();
                         }, true, businessIdController.text).then((value) {
-                          // Navigate only if signup didn't fail
                           print(
                               'HERE IS THE PASS ID ${businessIdController.text}');
                           if (value != false) {
                             Get.put(NotificationController());
                             Get.put(RewardController());
-                            // You might need to modify `signUp` to return a success indicator
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -377,14 +459,12 @@ class _AddBusinessDetailsViewState extends State<AddBusinessDetailsView> {
                             homeController.setImageNull();
                             homeController.clearLogo();
                           }
-
-                          context.loaderOverlay
-                              .hide(); // Hide loader whether signup is successful or not
+                          context.loaderOverlay.hide();
                         });
                       }
+                      return null; // Required by onSubmit
                     },
-                    text: "SWIPE TO SIGNUP",
-                  )
+                  ),
                 ],
               ),
             ),

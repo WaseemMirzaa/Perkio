@@ -12,12 +12,14 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 import '../../widgets/custom_appBar/custom_appBar.dart';
@@ -265,68 +267,134 @@ class _EditMyDealsState extends State<EditMyDeals> {
                 Obx(
                   () => controller.loading.value
                       ? Center(child: circularProgressBar())
-                      : ButtonWidget(
-                          onSwipe: () async {
+                      // : ButtonWidget(
+                      //     onSwipe: () async {
+                      //       if (myController
+                      //           .dealNameController.text.isEmptyOrNull) {
+                      //         showSnackBar(
+                      //             'Empty Fields', 'Name field is required');
+                      //       } else if (homeController.pickedImage == null &&
+                      //           widget.dealModel.image.isEmptyOrNull) {
+                      //         showSnackBar(
+                      //             'Deal Logo', 'Deal Logo is required');
+                      //       } else if (myController.counter.value <= 0) {
+                      //         showSnackBar('Empty Fields',
+                      //             'Please set the number of uses');
+                      //       } else {
+                      //         context.loaderOverlay.show(
+                      //           widgetBuilder: (context) =>
+                      //               Center(child: circularProgressBar()),
+                      //         );
+                      //         final imageLink = homeController.pickedImage ==
+                      //                 null
+                      //             ? null
+                      //             : await homeController
+                      //                 .uploadImageToFirebaseWithCustomPath(
+                      //                     homeController.pickedImage!.path,
+                      //                     'Deals/${DateTime.now().toIso8601String()}');
+                      //         print("Link Is: $imageLink");
+                      //         widget.dealModel.dealName = myController
+                      //             .dealNameController.text
+                      //             .toLowerCase();
+                      //         widget.dealModel.uses =
+                      //             myController.counter.value;
+                      //         widget.dealModel.image = imageLink.isEmptyOrNull
+                      //             ? widget.dealModel.image
+                      //             : imageLink;
+
+                      //         widget.dealModel.location =
+                      //             getStringAsync(SharedPrefKey.address);
+
+                      //         print(
+                      //             '-----💢💢💢💢💢${getStringAsync(SharedPrefKey.address)}');
+                      //         widget.dealModel.longLat = GeoPoint(
+                      //             getDoubleAsync(SharedPrefKey.latitude),
+                      //             getDoubleAsync(SharedPrefKey.longitude));
+
+                      //         print(
+                      //             '------------ + ${widget.dealModel.location}');
+
+                      //         print(
+                      //             '------------ + ${widget.dealModel.location}');
+
+                      //         await controller
+                      //             .editMyDeal(widget.dealModel)
+                      //             .then((value) {
+                      //           context.loaderOverlay.hide();
+                      //           myController.clearTextFields();
+                      //           homeController.setImageNull();
+                      //           Get.back();
+                      //         });
+                      //         context.loaderOverlay.hide();
+                      //       }
+                      //     },
+                      //     text: 'SWIPE TO EDIT DEAL'),
+                       : CustomSlideActionButton(
+                          outerColor: AppColors.primaryColor, // Red button background
+                          innerColor: AppColors.whiteColor, // White slider background
+                          sliderButtonIconAsset: AppImages.logoWhite, // White logo
+                          text: 'SWIPE TO EDIT DEAL',
+                          textStyle: poppinsMedium(
+                            fontSize: 15.sp, // Consistent with other screens
+                            color: AppColors.whiteColor, // White text for contrast
+                          ),
+                          onSubmit: () async {
                             if (myController
                                 .dealNameController.text.isEmptyOrNull) {
                               showSnackBar(
                                   'Empty Fields', 'Name field is required');
+                              return null;
                             } else if (homeController.pickedImage == null &&
                                 widget.dealModel.image.isEmptyOrNull) {
                               showSnackBar(
                                   'Deal Logo', 'Deal Logo is required');
+                              return null;
                             } else if (myController.counter.value <= 0) {
                               showSnackBar('Empty Fields',
                                   'Please set the number of uses');
-                            } else {
-                              context.loaderOverlay.show(
-                                widgetBuilder: (context) =>
-                                    Center(child: circularProgressBar()),
-                              );
-                              final imageLink = homeController.pickedImage ==
-                                      null
-                                  ? null
-                                  : await homeController
-                                      .uploadImageToFirebaseWithCustomPath(
-                                          homeController.pickedImage!.path,
-                                          'Deals/${DateTime.now().toIso8601String()}');
-                              print("Link Is: $imageLink");
-                              widget.dealModel.dealName = myController
-                                  .dealNameController.text
-                                  .toLowerCase();
-                              widget.dealModel.uses =
-                                  myController.counter.value;
-                              widget.dealModel.image = imageLink.isEmptyOrNull
-                                  ? widget.dealModel.image
-                                  : imageLink;
-
-                              widget.dealModel.location =
-                                  getStringAsync(SharedPrefKey.address);
-
-                              print(
-                                  '-----💢💢💢💢💢${getStringAsync(SharedPrefKey.address)}');
-                              widget.dealModel.longLat = GeoPoint(
-                                  getDoubleAsync(SharedPrefKey.latitude),
-                                  getDoubleAsync(SharedPrefKey.longitude));
-
-                              print(
-                                  '------------ + ${widget.dealModel.location}');
-
-                              print(
-                                  '------------ + ${widget.dealModel.location}');
-
-                              await controller
-                                  .editMyDeal(widget.dealModel)
-                                  .then((value) {
-                                context.loaderOverlay.hide();
-                                myController.clearTextFields();
-                                homeController.setImageNull();
-                                Get.back();
-                              });
-                              context.loaderOverlay.hide();
+                              return null;
                             }
+
+                            context.loaderOverlay.show(
+                              widgetBuilder: (context) =>
+                                  Center(child: circularProgressBar()),
+                            );
+
+                            final imageLink = homeController.pickedImage == null
+                                ? null
+                                : await homeController
+                                    .uploadImageToFirebaseWithCustomPath(
+                                        homeController.pickedImage!.path,
+                                        'Deals/${DateTime.now().toIso8601String()}');
+                            print("Link Is: $imageLink");
+                            widget.dealModel.dealName = myController
+                                .dealNameController.text
+                                .toLowerCase();
+                            widget.dealModel.uses = myController.counter.value;
+                            widget.dealModel.image = imageLink.isEmptyOrNull
+                                ? widget.dealModel.image
+                                : imageLink;
+
+                            widget.dealModel.location =
+                                getStringAsync(SharedPrefKey.address);
+
+                            widget.dealModel.longLat = GeoPoint(
+                                getDoubleAsync(SharedPrefKey.latitude),
+                                getDoubleAsync(SharedPrefKey.longitude));
+
+                            await controller
+                                .editMyDeal(widget.dealModel)
+                                .then((value) {
+                              context.loaderOverlay.hide();
+                              myController.clearTextFields();
+                              homeController.setImageNull();
+                              Get.back();
+                            });
+
+                            context.loaderOverlay.hide();
+                            return null; // Required by onSubmit
                           },
-                          text: 'SWIPE TO EDIT DEAL'),
+                        ),
                 ),
               ],
             ),

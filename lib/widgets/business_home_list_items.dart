@@ -255,14 +255,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                             margin: const EdgeInsets.only(
                                 top: 30, left: 10, right: 10),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  AppColors.gradientStartColor,
-                                  AppColors.gradientEndColor
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
+                              color: AppColors.primaryColor,
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Center(

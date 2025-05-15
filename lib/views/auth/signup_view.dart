@@ -1,3 +1,333 @@
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:nb_utils/nb_utils.dart';
+// import 'package:roundcheckbox/roundcheckbox.dart';
+// import 'package:sizer/sizer.dart';
+// import 'package:swipe_app/controllers/user_controller.dart';
+// import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+// import 'package:swipe_app/core/utils/constants/app_assets.dart';
+// import 'package:swipe_app/core/utils/constants/app_const.dart';
+// import 'package:swipe_app/core/utils/constants/constants.dart';
+// import 'package:swipe_app/core/utils/constants/text_styles.dart';
+// import 'package:swipe_app/core/utils/mixins/validate_textfield.dart';
+// import 'package:swipe_app/models/user_model.dart';
+// import 'package:swipe_app/views/auth/add_bussiness_details_view.dart';
+// import 'package:swipe_app/views/location/select_location_view.dart';
+// import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
+// import 'package:swipe_app/views/subscription/terms_and_conditions.dart';
+// import 'package:swipe_app/widgets/app_images.dart';
+// import 'package:swipe_app/widgets/auth_components/authComponents.dart';
+// import 'package:swipe_app/widgets/auth_textfield.dart';
+// import 'package:swipe_app/widgets/button_widget.dart';
+// import 'package:swipe_app/widgets/common_comp.dart';
+// import 'package:swipe_app/widgets/common_space.dart';
+// import 'package:swipe_app/core/utils/constants/temp_language.dart';
+
+// class SignupView extends StatefulWidget {
+//   const SignupView({super.key});
+
+//   @override
+//   State<SignupView> createState() => _SignupViewState();
+// }
+
+// class _SignupViewState extends State<SignupView> with ValidationMixin {
+//   var controller = Get.find<UserController>();
+//   final RxBool confirm = false.obs;
+//   FocusNode nameFocusNode = FocusNode();
+//   FocusNode emailFocusNode = FocusNode();
+//   FocusNode passwordFocusNode = FocusNode();
+//   FocusNode phoneFocusNode = FocusNode();
+//   @override
+//   Widget build(BuildContext context) {
+//     return WillPopScope(
+//       onWillPop: () async {
+//         controller.clearTextFields();
+//         return true;
+//       },
+//       child: Scaffold(
+//           backgroundColor: AppColors.whiteColor,
+//           body: SingleChildScrollView(
+//             child: Padding(
+//               padding: const EdgeInsets.all(12.0),
+//               child: Column(
+//                 children: [
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(vertical: 60),
+//                     child:
+//                         //  Text(
+//                         //   TempLanguage.lblSwipe,
+//                         //   style: altoysFont(fontSize: 45),
+//                         //   textAlign: TextAlign.center,
+//                         // ),
+//                         Image.asset(
+//                       AppImages.logoRed, // Replace with the correct path to your logo
+//                       height: 100, // Adjust size as needed
+//                       fit: BoxFit.contain,
+//                     ),
+//                   ),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Text(TempLanguage.txtSignup,
+//                           style: poppinsMedium(fontSize: 18)),
+//                       GestureDetector(
+//                           onTap: () {
+//                             Navigator.pop(context);
+//                           },
+//                           child: Text(TempLanguage.txtLogin,
+//                               style: poppinsRegular(
+//                                   fontSize: 13, color: AppColors.hintText))),
+//                     ],
+//                   ),
+//                   const SpacerBoxVertical(height: 10),
+//                   const SpacerBoxVertical(height: 20),
+//                   getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+//                       ? TextFieldWidget(
+//                           text: TempLanguage.txtUserName,
+//                           path: AppAssets.userImg,
+//                           textController: controller.userNameController,
+//                           keyboardType: TextInputType.name,
+//                           focusNode: nameFocusNode,
+//                           onEditComplete: () => focusChange(
+//                               context, nameFocusNode, emailFocusNode),
+//                         )
+//                       : TextFieldWidget(
+//                           text: TempLanguage.txtBusinessName,
+//                           path: AppAssets.userImg,
+//                           textController: controller.userNameController,
+//                           keyboardType: TextInputType.name,
+//                           focusNode: nameFocusNode,
+//                           onEditComplete: () => focusChange(
+//                               context, nameFocusNode, emailFocusNode)),
+//                   const SpacerBoxVertical(height: 20),
+//                   TextFieldWidget(
+//                     text: TempLanguage.lblEmailId,
+//                     path: AppAssets.emailIcon,
+//                     textController: controller.emailController,
+//                     keyboardType: TextInputType.emailAddress,
+//                     focusNode: emailFocusNode,
+//                     onEditComplete: () =>
+//                         focusChange(context, emailFocusNode, passwordFocusNode),
+//                   ),
+//                   const SpacerBoxVertical(height: 20),
+//                   TextFieldWidget(
+//                     text: TempLanguage.lblPassword,
+//                     path: AppAssets.unlockImg,
+//                     textController: controller.passwordController,
+//                     isPassword: true,
+//                     onChangepath: AppAssets.lockImg,
+//                     keyboardType: TextInputType.visiblePassword,
+//                     focusNode: passwordFocusNode,
+//                     onEditComplete: () =>
+//                         focusChange(context, passwordFocusNode, phoneFocusNode),
+//                   ),
+//                   const SpacerBoxVertical(height: 20),
+//                   TextFieldWidget(
+//                     text: TempLanguage.txtDummyPhoneNo,
+//                     path: 'assets/images/Pwd  Input.png',
+//                     textController: controller.phoneController,
+//                     focusNode: phoneFocusNode,
+//                     keyboardType: TextInputType.phone,
+//                     onEditComplete: () => unFocusChange(context),
+//                   ),
+//                   const SpacerBoxVertical(height: 20),
+//                   Obx(() => controller.loading.value
+//                       ? circularProgressBar()
+//                       : ButtonWidget(
+//                           onSwipe: () {
+//                             controller.emailErrorText.value =
+//                                 validateEmail(controller.emailController.text);
+//                             controller.passErrorText.value = validatePassword(
+//                                 controller.passwordController.text);
+//                             controller.userNameErrorText.value =
+//                                 simpleValidation(
+//                                     controller.userNameController.text);
+//                             controller.phoneErrorText.value = simpleValidation(
+//                                 controller.phoneController.text);
+//                             if (controller.emailErrorText.value == "" &&
+//                                 controller.passErrorText.value == "" &&
+//                                 controller.userNameErrorText.value == "") {
+//                               if (confirm.value) {
+//                                 UserModel userModel = UserModel(
+//                                     email: controller.emailController.text,
+//                                     userName:
+//                                         controller.userNameController.text,
+//                                     phoneNo: controller.phoneController.text,
+//                                     role: getStringAsync(SharedPrefKey.role),
+//                                     password:
+//                                         controller.passwordController.text,
+//                                     isVerified:
+//                                         getStringAsync(SharedPrefKey.role) ==
+//                                                 SharedPrefKey.user
+//                                             ? StatusKey.verified
+//                                             : StatusKey.pending);
+//                                 getStringAsync(SharedPrefKey.role) ==
+//                                         SharedPrefKey.user
+//                                     ? Navigator.push(
+//                                         // user side permissions
+//                                         context,
+//                                         MaterialPageRoute(
+//                                           builder: (context) => LocationService(
+//                                             child: SelectLocation(
+//                                               userModel: userModel,
+//                                             ),
+//                                           ),
+//                                         ),
+//                                       )
+
+//                                     //controller.signUp(userModel)
+//                                     : Navigator.push(
+//                                         context,
+//                                         MaterialPageRoute(
+//                                             builder: (context) =>
+//                                                 LocationService(
+//                                                     child:
+//                                                         AddBusinessDetailsView(
+//                                                   userModel: userModel,
+//                                                 ))));
+//                               } else {
+//                                 Get.snackbar('Error',
+//                                     'Please Accept Terms & Conditions To Continue.');
+//                               }
+//                             } else {
+//                               if (controller
+//                                   .userNameErrorText.value.isNotEmpty) {
+//                                 getStringAsync(SharedPrefKey.role) ==
+//                                         SharedPrefKey.user
+//                                     ? Get.snackbar(
+//                                         'Error', 'Please enter the user name.')
+//                                     : Get.snackbar('Error',
+//                                         'Please enter the business name.');
+//                               } else if (controller
+//                                   .emailErrorText.value.isNotEmpty) {
+//                                 Get.snackbar('Error',
+//                                     '${controller.emailErrorText.value}.');
+//                               } else if (controller
+//                                   .passErrorText.value.isNotEmpty) {
+//                                 Get.snackbar('Error', 'Enter The Password.');
+//                               } else if (!confirm.value) {
+//                                 Get.snackbar('Error',
+//                                     'Please Accept Terms & Conditions To Continue.');
+//                               }
+//                             }
+//                           },
+//                           text: TempLanguage.btnLblSwipeToSignup)),
+//                   const SpacerBoxVertical(height: 20),
+//                   Obx(
+//                     () => Row(
+//                       children: [
+//                         const SpacerBoxHorizontal(width: 5),
+//                         RoundCheckBox(
+//                           size: 20.sp,
+//                           border: Border.all(
+//                             color: confirm.value ? Colors.green : Colors.grey,
+//                           ),
+//                           isChecked: confirm.value,
+//                           checkedColor: Colors.green,
+//                           uncheckedColor: Colors.white,
+//                           disabledColor:
+//                               confirm.value ? Colors.orange : Colors.white,
+//                           checkedWidget: Icon(
+//                             Icons.check_rounded,
+//                             size: 10.sp,
+//                             color: AppColors.whiteColor,
+//                           ),
+//                           onTap: (value) {
+//                             confirm.value = value!;
+//                           }, // Disable direct toggle, as it depends on the Terms & Conditions result
+//                         ),
+//                         const SpacerBoxHorizontal(width: 5),
+//                         Text(
+//                           'I agree with ',
+//                           style: poppinsRegular(
+//                             fontSize: 15,
+//                             color: Colors.black,
+//                           ),
+//                         ),
+//                         GestureDetector(
+//                           onTap: () async {
+//                             // Navigate to TermsAndConditions page and await result
+
+//                             Get.to(() => const TermsAndConditions());
+//                             // // Update confirm.value only if a result is returned
+//                             // if (result != null && result == true) {
+//                             //   confirm.value = true; // Mark as accepted
+//                             // } else {
+//                             //   confirm.value = false; // Mark as declined
+//                             // }
+//                           },
+//                           child: Text(
+//                             'terms & conditions',
+//                             style: poppinsRegular(
+//                               fontSize: 15,
+//                               color: Colors.blue,
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                   SpacerBoxVertical(height: 1.5.h),
+//                   getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+//                       ? TextButton(
+//                           onPressed: () {
+//                             Navigator.push(
+//                               // user side permissions
+//                               context,
+//                               MaterialPageRoute(
+//                                 builder: (context) => LocationService(
+//                                   child: SelectLocation(
+//                                     isGuestUser: true,
+//                                     isUser:
+//                                         getStringAsync(SharedPrefKey.role) ==
+//                                             SharedPrefKey.user,
+//                                   ),
+//                                 ),
+//                               ),
+//                             );
+//                           },
+//                           child: Text(
+//                             'Continue as a Guest',
+//                             style: poppinsMedium(
+//                                 fontSize: 15.sp,
+//                                 color: AppColors.secondaryText),
+//                           ),
+//                         )
+//                       : const SizedBox.shrink(),
+//                 ],
+//               ),
+//             ),
+//           )),
+//     );
+//   }
+
+//   Widget socialIconsComp(
+//           {Function()? onTap, required String icon, required Color bgColor}) =>
+//       GestureDetector(
+//         onTap: onTap,
+//         child: Container(
+//           height: 28.sp,
+//           width: 28.sp,
+//           decoration: BoxDecoration(
+//             color: bgColor,
+//             boxShadow: [
+//               BoxShadow(
+//                   color: AppColors.blackColor.withOpacity(0.16),
+//                   offset: const Offset(0, 3),
+//                   blurRadius: 3)
+//             ],
+//             shape: BoxShape.circle,
+//             border: Border.all(width: 2, color: AppColors.whiteColor),
+//           ),
+//           child: Center(
+//             child: Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: Image.asset(icon),
+//             ),
+//           ),
+//         ),
+//       );
+// }
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -18,10 +348,10 @@ import 'package:swipe_app/views/subscription/terms_and_conditions.dart';
 import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
-import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -37,6 +367,7 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
   FocusNode phoneFocusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -45,259 +376,257 @@ class _SignupViewState extends State<SignupView> with ValidationMixin {
         return true;
       },
       child: Scaffold(
-          backgroundColor: AppColors.whiteColor,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 60),
-                    child:
-                        //  Text(
-                        //   TempLanguage.lblSwipe,
-                        //   style: altoysFont(fontSize: 45),
-                        //   textAlign: TextAlign.center,
-                        // ),
-                        Image.asset(
-                      AppImages.logo, // Replace with the correct path to your logo
-                      height: 100, // Adjust size as needed
-                      fit: BoxFit.contain,
+        backgroundColor: AppColors.whiteColor,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 60),
+                  child: Image.asset(
+                    AppImages.logoRed, // Replace with the correct path to your logo
+                    height: 100, // Adjust size as needed
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(TempLanguage.txtSignup,
+                        style: poppinsMedium(fontSize: 18)),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(TempLanguage.txtLogin,
+                          style: poppinsRegular(
+                              fontSize: 13, color: AppColors.hintText)),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(TempLanguage.txtSignup,
-                          style: poppinsMedium(fontSize: 18)),
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(TempLanguage.txtLogin,
-                              style: poppinsRegular(
-                                  fontSize: 13, color: AppColors.hintText))),
-                    ],
-                  ),
-                  const SpacerBoxVertical(height: 10),
-                  const SpacerBoxVertical(height: 20),
-                  getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                      ? TextFieldWidget(
-                          text: TempLanguage.txtUserName,
-                          path: AppAssets.userImg,
-                          textController: controller.userNameController,
-                          keyboardType: TextInputType.name,
-                          focusNode: nameFocusNode,
-                          onEditComplete: () => focusChange(
-                              context, nameFocusNode, emailFocusNode),
-                        )
-                      : TextFieldWidget(
-                          text: TempLanguage.txtBusinessName,
-                          path: AppAssets.userImg,
-                          textController: controller.userNameController,
-                          keyboardType: TextInputType.name,
-                          focusNode: nameFocusNode,
-                          onEditComplete: () => focusChange(
-                              context, nameFocusNode, emailFocusNode)),
-                  const SpacerBoxVertical(height: 20),
-                  TextFieldWidget(
-                    text: TempLanguage.lblEmailId,
-                    path: AppAssets.emailIcon,
-                    textController: controller.emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    focusNode: emailFocusNode,
-                    onEditComplete: () =>
-                        focusChange(context, emailFocusNode, passwordFocusNode),
-                  ),
-                  const SpacerBoxVertical(height: 20),
-                  TextFieldWidget(
-                    text: TempLanguage.lblPassword,
-                    path: AppAssets.unlockImg,
-                    textController: controller.passwordController,
-                    isPassword: true,
-                    onChangepath: AppAssets.lockImg,
-                    keyboardType: TextInputType.visiblePassword,
-                    focusNode: passwordFocusNode,
-                    onEditComplete: () =>
-                        focusChange(context, passwordFocusNode, phoneFocusNode),
-                  ),
-                  const SpacerBoxVertical(height: 20),
-                  TextFieldWidget(
-                    text: TempLanguage.txtDummyPhoneNo,
-                    path: 'assets/images/Pwd  Input.png',
-                    textController: controller.phoneController,
-                    focusNode: phoneFocusNode,
-                    keyboardType: TextInputType.phone,
-                    onEditComplete: () => unFocusChange(context),
-                  ),
-                  const SpacerBoxVertical(height: 20),
-                  Obx(() => controller.loading.value
-                      ? circularProgressBar()
-                      : ButtonWidget(
-                          onSwipe: () {
-                            controller.emailErrorText.value =
-                                validateEmail(controller.emailController.text);
-                            controller.passErrorText.value = validatePassword(
-                                controller.passwordController.text);
-                            controller.userNameErrorText.value =
-                                simpleValidation(
-                                    controller.userNameController.text);
-                            controller.phoneErrorText.value = simpleValidation(
-                                controller.phoneController.text);
-                            if (controller.emailErrorText.value == "" &&
-                                controller.passErrorText.value == "" &&
-                                controller.userNameErrorText.value == "") {
-                              if (confirm.value) {
-                                UserModel userModel = UserModel(
-                                    email: controller.emailController.text,
-                                    userName:
-                                        controller.userNameController.text,
-                                    phoneNo: controller.phoneController.text,
-                                    role: getStringAsync(SharedPrefKey.role),
-                                    password:
-                                        controller.passwordController.text,
-                                    isVerified:
-                                        getStringAsync(SharedPrefKey.role) ==
-                                                SharedPrefKey.user
-                                            ? StatusKey.verified
-                                            : StatusKey.pending);
-                                getStringAsync(SharedPrefKey.role) ==
+                  ],
+                ),
+                const SpacerBoxVertical(height: 10),
+                const SpacerBoxVertical(height: 20),
+                getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                    ? TextFieldWidget(
+                        text: TempLanguage.txtUserName,
+                        path: AppAssets.userImg,
+                        textController: controller.userNameController,
+                        keyboardType: TextInputType.name,
+                        focusNode: nameFocusNode,
+                        onEditComplete: () =>
+                            focusChange(context, nameFocusNode, emailFocusNode),
+                      )
+                    : TextFieldWidget(
+                        text: TempLanguage.txtBusinessName,
+                        path: AppAssets.userImg,
+                        textController: controller.userNameController,
+                        keyboardType: TextInputType.name,
+                        focusNode: nameFocusNode,
+                        onEditComplete: () =>
+                            focusChange(context, nameFocusNode, emailFocusNode),
+                      ),
+                const SpacerBoxVertical(height: 20),
+                TextFieldWidget(
+                  text: TempLanguage.lblEmailId,
+                  path: AppAssets.emailIcon,
+                  textController: controller.emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  focusNode: emailFocusNode,
+                  onEditComplete: () =>
+                      focusChange(context, emailFocusNode, passwordFocusNode),
+                ),
+                const SpacerBoxVertical(height: 20),
+                TextFieldWidget(
+                  text: TempLanguage.lblPassword,
+                  path: AppAssets.unlockImg,
+                  textController: controller.passwordController,
+                  isPassword: true,
+                  onChangepath: AppAssets.lockImg,
+                  keyboardType: TextInputType.visiblePassword,
+                  focusNode: passwordFocusNode,
+                  onEditComplete: () =>
+                      focusChange(context, passwordFocusNode, phoneFocusNode),
+                ),
+                const SpacerBoxVertical(height: 20),
+                TextFieldWidget(
+                  text: TempLanguage.txtDummyPhoneNo,
+                  path: 'assets/images/Pwd  Input.png',
+                  textController: controller.phoneController,
+                  focusNode: phoneFocusNode,
+                  keyboardType: TextInputType.phone,
+                  onEditComplete: () => unFocusChange(context),
+                ),
+                const SpacerBoxVertical(height: 20),
+                Obx(() => controller.loading.value
+                    ? circularProgressBar()
+                    : CustomSlideActionButton(
+                        outerColor: AppColors.primaryColor, // Red button background
+                        innerColor: AppColors.whiteColor, // White slider background
+                        sliderButtonIconAsset: AppImages.logoWhite, // White logo
+                        text: TempLanguage.btnLblSwipeToSignup,
+                        textStyle: poppinsMedium(
+                          fontSize: 15.sp,
+                          color: AppColors.whiteColor, // White text for contrast
+                        ),
+                        onSubmit: () async {
+                          controller.emailErrorText.value =
+                              validateEmail(controller.emailController.text);
+                          controller.passErrorText.value =
+                              validatePassword(controller.passwordController.text);
+                          controller.userNameErrorText.value =
+                              simpleValidation(controller.userNameController.text);
+                          controller.phoneErrorText.value =
+                              simpleValidation(controller.phoneController.text);
+                          if (controller.emailErrorText.value == "" &&
+                              controller.passErrorText.value == "" &&
+                              controller.userNameErrorText.value == "" &&
+                              controller.phoneErrorText.value == "") {
+                            if (confirm.value) {
+                              UserModel userModel = UserModel(
+                                email: controller.emailController.text,
+                                userName: controller.userNameController.text,
+                                phoneNo: controller.phoneController.text,
+                                role: getStringAsync(SharedPrefKey.role),
+                                password: controller.passwordController.text,
+                                isVerified: getStringAsync(SharedPrefKey.role) ==
                                         SharedPrefKey.user
-                                    ? Navigator.push(
-                                        // user side permissions
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => LocationService(
-                                            child: SelectLocation(
-                                              userModel: userModel,
-                                            ),
+                                    ? StatusKey.verified
+                                    : StatusKey.pending,
+                              );
+                              getStringAsync(SharedPrefKey.role) ==
+                                      SharedPrefKey.user
+                                  ? Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LocationService(
+                                          child: SelectLocation(
+                                            userModel: userModel,
                                           ),
                                         ),
-                                      )
-
-                                    //controller.signUp(userModel)
-                                    : Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LocationService(
-                                                    child:
-                                                        AddBusinessDetailsView(
-                                                  userModel: userModel,
-                                                ))));
-                              } else {
-                                Get.snackbar('Error',
-                                    'Please Accept Terms & Conditions To Continue.');
-                              }
+                                      ),
+                                    )
+                                  : Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LocationService(
+                                          child: AddBusinessDetailsView(
+                                            userModel: userModel,
+                                          ),
+                                        ),
+                                      ),
+                                    );
                             } else {
-                              if (controller
-                                  .userNameErrorText.value.isNotEmpty) {
-                                getStringAsync(SharedPrefKey.role) ==
-                                        SharedPrefKey.user
-                                    ? Get.snackbar(
-                                        'Error', 'Please enter the user name.')
-                                    : Get.snackbar('Error',
-                                        'Please enter the business name.');
-                              } else if (controller
-                                  .emailErrorText.value.isNotEmpty) {
-                                Get.snackbar('Error',
-                                    '${controller.emailErrorText.value}.');
-                              } else if (controller
-                                  .passErrorText.value.isNotEmpty) {
-                                Get.snackbar('Error', 'Enter The Password.');
-                              } else if (!confirm.value) {
-                                Get.snackbar('Error',
-                                    'Please Accept Terms & Conditions To Continue.');
-                              }
+                              Get.snackbar('Error',
+                                  'Please Accept Terms & Conditions To Continue.');
                             }
-                          },
-                          text: TempLanguage.btnLblSwipeToSignup)),
-                  const SpacerBoxVertical(height: 20),
-                  Obx(
-                    () => Row(
-                      children: [
-                        const SpacerBoxHorizontal(width: 5),
-                        RoundCheckBox(
-                          size: 20.sp,
-                          border: Border.all(
-                            color: confirm.value ? Colors.green : Colors.grey,
-                          ),
-                          isChecked: confirm.value,
-                          checkedColor: Colors.green,
-                          uncheckedColor: Colors.white,
-                          disabledColor:
-                              confirm.value ? Colors.orange : Colors.white,
-                          checkedWidget: Icon(
-                            Icons.check_rounded,
-                            size: 10.sp,
-                            color: AppColors.whiteColor,
-                          ),
-                          onTap: (value) {
-                            confirm.value = value!;
-                          }, // Disable direct toggle, as it depends on the Terms & Conditions result
+                          } else {
+                            if (controller.userNameErrorText.value.isNotEmpty) {
+                              getStringAsync(SharedPrefKey.role) ==
+                                      SharedPrefKey.user
+                                  ? Get.snackbar(
+                                      'Error', 'Please enter the user name.')
+                                  : Get.snackbar('Error',
+                                      'Please enter the business name.');
+                            } else if (controller
+                                .emailErrorText.value.isNotEmpty) {
+                              Get.snackbar(
+                                  'Error', '${controller.emailErrorText.value}.');
+                            } else if (controller
+                                .passErrorText.value.isNotEmpty) {
+                              Get.snackbar('Error', 'Enter The Password.');
+                            } else if (controller
+                                .phoneErrorText.value.isNotEmpty) {
+                              Get.snackbar('Error', 'Enter The Phone Number.');
+                            }
+                          }
+                          return null; // Required by onSubmit
+                        },
+                      )),
+                const SpacerBoxVertical(height: 20),
+                Obx(
+                  () => Row(
+                    children: [
+                      const SpacerBoxHorizontal(width: 5),
+                      RoundCheckBox(
+                        size: 20.sp,
+                        border: Border.all(
+                          color: confirm.value ? Colors.green : Colors.grey,
                         ),
-                        const SpacerBoxHorizontal(width: 5),
-                        Text(
-                          'I agree with ',
+                        isChecked: confirm.value,
+                        checkedColor: Colors.green,
+                        uncheckedColor: Colors.white,
+                        disabledColor:
+                            confirm.value ? Colors.orange : Colors.white,
+                        checkedWidget: Icon(
+                          Icons.check_rounded,
+                          size: 10.sp,
+                          color: AppColors.whiteColor,
+                        ),
+                        onTap: (value) {
+                          confirm.value = value!;
+                        }, // Disable direct toggle, as it depends on the Terms & Conditions result
+                      ),
+                      const SpacerBoxHorizontal(width: 5),
+                      Text(
+                        'I agree with ',
+                        style: poppinsRegular(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          // Navigate to TermsAndConditions page and await result
+                          Get.to(() => const TermsAndConditions());
+                          // // Update confirm.value only if a result is returned
+                          // if (result != null && result == true) {
+                          //   confirm.value = true; // Mark as accepted
+                          // } else {
+                          //   confirm.value = false; // Mark as declined
+                          // }
+                        },
+                        child: Text(
+                          'terms & conditions',
                           style: poppinsRegular(
                             fontSize: 15,
-                            color: Colors.black,
+                            color: Colors.blue,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () async {
-                            // Navigate to TermsAndConditions page and await result
-
-                            Get.to(() => const TermsAndConditions());
-                            // // Update confirm.value only if a result is returned
-                            // if (result != null && result == true) {
-                            //   confirm.value = true; // Mark as accepted
-                            // } else {
-                            //   confirm.value = false; // Mark as declined
-                            // }
-                          },
-                          child: Text(
-                            'terms & conditions',
-                            style: poppinsRegular(
-                              fontSize: 15,
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SpacerBoxVertical(height: 1.5.h),
-                  getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
-                      ? TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              // user side permissions
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LocationService(
-                                  child: SelectLocation(
-                                    isGuestUser: true,
-                                    isUser:
-                                        getStringAsync(SharedPrefKey.role) ==
-                                            SharedPrefKey.user,
-                                  ),
+                ),
+                SpacerBoxVertical(height: 1.5.h),
+                getStringAsync(SharedPrefKey.role) == SharedPrefKey.user
+                    ? TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            // user side permissions
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LocationService(
+                                child: SelectLocation(
+                                  isGuestUser: true,
+                                  isUser: getStringAsync(SharedPrefKey.role) ==
+                                      SharedPrefKey.user,
                                 ),
                               ),
-                            );
-                          },
-                          child: Text(
-                            'Continue as a Guest',
-                            style: poppinsMedium(
-                                fontSize: 15.sp,
-                                color: AppColors.secondaryText),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ],
-              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Continue as a Guest',
+                          style: poppinsMedium(
+                              fontSize: 15.sp, color: AppColors.secondaryText),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 

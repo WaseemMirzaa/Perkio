@@ -7,7 +7,7 @@ import 'package:swipe_app/widgets/common_space.dart';
 class SettingsListItems extends StatelessWidget {
     final String path;
   final String text;
-  const SettingsListItems({required this.path, required this.text});
+  const SettingsListItems({super.key, required this.path, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class BalanceTile extends StatelessWidget {
   final String path;
   final String text;
   Function() onAdd;
-  BalanceTile({required this.path, required this.text, required this.onAdd});
+  BalanceTile({super.key, required this.path, required this.text, required this.onAdd});
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +39,7 @@ class BalanceTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 2.h),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide( width: 1, color: Color(0xFFE9E9E9))),
-        gradient: LinearGradient(colors: [
-          AppColors.gradientStartColor,
-          AppColors.gradientEndColor,
-        ])
+       color: AppColors.primaryColor
       ),
       child: Row(children: [
         const SpacerBoxHorizontal(width: 20),

@@ -3,16 +3,19 @@ import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/business_controller.dart';
+import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/services/business_services.dart';
 import 'package:swipe_app/views/business/add_deals.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/business_home_list_items.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/primary_layout.dart';
 
 import '../../widgets/custom_appBar/custom_appBar.dart';
@@ -123,12 +126,29 @@ class _PromotedDealViewState extends State<PromotedDealView> {
         ),
         footer: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: ButtonWidget(
-              onSwipe: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const AddDeals()));
-              },
-              text: TempLanguage.btnLblSwipeToAddDeal),
+          // child: ButtonWidget(
+          //     onSwipe: () {
+          //       Navigator.push(context,
+          //           MaterialPageRoute(builder: (context) => const AddDeals()));
+          //     },
+          //     text: TempLanguage.btnLblSwipeToAddDeal),
+        child:   CustomSlideActionButton(
+          outerColor: AppColors.primaryColor, // Red button background
+          innerColor: AppColors.whiteColor, // White slider background
+          sliderButtonIconAsset: AppImages.logoWhite, // White logo
+          text: TempLanguage.btnLblSwipeToAddDeal,
+          textStyle: poppinsMedium(
+            fontSize: 13.sp, // Consistent with LoginView, HomeBusiness
+            color: AppColors.whiteColor, // White text for contrast
+          ),
+          onSubmit: () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddDeals()),
+            );
+            return null; // Required by onSubmit
+          },
+        ),
         ));
   }
 }

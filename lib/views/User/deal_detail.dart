@@ -11,11 +11,14 @@ import 'package:swipe_app/core/utils/constants/app_assets.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/deal_model.dart';
 import 'package:swipe_app/views/place_picker/location_map/location_map.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
+
 import 'package:swipe_app/widgets/common/common_widgets.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/congratulation_dialog.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:swipe_app/widgets/detail_tile.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
@@ -208,19 +211,107 @@ class _DealDetailState extends State<DealDetail> {
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 20), // Add vertical padding for better spacing
-            child: ButtonWidget(
-              onSwipe: () async {
+            // child: ButtonWidget(
+            //   onSwipe: () async {
+            //     if (widget.isGuestLogin) {
+            //       LoginRequiredDialog.show(context, true);
+            //       return;
+            //     }
+            //     // Check subscription status
+            //     final subscriptionController = Get.find<SubscriptionController>();
+            //     final isSubscribed = await subscriptionController.isUserSubscribed();
+
+            //     if (!isSubscribed) {
+            //       // Show subscription popup if user is not subscribed
+            //       return showDialog(
+            //         context: context,
+            //         builder: (BuildContext context) => AlertDialog(
+            //           title: Text(
+            //             'Subscription Required',
+            //             style: poppinsRegular(
+            //                 fontSize: 15, color: AppColors.gradientStartColor),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //           content: Text(
+            //             'To access this deal, you need an active subscription. Subscribe now to unlock all premium features and deals!',
+            //             style: poppinsRegular(
+            //                 fontSize: 12, color: AppColors.secondaryText),
+            //             textAlign: TextAlign.center,                      ),
+            //           actions: [
+            //             TextButton(
+            //               onPressed: () => Get.back(),
+            //               child: Text(
+            //                 'Cancel',
+            //                 style: poppinsRegular(
+            //                     fontSize: 15, color: AppColors.redColor),
+            //               ),
+            //             ),
+            //             TextButton(
+            //               onPressed: () {
+            //                 Get.back(); // Close dialog first
+            //                 Get.to(() => VendorSubscriptionUI()); // Then navigate
+            //               },
+            //               child: Text(
+            //                 'Subscribe Now',
+            //                 style: poppinsMedium(
+            //                   fontSize: 14,
+            //                   color: AppColors.gradientEndColor,
+            //                 ),
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       );
+            //     }
+            //     setState(() {
+            //       isLoading = true; // Start loading
+            //     });
+
+            //     await controller.updateUsedBy(deal.dealId!);
+
+            //     setState(() {
+            //       isLoading = false; // Stop loading
+            //     });
+
+            //     showCongratulationDialog(
+            //       onDone: () {
+            //         Navigator.pushAndRemoveUntil(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => const LocationService(
+            //               child: BottomBarView(
+            //                 isUser: true,
+            //               ),
+            //             ),
+            //           ),
+            //           (route) => false,
+            //         );
+            //       },
+            //       message: 'deal',
+            //     );
+            //   },
+            //   text: TempLanguage.btnLblSwipeToRedeem,
+            // ),
+             child: CustomSlideActionButton(
+              outerColor: AppColors.primaryColor, // Red button background
+              innerColor: AppColors.whiteColor, // White slider background
+              sliderButtonIconAsset: AppImages.logoWhite, // White logo
+              text: TempLanguage.btnLblSwipeToRedeem,
+              textStyle: poppinsMedium(
+                fontSize: 15.sp, // Consistent with other screens
+                color: AppColors.whiteColor, // White text for contrast
+              ),
+              onSubmit: () async {
                 if (widget.isGuestLogin) {
                   LoginRequiredDialog.show(context, true);
-                  return;
+                  return null;
                 }
-                // Check subscription status
+
                 final subscriptionController = Get.find<SubscriptionController>();
                 final isSubscribed = await subscriptionController.isUserSubscribed();
 
                 if (!isSubscribed) {
-                  // Show subscription popup if user is not subscribed
-                  return showDialog(
+                  await showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
                       title: Text(
@@ -233,7 +324,8 @@ class _DealDetailState extends State<DealDetail> {
                         'To access this deal, you need an active subscription. Subscribe now to unlock all premium features and deals!',
                         style: poppinsRegular(
                             fontSize: 12, color: AppColors.secondaryText),
-                        textAlign: TextAlign.center,                      ),
+                        textAlign: TextAlign.center,
+                      ),
                       actions: [
                         TextButton(
                           onPressed: () => Get.back(),
@@ -245,8 +337,8 @@ class _DealDetailState extends State<DealDetail> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Get.back(); // Close dialog first
-                            Get.to(() => VendorSubscriptionUI()); // Then navigate
+                            Get.back();
+                            Get.to(() => VendorSubscriptionUI());
                           },
                           child: Text(
                             'Subscribe Now',
@@ -259,15 +351,17 @@ class _DealDetailState extends State<DealDetail> {
                       ],
                     ),
                   );
+                  return null;
                 }
+
                 setState(() {
-                  isLoading = true; // Start loading
+                  isLoading = true;
                 });
 
                 await controller.updateUsedBy(deal.dealId!);
 
                 setState(() {
-                  isLoading = false; // Stop loading
+                  isLoading = false;
                 });
 
                 showCongratulationDialog(
@@ -286,8 +380,9 @@ class _DealDetailState extends State<DealDetail> {
                   },
                   message: 'deal',
                 );
+
+                return null; // Required by onSubmit
               },
-              text: TempLanguage.btnLblSwipeToRedeem,
             ),
           ),
       ],

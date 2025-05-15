@@ -13,12 +13,14 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 import '../../widgets/custom_appBar/custom_appBar.dart';
@@ -308,82 +310,161 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                 Obx(
                   () => controller.loading.value
                       ? Center(child: circularProgressBar())
-                      : ButtonWidget(
-                          onSwipe: () async {
+                      // : ButtonWidget(
+                      //     onSwipe: () async {
+                      //       int points = int.parse(
+                      //           myController.pointsToRedeemController.text);
+                      //       if (myController
+                      //           .rewardNameController.text.isEmptyOrNull) {
+                      //         showSnackBar('Empty Fields',
+                      //             'Please enter the reward name');
+                      //       } else if (myController
+                      //           .pointsToRedeemController.text.isEmptyOrNull) {
+                      //         showSnackBar('Empty Fields',
+                      //             'Please enter the points to redeem (PTR)');
+                      //       } else if (homeController.pickedImage == null &&
+                      //           widget.rewardModel.rewardLogo.isEmptyOrNull) {
+                      //         showSnackBar('Empty Fields',
+                      //             'Please upload the reward logo');
+                      //       } else if (myController.counter.value <= 0) {
+                      //         showSnackBar('Empty Fields',
+                      //             'Please set the number of uses');
+                      //       } else if (points < 100) {
+                      //         showSnackBar('Amount incorrect',
+                      //             'Budget can not be less than 100');
+                      //       }
+                      //       // else if (points % controller.pps.value! != 0) {
+                      //       //   showSnackBar('Invalid Input',
+                      //       //       'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
+                      //       // }
+                      //       else {
+                      //         int userInput = int.parse(
+                      //             myController.pointsToRedeemController.text);
+                      //         context.loaderOverlay.show(
+                      //           widgetBuilder: (context) =>
+                      //               Center(child: circularProgressBar()),
+                      //         );
+                      //         final imageLink = homeController.pickedImage ==
+                      //                 null
+                      //             ? null
+                      //             : await homeController
+                      //                 .uploadImageToFirebaseWithCustomPath(
+                      //                     homeController.pickedImage!.path,
+                      //                     'Deals/${DateTime.now().toIso8601String()}');
+                      //         print("Link Is: $imageLink");
+                      //         widget.rewardModel.rewardName =
+                      //             myController.rewardNameController.text;
+                      //         widget.rewardModel.uses =
+                      //             myController.counter.value;
+                      //         widget.rewardModel.pointsToRedeem = userInput;
+                      //         widget.rewardModel.rewardLogo =
+                      //             imageLink.isEmptyOrNull
+                      //                 ? widget.rewardModel.rewardLogo
+                      //                 : imageLink;
+
+                      //         widget.rewardModel.rewardAddress =
+                      //             getStringAsync(SharedPrefKey.address);
+
+                      //         print(
+                      //             '-----💢💢💢💢💢${getStringAsync(SharedPrefKey.address)}');
+                      //         widget.rewardModel.latLong = GeoPoint(
+                      //             getDoubleAsync(SharedPrefKey.latitude),
+                      //             getDoubleAsync(SharedPrefKey.longitude));
+
+                      //         print(
+                      //             '------------ + ${widget.rewardModel.rewardAddress}');
+
+                      //         final isDealDone = await controller
+                      //             .editMyRewards(widget.rewardModel)
+                      //             .then((value) {
+                      //           context.loaderOverlay.hide();
+                      //           myController.clearTextFields();
+                      //           homeController.setImageNull();
+                      //           Get.back();
+                      //           context.loaderOverlay.hide();
+                      //         });
+                      //       }
+                      //     },
+                          // text: 'SWIPE TO EDIT DEAL'),
+                          :CustomSlideActionButton(
+                          outerColor: AppColors.primaryColor, // Red button background
+                          innerColor: AppColors.whiteColor, // White slider background
+                          sliderButtonIconAsset: AppImages.logoWhite, // White logo
+                          text: 'SWIPE TO EDIT DEAL',
+                          textStyle: poppinsMedium(
+                            fontSize: 15.sp, // Consistent with other screens
+                            color: AppColors.whiteColor, // White text for contrast
+                          ),
+                          onSubmit: () async {
                             int points = int.parse(
                                 myController.pointsToRedeemController.text);
                             if (myController
                                 .rewardNameController.text.isEmptyOrNull) {
                               showSnackBar('Empty Fields',
                                   'Please enter the reward name');
+                              return null;
                             } else if (myController
                                 .pointsToRedeemController.text.isEmptyOrNull) {
                               showSnackBar('Empty Fields',
                                   'Please enter the points to redeem (PTR)');
+                              return null;
                             } else if (homeController.pickedImage == null &&
                                 widget.rewardModel.rewardLogo.isEmptyOrNull) {
                               showSnackBar('Empty Fields',
                                   'Please upload the reward logo');
+                              return null;
                             } else if (myController.counter.value <= 0) {
                               showSnackBar('Empty Fields',
                                   'Please set the number of uses');
+                              return null;
                             } else if (points < 100) {
                               showSnackBar('Amount incorrect',
                                   'Budget can not be less than 100');
+                              return null;
                             }
-                            // else if (points % controller.pps.value! != 0) {
-                            //   showSnackBar('Invalid Input',
-                            //       'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
-                            // }
-                            else {
-                              int userInput = int.parse(
-                                  myController.pointsToRedeemController.text);
-                              context.loaderOverlay.show(
-                                widgetBuilder: (context) =>
-                                    Center(child: circularProgressBar()),
-                              );
-                              final imageLink = homeController.pickedImage ==
-                                      null
-                                  ? null
-                                  : await homeController
-                                      .uploadImageToFirebaseWithCustomPath(
-                                          homeController.pickedImage!.path,
-                                          'Deals/${DateTime.now().toIso8601String()}');
-                              print("Link Is: $imageLink");
-                              widget.rewardModel.rewardName =
-                                  myController.rewardNameController.text;
-                              widget.rewardModel.uses =
-                                  myController.counter.value;
-                              widget.rewardModel.pointsToRedeem = userInput;
-                              widget.rewardModel.rewardLogo =
-                                  imageLink.isEmptyOrNull
-                                      ? widget.rewardModel.rewardLogo
-                                      : imageLink;
 
-                              widget.rewardModel.rewardAddress =
-                                  getStringAsync(SharedPrefKey.address);
+                            context.loaderOverlay.show(
+                              widgetBuilder: (context) =>
+                                  Center(child: circularProgressBar()),
+                            );
 
-                              print(
-                                  '-----💢💢💢💢💢${getStringAsync(SharedPrefKey.address)}');
-                              widget.rewardModel.latLong = GeoPoint(
-                                  getDoubleAsync(SharedPrefKey.latitude),
-                                  getDoubleAsync(SharedPrefKey.longitude));
+                            final imageLink = homeController.pickedImage == null
+                                ? null
+                                : await homeController
+                                    .uploadImageToFirebaseWithCustomPath(
+                                        homeController.pickedImage!.path,
+                                        'Deals/${DateTime.now().toIso8601String()}');
+                            print("Link Is: $imageLink");
+                            widget.rewardModel.rewardName =
+                                myController.rewardNameController.text;
+                            widget.rewardModel.uses =
+                                myController.counter.value;
+                            widget.rewardModel.pointsToRedeem = points;
+                            widget.rewardModel.rewardLogo =
+                                imageLink.isEmptyOrNull
+                                    ? widget.rewardModel.rewardLogo
+                                    : imageLink;
 
-                              print(
-                                  '------------ + ${widget.rewardModel.rewardAddress}');
+                            widget.rewardModel.rewardAddress =
+                                getStringAsync(SharedPrefKey.address);
 
-                              final isDealDone = await controller
-                                  .editMyRewards(widget.rewardModel)
-                                  .then((value) {
-                                context.loaderOverlay.hide();
-                                myController.clearTextFields();
-                                homeController.setImageNull();
-                                Get.back();
-                                context.loaderOverlay.hide();
-                              });
-                            }
+                            widget.rewardModel.latLong = GeoPoint(
+                                getDoubleAsync(SharedPrefKey.latitude),
+                                getDoubleAsync(SharedPrefKey.longitude));
+
+                            await controller
+                                .editMyRewards(widget.rewardModel)
+                                .then((value) {
+                              context.loaderOverlay.hide();
+                              myController.clearTextFields();
+                              homeController.setImageNull();
+                              Get.back();
+                              context.loaderOverlay.hide();
+                            });
+
+                            return null; // Required by onSubmit
                           },
-                          text: 'SWIPE TO EDIT DEAL'),
+                        ),
                 ),
               ],
             ),

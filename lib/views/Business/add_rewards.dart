@@ -13,6 +13,7 @@ import 'package:swipe_app/core/utils/constants/app_const.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/models/reward_model.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -20,6 +21,7 @@ import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/custom_appBar/custom_appBar.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:swipe_app/widgets/snackbar_widget.dart';
 
 class AddRewards extends StatefulWidget {
@@ -274,95 +276,176 @@ class _AddRewardsState extends State<AddRewards> {
                   ),
                 ),
                 const SpacerBoxVertical(height: 50),
-                ButtonWidget(
-                    onSwipe: () async {
-                      int points =
-                          int.parse(myController.pointsToRedeemController.text);
-                      if (myController
-                          .rewardNameController.text.isEmptyOrNull) {
-                        showSnackBar(
-                            'Empty Fields', 'Please enter the reward name');
-                      } else if ((myController
-                          .pointsToRedeemController.text.isEmptyOrNull)) {
-                        showSnackBar('Empty Fields',
-                            'Please enter the points to redeem (PTR)');
-                      } 
-                      else if (points < 100) {
-                        showSnackBar('Amount incorrect',
-                            'Budget can not be less than 100');
-                      }
-                      // else if (homeController.pickedImage == null) {
-                      //   showSnackBar(
-                      //       'Empty Fields', 'Please upload the reward logo');
-                      // }
-                      else if (myController.counter.value <= 0) {
-                        showSnackBar(
-                            'Empty Fields', 'Please set the number of uses');
-                      }
-                      // else if (points % controller.pps.value! != 0) {
-                      //   showSnackBar('Invalid Input',
-                      //       'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
-                      // }
-                      else {
-                        context.loaderOverlay.show(
-                          widgetBuilder: (context) =>
-                              Center(child: circularProgressBar()),
-                        );
+                // ButtonWidget(
+                //     onSwipe: () async {
+                //       int points =
+                //           int.parse(myController.pointsToRedeemController.text);
+                //       if (myController
+                //           .rewardNameController.text.isEmptyOrNull) {
+                //         showSnackBar(
+                //             'Empty Fields', 'Please enter the reward name');
+                //       } else if ((myController
+                //           .pointsToRedeemController.text.isEmptyOrNull)) {
+                //         showSnackBar('Empty Fields',
+                //             'Please enter the points to redeem (PTR)');
+                //       } 
+                //       else if (points < 100) {
+                //         showSnackBar('Amount incorrect',
+                //             'Budget can not be less than 100');
+                //       }
+                //       // else if (homeController.pickedImage == null) {
+                //       //   showSnackBar(
+                //       //       'Empty Fields', 'Please upload the reward logo');
+                //       // }
+                //       else if (myController.counter.value <= 0) {
+                //         showSnackBar(
+                //             'Empty Fields', 'Please set the number of uses');
+                //       }
+                //       // else if (points % controller.pps.value! != 0) {
+                //       //   showSnackBar('Invalid Input',
+                //       //       'Please enter a number that is a multiple of pps: ${controller.pps.value}.');
+                //       // }
+                //       else {
+                //         context.loaderOverlay.show(
+                //           widgetBuilder: (context) =>
+                //               Center(child: circularProgressBar()),
+                //         );
 
-                        String imageLink;
+                //         String imageLink;
 
-                        // Check if pickedImage is not null
-                        if (homeController.pickedImage != null) {
-                          // If pickedImage exists, upload it and get the URL
-                          imageLink = (await homeController
-                              .uploadImageToFirebaseWithCustomPath(
-                            homeController.pickedImage!.path,
-                            'Rewards/${DateTime.now().toIso8601String()}',
-                          ))!;
-                          print("Link Is: $imageLink");
-                        } else {
-                          // If pickedImage is null, use the URL from the business profile
-                          imageLink =
-                              userController.businessProfile.value!.image ?? '';
-                        }
+                //         // Check if pickedImage is not null
+                //         if (homeController.pickedImage != null) {
+                //           // If pickedImage exists, upload it and get the URL
+                //           imageLink = (await homeController
+                //               .uploadImageToFirebaseWithCustomPath(
+                //             homeController.pickedImage!.path,
+                //             'Rewards/${DateTime.now().toIso8601String()}',
+                //           ))!;
+                //           print("Link Is: $imageLink");
+                //         } else {
+                //           // If pickedImage is null, use the URL from the business profile
+                //           imageLink =
+                //               userController.businessProfile.value!.image ?? '';
+                //         }
 
-                        RewardModel rewardModel = RewardModel(
-                          rewardName: myController.rewardNameController.text,
-                          companyName: getStringAsync(SharedPrefKey.userName),
-                          rewardAddress: getStringAsync(SharedPrefKey.address),
-                          businessId: getStringAsync(SharedPrefKey.uid),
-                          rewardLogo: imageLink, // Use imageLink here
-                          pointsToRedeem: myController
-                              .pointsToRedeemController.text
-                              .toInt(),
-                          uses: myController.counter.value,
-                          pointsEarned: {},
-                          latLong:
-                              getDoubleAsync(SharedPrefKey.latitude) != null
-                                  ? GeoPoint(
-                                      getDoubleAsync(SharedPrefKey.latitude),
-                                      getDoubleAsync(SharedPrefKey.longitude),
-                                    )
-                                  : null,
-                          usedBy: {},
-                          // pointsPerScan: controller
-                          //     .pps.value!, // Use points per scan value
-                          createdAt: Timestamp.now(),
-                        );
+                //         RewardModel rewardModel = RewardModel(
+                //           rewardName: myController.rewardNameController.text,
+                //           companyName: getStringAsync(SharedPrefKey.userName),
+                //           rewardAddress: getStringAsync(SharedPrefKey.address),
+                //           businessId: getStringAsync(SharedPrefKey.uid),
+                //           rewardLogo: imageLink, // Use imageLink here
+                //           pointsToRedeem: myController
+                //               .pointsToRedeemController.text
+                //               .toInt(),
+                //           uses: myController.counter.value,
+                //           pointsEarned: {},
+                //           latLong:
+                //               getDoubleAsync(SharedPrefKey.latitude) != null
+                //                   ? GeoPoint(
+                //                       getDoubleAsync(SharedPrefKey.latitude),
+                //                       getDoubleAsync(SharedPrefKey.longitude),
+                //                     )
+                //                   : null,
+                //           usedBy: {},
+                //           // pointsPerScan: controller
+                //           //     .pps.value!, // Use points per scan value
+                //           createdAt: Timestamp.now(),
+                //         );
 
-                        final isDealDone = await controller
-                            .addReward(rewardModel)
-                            .then((value) {
-                          myController.clearTextFields();
-                          homeController.setImageNull();
-                          context.loaderOverlay.hide();
-                          Navigator.pop(context);
-                        });
+                //         final isDealDone = await controller
+                //             .addReward(rewardModel)
+                //             .then((value) {
+                //           myController.clearTextFields();
+                //           homeController.setImageNull();
+                //           context.loaderOverlay.hide();
+                //           Navigator.pop(context);
+                //         });
 
-                        context.loaderOverlay.hide();
-                      }
-                    },
-                    text: TempLanguage.btnLblSwipeToAdd),
+                //         context.loaderOverlay.hide();
+                //       }
+                //     },
+                //     text: TempLanguage.btnLblSwipeToAdd),
+                CustomSlideActionButton(
+                  outerColor: AppColors.primaryColor, // Red button background
+                  innerColor: AppColors.whiteColor, // White slider background
+                  sliderButtonIconAsset: AppImages.logoWhite, // White logo
+                  text: TempLanguage.btnLblSwipeToAdd,
+                  textStyle: poppinsMedium(
+                    fontSize: 15.sp, // Consistent with other screens
+                    color: AppColors.whiteColor, // White text for contrast
+                  ),
+                  onSubmit: () async {
+                    int points =
+                        int.parse(myController.pointsToRedeemController.text);
+                    if (myController.rewardNameController.text.isEmptyOrNull) {
+                      showSnackBar(
+                          'Empty Fields', 'Please enter the reward name');
+                      return null;
+                    } else if ((myController
+                        .pointsToRedeemController.text.isEmptyOrNull)) {
+                      showSnackBar('Empty Fields',
+                          'Please enter the points to redeem (PTR)');
+                      return null;
+                    } else if (points < 100) {
+                      showSnackBar('Amount incorrect',
+                          'Budget can not be less than 100');
+                      return null;
+                    } else if (myController.counter.value <= 0) {
+                      showSnackBar(
+                          'Empty Fields', 'Please set the number of uses');
+                      return null;
+                    }
+
+                    context.loaderOverlay.show(
+                      widgetBuilder: (context) =>
+                          Center(child: circularProgressBar()),
+                    );
+
+                    String imageLink;
+
+                    if (homeController.pickedImage != null) {
+                      imageLink = (await homeController
+                          .uploadImageToFirebaseWithCustomPath(
+                        homeController.pickedImage!.path,
+                        'Rewards/${DateTime.now().toIso8601String()}',
+                      ))!;
+                      print("Link Is: $imageLink");
+                    } else {
+                      imageLink =
+                          userController.businessProfile.value!.image ?? '';
+                    }
+
+                    RewardModel rewardModel = RewardModel(
+                      rewardName: myController.rewardNameController.text,
+                      companyName: getStringAsync(SharedPrefKey.userName),
+                      rewardAddress: getStringAsync(SharedPrefKey.address),
+                      businessId: getStringAsync(SharedPrefKey.uid),
+                      rewardLogo: imageLink,
+                      pointsToRedeem:
+                          myController.pointsToRedeemController.text.toInt(),
+                      uses: myController.counter.value,
+                      pointsEarned: {},
+                      latLong: getDoubleAsync(SharedPrefKey.latitude) != null
+                          ? GeoPoint(
+                              getDoubleAsync(SharedPrefKey.latitude),
+                              getDoubleAsync(SharedPrefKey.longitude),
+                            )
+                          : null,
+                      usedBy: {},
+                      createdAt: Timestamp.now(),
+                    );
+
+                    await controller.addReward(rewardModel).then((value) {
+                      myController.clearTextFields();
+                      homeController.setImageNull();
+                      context.loaderOverlay.hide();
+                      Navigator.pop(context);
+                    });
+
+                    context.loaderOverlay.hide();
+                    return null; // Required by onSubmit
+                  },
+                ),
               ],
             ),
           ),

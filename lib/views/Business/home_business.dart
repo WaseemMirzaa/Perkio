@@ -14,11 +14,13 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/services/business_services.dart';
 import 'package:swipe_app/services/user_services.dart';
 import 'package:swipe_app/views/business/add_deals.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/business_home_list_items.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
 import 'package:swipe_app/widgets/primary_layout_widget/primary_layout.dart';
 import '../../widgets/custom_appBar/custom_appBar.dart';
@@ -228,19 +230,30 @@ class _HomeBusinessState extends State<HomeBusiness> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ButtonWidget(
-                onSwipe: () {
-                  if (widget.isGuestLogin) {
-                    LoginRequiredDialog.show(context, false);
-                    return;
-                  }
-                  homeController.setImageNull();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddDeals()));
-                },
-                text: TempLanguage.btnLblSwipeToAddDeal),
+             CustomSlideActionButton(
+              outerColor: AppColors.primaryColor, // Red button background
+              innerColor: AppColors.whiteColor, // White slider background
+              sliderButtonIconAsset: AppImages.logoWhite, // White logo
+              text: TempLanguage.btnLblSwipeToAddDeal,
+              textStyle: poppinsMedium(
+                fontSize: 13.sp,
+                color: AppColors.whiteColor, // White text for contrast
+              ),
+              onSubmit: () async {
+                if (widget.isGuestLogin) {
+                  LoginRequiredDialog.show(context, false);
+                  return null;
+                }
+                homeController.setImageNull();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddDeals(),
+                  ),
+                );
+                return null; // Required by onSubmit
+              },
+            ),
           ],
         ),
       ),

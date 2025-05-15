@@ -11,11 +11,12 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/networking/stripe.dart';
 import 'package:swipe_app/services/business_services.dart';
 import 'package:swipe_app/services/home_services.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 import 'dart:math';
 import '../../core/utils/constants/constants.dart';
-
 
 Future showBalanceDialog({
   required BuildContext context,
@@ -110,7 +111,7 @@ Future showBalanceDialog({
             //     // Ensure controller.apc.value is not null before using it
             //     return Align(
             //       alignment: Alignment.topCenter,
-            //       child: 
+            //       child:
             //       Text(
             //         style: poppinsMedium(fontSize: 12),
             //         promotionAmountController.text.isNotEmpty &&
@@ -125,69 +126,133 @@ Future showBalanceDialog({
             //     );
             //   },
             // ),
-          ValueListenableBuilder<int>(
-  valueListenable: totalClicksNotifier,
-  builder: (context, totalClicks, child) {
-    // Split conditions for better debugging
-    bool isAmountNotEmpty = promotionAmountController.text.isNotEmpty;
-    bool isApcValid = controller.apc.value != null && controller.apc.value! > 0;
-    
-    // Only try to parse and check division if previous conditions are met
-    bool isDivisible = false;
-    if (isAmountNotEmpty && isApcValid) {
-      try {
-        double amount = double.parse(promotionAmountController.text);
-        isDivisible = amount % controller.apc.value! == 0;
-      } catch (e) {
-        isDivisible = false; // Handle parsing errors
-      }
-    }
+            ValueListenableBuilder<int>(
+              valueListenable: totalClicksNotifier,
+              builder: (context, totalClicks, child) {
+                // Split conditions for better debugging
+                bool isAmountNotEmpty =
+                    promotionAmountController.text.isNotEmpty;
+                bool isApcValid =
+                    controller.apc.value != null && controller.apc.value! > 0;
 
-    // Combine all conditions
-    bool showTotal = isAmountNotEmpty && isApcValid && isDivisible;
+                // Only try to parse and check division if previous conditions are met
+                bool isDivisible = false;
+                if (isAmountNotEmpty && isApcValid) {
+                  try {
+                    double amount =
+                        double.parse(promotionAmountController.text);
+                    isDivisible = amount % controller.apc.value! == 0;
+                  } catch (e) {
+                    isDivisible = false; // Handle parsing errors
+                  }
+                }
 
-    return Align(
-      alignment: Alignment.topCenter,
-      child: RichText(
-        text: TextSpan(
-          children: [
-            const TextSpan(
-              text: 'Enter your budget for promotion',
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w500, // Medium
-                color: Colors.black,
-              ),
+                // Combine all conditions
+                bool showTotal = isAmountNotEmpty && isApcValid && isDivisible;
+
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: 'Enter your budget for promotion',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500, // Medium
+                            color: Colors.black,
+                          ),
+                        ),
+                        if (showTotal)
+                          TextSpan(
+                            text: ' $totalClicks total clicks',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+
+                              fontWeight: FontWeight.w300, // Light
+                              color: Colors.black,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-            if (showTotal)
-              TextSpan(
-                text: ' $totalClicks total clicks',
-                style:  const TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Poppins',
-              
-                  fontWeight: FontWeight.w300, // Light
-                  color: Colors.black,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  },
-),
             SizedBox(height: 3.h),
-            ButtonWidget(
-              onSwipe: () async {
+            // ButtonWidget(
+            //   onSwipe: () async {
+            //     String input = promotionAmountController.text;
+            //     int budget = input.isEmptyOrNull ? 0 : int.parse(input);
+            //     num apcValue = controller.apc.value ?? 0;
+
+            //     if (promotionAmountController.text.isEmptyOrNull) {
+            //       toast('Please enter your budget');
+            //     } else if (promotionAmountController.text == '0') {
+            //       toast('Budget should be greater than zero');
+            //     } else if (apcValue > 0 && budget >= 0) {
+            //       final double budgetInt = budget.toDouble();
+            //       if (budgetInt % apcValue == 0 && !fromSettings) {
+            //         await StripePayment.initPaymentSheet(
+            //                 amount: budget * 100,
+            //                 customerId:
+            //                     getStringAsync(UserKey.STRIPECUSTOMERID))
+            //             .then((value) async {
+            //           String? currentUID =
+            //               FirebaseAuth.instance.currentUser!.uid;
+            //           log('-----------BEFORE PAYMENT ADD currentUID: $currentUID');
+            //           await homeController
+            //               .updateCollection(currentUID, CollectionsKey.USERS, {
+            //             UserKey.ISPROMOTIONSTART: true,
+            //           }).then((value) async {
+            //             await homeController
+            //                 .updateCollection(docId, CollectionsKey.DEALS, {
+            //               DealKey.ISPROMOTIONSTART: true,
+            //             });
+            //             await setValue(UserKey.ISPROMOTIONSTART, true);
+            //             promotionAmountController.clear();
+
+            //             toast('You have added an amount to your wallet');
+            //           });
+            //         });
+            //       } else if (budgetInt % apcValue == 0 && fromSettings) {
+            //         FocusScope.of(context).unfocus();
+            //         await StripePayment.initPaymentSheet(
+            //             amount: budget * 100,
+            //             customerId: getStringAsync(UserKey.STRIPECUSTOMERID));
+            //         promotionAmountController.clear();
+            //       } else {
+            //         toast('Budget must be a multiple of the cost per click.');
+            //       }
+            //     } else {
+            //       toast(
+            //           'Please enter a valid budget and ensure cost per click is greater than zero.');
+            //     }
+            //   },
+            //   text: 'ADD BALANCE',
+            // ),
+            CustomSlideActionButton(
+              outerColor: AppColors.primaryColor, // Red button background
+              innerColor: AppColors.whiteColor, // White slider background
+              sliderButtonIconAsset: AppImages.logoWhite, // White logo
+              text: 'ADD BALANCE',
+              textStyle: poppinsMedium(
+                fontSize: 15.sp, // Consistent with other screens
+                color: AppColors.whiteColor, // White text for contrast
+              ),
+              onSubmit: () async {
                 String input = promotionAmountController.text;
                 int budget = input.isEmptyOrNull ? 0 : int.parse(input);
                 num apcValue = controller.apc.value ?? 0;
 
                 if (promotionAmountController.text.isEmptyOrNull) {
                   toast('Please enter your budget');
+                  return null;
                 } else if (promotionAmountController.text == '0') {
                   toast('Budget should be greater than zero');
+                  return null;
                 } else if (apcValue > 0 && budget >= 0) {
                   final double budgetInt = budget.toDouble();
                   if (budgetInt % apcValue == 0 && !fromSettings) {
@@ -209,7 +274,6 @@ Future showBalanceDialog({
                         });
                         await setValue(UserKey.ISPROMOTIONSTART, true);
                         promotionAmountController.clear();
-
                         toast('You have added an amount to your wallet');
                       });
                     });
@@ -221,13 +285,15 @@ Future showBalanceDialog({
                     promotionAmountController.clear();
                   } else {
                     toast('Budget must be a multiple of the cost per click.');
+                    return null;
                   }
                 } else {
                   toast(
                       'Please enter a valid budget and ensure cost per click is greater than zero.');
+                  return null;
                 }
+                return null; // Required by onSubmit
               },
-              text: 'ADD BALANCE',
             ),
           ],
         );

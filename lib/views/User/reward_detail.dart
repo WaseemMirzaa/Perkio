@@ -325,14 +325,7 @@ class _RewardDetailState extends State<RewardDetail> {
                                   width: 80,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(100),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        AppColors.gradientStartColor,
-                                        AppColors.gradientEndColor,
-                                      ],
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                    ),
+                                    color: AppColors.primaryColor
                                   ),
                                   child: Image.asset(AppAssets.scannerImg, scale: 3),
                                 ),

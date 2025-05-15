@@ -31,7 +31,7 @@ class VendorSubscriptionUI extends StatelessWidget {
             onPressed: () => subscriptionController.restorePurchases(),
             child: Text(
               'Restore',
-              style: poppinsRegular(fontSize: 14, color: AppColors.gradientStartColor),
+              style: poppinsRegular(fontSize: 14, color: AppColors.primaryColor),
             ),
           ),
         ],

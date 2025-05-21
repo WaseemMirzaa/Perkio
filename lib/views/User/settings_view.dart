@@ -325,7 +325,7 @@ class _SettingsViewState extends State<SettingsView> {
                     await controller.logout();
                   },
                   child: const SettingsListItems(
-                    path: AppAssets.helpImg,
+                    path: AppAssets.helpLogOut,
                     text: 'Logout',
                   ),
                 ),

@@ -6,6 +6,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/core/utils/mixins/validate_textfield.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
 import 'package:swipe_app/core/utils/constants/app_assets.dart';
+import 'package:swipe_app/widgets/app_images.dart';
 import 'package:swipe_app/widgets/auth_components/authComponents.dart';
 import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
@@ -58,9 +59,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                       //   style: altoysFont(fontSize: 45),
                       //   textAlign: TextAlign.center,
                       // ),
-                      Image.asset(
-                    'assets/images/logo.png', // Replace with the correct path to your logo
-                    height: 100, // Adjust size as needed
+                     Image.asset(
+                    AppImages.perkioBold, // Replace with the correct path to your logo
+                   scale: 6, // Adjust size as needed
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -85,6 +86,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                   () => controller.loading.value
                       ? circularProgressBar() // Show loading spinner if processing
                       : ButtonWidget(
+                        sliderButtonColor: AppColors.primaryColor,
                           onSwipe: () async {
                             // Call controller's sendPasswordReset method
                             await controller.sendPasswordReset(

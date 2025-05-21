@@ -182,14 +182,7 @@ class _SelectLocationState extends State<SelectLocation> {
         children: [
           Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.gradientStartColor,
-                  AppColors.gradientEndColor,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+             color: AppColors.primaryColor
             ),
           ),
           Obx(() {

@@ -269,8 +269,8 @@ class _LoginViewState extends State<LoginView> with ValidationMixin {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 60),
                   child: Image.asset(
-                    AppImages.logoBack, // Replace with the correct path to your logo
-                    height: 100, // Adjust size as needed
+                    AppImages.perkioBold, // Replace with the correct path to your logo
+                   scale: 6,// Adjust size as needed
                     fit: BoxFit.contain,
                   ),
                 ),

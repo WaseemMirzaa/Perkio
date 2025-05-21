@@ -164,7 +164,7 @@ class _EditMyRewardsState extends State<EditMyRewards> {
                 Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                        'Note: Each \$1 spent earns users 100 points. Businesses can set a minimum redemption limit of 100 points, with no maximum cap.',
+                        'Note: Each \$1 spent = 100 points. Businesses can set a minimum redemption limit of 100 points, with no maximum cap.',
                         style: poppinsRegular(fontSize: 12))),
                 const SpacerBoxVertical(height: 20),
                 Row(

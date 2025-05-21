@@ -183,10 +183,12 @@ class AvailableListItems extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
+
+                    
                                 location,
                                 style: poppinsRegular(
                                     fontSize: 10.sp, color: AppColors.hintText),
-                                maxLines: 2,
+                                maxLines: 1,
                               ),
                             ),
                             const SpacerBoxHorizontal(width: 4),

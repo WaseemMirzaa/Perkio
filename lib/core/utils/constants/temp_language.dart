@@ -34,9 +34,9 @@ class TempLanguage {
   static const String lblPassword = 'Password';
   static const String txtPointsToRedeemPoints =
       'Collect points to\nredeem special rewards';
-  static const String txtSwipeSS = 'Swipe';
-  static const String txtSScanS = 'Scan';
-  static const String txtSSSave = 'Save';
+  static const String txtSwipeSS = 'Perkio Found';
+  static const String txtSScanS = 'Points Earned';
+  static const String txtSSSave = 'Life Upgraded';
   static const String txtHowToUse = 'HOW TO USE?';
   static const String txtBusinessName = 'Business Name';
   static const String txtUserName = 'User Name';

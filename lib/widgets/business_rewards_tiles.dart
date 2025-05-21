@@ -109,11 +109,13 @@ class BusinessRewardsTiles extends StatelessWidget {
                         ],
                       ),
                       const SpacerBoxVertical(height: 10),
-                      Text(
-                        '${rewardModel.noOfUsed} People Used by now',
-                        style: poppinsRegular(
-                            fontSize: 10.sp, color: AppColors.hintText),
-                      ),
+Visibility(
+  visible: (rewardModel.noOfUsed ?? 0) > 0,
+  child: Text(
+    '${rewardModel.noOfUsed ?? 0} People Used by now',
+    style: poppinsRegular(fontSize: 10.sp, color: AppColors.hintText),
+  ),
+),
                       const SpacerBoxVertical(height: 10),
                       // Container(
                       //   height: 6,

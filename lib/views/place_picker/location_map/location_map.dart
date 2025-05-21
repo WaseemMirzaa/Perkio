@@ -86,14 +86,7 @@ class LocationServiceErrorWidget extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.gradientStartColor,
-              AppColors.gradientEndColor,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: AppColors.primaryColor
         ),
         child: Center(
           child: Padding(

@@ -7,6 +7,7 @@ class AppAssets {
   static const network = 'assets/images/network.png';
   static const insuranceImg = 'assets/images/003-insurance.png';
   static const helpImg = 'assets/images/004-help.png';
+  static const helpLogOut = 'assets/images/exit-door.png';
   static const privacyImg = 'assets/images/004-insurance.png';
   static const managementImg = 'assets/images/005-project-management.png';
   static const evaluationImg = 'assets/images/006-evaluation.png';

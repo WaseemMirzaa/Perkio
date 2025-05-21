@@ -69,14 +69,7 @@ class LoginRequiredDialog {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50.0),
-                    gradient: const LinearGradient(
-                      colors: [
-                        AppColors.gradientStartColor,
-                        AppColors.gradientEndColor
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                   color: AppColors.primaryColor
                   ),
                   child: Center(
                     child: Text(

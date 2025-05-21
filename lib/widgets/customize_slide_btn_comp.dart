@@ -759,6 +759,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
+import 'package:swipe_app/core/utils/constants/app_assets.dart';
 
 class CustomSlideActionButton extends StatefulWidget {
   final double sliderButtonIconSize;
@@ -942,7 +943,7 @@ class CustomSlideActionButtonState extends State<CustomSlideActionButton>
                                           child: widget.sliderButtonIcon ??
                                               (widget.sliderButtonIconAsset != null
                                                   ? Image.asset(
-                                                      widget.sliderButtonIconAsset!,
+                                                      AppAssets.swipeImg,
                                                       width: widget.sliderButtonIconSize,
                                                       height: widget.sliderButtonIconSize,
                                                     )

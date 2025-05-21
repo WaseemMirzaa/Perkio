@@ -185,14 +185,7 @@ class _BusinessManagementScreenState extends State<BusinessManagementScreen> {
         centerTitle: true,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.gradientStartColor,
-                AppColors.gradientEndColor
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+           color: AppColors.primaryColor
           ),
         ),
         leading: IconButton(

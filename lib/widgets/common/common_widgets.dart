@@ -82,8 +82,8 @@ Future showBalanceDialog({
               builder: (context, totalClicks, child) {
                 // Ensure controller.apc.value is not null before using it
                 return Text(
-                  'Amount Per Click / APC : ${controller.apc.value != null && controller.apc.value! > 0 ? controller.apc.value : 'Unavailable'} \$',
-                  style: poppinsMedium(fontSize: 12.sp),
+                  'Amount Per Click / APC : ${controller.apc.value != null && controller.apc.value! > 0 ? '\$${controller.apc.value}' : 'Unavailable'}',
+style: poppinsMedium(fontSize: 12.sp),
                 );
               },
             ),

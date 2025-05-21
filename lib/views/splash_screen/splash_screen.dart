@@ -167,6 +167,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ButtonWidget(
+                    
                     onSwipe: () {
                       Navigator.push(
                         context,

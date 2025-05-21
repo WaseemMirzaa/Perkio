@@ -176,7 +176,7 @@ class _BottomBarViewState extends State<BottomBarView> {
             : businessList.elementAt(_selectedIndex),
         bottomNavigationBar: widget.isUser
             ? Container(
-                height: 7.h,
+                height: 8.h,
                 decoration: const BoxDecoration(
                   color: AppColors.whiteColor,
                   boxShadow: [

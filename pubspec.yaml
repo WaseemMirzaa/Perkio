@@ -70,6 +70,7 @@ dependencies:
   purchases_flutter: ^8.4.5
   url_launcher: ^6.3.1
   firebase_app_check: ^0.3.2+5
+  flutter_pdfview: ^1.4.0+1
   
   
   
@@ -100,6 +101,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/pdf/
 
   # assets:
   #   - images/a_dot_burr.jpeg

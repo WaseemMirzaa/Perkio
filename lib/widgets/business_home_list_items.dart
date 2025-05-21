@@ -128,14 +128,17 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                           ],
                         ),
                         const SpacerBoxVertical(height: 5),
-                        Text(
-                          '${widget.dealModel.noOfUsedTellNow} People have used this deal',
-                          style: poppinsRegular(
-                            fontSize: 10.sp,
-                            color: AppColors.hintText,
-                          ),
-                          maxLines: 1,
-                        ),
+                      Visibility(
+  visible: (widget.dealModel.noOfUsedTellNow ?? 0) > 0,
+  child: Text(
+    '${widget.dealModel.noOfUsedTellNow ?? 0} People have used this deal',
+    style: poppinsRegular(
+      fontSize: 10.sp,
+      color: AppColors.hintText,
+    ),
+    maxLines: 1,
+  ),
+),
                         SizedBox(
                           height: 1.h,
                         ),
@@ -374,14 +377,7 @@ class _BusinessHomeListItemsState extends State<BusinessHomeListItems> {
                                     height: 2.5.h,
                                     width: 80,
                                     decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          AppColors.gradientStartColor,
-                                          AppColors.gradientEndColor
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
+                                     color: AppColors.primaryColor,
                                       borderRadius: BorderRadius.circular(100),
                                     ),
                                     child: Center(

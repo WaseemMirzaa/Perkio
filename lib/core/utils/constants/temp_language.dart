@@ -1,14 +1,14 @@
 class TempLanguage {
   static const String btnLblSwipeToAdd = 'SWIPE TO ADD';
-  static const String btnLblSwipeToAddDeal = 'SWIPE TO ADD NEW DEAL';
-  static const String btnLblSwipeToLogin = 'SWIPE TO LOGIN';
-  static const String btnLblSwipeToAddRewards = 'SWIPE TO ADD A NEW REWARD';
-  static const String btnLblSwipeToSignup = 'SWIPE TO SIGNUP';
-  static const String btnLblSwipeToRedeem = 'SWIPE TO REDEEM';
-  static const String btnLblSwipeToClaim = 'SWIPE TO CLAIM REWARD';
-  static const String btnLblSwipeToSelect = 'SWIPE TO SELECT';
-  static const String btnLblSwipeToSelectLocation = 'SWIPE TO SELECT LOCATION';
-  static const String btnLblSwipeToStart = 'SWIPE TO GET STARTED';
+  static const String btnLblSwipeToAddDeal = 'ADD NEW DEAL';
+  static const String btnLblSwipeToLogin = 'LOGIN';
+  static const String btnLblSwipeToAddRewards = 'ADD A NEW REWARD';
+  static const String btnLblSwipeToSignup = 'SIGNUP';
+  static const String btnLblSwipeToRedeem = 'REDEEM';
+  static const String btnLblSwipeToClaim = 'CLAIM REWARD';
+  static const String btnLblSwipeToSelect = 'SELECT';
+  static const String btnLblSwipeToSelectLocation = 'SELECT LOCATION';
+  static const String btnLblSwipeToStart = 'GET STARTED';
   static const String btnLblDone = 'DONE';
   static const String lblSwipe = 'Swipe';
   static const String lblUser = "I'M A USER";

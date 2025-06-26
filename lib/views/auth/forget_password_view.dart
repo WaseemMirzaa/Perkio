@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/user_controller.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/core/utils/constants/text_styles.dart';
@@ -12,6 +13,7 @@ import 'package:swipe_app/widgets/auth_textfield.dart';
 import 'package:swipe_app/widgets/button_widget.dart';
 import 'package:swipe_app/widgets/common_comp.dart';
 import 'package:swipe_app/widgets/common_space.dart';
+import 'package:swipe_app/widgets/customize_slide_btn_comp.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   final bool isUser;
@@ -85,9 +87,17 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                 Obx(
                   () => controller.loading.value
                       ? circularProgressBar() // Show loading spinner if processing
-                      : ButtonWidget(
-                        sliderButtonColor: AppColors.primaryColor,
-                          onSwipe: () async {
+                      : CustomSlideActionButton(
+                    outerColor: AppColors.primaryColor, // Red button background
+                    innerColor: AppColors.whiteColor, // White slider background
+                    sliderButtonIconAsset: AppImages.logoWhite, // White logo
+                    text: TempLanguage.btnLblResetPassword,
+                    textStyle: poppinsMedium(
+                        fontSize: 15.sp,
+                        color: AppColors.whiteColor,
+                    ),
+
+                      onSubmit: () async {
                             // Call controller's sendPasswordReset method
                             await controller.sendPasswordReset(
                               controller.resetEmailController.text,
@@ -96,7 +106,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
 
                             // No need to handle success or failure here, controller takes care of it
                           },
-                          text: TempLanguage.btnLblResetPassword,
+                          // text: TempLanguage.btnLblResetPassword,
                         ),
                 ),
               ],

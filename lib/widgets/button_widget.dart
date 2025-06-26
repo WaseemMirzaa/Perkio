@@ -115,7 +115,7 @@ class ButtonWidget extends StatelessWidget {
         width: 42.sp,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: sliderButtonColor ?? AppColors.primaryColor, // Use parameter or default to white
+          color: sliderButtonColor ?? AppColors.primaryColor,
         ),
         child: Image.asset(
           AppAssets.swipeImg,

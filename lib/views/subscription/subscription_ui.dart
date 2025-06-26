@@ -222,6 +222,8 @@ class VendorSubscriptionUI extends StatelessWidget {
                     )
                   : const SizedBox.shrink();
         }),
+
+        
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/controllers/ui_controllers/business_detail_controller.dart';
@@ -165,50 +166,74 @@ class DetailTile extends StatelessWidget {
                 if (user?.phoneNo?.isNotEmpty == true)
                   Row(
                     children: [
-                      const Icon(Icons.phone,
-                          color: AppColors.hintText, size: 12),
+                      const Icon(Icons.phone, color: AppColors.hintText, size: 12),
                       const SizedBox(width: 4),
-                      Text(
-                        user?.phoneNo ?? 'No Phone available',
-                        style: poppinsRegular(
-                            fontSize: 12, color: AppColors.hintText),
+                      Expanded(
+                        child: GestureDetector(
+                          onLongPress: () {
+                            final data = ClipboardData(text: user?.phoneNo ?? 'No Phone available');
+                            Clipboard.setData(data);
+
+
+                          },
+                          child: Text(
+                            user?.phoneNo ?? 'No Phone available',
+                            overflow: TextOverflow.ellipsis,
+                            style: poppinsRegular(fontSize: 12, color: AppColors.hintText),
+                          ),
+                        ),
                       ),
                     ],
                   ),
+
                 const SizedBox(height: 5),
                 if (user?.website != null)
                   Row(
                     children: [
                       Image.asset(AppAssets.globeImg, scale: 3),
                       const SizedBox(width: 4),
-                      Text(
-                        user?.website ?? TempLanguage.txtDummyWebsite,
-                        style: poppinsRegular(
-                            fontSize: 12, color: AppColors.hintText),
+                      Expanded(
+                        child: GestureDetector(
+                          onLongPress: () {
+                            final data = ClipboardData(text: user?.website ?? TempLanguage.txtDummyWebsite);
+                            Clipboard.setData(data);
+
+                          },
+                          child: Text(
+                            user?.website ?? TempLanguage.txtDummyWebsite,
+                            overflow: TextOverflow.ellipsis,
+                            style: poppinsRegular(fontSize: 12, color: AppColors.hintText),
+                          ),
+                        ),
                       ),
                     ],
                   ),
+
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    const Icon(
-                      Icons.location_on,
-                      color: AppColors.hintText,
-                      size: 12,
-                    ),
+                    const Icon(Icons.location_on, color: AppColors.hintText, size: 12),
                     const SizedBox(width: 4),
                     Expanded(
-                      child: Text(
-                        user?.address ?? 'No Location available',
-                        overflow: TextOverflow.ellipsis,
-                        style: poppinsRegular(
-                          fontSize: 12,
-                          color: AppColors.hintText,
+                      child: Tooltip(
+                        message: user?.address ?? 'No Location available',
+                        child: GestureDetector(
+                          onLongPress: () {
+                            Clipboard.setData(ClipboardData(text: user?.address ?? 'No Location available'));
+
+                          },
+                          child: Text(
+                            user?.address ?? 'No Location available',
+                            overflow: TextOverflow.ellipsis,
+                            style: poppinsRegular(fontSize: 12, color: AppColors.hintText),
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
+
+
                 const SpacerBoxVertical(height: 5),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

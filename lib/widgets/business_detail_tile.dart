@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:swipe_app/core/utils/app_colors/app_colors.dart';
@@ -112,38 +113,50 @@ class BusinessDetailTile extends StatelessWidget {
                       size: 12,
                     ),
                     const SpacerBoxHorizontal(width: 4),
-                    Text(
-                      phone!,
-                      style: poppinsRegular(
-                          fontSize: 12, color: AppColors.hintText),
-                    ),
-                  ],
-                ),
-              if (phone != null && phone!.isNotEmpty)
-                const SpacerBoxVertical(height: 5),
-
-              // Website (optional)
-              if (website != null && website!.isNotEmpty)
-                Row(
-                  children: [
-                    Image.asset(
-                      AppAssets.globeImg,
-                      scale: 3,
-                    ),
-                    const SpacerBoxHorizontal(width: 4),
                     Expanded(
-                      child: Text(
-                        website!,
-                        overflow: TextOverflow.ellipsis,
-                        style: poppinsRegular(
-                            fontSize: 12, color: AppColors.hintText),
+                      child: GestureDetector(
+                        onLongPress: () {
+                          Clipboard.setData(ClipboardData(text: phone!));
+
+                        },
+                        child: Text(
+                          phone!,
+                          overflow: TextOverflow.ellipsis,
+                          style: poppinsRegular(fontSize: 12, color: AppColors.hintText),
+                        ),
                       ),
                     ),
                   ],
                 ),
+
+              if (phone != null && phone!.isNotEmpty)
+                const SpacerBoxVertical(height: 5),
+
+// Website (optional)
+              if (website != null && website!.isNotEmpty)
+                Row(
+                  children: [
+                    Image.asset(AppAssets.globeImg, scale: 3),
+                    const SpacerBoxHorizontal(width: 4),
+                    Expanded(
+                      child: GestureDetector(
+                        onLongPress: () {
+                          Clipboard.setData(ClipboardData(text: website!));
+
+                        },
+                        child: Text(
+                          website!,
+                          overflow: TextOverflow.ellipsis,
+                          style: poppinsRegular(fontSize: 12, color: AppColors.hintText),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
               const SpacerBoxVertical(height: 5),
 
-              // Location (optional)
+// Location (optional)
               if (location != null && location!.isNotEmpty)
                 Row(
                   children: [
@@ -154,15 +167,21 @@ class BusinessDetailTile extends StatelessWidget {
                     ),
                     const SpacerBoxHorizontal(width: 4),
                     Expanded(
-                      child: Text(
-                        location!,
-                        overflow: TextOverflow.ellipsis,
-                        style: poppinsRegular(
-                            fontSize: 12, color: AppColors.hintText),
+                      child: GestureDetector(
+                        onLongPress: () {
+                          Clipboard.setData(ClipboardData(text: location!));
+
+                        },
+                        child: Text(
+                          location!,
+                          overflow: TextOverflow.ellipsis,
+                          style: poppinsRegular(fontSize: 12, color: AppColors.hintText),
+                        ),
                       ),
                     ),
                   ],
                 ),
+
               const SpacerBoxVertical(height: 5),
 
               // Divider at the bottom

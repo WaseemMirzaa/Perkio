@@ -88,7 +88,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                   () => controller.loading.value
                       ? circularProgressBar() // Show loading spinner if processing
                       : CustomSlideActionButton(
-                    outerColor: AppColors.primaryColor, // Red button background
+                    outerColor: AppColors.primaryColor,
                     innerColor: AppColors.whiteColor, // White slider background
                     sliderButtonIconAsset: AppImages.logoWhite, // White logo
                     text: TempLanguage.btnLblResetPassword,

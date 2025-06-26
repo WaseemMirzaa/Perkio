@@ -8,6 +8,7 @@ import 'package:swipe_app/core/utils/constants/text_styles.dart';
 import 'package:swipe_app/views/user/business_rating_details.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/core/utils/constants/temp_language.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BusinessDetailTile extends StatelessWidget {
   final String? image;
@@ -28,6 +29,20 @@ class BusinessDetailTile extends StatelessWidget {
     this.phone,
     this.businessId,
   });
+  Future<void> _launchDialer(String phone) async {
+    final Uri uri = Uri.parse("tel:$phone");
+
+    try {
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        throw 'Could not launch $uri';
+      }
+    } catch (e) {
+      debugPrint('Error launching dialer: $e');
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(content: Text('Could not open dialer: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,21 +118,22 @@ class BusinessDetailTile extends StatelessWidget {
                 ),
               const SpacerBoxVertical(height: 5),
 
-              // Phone number (optional)
+              // PHONE
               if (phone != null && phone!.isNotEmpty)
                 Row(
                   children: [
-                    const Icon(
-                      Icons.phone,
-                      color: AppColors.hintText,
-                      size: 12,
-                    ),
+                    const Icon(Icons.phone, color: AppColors.hintText, size: 12),
                     const SpacerBoxHorizontal(width: 4),
                     Expanded(
                       child: GestureDetector(
+                        onTap: () => _launchDialer(phone!),
+
+
                         onLongPress: () {
                           Clipboard.setData(ClipboardData(text: phone!));
-
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Phone number copied')),
+                          );
                         },
                         child: Text(
                           phone!,
@@ -132,7 +148,7 @@ class BusinessDetailTile extends StatelessWidget {
               if (phone != null && phone!.isNotEmpty)
                 const SpacerBoxVertical(height: 5),
 
-// Website (optional)
+// WEBSITE
               if (website != null && website!.isNotEmpty)
                 Row(
                   children: [
@@ -140,6 +156,18 @@ class BusinessDetailTile extends StatelessWidget {
                     const SpacerBoxHorizontal(width: 4),
                     Expanded(
                       child: GestureDetector(
+                        onTap: () async {
+                          final uri = Uri.parse(
+                            website!.startsWith('http') ? website! : 'https://$website',
+                          );
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          }else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Could not open website')),
+                            );
+                          }
+                        },
                         onLongPress: () {
                           Clipboard.setData(ClipboardData(text: website!));
 
@@ -156,18 +184,25 @@ class BusinessDetailTile extends StatelessWidget {
 
               const SpacerBoxVertical(height: 5),
 
-// Location (optional)
+// LOCATION
               if (location != null && location!.isNotEmpty)
                 Row(
                   children: [
-                    const Icon(
-                      Icons.location_on,
-                      color: AppColors.hintText,
-                      size: 12,
-                    ),
+                    const Icon(Icons.location_on, color: AppColors.hintText, size: 12),
                     const SpacerBoxHorizontal(width: 4),
                     Expanded(
                       child: GestureDetector(
+                        onTap: () async {
+                          final encoded = Uri.encodeComponent(location!);
+                          final uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encoded');
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          }else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Could not open maps')),
+                            );
+                          }
+                        },
                         onLongPress: () {
                           Clipboard.setData(ClipboardData(text: location!));
 
@@ -181,6 +216,7 @@ class BusinessDetailTile extends StatelessWidget {
                     ),
                   ],
                 ),
+
 
               const SpacerBoxVertical(height: 5),
 

@@ -13,6 +13,7 @@ import 'package:swipe_app/core/utils/constants/temp_language.dart';
 import 'package:swipe_app/widgets/common_space.dart';
 import 'package:swipe_app/widgets/custom_clipper.dart';
 import 'package:swipe_app/widgets/dialog_box_for_signup.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailTile extends StatelessWidget {
   final String? businessId;
@@ -29,6 +30,21 @@ class DetailTile extends StatelessWidget {
       this.isRedeeming = false,
       this.isGuestLogin = false,
       this.isNavigationFromNotifications = false});
+
+  Future<void> _launchDialer(String phone) async {
+    final Uri uri = Uri.parse("tel:$phone");
+
+    try {
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        throw 'Could not launch $uri';
+      }
+    } catch (e) {
+      debugPrint('Error launching dialer: $e');
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(content: Text('Could not open dialer: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +186,7 @@ class DetailTile extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: GestureDetector(
+                          onTap: () => _launchDialer(user?.phoneNo ?? ''),
                           onLongPress: () {
                             final data = ClipboardData(text: user?.phoneNo ?? 'No Phone available');
                             Clipboard.setData(data);
@@ -187,6 +204,7 @@ class DetailTile extends StatelessWidget {
                   ),
 
                 const SizedBox(height: 5),
+                // WEBSITE
                 if (user?.website != null)
                   Row(
                     children: [
@@ -194,9 +212,22 @@ class DetailTile extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: GestureDetector(
+                          onTap: () async {
+                            String url = user!.website!;
+                            if (!url.startsWith('http')) {
+                              url = 'https://$url';
+                            }
+                            final uri = Uri.parse(url);
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri, mode: LaunchMode.externalApplication);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Could not open website')),
+                              );
+                            }
+                          },
                           onLongPress: () {
-                            final data = ClipboardData(text: user?.website ?? TempLanguage.txtDummyWebsite);
-                            Clipboard.setData(data);
+                            Clipboard.setData(ClipboardData(text: user?.website ?? TempLanguage.txtDummyWebsite));
 
                           },
                           child: Text(
@@ -210,6 +241,8 @@ class DetailTile extends StatelessWidget {
                   ),
 
                 const SizedBox(height: 5),
+
+// LOCATION
                 Row(
                   children: [
                     const Icon(Icons.location_on, color: AppColors.hintText, size: 12),
@@ -218,6 +251,17 @@ class DetailTile extends StatelessWidget {
                       child: Tooltip(
                         message: user?.address ?? 'No Location available',
                         child: GestureDetector(
+                          onTap: () async {
+                            final encoded = Uri.encodeComponent(user?.address ?? '');
+                            final uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encoded');
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri, mode: LaunchMode.externalApplication);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Could not open maps')),
+                              );
+                            }
+                          },
                           onLongPress: () {
                             Clipboard.setData(ClipboardData(text: user?.address ?? 'No Location available'));
 
@@ -232,6 +276,7 @@ class DetailTile extends StatelessWidget {
                     ),
                   ],
                 ),
+
 
 
                 const SpacerBoxVertical(height: 5),

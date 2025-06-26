@@ -85,6 +85,9 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../core/utils/constants/temp_language.dart';
 
 class TermsAndConditions extends StatefulWidget {
   final bool isNotButtons;
@@ -96,55 +99,48 @@ class TermsAndConditions extends StatefulWidget {
 }
 
 class _TermsAndConditionsState extends State<TermsAndConditions> {
-  PDFViewController? _pdfController;
-  bool _reachBottom = false;
-  String? _pdfPath;
-  int _totalPages = 0;
-  int _currentPage = 0;
+  late WebViewController _controller;
+  String _htmlContent = "";
+
 
   @override
   void initState() {
     super.initState();
-    _loadPdfFromAssets();
+    _loadHtmlFromAssets();
   }
-
-  // Load PDF from assets and save to temporary directory
-  Future<void> _loadPdfFromAssets() async {
+  Future<void> _loadHtmlFromAssets() async {
     try {
-      // Load PDF from assets
-      final data = await DefaultAssetBundle.of(context).load('assets/pdf/Perkio - Term and Conditions.pdf');
-      final bytes = data.buffer.asUint8List();
-      
-      // Save to temporary directory
-      final tempDir = await getTemporaryDirectory();
-      final tempFile = File('${tempDir.path}/privacy_policy.pdf');
-      await tempFile.writeAsBytes(bytes);
-      
+      String fileText = await rootBundle.loadString('assets/html_files/terms&conditions.html');
       setState(() {
-        _pdfPath = tempFile.path;
+        _htmlContent = fileText;
       });
+      _controller.loadHtmlString(_htmlContent);
     } catch (e) {
-      print('Error loading PDF: $e');
-      // Handle error (e.g., show error message)
+      print("Error loading HTML file: $e");
+      // Fallback to a URL if the asset fails to load
+      // _controller.loadUrl("https://sites.google.com/view/swipeapp/swipe");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
     return SecondaryLayoutWidget(
       header: Stack(
         children: [
-          CustomShapeContainer(height: 22.h),
+          CustomShapeContainer(),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SpacerBoxVertical(height: 40),
-                BackButtonWidget(padding: EdgeInsets.zero),
+                BackButtonWidget(
+                  padding: EdgeInsets.zero,
+                ),
                 Center(
                   child: Text(
-                    'Terms And Conditions', // Updated title to reflect PDF content
+                    TempLanguage.txtTermsConditions,
                     style: poppinsMedium(fontSize: 25),
                   ),
                 ),
@@ -153,62 +149,20 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 22.h),
-          Expanded(
-            child: _pdfPath == null
-                ? const Center(child: CircularProgressIndicator()) // Show loading while PDF loads
-                : PDFView(
-                    filePath: _pdfPath!,
-                    enableSwipe: true,
-                    swipeHorizontal: false,
-                    autoSpacing: true,
-                    pageFling: true,
-                    onViewCreated: (PDFViewController controller) {
-                      _pdfController = controller;
-                      _getTotalPages();
-                    },
-                    onPageChanged: (int? page, int? total) {
-                      if (page != null && total != null) {
-                        setState(() {
-                          _currentPage = page;
-                          _totalPages = total;
-                          // Detect if user reached the last page
-                          if (page >= total - 1) {
-                            _reachBottom = true;
-                          } else {
-                            _reachBottom = false;
-                          }
-                        });
-                      }
-                    },
-                    onError: (error) {
-                      print('PDFView error: $error');
-                      // Handle error (e.g., show error message)
-                    },
-                  ),
-          ),
-          if (_reachBottom)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Reached the end of the document',
-                style: poppinsRegular(fontSize: 12.sp, color: Colors.green),
-              ),
-            ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.only(top: 180.0),
+        child: WebView(
+          initialUrl: 'about:blank',
+          javascriptMode: JavascriptMode.unrestricted,
+          onWebViewCreated: (WebViewController webViewController) {
+            _controller = webViewController;
+            if (_htmlContent.isNotEmpty) {
+              _controller.loadHtmlString(_htmlContent);
+            }
+          },
+        ),
       ),
     );
   }
 
-  // Get total pages of the PDF
-  Future<void> _getTotalPages() async {
-    if (_pdfController != null) {
-      final totalPages = await _pdfController!.getPageCount();
-      setState(() {
-        _totalPages = totalPages ?? 0;
-      });
-    }
-  }
 }
